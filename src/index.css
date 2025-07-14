@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Navbar specific utilities */
+  .navbar-dropdown {
+    @apply max-h-[80vh] overflow-y-auto;
+    /* Ensure dropdown is visible over other content */
+    position: absolute !important;
+    z-index: 70 !important;
+    max-width: calc(100vw - 32px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .navbar-mobile-menu {
+    @apply max-h-[calc(100vh-4rem)] overflow-y-auto;
+  }
+  
+  /* Mega menu specific styles */
+  .mega-menu-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Responsive text utilities */
+  .text-responsive-sm {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .text-responsive-base {
+    @apply text-sm sm:text-base;
+  }
+  
+  /* Custom scrollbar for dropdown menus */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 2px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  
+  /* Ensure dropdowns are above other content */
+  .dropdown-content {
+    @apply z-[60];
+  }
+  
+  /* Mobile menu backdrop */
+  .mobile-menu-backdrop {
+    @apply fixed inset-0 bg-black/20 backdrop-blur-sm z-40;
+  }
+  
+  /* Page layout utilities */
+  .page-content {
+    @apply pt-24 min-h-screen; /* Increased padding for new navbar height */
+  }
+  
+  .page-container {
+    @apply p-3 sm:p-4 lg:p-6 xl:p-8;
+  }
+  
+  .content-wrapper {
+    @apply max-w-7xl mx-auto w-full;
+  }
+  
+  /* Responsive grid utilities */
+  .dashboard-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6;
+  }
+  
+  .metric-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4;
+  }
+  
+  /* Card utilities */
+  .dashboard-card {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200;
+  }
+  
+  .card-content {
+    @apply p-4 sm:p-6;
+  }
+  /* Ensure content doesn't overlap with fixed navbar */
+  .main-content {
+    @apply pt-16 lg:pt-16 min-h-screen; /* Accounts for two-tier navbar height */
+  }
+
+  /* Responsive navbar utilities */
+  .navbar-item {
+    @apply flex items-center space-x-2 px-2 sm:px-3 py-2 text-sm font-medium border-b-2 transition-all duration-200 whitespace-nowrap;
+  }
+
+  .navbar-item-active {
+    @apply border-orange-500 text-orange-600 bg-orange-50;
+  }
+
+  .navbar-item-inactive {
+    @apply border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300;
+  }
+
+  /* Navbar responsive improvements */
+  .navbar-scroll {
+    @apply overflow-x-auto scrollbar-hide;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Better mobile responsiveness */
+  .responsive-container {
+    @apply px-3 sm:px-4 lg:px-6 xl:px-8;
+  }
+
+  .responsive-grid {
+    @apply grid gap-3 sm:gap-4 lg:gap-6;
+  }
+
+  /* Fix navbar z-index and positioning */
+  .navbar-fixed {
+    @apply fixed top-0 left-0 right-0 z-50;
+  }
+
+  /* Ensure proper content spacing */
+  .content-with-navbar {
+    @apply pt-28 lg:pt-32 min-h-screen;
+  }
+
+  /* Inventory dropdown specific enhancements */
+  .inventory-dropdown-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 1400px) {
+    .inventory-dropdown-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .inventory-dropdown-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .inventory-dropdown-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Enhanced inventory section headers */
+  .inventory-section-header {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #111827;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 0.5rem;
+    position: relative;
+  }
+
+  .inventory-section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 30%;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    border-radius: 1px;
+  }
+}

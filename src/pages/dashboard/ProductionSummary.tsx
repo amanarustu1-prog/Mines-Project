@@ -1,0 +1,12 @@
+import React from 'react';
+
+const ProductionSummary = () => {
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Production Summary</h1>
+      <p className="text-gray-600">Production summary analytics functionality will be implemented here.</p>
+    </div>
+  );
+};
+
+export default ProductionSummary;
