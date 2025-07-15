@@ -15,7 +15,7 @@ import ChallanHistory from './pages/accounts/ChallanHistory'
 import CreateChallan from './pages/accounts/CreateChallan'
 
 // Dashboard pages
-import ActiveAssets from './pages/dashboard/ActiveAssets'  
+import ActiveAssets from './pages/dashboard/ActiveAssets'
 import MachineUsage from './pages/dashboard/MachineUsage'
 import MaintenanceAlerts from './pages/dashboard/MaintenanceAlerts'
 import MaterialStock from './pages/dashboard/MaterialStock'
@@ -36,6 +36,15 @@ import TransportOperations from './pages/mining/Transport'
 import CrusherDailyLogs from './pages/crusher/DailyLogs'
 import CrusherUnits from './pages/crusher/Units'
 import CrusherReports from './pages/crusher/Reports'
+import LeaveType_Master from './pages/Hr/LeaveType_Master';
+import EmployeeMaster from './pages/Hr/employee-master/EmployeeMaster'
+import AttendanceManagement from './pages/Hr/attendance-management/AttendanceManagement'
+import LeaveManagement from './pages/Hr/leave-management/LeaveManagement'
+import EmployeeBelongingsManagement from './pages/Hr/employee-belongings/EmployeeBelongingsManagement'
+import SalaryCalculation from './pages/Hr/salary-calculation/SalaryCalculation'
+import FormThree from './pages/FormThree'
+import FormFour from './pages/FormFour'
+import ListManagement from './pages/Hr/listmanagement/ListManagement'
 
 function App() {
   return (
@@ -48,6 +57,8 @@ function App() {
 
           {/* HR Forms */}
           <Route path="/form" element={<Form />} />
+          <Route path="/formthree" element={<FormThree />} />
+          <Route path="/formfour" element={<FormFour />} />
           <Route path="/form2" element={<Form2 />} />
           <Route path="/form3" element={<Form3 />} />
           <Route path="/form4" element={<Form4 />} />
@@ -79,6 +90,17 @@ function App() {
           <Route path="/crusher/entries/daily-logs" element={<CrusherDailyLogs />} />
           <Route path="/crusher/masters/units" element={<CrusherUnits />} />
           <Route path="/crusher/reports/daily-log" element={<CrusherReports />} />
+
+          {/* Hr */}
+          <Route path="/employee-master" element={<EmployeeMaster />} />
+          <Route path="/attendance-management" element={<AttendanceManagement />} />
+          <Route path="/leave-management" element={<LeaveManagement />} />
+          <Route path="/employee-belonging-management" element={<EmployeeBelongingsManagement />} />
+          <Route path="/salary-calculation" element={<SalaryCalculation />} />
+          <Route path="/list-management" element={<ListManagement />} />
+
+          {/* <Route path="/LeaveType_Master" element={<LeaveType_Master />} /> */}
+
         </Routes>
       </main>
     </div>

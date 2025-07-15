@@ -85,7 +85,7 @@ import { Badge } from './ui/badge';
 interface NavItem {
   title: string;
   href?: string;
-   icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string }>;
   badge?: string;
   children?: {
     title: string;
@@ -122,19 +122,19 @@ const navigationItems: NavItem[] = [
           {
             title: 'Main Dashboard',
             href: '/',
-             icon: Home,
+            icon: Home,
             description: 'Complete overview of all mining operations'
           },
           {
             title: 'Production Summary',
             href: '/dashboard/production-summary',
-             icon: BarChart3,
+            icon: BarChart3,
             description: 'Key production metrics and trends'
           },
           {
             title: 'Operations Overview',
             href: '/dashboard/operations',
-             icon: Factory,
+            icon: Factory,
             description: 'Real-time operations status and monitoring'
           },
         ]
@@ -145,19 +145,19 @@ const navigationItems: NavItem[] = [
           {
             title: 'Machine Usage',
             href: '/dashboard/machine-usage',
-             icon: Activity,
+            icon: Activity,
             description: 'Equipment utilization and performance'
           },
           {
             title: 'Active Assets',
             href: '/dashboard/active-assets',
-             icon: MapPin,
+            icon: MapPin,
             description: 'Track and monitor all active equipment'
           },
           {
             title: 'Efficiency Metrics',
             href: '/dashboard/efficiency',
-             icon: Target,
+            icon: Target,
             description: 'Overall operational efficiency tracking'
           },
         ]
@@ -168,20 +168,20 @@ const navigationItems: NavItem[] = [
           {
             title: 'Maintenance Alerts',
             href: '/dashboard/maintenance-alerts',
-             icon: AlertCircle,
+            icon: AlertCircle,
             description: 'Critical maintenance issues and tasks',
             badge: 'New'
           },
           {
             title: 'Material Stock',
             href: '/dashboard/material-stock',
-             icon: Warehouse,
+            icon: Warehouse,
             description: 'Inventory levels and supply tracking'
           },
           {
             title: 'Safety Status',
             href: '/dashboard/safety-status',
-             icon: Shield,
+            icon: Shield,
             description: 'Safety metrics and incident tracking'
           },
         ]
@@ -192,19 +192,19 @@ const navigationItems: NavItem[] = [
           {
             title: 'KPI Dashboard',
             href: '/dashboard/kpi',
-             icon: TrendingUp,
+            icon: TrendingUp,
             description: 'Key performance indicators and metrics'
           },
           {
             title: 'Cost Analysis',
             href: '/dashboard/cost-analysis',
-             icon: DollarSign,
+            icon: DollarSign,
             description: 'Cost breakdown and financial insights'
           },
           {
             title: 'Trend Analysis',
             href: '/dashboard/trends',
-             icon: BarChart3,
+            icon: BarChart3,
             description: 'Historical trends and forecasting',
             badge: 'Pro'
           },
@@ -236,7 +236,7 @@ const navigationItems: NavItem[] = [
       },
     ]
   },
-  
+
 
   {
     title: 'Sale',
@@ -455,7 +455,7 @@ const navigationItems: NavItem[] = [
     ]
   },
 
- 
+
   {
     title: 'Inventory',
     icon: Package,
@@ -867,45 +867,45 @@ const navigationItems: NavItem[] = [
     ]
   },
 
-    {
+  {
     title: 'Fuel',
     icon: CheckCircle,
     sections: [
       {
         title: 'Fuel Stock Management',
         items: [
-          { 
-            title: 'Fuel Stock Inward Entry', 
-            href: '/quality/dashboard', 
+          {
+            title: 'Fuel Stock Inward Entry',
+            href: '/quality/dashboard',
             icon: CheckCircle,
-            description: 'Name, Logo, Address, Contact Info' 
+            description: 'Name, Logo, Address, Contact Info'
           },
-          { 
-            title: 'Fuel Transfer Entry', 
-            href: '/quality/trends', 
+          {
+            title: 'Fuel Transfer Entry',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
-          },
-
-          { 
-            title: 'Fuel Adjustment / Reconciliation', 
-            href: '/quality/trends', 
-            icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
           },
 
-          { 
-            title: 'Fuel Vendor Master', 
-            href: '/quality/trends', 
+          {
+            title: 'Fuel Adjustment / Reconciliation',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
           },
 
-          { 
-            title: 'Fuel Pricing Setup', 
-            href: '/quality/trends', 
+          {
+            title: 'Fuel Vendor Master',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
+          },
+
+          {
+            title: 'Fuel Pricing Setup',
+            href: '/quality/trends',
+            icon: TrendingUp,
+            description: 'Historical quality data and trends'
           },
 
         ]
@@ -913,81 +913,81 @@ const navigationItems: NavItem[] = [
       {
         title: 'Fuel Issuance',
         items: [
-          { 
-            title: 'Fuel Issue Entry', 
-            href: '/quality/testing', 
+          {
+            title: 'Fuel Issue Entry',
+            href: '/quality/testing',
             icon: FlaskConical,
-            description: 'Vehicle/Machine-wise' 
+            description: 'Vehicle/Machine-wise'
           },
-          { 
-            title: 'Issuance Approvals', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Issuance Approvals',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
-          { 
-            title: 'Daily Fuel Issuance Register', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Daily Fuel Issuance Register',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
-          },          
+            description: 'Laboratory testing outcomes'
+          },
         ]
       },
       {
         title: 'Consumption & Monitoring',
         items: [
-          { 
-            title: 'Machine-wise Fuel Consumption', 
-            href: '/quality/standards', 
+          {
+            title: 'Machine-wise Fuel Consumption',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'Vehicle-wise Fuel Consumption', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-          { 
-            title: 'Daily Fuel Usage Summary', 
-            href: '/quality/certifications', 
+          {
+            title: 'Vehicle-wise Fuel Consumption',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
-          { 
-            title: 'Overconsumption Alerts / Exception Logs', 
-            href: '/quality/certifications', 
+          {
+            title: 'Daily Fuel Usage Summary',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'Overconsumption Alerts / Exception Logs',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
           },
         ]
       },
       {
         title: 'Reports',
         items: [
-          { 
-            title: 'Fuel Stock Ledger', 
-            href: '/quality/standards', 
+          {
+            title: 'Fuel Stock Ledger',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'Fuel Issue vs Consumption Report', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-           { 
-            title: 'Fuel Cost Report ', 
-            href: '/quality/certifications', 
+          {
+            title: 'Fuel Issue vs Consumption Report',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
-           { 
-            title: 'Fuel Price History', 
-            href: '/quality/certifications', 
+          {
+            title: 'Fuel Cost Report ',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'Fuel Price History',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
           },
         ]
       },
@@ -995,82 +995,82 @@ const navigationItems: NavItem[] = [
       {
         title: 'Master Setup',
         items: [
-          { 
-            title: 'Fuel Type Master', 
-            href: '/quality/standards', 
+          {
+            title: 'Fuel Type Master',
+            href: '/quality/standards',
             icon: Target,
             description: 'Third-Party Integrations',
-                      },
-          { 
-            title: 'Vehicle / Equipment Master with Tank Capacity', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-           { 
-            title: 'Fuel Pump Master', 
-            href: '/quality/certifications', 
+          {
+            title: 'Vehicle / Equipment Master with Tank Capacity',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Fuel Pump Master (with location & staff)' 
+            description: 'Quality certifications and compliance'
           },
-          { 
-            title: 'Threshold / Alert Configuration', 
-            href: '/quality/certifications', 
+          {
+            title: 'Fuel Pump Master',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Fuel Pump Master (with location & staff)' 
+            description: 'Fuel Pump Master (with location & staff)'
           },
-           { 
-            title: 'Unit of Measurement Settings', 
-            href: '/quality/certifications', 
+          {
+            title: 'Threshold / Alert Configuration',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Unit of Measurement Settings (Liters, Gallons, etc.)' 
+            description: 'Fuel Pump Master (with location & staff)'
+          },
+          {
+            title: 'Unit of Measurement Settings',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Unit of Measurement Settings (Liters, Gallons, etc.)'
           },
         ]
-      },      
+      },
 
     ]
-   
+
   },
 
-   {
+  {
     title: 'Mining',
     icon: CheckCircle,
     sections: [
       {
         title: 'Fuel Stock Management',
         items: [
-          { 
-            title: 'Fuel Stock Inward Entry', 
-            href: '/quality/dashboard', 
+          {
+            title: 'Fuel Stock Inward Entry',
+            href: '/quality/dashboard',
             icon: CheckCircle,
-            description: 'Name, Logo, Address, Contact Info' 
+            description: 'Name, Logo, Address, Contact Info'
           },
-          { 
-            title: 'Fuel Transfer Entry', 
-            href: '/quality/trends', 
+          {
+            title: 'Fuel Transfer Entry',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
-          },
-
-          { 
-            title: 'Fuel Adjustment / Reconciliation', 
-            href: '/quality/trends', 
-            icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
           },
 
-          { 
-            title: 'Fuel Vendor Master', 
-            href: '/quality/trends', 
+          {
+            title: 'Fuel Adjustment / Reconciliation',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
           },
 
-          { 
-            title: 'Fuel Pricing Setup', 
-            href: '/quality/trends', 
+          {
+            title: 'Fuel Vendor Master',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
+          },
+
+          {
+            title: 'Fuel Pricing Setup',
+            href: '/quality/trends',
+            icon: TrendingUp,
+            description: 'Historical quality data and trends'
           },
 
         ]
@@ -1078,81 +1078,81 @@ const navigationItems: NavItem[] = [
       {
         title: 'Fuel Issuance',
         items: [
-          { 
-            title: 'Fuel Issue Entry', 
-            href: '/quality/testing', 
+          {
+            title: 'Fuel Issue Entry',
+            href: '/quality/testing',
             icon: FlaskConical,
-            description: 'Vehicle/Machine-wise' 
+            description: 'Vehicle/Machine-wise'
           },
-          { 
-            title: 'Issuance Approvals', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Issuance Approvals',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
-          { 
-            title: 'Daily Fuel Issuance Register', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Daily Fuel Issuance Register',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
-          },          
+            description: 'Laboratory testing outcomes'
+          },
         ]
       },
       {
         title: 'Consumption & Monitoring',
         items: [
-          { 
-            title: 'Machine-wise Fuel Consumption', 
-            href: '/quality/standards', 
+          {
+            title: 'Machine-wise Fuel Consumption',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'Vehicle-wise Fuel Consumption', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-          { 
-            title: 'Daily Fuel Usage Summary', 
-            href: '/quality/certifications', 
+          {
+            title: 'Vehicle-wise Fuel Consumption',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
-          { 
-            title: 'Overconsumption Alerts / Exception Logs', 
-            href: '/quality/certifications', 
+          {
+            title: 'Daily Fuel Usage Summary',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'Overconsumption Alerts / Exception Logs',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
           },
         ]
       },
       {
         title: 'Reports',
         items: [
-          { 
-            title: 'Fuel Stock Ledger', 
-            href: '/quality/standards', 
+          {
+            title: 'Fuel Stock Ledger',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'Fuel Issue vs Consumption Report', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-           { 
-            title: 'Fuel Cost Report ', 
-            href: '/quality/certifications', 
+          {
+            title: 'Fuel Issue vs Consumption Report',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
-           { 
-            title: 'Fuel Price History', 
-            href: '/quality/certifications', 
+          {
+            title: 'Fuel Cost Report ',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'Fuel Price History',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
           },
         ]
       },
@@ -1160,53 +1160,53 @@ const navigationItems: NavItem[] = [
       {
         title: 'Master Setup',
         items: [
-          { 
-            title: 'Fuel Type Master', 
-            href: '/quality/standards', 
+          {
+            title: 'Fuel Type Master',
+            href: '/quality/standards',
             icon: Target,
             description: 'Third-Party Integrations',
-                      },
-          { 
-            title: 'Vehicle / Equipment Master with Tank Capacity', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-           { 
-            title: 'Fuel Pump Master', 
-            href: '/quality/certifications', 
+          {
+            title: 'Vehicle / Equipment Master with Tank Capacity',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Fuel Pump Master (with location & staff)' 
+            description: 'Quality certifications and compliance'
           },
-          { 
-            title: 'Threshold / Alert Configuration', 
-            href: '/quality/certifications', 
+          {
+            title: 'Fuel Pump Master',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Fuel Pump Master (with location & staff)' 
+            description: 'Fuel Pump Master (with location & staff)'
           },
-           { 
-            title: 'Unit of Measurement Settings', 
-            href: '/quality/certifications', 
+          {
+            title: 'Threshold / Alert Configuration',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Unit of Measurement Settings (Liters, Gallons, etc.)' 
+            description: 'Fuel Pump Master (with location & staff)'
+          },
+          {
+            title: 'Unit of Measurement Settings',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Unit of Measurement Settings (Liters, Gallons, etc.)'
           },
         ]
-      },      
+      },
 
     ]
-   
+
   },
 
   {
     title: 'HR',
-   icon: Users,
+    icon: Users,
     sections: [
       {
         title: 'MASTER TABLES',
         items: [
           {
             title: 'Department',
-            href: '/workforce/personnel',
+            href: '/list-management',
             icon: Users,
             description: 'Employee records and management'
           },
@@ -1242,7 +1242,8 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Leave Type Master',
-            href: '/workforce/contractors',
+            href: '/LeaveType_Master',
+
             icon: UserCheck,
             description: 'Contractor records and agreements'
           },
@@ -1254,6 +1255,7 @@ const navigationItems: NavItem[] = [
           {
             title: 'Employee',
             href: '/workforce/shifts',
+
             icon: Clock,
             description: 'Shift schedules and planning'
           },
@@ -1285,7 +1287,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Item Issue',
-            href: '/workforce/time-tracking',
+            href: '/employee-belonging-management',
             icon: Calendar,
             description: 'Contractor records and agreements'
           },
@@ -1297,7 +1299,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Daily Attendance Entry',
-            href: '/workforce/training',
+            href: '/attendance-management',
             icon: GraduationCap,
             description: 'Employee training and certifications'
           },
@@ -1330,7 +1332,8 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Apply for Leave',
-            href: '/workforce/training',
+            // href: '/workforce/training',
+            href: '/leave-management',
             icon: GraduationCap,
             description: 'Employee training and certifications'
           },
@@ -1369,7 +1372,7 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Monthly Salary Process',
-            href: '/workforce/performance',
+            href: '/salary-calculation',
             icon: TrendingUp,
             description: 'Performance reviews and metrics',
 
@@ -1396,7 +1399,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Employee Master Report',
-            href: '/workforce/training',
+            href: '/employee-master',
             icon: GraduationCap,
             description: 'Employee training and certifications'
           },
@@ -1701,87 +1704,87 @@ const navigationItems: NavItem[] = [
     ]
   },
 
-     {
+  {
     title: 'Master Tables',
     icon: CheckCircle,
     sections: [
       {
         title: 'General Settings',
         items: [
-          { 
-            title: 'Company Profile', 
-            href: '/quality/dashboard', 
+          {
+            title: 'Company Profile',
+            href: '/quality/dashboard',
             icon: CheckCircle,
-            description: 'Name, Logo, Address, Contact Info' 
+            description: 'Name, Logo, Address, Contact Info'
           },
-          { 
-            title: 'Shift Timing', 
-            href: '/quality/trends', 
+          {
+            title: 'Shift Timing',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
           },
         ]
       },
       {
         title: 'User & Access Settings',
         items: [
-          { 
-            title: 'User Management', 
-            href: '/quality/testing', 
+          {
+            title: 'User Management',
+            href: '/quality/testing',
             icon: FlaskConical,
-            description: 'Quality testing procedures and results' 
+            description: 'Quality testing procedures and results'
           },
-          { 
-            title: 'Roles & Permissions', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Roles & Permissions',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
-          { 
-            title: 'Password Policy', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Password Policy',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
-          { 
-            title: 'Login History / Audit Log', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Login History / Audit Log',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
         ]
       },
       {
         title: 'Weigh bridge',
         items: [
-          { 
-            title: 'BAAT MAAP Certificate', 
-            href: '/quality/standards', 
+          {
+            title: 'BAAT MAAP Certificate',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'Weight Setting', 
-            href: '/quality/certifications', 
+          },
+          {
+            title: 'Weight Setting',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
         ]
       },
       {
         title: 'CCTV',
         items: [
-          { 
-            title: 'CCTV IP', 
-            href: '/quality/standards', 
+          {
+            title: 'CCTV IP',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'CCTV Urls', 
-            href: '/quality/certifications', 
+          },
+          {
+            title: 'CCTV Urls',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
         ]
       },
@@ -1789,112 +1792,112 @@ const navigationItems: NavItem[] = [
       {
         title: 'System Configuration',
         items: [
-          { 
-            title: 'API Keys', 
-            href: '/quality/standards', 
+          {
+            title: 'API Keys',
+            href: '/quality/standards',
             icon: Target,
             description: 'Third-Party Integrations',
-                      },
-          { 
-            title: 'SMTP / Email Settings', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-           { 
-            title: 'SMS Gateway Settings', 
-            href: '/quality/certifications', 
+          {
+            title: 'SMTP / Email Settings',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'SMS Gateway Settings',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
           },
         ]
-      },      
+      },
 
     ]
-   
+
   },
 
-   {
+  {
     title: 'Setting',
     icon: CheckCircle,
     sections: [
       {
         title: 'General Settings',
         items: [
-          { 
-            title: 'Company Profile', 
-            href: '/quality/dashboard', 
+          {
+            title: 'Company Profile',
+            href: '/quality/dashboard',
             icon: CheckCircle,
-            description: 'Name, Logo, Address, Contact Info' 
+            description: 'Name, Logo, Address, Contact Info'
           },
-          { 
-            title: 'Shift Timing', 
-            href: '/quality/trends', 
+          {
+            title: 'Shift Timing',
+            href: '/quality/trends',
             icon: TrendingUp,
-            description: 'Historical quality data and trends' 
+            description: 'Historical quality data and trends'
           },
         ]
       },
       {
         title: 'User & Access Settings',
         items: [
-          { 
-            title: 'User Management', 
-            href: '/quality/testing', 
+          {
+            title: 'User Management',
+            href: '/quality/testing',
             icon: FlaskConical,
-            description: 'Quality testing procedures and results' 
+            description: 'Quality testing procedures and results'
           },
-          { 
-            title: 'Roles & Permissions', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Roles & Permissions',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
-          { 
-            title: 'Password Policy', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Password Policy',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
-          { 
-            title: 'Login History / Audit Log', 
-            href: '/quality/lab-results', 
+          {
+            title: 'Login History / Audit Log',
+            href: '/quality/lab-results',
             icon: FileText,
-            description: 'Laboratory testing outcomes' 
+            description: 'Laboratory testing outcomes'
           },
         ]
       },
       {
         title: 'Weigh bridge',
         items: [
-          { 
-            title: 'BAAT MAAP Certificate', 
-            href: '/quality/standards', 
+          {
+            title: 'BAAT MAAP Certificate',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'Weight Setting', 
-            href: '/quality/certifications', 
+          },
+          {
+            title: 'Weight Setting',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
         ]
       },
       {
         title: 'CCTV',
         items: [
-          { 
-            title: 'CCTV IP', 
-            href: '/quality/standards', 
+          {
+            title: 'CCTV IP',
+            href: '/quality/standards',
             icon: Target,
             description: 'Quality standards and specifications',
-                      },
-          { 
-            title: 'CCTV Urls', 
-            href: '/quality/certifications', 
+          },
+          {
+            title: 'CCTV Urls',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
           },
         ]
       },
@@ -1902,32 +1905,32 @@ const navigationItems: NavItem[] = [
       {
         title: 'System Configuration',
         items: [
-          { 
-            title: 'API Keys', 
-            href: '/quality/standards', 
+          {
+            title: 'API Keys',
+            href: '/quality/standards',
             icon: Target,
             description: 'Third-Party Integrations',
-                      },
-          { 
-            title: 'SMTP / Email Settings', 
-            href: '/quality/certifications', 
-            icon: Award,
-            description: 'Quality certifications and compliance' 
           },
-           { 
-            title: 'SMS Gateway Settings', 
-            href: '/quality/certifications', 
+          {
+            title: 'SMTP / Email Settings',
+            href: '/quality/certifications',
             icon: Award,
-            description: 'Quality certifications and compliance' 
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'SMS Gateway Settings',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
           },
         ]
-      },      
+      },
 
     ]
-   
+
   },
 
- 
+
 
 
 
@@ -2305,7 +2308,7 @@ const moreMenuItems: NavItem[] = [
   },
   {
     title: 'Setting',
-   icon: CheckCircle,
+    icon: CheckCircle,
     sections: [
       {
         title: 'General Settings',
@@ -2416,9 +2419,9 @@ export function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-      <div className="w-full">
+      <div className="w-full pt-3">
         {/* Top Bar - Search and Actions */}
-        <div className="flex items-center justify-between h-14 px-4 sm:px-6 lg:px-8 border-b border-gray-50">
+        <div className="flex items-center justify-between h-12 px-4 sm:px-6 lg:px-8 border-b border-gray-50">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-shrink-0 max-w-[320px]">
             <Link to="/" className="flex items-center space-x-3 group">
@@ -2570,7 +2573,7 @@ export function Navbar() {
         </div>
 
         {/* Navigation Menu Bar */}
-        <div className="hidden lg:block bg-white/60 backdrop-blur-sm relative border-b border-gray-50" ref={dropdownRef}>
+        <div className="hidden lg:block container bg-white/60 backdrop-blur-sm relative border-b border-gray-50" ref={dropdownRef}>
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center py-3">
               <div className="flex items-center space-x-1 px-2 bg-gray-50/80 rounded-xl p-1.5 shadow-sm border border-gray-200/50">
@@ -2621,14 +2624,14 @@ export function Navbar() {
                         "absolute top-full w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden navbar-dropdown custom-scrollbar",
                         // Smart positioning - ensure dropdown stays within screen bounds
                         item.title === 'Dashboard' || item.title === 'Plant & Mining' || item.title === 'Sale' || item.title === 'Accounts'
-                          ? "left-8"
+                          ? "left-0"
                           : item.title === 'Inventory' || item.title === 'Machines & Vehicles' || item.title === 'HR'
-                            ? "left-8"
+                            ? "left-0"
                             : item.title === 'Workforce' || item.title === 'Safety'
-                              ? "left-8"
+                              ? "left-0"
                               : item.title === 'Reports' || item.title === 'Setting' || item.title === 'Fuel'
-                                ? "left-8"
-                                : "left-8",
+                                ? "left-0"
+                                : "left-0",
                         // Consistent sizing for all menus to fit content
                         "w-[min(1290px,95vw)]"
                         //  "w-[min(1000px,95vw)]"
@@ -2872,7 +2875,7 @@ export function Navbar() {
 
                               {/* Mega Menu for More Items */}
                               {hoveredMoreItem === item.title && (
-                                <div className="fixed top-20 left-8 w-[min(990px,90vw)]  bg-white rounded-xl shadow-xl border border-gray-100 z-[70] overflow-hidden">
+                                <div className="fixed top-20 left-0 w-[min(980px,90vw)]  bg-white rounded-xl shadow-xl border border-gray-100 z-[70] overflow-hidden">
                                   <div className="p-6">
                                     {/* Header */}
                                     <div className="border-b border-gray-100 pb-4 mb-6">
