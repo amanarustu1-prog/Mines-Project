@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Factory, 
-  Users, 
-  Package, 
-  Shield, 
-  TrendingUp, 
+import {
+  Factory,
+  Users,
+  Package,
+  Shield,
+  TrendingUp,
   Truck,
   AlertTriangle,
   Calendar,
@@ -61,7 +61,7 @@ const comprehensiveDashboardData = {
     energyConsumption: 4250,
     costPerTon: 45.80
   },
-  
+
   // Machine Usage Data
   machines: {
     totalMachines: 45,
@@ -71,7 +71,7 @@ const comprehensiveDashboardData = {
     maintenanceQueue: 7,
     criticalMachines: 3
   },
-  
+
   // Active Assets Data
   assets: {
     totalAssets: 156,
@@ -81,7 +81,7 @@ const comprehensiveDashboardData = {
     depreciation: 2.3,
     assetsNeedingMaintenance: 12
   },
-  
+
   // Maintenance Alerts Data
   maintenance: {
     totalAlerts: 15,
@@ -91,7 +91,7 @@ const comprehensiveDashboardData = {
     scheduledToday: 5,
     maintenanceCost: 125000
   },
-  
+
   // Material Stock Data
   materialStock: {
     totalItems: 1250,
@@ -101,7 +101,7 @@ const comprehensiveDashboardData = {
     turnoverRate: 4.2,
     warehouseUtilization: 78.5
   },
-  
+
   // Real-time metrics
   realTimeMetrics: {
     currentShift: 'Day Shift',
@@ -119,7 +119,7 @@ export default function Dashboard() {
   const [selectedTimeRange, setSelectedTimeRange] = useState('24h');
   const [currentTime, setCurrentTime] = useState<string>('--:--:-- --');
   const [currentDateTime, setCurrentDateTime] = useState<string>('--/--/---- --:-- --');
-  
+
   // Update time on client-side only
   useEffect(() => {
     const updateTime = () => {
@@ -130,18 +130,18 @@ export default function Dashboard() {
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const displayHours = hours % 12 || 12;
       setCurrentTime(`${displayHours}:${minutes}:${seconds} ${ampm}`);
-      
+
       const month = (now.getMonth() + 1).toString().padStart(2, '0');
       const day = now.getDate().toString().padStart(2, '0');
       const year = now.getFullYear();
       setCurrentDateTime(`${month}/${day}/${year} ${displayHours}:${minutes} ${ampm}`);
     };
-    
+
     updateTime(); // Set initial time
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-  
+
   // Calculate derived metrics
   const activeEquipment = data.equipment.filter(eq => eq.status === 'active').length;
   const totalEquipment = data.equipment.length;
@@ -217,12 +217,12 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
       {/* Navigation */}
       <Navbar />
-      
+
       {/* Main Content Area */}
       <main className="main-content">
         <div className="p-3 sm:p-4 lg:p-6">
-          <div className="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-            
+          <div className="container">
+
             {/* Enhanced Page Header */}
             <div className="relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 rounded-xl lg:rounded-2xl" />
@@ -258,8 +258,8 @@ export default function Dashboard() {
                       <p className="text-xl lg:text-2xl font-bold text-gray-900">{dashData.realTimeMetrics.currentShift}</p>
                       <p className="text-xs lg:text-sm text-gray-600">Shift Progress: {dashData.realTimeMetrics.shiftProgress}%</p>
                       <div className="w-20 lg:w-24 bg-gray-200 rounded-full h-1.5 lg:h-2 mt-1">
-                        <div 
-                          className="bg-gradient-to-r from-blue-500 to-green-500 h-1.5 lg:h-2 rounded-full transition-all duration-500" 
+                        <div
+                          className="bg-gradient-to-r from-blue-500 to-green-500 h-1.5 lg:h-2 rounded-full transition-all duration-500"
                           style={{ width: `${dashData.realTimeMetrics.shiftProgress}%` }}
                         />
                       </div>
@@ -280,7 +280,7 @@ export default function Dashboard() {
                 subtitle={`${dashData.production.dailyProduction}/${dashData.production.productionTarget} tons`}
                 variant="success"
               />
-              
+
               <MetricCard
                 title="Machine Utilization"
                 value={`${dashData.machines.utilizationRate}%`}
@@ -290,7 +290,7 @@ export default function Dashboard() {
                 subtitle={`${dashData.machines.activeMachines}/${dashData.machines.totalMachines} active`}
                 variant="warning"
               />
-              
+
               <MetricCard
                 title="Asset Performance"
                 value={`${dashData.assets.assetUtilization}%`}
@@ -300,7 +300,7 @@ export default function Dashboard() {
                 subtitle={`${dashData.assets.activeAssets} assets operational`}
                 variant="success"
               />
-              
+
               <MetricCard
                 title="Maintenance Status"
                 value={dashData.maintenance.criticalAlerts}
@@ -309,7 +309,7 @@ export default function Dashboard() {
                 subtitle={`${dashData.maintenance.pendingMaintenance} pending tasks`}
                 variant={dashData.maintenance.criticalAlerts > 0 ? "danger" : "success"}
               />
-              
+
               <MetricCard
                 title="Stock Status"
                 value={dashData.materialStock.lowStockItems}
@@ -318,7 +318,7 @@ export default function Dashboard() {
                 subtitle={`${dashData.materialStock.criticalItems} critical items`}
                 variant={dashData.materialStock.criticalItems > 0 ? "warning" : "success"}
               />
-              
+
               <MetricCard
                 title="Safety Score"
                 value={activeAlerts === 0 ? "100%" : "95%"}
@@ -338,7 +338,7 @@ export default function Dashboard() {
                   <span>Real-time data</span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6">
                 {quickActionItems.map((item) => (
                   <Link key={item.href} to={item.href}>
@@ -367,8 +367,8 @@ export default function Dashboard() {
                           <div className={cn(
                             "p-1 rounded text-xs font-medium",
                             item.color === 'red' ? 'bg-red-100 text-red-700' :
-                            item.color === 'yellow' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-green-100 text-green-700'
+                              item.color === 'yellow' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-green-100 text-green-700'
                           )}>
                             <Eye className="h-3 w-3" />
                           </div>
@@ -382,7 +382,7 @@ export default function Dashboard() {
 
             {/* Enhanced Main Dashboard Sections */}
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
-              
+
               {/* Production Overview - Enhanced */}
               <Card className="border-l-4 border-l-blue-500">
                 <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 lg:p-6">
@@ -420,7 +420,7 @@ export default function Dashboard() {
                         </p>
                       </div>
                     </div>
-                    
+
                     {/* Progress Bars */}
                     <div className="space-y-3 lg:space-y-4">
                       <div>
@@ -429,27 +429,27 @@ export default function Dashboard() {
                           <span className="text-blue-600 font-semibold">{dashData.production.activeLines}/{dashData.production.totalLines}</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5 lg:h-3">
-                          <div 
-                            className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 lg:h-3 rounded-full transition-all duration-500" 
+                          <div
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 lg:h-3 rounded-full transition-all duration-500"
                             style={{ width: `${(dashData.production.activeLines / dashData.production.totalLines) * 100}%` }}
                           />
                         </div>
                       </div>
-                      
+
                       <div>
                         <div className="flex justify-between text-sm mb-2">
                           <span className="font-medium text-gray-700">Overall Equipment Effectiveness</span>
                           <span className="text-green-600 font-semibold">{dashData.production.oee}%</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5 lg:h-3">
-                          <div 
-                            className="bg-gradient-to-r from-green-500 to-green-600 h-2.5 lg:h-3 rounded-full transition-all duration-500" 
+                          <div
+                            className="bg-gradient-to-r from-green-500 to-green-600 h-2.5 lg:h-3 rounded-full transition-all duration-500"
                             style={{ width: `${dashData.production.oee}%` }}
                           />
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Bottom Metrics */}
                     <div className="grid grid-cols-2 gap-3 lg:gap-4 pt-3 lg:pt-4 border-t border-gray-200">
                       <div className="text-center p-2 lg:p-3 bg-gray-50 rounded-lg">
@@ -511,8 +511,8 @@ export default function Dashboard() {
                           <span className="font-semibold">{dashData.machines.avgUptime}%</span>
                         </div>
                         <div className="w-full bg-white rounded-full h-2">
-                          <div 
-                            className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" 
+                          <div
+                            className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full"
                             style={{ width: `${dashData.machines.avgUptime}%` }}
                           />
                         </div>
@@ -571,12 +571,12 @@ export default function Dashboard() {
                   <CardTitle className="flex items-center gap-2">
                     <Wrench className="h-5 w-5 text-orange-600" />
                     Maintenance & Inventory
-                    <Badge 
-                      variant={dashData.maintenance.criticalAlerts > 0 ? "destructive" : "outline"} 
+                    <Badge
+                      variant={dashData.maintenance.criticalAlerts > 0 ? "destructive" : "outline"}
                       className={cn(
                         "ml-auto",
-                        dashData.maintenance.criticalAlerts > 0 
-                          ? "bg-red-100 text-red-800 border-red-200" 
+                        dashData.maintenance.criticalAlerts > 0
+                          ? "bg-red-100 text-red-800 border-red-200"
                           : "bg-green-100 text-green-800 border-green-200"
                       )}
                     >
@@ -595,9 +595,9 @@ export default function Dashboard() {
                         </h4>
                         <Badge className={cn(
                           "text-xs font-medium",
-                          dashData.maintenance.criticalAlerts > 0 ? 
-                          "bg-red-200 text-red-800 border-red-300" : 
-                          "bg-green-200 text-green-800 border-green-300"
+                          dashData.maintenance.criticalAlerts > 0 ?
+                            "bg-red-200 text-red-800 border-red-300" :
+                            "bg-green-200 text-green-800 border-green-300"
                         )}>
                           {dashData.maintenance.criticalAlerts} Critical
                         </Badge>
@@ -633,9 +633,9 @@ export default function Dashboard() {
                         </h4>
                         <Badge className={cn(
                           "text-xs font-medium",
-                          dashData.materialStock.criticalItems > 0 ? 
-                          "bg-yellow-200 text-yellow-800 border-yellow-300" : 
-                          "bg-green-200 text-green-800 border-green-300"
+                          dashData.materialStock.criticalItems > 0 ?
+                            "bg-yellow-200 text-yellow-800 border-yellow-300" :
+                            "bg-green-200 text-green-800 border-green-300"
                         )}>
                           {dashData.materialStock.warehouseUtilization}% Capacity
                         </Badge>
@@ -708,7 +708,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-600 font-medium">Active Workers</p>
                     <p className="text-xs text-blue-600 mt-1">Current shift</p>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-white/70 rounded-xl border border-green-200/50">
                     <div className="flex items-center justify-center mb-3">
                       <div className="p-2 bg-green-100 rounded-lg">
@@ -719,7 +719,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-600 font-medium">Safety Incidents</p>
                     <p className="text-xs text-green-600 mt-1">Today</p>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-white/70 rounded-xl border border-yellow-200/50">
                     <div className="flex items-center justify-center mb-3">
                       <div className="p-2 bg-yellow-100 rounded-lg">
@@ -730,7 +730,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-600 font-medium">MW Power</p>
                     <p className="text-xs text-yellow-600 mt-1">Current load</p>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-white/70 rounded-xl border border-blue-200/50">
                     <div className="flex items-center justify-center mb-3">
                       <div className="p-2 bg-blue-100 rounded-lg">
@@ -741,7 +741,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-600 font-medium">Liters/min</p>
                     <p className="text-xs text-blue-600 mt-1">Water usage</p>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-white/70 rounded-xl border border-purple-200/50">
                     <div className="flex items-center justify-center mb-3">
                       <div className="p-2 bg-purple-100 rounded-lg">
@@ -751,13 +751,13 @@ export default function Dashboard() {
                     <p className="text-3xl font-bold text-gray-900 mb-1">{dashData.realTimeMetrics.shiftProgress}%</p>
                     <p className="text-sm text-gray-600 font-medium">Shift Progress</p>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                      <div 
-                        className="bg-purple-500 h-1.5 rounded-full transition-all duration-500" 
+                      <div
+                        className="bg-purple-500 h-1.5 rounded-full transition-all duration-500"
                         style={{ width: `${dashData.realTimeMetrics.shiftProgress}%` }}
                       />
                     </div>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-white/70 rounded-xl border border-gray-200/50">
                     <div className="flex items-center justify-center mb-3">
                       <div className="p-2 bg-gray-100 rounded-lg">
@@ -781,7 +781,7 @@ export default function Dashboard() {
                   Historical Data
                 </Badge>
               </div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-1">
                   <ProductionOverview data={data.production} />
@@ -790,8 +790,8 @@ export default function Dashboard() {
                   <InventorySnapshot items={data.inventory} />
                 </div>
                 <div className="xl:col-span-1">
-                  <SafetyAlerts 
-                    alerts={data.safetyAlerts} 
+                  <SafetyAlerts
+                    alerts={data.safetyAlerts}
                     ppeCompliance={data.ppeCompliance}
                     workforce={data.workforce}
                   />
