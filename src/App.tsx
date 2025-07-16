@@ -45,6 +45,8 @@ import SalaryCalculation from './pages/Hr/salary-calculation/SalaryCalculation'
 import FormThree from './pages/FormThree'
 import FormFour from './pages/FormFour'
 import ListManagement from './pages/Hr/listmanagement/ListManagement'
+import FuelManagement from './pages/Fuel/fuel-management/FuelManagement'
+import ShiftManagement from './pages/Hr/shift-management/ShiftManagement'
 
 function App() {
   return (
@@ -98,8 +100,13 @@ function App() {
           <Route path="/employee-belonging-management" element={<EmployeeBelongingsManagement />} />
           <Route path="/salary-calculation" element={<SalaryCalculation />} />
           <Route path="/list-management" element={<ListManagement />} />
+          <Route path="/shift-management" element={<ShiftManagement />} />
 
           {/* <Route path="/LeaveType_Master" element={<LeaveType_Master />} /> */}
+
+          {/* Fuel */}
+          <Route path="/fuel-management" element={<FuelManagement />} />
+
 
         </Routes>
       </main>

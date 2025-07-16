@@ -40,7 +40,7 @@ const TrendingUpIcon = ({ style }: { style?: React.CSSProperties }) => (
 
 export default function SalaryCalculation() {
   const [activeTab, setActiveTab] = useState('salary-calculation');
-  
+
   // Employee Data
   const [selectedEmployee, setSelectedEmployee] = useState({
     empCode: 'SSC001',
@@ -115,7 +115,7 @@ export default function SalaryCalculation() {
   // Calculate salary components
   const calculateSalary = () => {
     const gross = salaryData.grossSalary || 0;
-    
+
     // Calculate Basic and allowances
     const basicAmount = (gross * salaryData.basicPercentage) / 100;
     const hraAmount = (basicAmount * salaryData.hraPercentage) / 100;
@@ -187,7 +187,7 @@ export default function SalaryCalculation() {
                 <div className="salary-grid salary-grid-cols-2 salary-gap-4">
                   <div className="salary-form-group">
                     <label className="salary-label">Employee Code ***</label>
-                    <select 
+                    <select
                       className="salary-select"
                       value={selectedEmployee.empCode}
                       onChange={(e) => handleEmployeeSelect(e.target.value)}
@@ -201,45 +201,45 @@ export default function SalaryCalculation() {
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">Employee Name ***</label>
-                    <input 
-                      type="text" 
-                      className="salary-input salary-input-readonly" 
+                    <input
+                      type="text"
+                      className="salary-input salary-input-readonly"
                       value={selectedEmployee.empName}
                       readOnly
                     />
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">Father Name</label>
-                    <input 
-                      type="text" 
-                      className="salary-input salary-input-readonly" 
+                    <input
+                      type="text"
+                      className="salary-input salary-input-readonly"
                       value={selectedEmployee.fatherName}
                       readOnly
                     />
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">Mobile</label>
-                    <input 
-                      type="text" 
-                      className="salary-input salary-input-readonly" 
+                    <input
+                      type="text"
+                      className="salary-input salary-input-readonly"
                       value={selectedEmployee.mobile}
                       readOnly
                     />
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">DOJ</label>
-                    <input 
-                      type="text" 
-                      className="salary-input salary-input-readonly" 
+                    <input
+                      type="text"
+                      className="salary-input salary-input-readonly"
                       value={selectedEmployee.doj}
                       readOnly
                     />
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">Current Salary</label>
-                    <input 
-                      type="text" 
-                      className="salary-input salary-input-readonly" 
+                    <input
+                      type="text"
+                      className="salary-input salary-input-readonly"
                       value={selectedEmployee.currentSalary}
                       readOnly
                     />
@@ -260,7 +260,7 @@ export default function SalaryCalculation() {
                 <div className="salary-grid salary-grid-cols-3 salary-gap-4 salary-mb-4">
                   <div className="salary-form-group">
                     <label className="salary-label">PF Group</label>
-                    <select 
+                    <select
                       className="salary-select"
                       value={salaryData.pfGroup}
                       onChange={(e) => handleInputChange('pfGroup', e.target.value)}
@@ -271,8 +271,8 @@ export default function SalaryCalculation() {
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">Increment Date</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       className="salary-input"
                       value={salaryData.incrementDate}
                       onChange={(e) => handleInputChange('incrementDate', e.target.value)}
@@ -280,8 +280,8 @@ export default function SalaryCalculation() {
                   </div>
                   <div className="salary-form-group">
                     <label className="salary-label">Increment Amount</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       className="salary-input"
                       value={salaryData.incrementAmount}
                       onChange={(e) => handleInputChange('incrementAmount', parseFloat(e.target.value) || 0)}
@@ -290,8 +290,8 @@ export default function SalaryCalculation() {
                 </div>
                 <div className="salary-form-group">
                   <label className="salary-label">Joining Salary</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     className="salary-input"
                     value={salaryData.joiningSalary}
                     onChange={(e) => handleInputChange('joiningSalary', parseFloat(e.target.value) || 0)}
@@ -303,35 +303,35 @@ export default function SalaryCalculation() {
             {/* Salary Calculation */}
             <div className="salary-grid salary-grid-cols-2 salary-gap-6">
               {/* Gross Salary & Earnings */}
-              <div className="salary-card">
+              <div className="salary-card mt-5">
                 <div className="salary-card-header">
                   <h3 className="salary-card-title">Gross Salary & Earnings</h3>
                 </div>
                 <div className="salary-card-content salary-space-y-4">
                   <div className="salary-form-group">
                     <label className="salary-label">Gross Salary</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       className="salary-input"
                       value={salaryData.grossSalary}
                       onChange={(e) => handleInputChange('grossSalary', parseFloat(e.target.value) || 0)}
                       placeholder="Enter gross salary"
                     />
                   </div>
-                  
+
                   <div className="salary-earnings-grid">
                     <div className="salary-earnings-row">
                       <label className="salary-label">Basic (% of Gross)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.basicPercentage}
                           onChange={(e) => handleInputChange('basicPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.basicAmount.toFixed(2)}
                           readOnly
@@ -342,15 +342,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">HRA (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.hraPercentage}
                           onChange={(e) => handleInputChange('hraPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.hraAmount.toFixed(2)}
                           readOnly
@@ -361,15 +361,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">Conveyance (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.conveyancePercentage}
                           onChange={(e) => handleInputChange('conveyancePercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.conveyanceAmount.toFixed(2)}
                           readOnly
@@ -380,15 +380,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">Medical (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.medicalPercentage}
                           onChange={(e) => handleInputChange('medicalPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.medicalAmount.toFixed(2)}
                           readOnly
@@ -399,15 +399,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">Others (% of Gross)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.othersPercentage}
                           onChange={(e) => handleInputChange('othersPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.othersAmount.toFixed(2)}
                           readOnly
@@ -418,15 +418,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">Remaining Allowance (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.remainingAllowancePercentage}
                           onChange={(e) => handleInputChange('remainingAllowancePercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.remainingAllowanceAmount.toFixed(2)}
                           readOnly
@@ -437,15 +437,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">Ex-Gratia (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.exGratiaPercentage}
                           onChange={(e) => handleInputChange('exGratiaPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.exGratiaAmount.toFixed(2)}
                           readOnly
@@ -466,15 +466,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">PF Deductions (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.pfPercentage}
                           onChange={(e) => handleInputChange('pfPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.pfAmount.toFixed(2)}
                           readOnly
@@ -485,15 +485,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">ESI Deductions (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.esiPercentage}
                           onChange={(e) => handleInputChange('esiPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.esiAmount.toFixed(2)}
                           readOnly
@@ -504,8 +504,8 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">LIC (in Rs)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input"
                           value={salaryData.licAmount}
                           onChange={(e) => handleInputChange('licAmount', parseFloat(e.target.value) || 0)}
@@ -516,15 +516,15 @@ export default function SalaryCalculation() {
                     <div className="salary-earnings-row">
                       <label className="salary-label">Other Deductions (% of Basic)</label>
                       <div className="salary-flex salary-gap-2">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-sm"
                           value={salaryData.otherDeductionsPercentage}
                           onChange={(e) => handleInputChange('otherDeductionsPercentage', parseFloat(e.target.value) || 0)}
                         />
                         <span className="salary-percentage">%</span>
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           className="salary-input salary-input-readonly"
                           value={calculatedValues.otherDeductionsAmount.toFixed(2)}
                           readOnly
@@ -558,14 +558,14 @@ export default function SalaryCalculation() {
 
             {/* Action Buttons */}
             <div className="salary-flex salary-gap-4 salary-justify-center">
-              <button 
+              <button
                 className="salary-btn salary-btn-primary"
                 onClick={calculateSalary}
               >
                 <CalculatorIcon style={{ width: '16px', height: '16px' }} />
                 Calculate
               </button>
-              <button 
+              <button
                 className="salary-btn salary-btn-success"
                 onClick={handleSave}
               >
@@ -693,7 +693,7 @@ export default function SalaryCalculation() {
       </div>
 
       {/* Main Container */}
-      <div className="salary-main">
+      <div className="salary-main container">
         {/* Tab Navigation */}
         <div className="salary-tabs">
           <div className="salary-tabs-container">

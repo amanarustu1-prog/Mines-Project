@@ -10,6 +10,7 @@
   .leave-management-header {
     background: white;
     border-bottom: 1px solid #e5e7eb;
+    
   }
   
   .leave-management-header-content {
@@ -46,9 +47,9 @@
   
   /* Main Content */
   .leave-management-main {
-    max-width: 72rem;
+    /* max-width: 72rem; */
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: 1rem 0rem;
   }
   
   /* Tab Navigation */

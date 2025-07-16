@@ -430,10 +430,10 @@ export default function ListManagement() {
     };
 
     return (
-        <div className="list-management-container">
+        <div className="list-management-container ">
             {/* Header */}
-            <div className="list-header">
-                <div className="list-header-content">
+            <div className="list-header ">
+                <div className="list-header-content container">
                     <div className="list-header-info">
                         <div className="list-header-icon">
                             <List className="list-icon-sm" />
@@ -453,7 +453,7 @@ export default function ListManagement() {
             </div>
 
             {/* Main Container */}
-            <div className="list-main-container">
+            <div className="list-main-container container">
 
                 {/* Tab Navigation */}
                 {/* <div className="list-tab-navigation">

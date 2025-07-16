@@ -48,7 +48,8 @@
   .employee-master-main {
     max-width: 72rem;
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: 1rem 0;  /* Top-Bottom: 1rem, Left-Right: 0 */
+
   }
   
   /* Tab Navigation */

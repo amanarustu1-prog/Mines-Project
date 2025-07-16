@@ -1,0 +1,936 @@
+/* ===== Fuel Management Styles ===== */
+
+/* Base styles */
+.fuel-management {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .fuel-management-header {
+    margin-bottom: 2rem;
+    /* max-width: 1400px; */
+    margin-top: 4.50rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .fuel-management-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .fuel-management-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .fuel-management-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .fuel-management-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .fuel-management-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .fuel-management-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .fuel-management-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* ===== Buttons ===== */
+  .fuel-management-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .fuel-management-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .fuel-management-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+  
+  .fuel-management-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .fuel-management-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .fuel-management-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .fuel-management-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .fuel-management-btn-icon-danger {
+    color: #dc2626;
+  }
+  
+  .fuel-management-btn-icon-danger:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+  }
+  
+  .fuel-management-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .fuel-management-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .fuel-management-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  /* ===== Tabs ===== */
+  .fuel-management-tabs {
+    margin-bottom: 2rem;
+  }
+  
+  .fuel-management-tabs-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .fuel-management-tabs-nav {
+    padding: 1rem;
+  }
+  
+  .fuel-management-tabs-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+  
+  .fuel-management-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  
+  .fuel-management-tab:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+  }
+  
+  .fuel-management-tab.active {
+    background: black;
+    color: white;
+  }
+  
+  .fuel-management-tab-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  /* ===== Content Areas ===== */
+  .fuel-management-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .fuel-management-tab-content {
+    padding: 2rem;
+  }
+  
+  .fuel-management-section-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .fuel-management-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .fuel-management-section-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  /* ===== Cards ===== */
+  .fuel-management-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+  
+  .fuel-management-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fuel-management-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .fuel-management-card-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .fuel-management-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .fuel-management-flex {
+    display: flex;
+  }
+  
+  .fuel-management-items-center {
+    align-items: center;
+  }
+  
+  .fuel-management-justify-between {
+    justify-content: space-between;
+  }
+  
+  .fuel-management-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .fuel-management-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .fuel-management-gap-4 {
+    gap: 1rem;
+  }
+  
+  .fuel-management-gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .fuel-management-grid {
+    display: grid;
+  }
+  
+  .fuel-management-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .fuel-management-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .fuel-management-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .fuel-management-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .fuel-management-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .fuel-management-md-grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .fuel-management-space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .fuel-management-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .fuel-management-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .fuel-management-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ===== Typography ===== */
+  .fuel-management-text-xs {
+    font-size: 0.75rem;
+  }
+  
+  .fuel-management-text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .fuel-management-text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .fuel-management-text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .fuel-management-font-medium {
+    font-weight: 500;
+  }
+  
+  .fuel-management-font-semibold {
+    font-weight: 600;
+  }
+  
+  .fuel-management-font-bold {
+    font-weight: 700;
+  }
+  
+  .fuel-management-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .fuel-management-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .fuel-management-text-gray-700 {
+    color: #374151;
+  }
+  
+  /* ===== Statistics Cards ===== */
+  .fuel-management-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .fuel-management-stat-icon-blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  }
+  
+  .fuel-management-stat-icon-green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+  
+  .fuel-management-stat-icon-yellow {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+  
+  .fuel-management-stat-icon-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  }
+  
+  /* ===== Progress Bar ===== */
+  .fuel-management-progress-bar {
+    width: 100%;
+    height: 0.5rem;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .fuel-management-progress-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+  }
+  
+  /* ===== Shift Indicators ===== */
+  .fuel-management-shift-indicator {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .fuel-management-shift-indicator-sm {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  /* ===== Badges ===== */
+  .fuel-management-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .fuel-management-badge-success {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .fuel-management-badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .fuel-management-badge-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .fuel-management-badge-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* ===== Calendar ===== */
+  .fuel-management-calendar {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .fuel-management-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: rgba(245, 158, 11, 0.1);
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .fuel-management-calendar-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .fuel-management-calendar-grid {
+    width: 100%;
+  }
+  
+  .fuel-management-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .fuel-management-calendar-weekday {
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+  
+  .fuel-management-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  
+  .fuel-management-calendar-day {
+    min-height: 6rem;
+    padding: 0.5rem;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+    transition: background-color 0.2s;
+  }
+  
+  .fuel-management-calendar-day:hover {
+    background: #f9fafb;
+  }
+  
+  .fuel-management-calendar-day-inactive {
+    background: #f9fafb;
+    color: #9ca3af;
+  }
+  
+  .fuel-management-calendar-day-today {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .fuel-management-calendar-day-number {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+  
+  .fuel-management-calendar-day-assignments {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  
+  .fuel-management-calendar-assignment {
+    background: #f59e0b;
+    color: white;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .fuel-management-calendar-assignment-more {
+    background: #e5e7eb;
+    color: #6b7280;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    text-align: center;
+  }
+  
+  /* ===== Table ===== */
+  .fuel-management-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .fuel-management-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  
+  .fuel-management-table th {
+    background: #f9fafb;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .fuel-management-table td {
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+  }
+  
+  .fuel-management-table tr:hover {
+    background: #f9fafb;
+  }
+  
+  /* ===== Forms ===== */
+  .fuel-management-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .fuel-management-search-container {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .fuel-management-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: #9ca3af;
+  }
+  
+  .fuel-management-search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+  }
+  
+  .fuel-management-search-input:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+  
+  .fuel-management-select {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    min-width: 150px;
+  }
+  
+  .fuel-management-select:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+  
+  .fuel-management-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+  }
+  
+  .fuel-management-input:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+  
+  .fuel-management-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    resize: vertical;
+  }
+  
+  .fuel-management-textarea:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+  
+  .fuel-management-color-input {
+    width: 3rem;
+    height: 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+  
+  .fuel-management-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* ===== Avatar ===== */
+  .fuel-management-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  
+  .fuel-management-avatar-sm {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 0.75rem;
+  }
+  
+  /* ===== Employee List ===== */
+  .fuel-management-employee-list {
+    max-height: 20rem;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: white;
+  }
+  
+  .fuel-management-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+  }
+  
+  .fuel-management-checkbox-item:hover {
+    background: #f9fafb;
+  }
+  
+  .fuel-management-checkbox-item:last-child {
+    border-bottom: none;
+  }
+  
+  .fuel-management-checkbox {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #f59e0b;
+  }
+  
+  /* ===== Modals ===== */
+  .fuel-management-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  
+  .fuel-management-modal {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .fuel-management-modal-lg {
+    max-width: 800px;
+  }
+  
+  .fuel-management-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .fuel-management-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .fuel-management-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+  }
+  
+  .fuel-management-modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  
+  .fuel-management-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .fuel-management-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .fuel-management {
+      padding: 0.5rem;
+    }
+    
+    .fuel-management-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    
+    .fuel-management-header-actions {
+      justify-content: center;
+    }
+    
+    .fuel-management-section-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .fuel-management-grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    .fuel-management-grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+    
+    .fuel-management-md-grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    .fuel-management-md-grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+    
+    .fuel-management-md-grid-cols-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .fuel-management-calendar-day {
+      min-height: 4rem;
+    }
+    
+    .fuel-management-filters {
+      flex-direction: column;
+    }
+    
+    .fuel-management-search-container {
+      min-width: auto;
+    }
+    
+    .fuel-management-modal {
+      margin: 0.5rem;
+      max-width: calc(100vw - 1rem);
+    }
+    
+    .fuel-management-tabs-list {
+      justify-content: center;
+    }
+    
+    .fuel-management-tab {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+  
+  /* ===== Print Styles ===== */
+  @media print {
+    .fuel-management {
+      background: white;
+      padding: 0;
+    }
+    
+    .fuel-management-header-actions,
+    .fuel-management-btn,
+    .fuel-management-modal-overlay {
+      display: none !important;
+    }
+    
+    .fuel-management-card {
+      break-inside: avoid;
+      box-shadow: none;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .fuel-management-table {
+      font-size: 0.875rem;
+    }
+  }
+  
