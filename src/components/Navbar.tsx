@@ -2621,7 +2621,7 @@ export function Navbar() {
                       <div className={cn(
                         "absolute top-full w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden navbar-dropdown custom-scrollbar",
                         // Smart positioning - ensure dropdown stays within screen bounds
-                        item.title === 'Dashboard' || item.title === 'Plant & Mining' || item.title === 'Sale' || item.title === 'Accounts'
+                        item.title === 'Dashboard' || item.title === 'Plant & Vehicle' || item.title === 'Sale' || item.title === 'Accounts'
                           ? "left-0"
                           : item.title === 'Inventory' || item.title === 'Machines & Vehicles' || item.title === 'HR'
                             ? "left-0"
@@ -2656,7 +2656,7 @@ export function Navbar() {
                                 !item.featured ? "col-span-12" : "col-span-9",
                               item.title === 'Inventory' && item.sections && item.sections.length === 7 ? "grid-cols-4" :
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
-                                  item.title === 'Plant & Mining' && item.sections && item.sections.length === 4 ? "grid-cols-4" :
+                                  item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 4 ? "grid-cols-4" :
                                     item.title === 'Sale' && item.sections ? "grid-cols-3" :
                                       item.title === 'Accounts' && item.sections ? "grid-cols-3" :
                                         item.title === 'HR' && item.sections ? "grid-cols-6" :

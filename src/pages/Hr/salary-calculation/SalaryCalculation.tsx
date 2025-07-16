@@ -184,7 +184,7 @@ export default function SalaryCalculation() {
                 </h3>
               </div>
               <div className="salary-card-content">
-                <div className="salary-grid salary-grid-cols-2 salary-gap-4">
+                <div className="salary-grid salary-grid-cols-3 salary-gap-4">
                   <div className="salary-form-group">
                     <label className="salary-label">Employee Code ***</label>
                     <select
@@ -303,7 +303,7 @@ export default function SalaryCalculation() {
             {/* Salary Calculation */}
             <div className="salary-grid salary-grid-cols-2 salary-gap-6">
               {/* Gross Salary & Earnings */}
-              <div className="salary-card mt-5">
+              <div className="salary-card">
                 <div className="salary-card-header">
                   <h3 className="salary-card-title">Gross Salary & Earnings</h3>
                 </div>
@@ -672,8 +672,8 @@ export default function SalaryCalculation() {
   return (
     <div className="salary-container">
       {/* Header */}
-      <div className="salary-header">
-        <div className="salary-header-content">
+      <div className="salary-header container">
+        <div className="salary-header-content ">
           <div className="salary-header-left">
             <div className="salary-icon">
               <CalculatorIcon style={{ color: 'white' }} />
@@ -683,7 +683,7 @@ export default function SalaryCalculation() {
               <p className="salary-subtitle">Employee salary calculation and management system</p>
             </div>
           </div>
-          <div className="salary-header-actions">
+          <div className="salary-header-actions" style={{ marginTop: "0px" }}>
             <button className="salary-btn salary-btn-outline salary-btn-sm">
               <DownloadIcon style={{ width: '16px', height: '16px' }} />
               Export

@@ -470,7 +470,7 @@ export default function FuelManagement() {
                 </div>
 
                 {/* Main Content */}
-                <div className="fuel-management-main">
+                <div className="fuel-management-main " style={{marginTop:"1rem"}}>
                     {/* Tab Navigation */}
                     <div className="fuel-management-tabs">
                         <div className="fuel-management-tabs-container">
@@ -514,12 +514,12 @@ export default function FuelManagement() {
                         {/* Overview Tab */}
                         {activeTab === 'overview' && (
                             <div className="fuel-management-tab-content">
-                                <div className="fuel-management-section-header">
+                                {/* <div className="fuel-management-section-header">
                                     <h2 className="fuel-management-section-title">Fuel Overview</h2>
                                     <p className="fuel-management-section-subtitle">
                                         Current fuel statistics and consumption analysis
                                     </p>
-                                </div>
+                                </div> */}
 
                                 {/* Statistics Cards */}
                                 <div className="fuel-management-grid fuel-management-grid-cols-1 fuel-management-md-grid-cols-4 fuel-management-gap-6 fuel-management-mb-6">
@@ -657,12 +657,12 @@ export default function FuelManagement() {
                         {/* Transactions Tab */}
                         {activeTab === 'transactions' && (
                             <div className="fuel-management-tab-content">
-                                <div className="fuel-management-section-header">
+                                {/* <div className="fuel-management-section-header">
                                     <h2 className="fuel-management-section-title">Fuel Transactions</h2>
                                     <p className="fuel-management-section-subtitle">
                                         View and manage fuel transactions and refueling records
                                     </p>
-                                </div>
+                                </div> */}
 
                                 {/* Filters */}
                                 <div className="fuel-management-filters">
@@ -771,12 +771,12 @@ export default function FuelManagement() {
                         {/* Inventory Tab */}
                         {activeTab === 'inventory' && (
                             <div className="fuel-management-tab-content">
-                                <div className="fuel-management-section-header">
+                                {/* <div className="fuel-management-section-header">
                                     <h2 className="fuel-management-section-title">Fuel Inventory</h2>
                                     <p className="fuel-management-section-subtitle">
                                         Monitor fuel stock levels and manage inventory
                                     </p>
-                                </div>
+                                </div> */}
 
                                 <div className="fuel-management-grid fuel-management-grid-cols-1 fuel-management-md-grid-cols-2 fuel-management-gap-6">
                                     {fuelTypes.map((fuelType) => {
@@ -863,12 +863,12 @@ export default function FuelManagement() {
                         {/* Vehicles Tab */}
                         {activeTab === 'vehicles' && (
                             <div className="fuel-management-tab-content">
-                                <div className="fuel-management-section-header">
+                                {/* <div className="fuel-management-section-header">
                                     <h2 className="fuel-management-section-title">Vehicle Fleet</h2>
                                     <p className="fuel-management-section-subtitle">
                                         Manage vehicles and their fuel consumption
                                     </p>
-                                </div>
+                                </div> */}
 
                                 {/* Vehicle Search */}
                                 <div className="fuel-management-filters">

@@ -9,8 +9,8 @@
   
   /* ===== Header ===== */
   .shift-management-header {
-    margin-bottom: 2rem;
-    margin-top: 4.50rem;
+    /* margin-bottom: 2rem; */
+    margin-top: 4.10rem;
   }
   
   .shift-management-header-content {
@@ -20,7 +20,7 @@
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 1rem;
-    padding: 1rem;
+    padding: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
@@ -57,7 +57,7 @@
   
   /* ===== Main Content ===== */
   .shift-management-main {
-    max-width: 1400px;
+    /* max-width: 1400px; */
     margin: 0 auto;
   }
   
@@ -142,7 +142,7 @@
   
   /* ===== Tabs ===== */
   .shift-management-tabs {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
   
   .shift-management-tabs-container {
@@ -204,7 +204,7 @@
   }
   
   .shift-management-tab-content {
-    padding: 2rem;
+    padding: 1rem 0.55rem 1rem;
   }
   
   .shift-management-section-header {
@@ -251,7 +251,7 @@
   }
   
   .shift-management-card-content {
-    padding: 0 1.5rem 1.5rem 1.5rem;
+    padding: 0.85rem 0.85rem 0.85rem 1.85rem;
   }
   
   .shift-management-card-title {
@@ -308,7 +308,7 @@
   
   @media (min-width: 768px) {
     .shift-management-md-grid-cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     
     .shift-management-md-grid-cols-3 {
