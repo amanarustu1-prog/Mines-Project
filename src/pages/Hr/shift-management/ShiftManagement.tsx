@@ -491,7 +491,7 @@ export default function ShiftManagement() {
                 </div>
 
                 {/* Main Content */}
-                <div className="shift-management-main">
+                <div className="shift-management-main" style={{marginTop: "1rem"}}>
                     {/* Tab Navigation */}
                     <div className="shift-management-tabs">
                         <div className="shift-management-tabs-container">
@@ -535,12 +535,12 @@ export default function ShiftManagement() {
                         {/* Overview Tab */}
                         {activeTab === 'overview' && (
                             <div className="shift-management-tab-content">
-                                <div className="shift-management-section-header">
+                                {/* <div className="shift-management-section-header">
                                     <h2 className="shift-management-section-title">Shift Overview</h2>
                                     <p className="shift-management-section-subtitle">
                                         Current shift statistics and employee distribution
                                     </p>
-                                </div>
+                                </div> */}
 
                                 {/* Statistics Cards */}
                                 <div className="shift-management-grid shift-management-grid-cols-1 shift-management-md-grid-cols-4 shift-management-gap-6 shift-management-mb-6">
@@ -897,12 +897,12 @@ export default function ShiftManagement() {
                         {/* Employees Tab */}
                         {activeTab === 'employees' && (
                             <div className="shift-management-tab-content">
-                                <div className="shift-management-section-header">
+                                {/* <div className="shift-management-section-header">
                                     <h2 className="shift-management-section-title">Employee Management</h2>
                                     <p className="shift-management-section-subtitle">
                                         View employee details and current shift assignments
                                     </p>
-                                </div>
+                                </div> */}
 
                                 {/* Search and Filter */}
                                 <div className="shift-management-filters">

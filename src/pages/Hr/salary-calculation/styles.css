@@ -10,12 +10,15 @@
   /* Header Styles */
   .salary-header {
     background: white;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 1.5rem 0;
+    margin-top: 5.40rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 1rem 0;
   }
   
   .salary-header-content {
-    max-width: 72rem;
+    /* max-width: 72rem; */
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
@@ -54,8 +57,8 @@
   }
   
   .salary-header-actions {
-    display: flex;
-    gap: 0.5rem;
+    /* display: flex; */
+    /* gap: 0.5rem; */
   }
   
   /* Main Container */

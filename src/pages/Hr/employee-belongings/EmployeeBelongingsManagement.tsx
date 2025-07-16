@@ -320,7 +320,7 @@ function EmployeeBelongingsManagement() {
     switch (activeTab) {
       case 'belongings-overview':
         return (
-          <div className="belongings-space-y-4">
+          <div className="belongings-space-y-2 " style={{ marginTop: "1rem" }}>
             {/* Belongings Summary Cards */}
             <div className="belongings-grid belongings-grid-cols-4 belongings-gap-4 belongings-mb-6">
               <div className="belongings-card">
@@ -395,7 +395,7 @@ function EmployeeBelongingsManagement() {
                   <PackageIcon style={{ color: '#2563eb' }} />
                   Employee Belongings - Current Records
                 </div>
-                <button 
+                <button
                   onClick={() => setActiveTab('add-belonging')}
                   className="belongings-btn belongings-btn-sm belongings-btn-primary"
                 >
@@ -452,7 +452,7 @@ function EmployeeBelongingsManagement() {
 
       case 'add-belonging':
         return (
-          <div className="belongings-space-y-4">
+          <div className="belongings-space-y-4" style={{ marginTop: "1rem" }}>
             <div className="belongings-card">
               <div className="belongings-card-header belongings-pb-2">
                 <div className="belongings-card-title belongings-text-sm belongings-font-medium belongings-flex belongings-items-center belongings-gap-2">
@@ -460,13 +460,13 @@ function EmployeeBelongingsManagement() {
                   HR Module:- Belongings of Employee
                 </div>
               </div>
-              <div className="belongings-card-content belongings-space-y-6">
+              <div className="belongings-card-content belongings-space-y-6" >
                 {/* Employee Selection */}
                 <div className="belongings-grid belongings-grid-cols-2 belongings-gap-6">
                   <div className="belongings-space-y-4">
                     <div>
                       <label className="belongings-label">Employee Code:-</label>
-                      <select 
+                      <select
                         value={newBelonging.empNo}
                         onChange={(e) => handleEmployeeSelect(e.target.value)}
                         className="belongings-select"
@@ -482,7 +482,7 @@ function EmployeeBelongingsManagement() {
 
                     <div>
                       <label className="belongings-label">Item Issued</label>
-                      <input 
+                      <input
                         type="text"
                         value={newBelonging.itemIssued}
                         onChange={(e) => handleInputChange('itemIssued', e.target.value)}
@@ -493,7 +493,7 @@ function EmployeeBelongingsManagement() {
 
                     <div>
                       <label className="belongings-label">Item Value</label>
-                      <input 
+                      <input
                         type="number"
                         value={newBelonging.itemValue}
                         onChange={(e) => handleInputChange('itemValue', e.target.value)}
@@ -504,7 +504,7 @@ function EmployeeBelongingsManagement() {
 
                     <div>
                       <label className="belongings-label">Remarks</label>
-                      <textarea 
+                      <textarea
                         value={newBelonging.remarks}
                         onChange={(e) => handleInputChange('remarks', e.target.value)}
                         className="belongings-textarea"
@@ -517,7 +517,7 @@ function EmployeeBelongingsManagement() {
                   <div className="belongings-space-y-4">
                     <div>
                       <label className="belongings-label">Employee Name</label>
-                      <input 
+                      <input
                         type="text"
                         value={newBelonging.name}
                         readOnly
@@ -528,7 +528,7 @@ function EmployeeBelongingsManagement() {
 
                     <div>
                       <label className="belongings-label">Issued On:-</label>
-                      <input 
+                      <input
                         type="date"
                         value={newBelonging.issuedOn}
                         onChange={(e) => handleInputChange('issuedOn', e.target.value)}
@@ -538,7 +538,7 @@ function EmployeeBelongingsManagement() {
 
                     <div>
                       <label className="belongings-label">Item Status</label>
-                      <select 
+                      <select
                         value={newBelonging.itemStatus}
                         onChange={(e) => handleInputChange('itemStatus', e.target.value)}
                         className="belongings-select"
@@ -576,7 +576,7 @@ function EmployeeBelongingsManagement() {
                 </div>
 
                 <div className="belongings-flex belongings-gap-3 belongings-mt-6 belongings-pt-4 belongings-border-t">
-                  <button 
+                  <button
                     onClick={handleSaveBelonging}
                     className="belongings-btn belongings-btn-success"
                     disabled={!newBelonging.itemIssued.trim() || !newBelonging.itemValue}
@@ -584,7 +584,7 @@ function EmployeeBelongingsManagement() {
                     <SaveIcon />
                     Save Issue Details
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('belongings-overview')}
                     className="belongings-btn belongings-btn-outline"
                   >
@@ -598,7 +598,7 @@ function EmployeeBelongingsManagement() {
 
       case 'belongings-reports':
         return (
-          <div className="belongings-space-y-4">
+          <div className="belongings-space-y-4" style={{marginTop: "1rem"}}>
             <div className="belongings-card">
               <div className="belongings-card-header belongings-pb-2">
                 <div className="belongings-card-title belongings-text-sm belongings-font-medium belongings-flex belongings-items-center belongings-gap-2">
@@ -728,7 +728,7 @@ function EmployeeBelongingsManagement() {
 
       {/* Main Container */}
       <div className="belongings-main container">
-        
+
         {/* Tab Navigation */}
         <div className="belongings-tabs">
           <div className="belongings-tabs-container">
