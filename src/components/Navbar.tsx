@@ -1254,7 +1254,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Employee',
-            href: '/workforce/shifts',
+            href: '/employee-master',
 
             icon: Clock,
             description: 'Shift schedules and planning'
@@ -1399,7 +1399,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Employee Master Report',
-            href: '/employee-master',
+            href: '/workforce/performance',
             icon: GraduationCap,
             description: 'Employee training and certifications'
           },
@@ -2363,15 +2363,18 @@ export function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isActiveLink = (href: string) => {
-    if (href === '/') {
-      return pathname === '/';
-    }
-    return pathname.startsWith(href);
+    return pathname === href;
   };
 
   const isActiveParent = (item: NavItem) => {
     if (item.href) return isActiveLink(item.href);
-    return item.children?.some(child => isActiveLink(child.href)) || false;
+    if (item.children) return item.children.some(child => isActiveLink(child.href));
+    if (item.sections) {
+      return item.sections.some(section =>
+        section.items.some(subItem => isActiveLink(subItem.href))
+      );
+    }
+    return false;
   };
 
   const handleDropdownToggle = (title: string) => {

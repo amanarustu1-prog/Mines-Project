@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-// import './styles.css';
-
 import './styles.css';
+
+// import './styles.css';
 
 // Icons as simple SVG components
 const UserIcon = ({ style }: { style?: React.CSSProperties }) => (

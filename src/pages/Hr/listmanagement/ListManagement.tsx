@@ -208,7 +208,7 @@ export default function ListManagement() {
                     <div className="list-space-y-4">
                         {/* Summary Cards */}
                         <div className="list-grid-3">
-                            <div className="list-card">
+                            <div className="list-card mb-0">
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon total">
@@ -222,7 +222,7 @@ export default function ListManagement() {
                                 </div>
                             </div>
 
-                            <div className="list-card">
+                            <div className="list-card mb-0">
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon active">
@@ -236,7 +236,7 @@ export default function ListManagement() {
                                 </div>
                             </div>
 
-                            <div className="list-card">
+                            <div className="list-card mb-0">
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -255,8 +255,8 @@ export default function ListManagement() {
                         <div className="list-card compact">
                             <div className="list-card-content">
                                 <div className="list-compact-form">
-                                    <h4 className="list-compact-title">
-                                        <Plus className="list-icon-sm" />
+                                    <h4 className="list-compact-title pt-2">
+                                        <Plus className="list-icon-sm " />
                                         Add New Item
                                     </h4>
 
@@ -309,60 +309,62 @@ export default function ListManagement() {
                         </div>
 
                         {/* Filter and Search Bar */}
-                        <div className="list-card">
-                            <div className="list-filter-bar">
-                                <div className="list-filter-section">
-                                    <div className="list-filter-group">
-                                        <label className="list-filter-label">
-                                            <Filter className="list-icon-sm" />
-                                            Status Filter
-                                        </label>
-                                        <select
-                                            value={statusFilter}
-                                            onChange={(e) => setStatusFilter(e.target.value)}
-                                            className="list-filter-select"
-                                        >
-                                            <option value="all">All Items</option>
-                                            <option value="active">Active Only</option>
-                                            <option value="inactive">Inactive Only</option>
-                                        </select>
-                                    </div>
 
-                                    <div className="list-search-group">
-                                        <label className="list-filter-label">
-                                            <Search className="list-icon-sm" />
-                                            Search
-                                        </label>
-                                        <div className="list-search-wrapper">
-                                            <Search className="list-search-icon" />
-                                            <input
-                                                type="text"
-                                                placeholder="Search by code or description..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="list-search-input"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="list-filter-actions">
-                                    <button className="list-button outline small">
-                                        <Download className="list-icon-sm" />
-                                        Export
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
 
                         {/* Items Table */}
                         <div className="list-card">
-                            <div className="list-card-header">
+                            {/* <div className="list-card-header">
                                 <h3 className="list-card-title">
                                     <List className="list-icon-sm" />
                                     Items List ({filteredData.length} items)
                                 </h3>
-                            </div>
+
+
+                                <div className="list-filter-bar">
+                                    <div className="list-filter-section">
+                                        <div className="list-filter-group">
+                                            <label className="list-filter-label">
+                                                <Filter className="list-icon-sm" />
+                                                Status Filter
+                                            </label>
+                                            <select
+                                                value={statusFilter}
+                                                onChange={(e) => setStatusFilter(e.target.value)}
+                                                className="list-filter-select"
+                                            >
+                                                <option value="all">All Items</option>
+                                                <option value="active">Active Only</option>
+                                                <option value="inactive">Inactive Only</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="list-search-group">
+                                            <label className="list-filter-label">
+                                                <Search className="list-icon-sm" />
+                                                Search
+                                            </label>
+                                            <div className="list-search-wrapper">
+                                                <Search className="list-search-icon" />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search by code or description..."
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                    className="list-search-input"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="list-filter-actions">
+                                        <button className="list-button outline small">
+                                            <Download className="list-icon-sm" />
+                                            Export
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div> */}
                             <div className="list-card-content" style={{ padding: 0 }}>
                                 <div className="list-table-container">
                                     <table className="list-table">
@@ -441,12 +443,12 @@ export default function ListManagement() {
                             <p className="list-header-subtitle">Manage master data with codes and descriptions</p>
                         </div>
                     </div>
-                    <div className="list-flex list-flex-gap-3">
+                    {/* <div className="list-flex list-flex-gap-3">
                         <button className="list-button outline small">
                             <Download className="list-icon-sm" />
                             Export All
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -454,7 +456,7 @@ export default function ListManagement() {
             <div className="list-main-container">
 
                 {/* Tab Navigation */}
-                <div className="list-tab-navigation">
+                {/* <div className="list-tab-navigation">
                     <nav className="list-tab-nav">
                         <div className="list-tab-list">
                             {tabs.map((tab) => (
@@ -469,7 +471,7 @@ export default function ListManagement() {
                             ))}
                         </div>
                     </nav>
-                </div>
+                </div> */}
 
                 {/* Content Area */}
                 {renderTabContent()}

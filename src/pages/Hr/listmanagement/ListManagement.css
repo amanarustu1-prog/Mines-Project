@@ -17,7 +17,7 @@
   .list-header-content {
     max-width: 1152px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 0.40rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -57,7 +57,8 @@
   .list-main-container {
     max-width: 1152px;
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: 1rem 0.75rem;
+
   }
   
   /* Card styles */
@@ -228,7 +229,7 @@
   /* Filter and search bar */
   .list-filter-bar {
     padding: 1rem;
-    background-color: #f9fafb;
+    /* background-color: #f9fafb; */
     border-radius: 0.5rem;
     display: flex;
     justify-content: space-between;
@@ -670,7 +671,7 @@
     }
     
     .list-header-content {
-      padding: 0.75rem;
+      padding: 0.10rem;
     }
     
     .list-card-header,

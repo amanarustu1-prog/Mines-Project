@@ -252,7 +252,7 @@ export default function AttendanceManagement() {
                 return (
                     <div className="attendance-management-space-y-4">
                         {/* Attendance Summary Cards */}
-                        <div className="attendance-management-summary-grid">
+                        <div className="attendance-management-summary-grid ">
                             <div className="attendance-management-summary-card">
                                 <div className="attendance-management-summary-content">
                                     <div className="attendance-management-summary-item">
