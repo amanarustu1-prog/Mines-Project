@@ -253,3 +253,11 @@
     border-radius: 1px;
   }
 }
+
+@media (min-width: 1024px) {
+  .container > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
