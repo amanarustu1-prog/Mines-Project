@@ -915,7 +915,8 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Fuel Issue Entry',
-            href: '/quality/testing',
+            // href: '/quality/testing',
+            href: '/fuel-management',
             icon: FlaskConical,
             description: 'Vehicle/Machine-wise'
           },
@@ -1312,7 +1313,7 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Shift Allocation',
-            href: '/workforce/performance',
+            href: '/shift-management',
             icon: TrendingUp,
             description: 'Performance reviews and metrics',
 
@@ -2368,13 +2369,7 @@ export function Navbar() {
 
   const isActiveParent = (item: NavItem) => {
     if (item.href) return isActiveLink(item.href);
-    if (item.children) return item.children.some(child => isActiveLink(child.href));
-    if (item.sections) {
-      return item.sections.some(section =>
-        section.items.some(subItem => isActiveLink(subItem.href))
-      );
-    }
-    return false;
+    return item.children?.some(child => isActiveLink(child.href)) || false;
   };
 
   const handleDropdownToggle = (title: string) => {

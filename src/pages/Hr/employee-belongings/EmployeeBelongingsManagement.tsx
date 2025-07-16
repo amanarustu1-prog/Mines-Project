@@ -727,7 +727,7 @@ function EmployeeBelongingsManagement() {
       </div>
 
       {/* Main Container */}
-      <div className="belongings-main">
+      <div className="belongings-main container">
         
         {/* Tab Navigation */}
         <div className="belongings-tabs">

@@ -675,7 +675,7 @@ export default function LeaveManagement() {
       </div>
 
       {/* Main Container */}
-      <div className="leave-management-main">
+      <div className="leave-management-main container">
         
         {/* Tab Navigation */}
         <div className="leave-management-tabs">

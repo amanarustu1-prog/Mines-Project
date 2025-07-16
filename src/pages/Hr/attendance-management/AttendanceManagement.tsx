@@ -250,7 +250,7 @@ export default function AttendanceManagement() {
         switch (activeTab) {
             case 'attendance-overview':
                 return (
-                    <div className="attendance-management-space-y-4">
+                    <div className="attendance-management-space-y-4 container ">
                         {/* Attendance Summary Cards */}
                         <div className="attendance-management-summary-grid ">
                             <div className="attendance-management-summary-card">
@@ -381,7 +381,7 @@ export default function AttendanceManagement() {
 
             case 'add-attendance':
                 return (
-                    <div className="attendance-management-space-y-4">
+                    <div className="attendance-management-space-y-4 container">
                         <div className="attendance-management-card">
                             <div className="attendance-management-card-header">
                                 <h3 className="attendance-management-card-title">
@@ -562,7 +562,7 @@ export default function AttendanceManagement() {
 
             case 'attendance-reports':
                 return (
-                    <div className="attendance-management-space-y-4">
+                    <div className="attendance-management-space-y-4 container">
                         <div className="attendance-management-card">
                             <div className="attendance-management-card-header">
                                 <h3 className="attendance-management-card-title">
@@ -649,7 +649,7 @@ export default function AttendanceManagement() {
     };
 
     return (
-        <div className="attendance-management-container">
+        <div className="attendance-management-container container">
             {/* Header */}
             <div className="attendance-management-header">
                 <div className="attendance-management-header-content">

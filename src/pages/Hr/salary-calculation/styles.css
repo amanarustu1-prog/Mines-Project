@@ -62,7 +62,7 @@
   .salary-main {
     max-width: 72rem;
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: 1rem 0rem;
   }
   
   /* Tab Navigation */
@@ -204,6 +204,7 @@
   
   .salary-card-header {
     padding: 1rem 1rem 0.5rem;
+  
   }
   
   .salary-card-title {

@@ -611,7 +611,7 @@ function EmployeeMaster() {
             </div>
 
             {/* Main Container */}
-            <div className="employee-master-main">
+            <div className="employee-master-main container">
 
                 {/* Tab Navigation */}
                 <div className="employee-master-tabs">
