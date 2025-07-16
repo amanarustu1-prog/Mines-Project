@@ -36,7 +36,7 @@ import TransportOperations from './pages/mining/Transport'
 import CrusherDailyLogs from './pages/crusher/DailyLogs'
 import CrusherUnits from './pages/crusher/Units'
 import CrusherReports from './pages/crusher/Reports'
-import LeaveType_Master from './pages/Hr/LeaveType_Master';
+// import LeaveType_Master from './pages/Hr/LeaveType_Master';
 import EmployeeMaster from './pages/Hr/employee-master/EmployeeMaster'
 import AttendanceManagement from './pages/Hr/attendance-management/AttendanceManagement'
 import LeaveManagement from './pages/Hr/leave-management/LeaveManagement'
