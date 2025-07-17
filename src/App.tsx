@@ -47,6 +47,8 @@ import FormFour from './pages/FormFour'
 import ListManagement from './pages/Hr/listmanagement/ListManagement'
 import FuelManagement from './pages/Fuel/fuel-management/FuelManagement'
 import ShiftManagement from './pages/Hr/shift-management/ShiftManagement'
+import FuelVendor from './pages/Fuel/fuel-vendor/FuelVendor'
+
 
 function App() {
   return (
@@ -106,6 +108,8 @@ function App() {
 
           {/* Fuel */}
           <Route path="/fuel-management" element={<FuelManagement />} />
+          <Route path="/fuel-stock-vendor" element={<FuelVendor />} />
+          
 
 
         </Routes>
