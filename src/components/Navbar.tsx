@@ -876,7 +876,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Fuel Stock Inward Entry',
-            href: '/quality/dashboard',
+            href: '/fuel-stock-vendor',
             icon: CheckCircle,
             description: 'Name, Logo, Address, Contact Info'
           },
@@ -1072,60 +1072,60 @@ const navigationItems: NavItem[] = [
           },
         ]
       },
-      {
-        title: 'Cruher',
-        items: [
-          {
-            title: 'Crusher Unit Setup',
-            href: '/mining/processing',
-            icon: Wrench,
-            description: 'Material processing and refinement'
-          },
-          {
-            title: 'Daily Crushing Logs',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Output Quality (Grading)',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Downtime Logs',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Power & Fuel Consumption',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Maintenance Schedule',
-            href: '/crusher/maintenance/schedule',
-            icon: Calendar,
-            description: 'Crusher maintenance planning and scheduling'
-          },
-          {
-            title: 'Preventive Maintenance',
-            href: '/crusher/maintenance/preventive',
-            icon: Shield,
-            description: 'Preventive maintenance for crusher units'
-          },
-        ]
-      },
+      // {
+      //   title: 'Cruher',
+      //   items: [
+      //     {
+      //       title: 'Crusher Unit Setup',
+      //       href: '/mining/processing',
+      //       icon: Wrench,
+      //       description: 'Material processing and refinement'
+      //     },
+      //     {
+      //       title: 'Daily Crushing Logs',
+      //       href: '/mining/transport',
+      //       icon: Truck,
+      //       description: 'Material transport and logistics'
+      //     },
+      //     {
+      //       title: 'Output Quality (Grading)',
+      //       href: '/mining/transport',
+      //       icon: Truck,
+      //       description: 'Material transport and logistics'
+      //     },
+      //     {
+      //       title: 'Downtime Logs',
+      //       href: '/mining/transport',
+      //       icon: Truck,
+      //       description: 'Material transport and logistics'
+      //     },
+      //     {
+      //       title: 'Power & Fuel Consumption',
+      //       href: '/mining/transport',
+      //       icon: Truck,
+      //       description: 'Material transport and logistics'
+      //     },
+      //     {
+      //       title: 'Maintenance Schedule',
+      //       href: '/crusher/maintenance/schedule',
+      //       icon: Calendar,
+      //       description: 'Crusher maintenance planning and scheduling'
+      //     },
+      //     {
+      //       title: 'Preventive Maintenance',
+      //       href: '/crusher/maintenance/preventive',
+      //       icon: Shield,
+      //       description: 'Preventive maintenance for crusher units'
+      //     },
+      //   ]
+      // },
 
       {
         title: 'Mining',
         items: [
           {
             title: ' Mine Sites & Pits',
-            href: '/mining/processing',
+            href: '/pit-block',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
@@ -1162,14 +1162,14 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Explosive Entry',
-            href: '/mining/transport',
+            href: '/explosive-entry',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
           {
             title: 'Explosive Used Entry',
-            href: '/mining/transport',
+            href: '/entry-explosive',
             icon: Truck,
             description: 'Material transport and logistics'
           },
@@ -1195,13 +1195,13 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Blasting Schedule & Log Summary',
-            href: '/mining/resources',
+            href: '/blast-entry',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
             title: 'Drilling Activity Log Report',
-            href: '/mining/resources',
+            href: '/drilling-entry',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
@@ -2672,7 +2672,7 @@ export function Navbar() {
                               item.title === 'Inventory' && item.sections && item.sections.length === 7 ? "grid-cols-4" :
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                   item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 4 ? "grid-cols-4" :
-                                    item.title === 'Mining' && item.sections && item.sections.length === 4 ? "grid-cols-4" :
+                                    item.title === 'Mining' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
                                       item.title === 'Sale' && item.sections ? "grid-cols-3" :
                                         item.title === 'Accounts' && item.sections ? "grid-cols-3" :
                                           item.title === 'HR' && item.sections ? "grid-cols-6" :

@@ -47,6 +47,14 @@ import FormFour from './pages/FormFour'
 import ListManagement from './pages/Hr/listmanagement/ListManagement'
 import FuelManagement from './pages/Fuel/fuel-management/FuelManagement'
 import ShiftManagement from './pages/Hr/shift-management/ShiftManagement'
+import FuelVendor from './pages/Fuel/fuel-vendor/FuelVendor'
+import PitBlock from './pages/mining/pitblock/PitBlock'
+import ExplosiveEntry from './pages/mining/explosive-entry/ExplosiveEntry'
+import EntryExplosive from './pages/mining/entry-explosive/EntryExplosive'
+import BlastEntry from './pages/mining/blast-entry/BlastEntry'
+import DrillingEntry from './pages/mining/drilling-entry/DrillingEntry'
+
+
 
 function App() {
   return (
@@ -106,6 +114,16 @@ function App() {
 
           {/* Fuel */}
           <Route path="/fuel-management" element={<FuelManagement />} />
+          <Route path="/fuel-stock-vendor" element={<FuelVendor />} />
+
+
+          {/* Mining */}
+          <Route path="/pit-block" element={<PitBlock />} />
+          <Route path="/explosive-entry" element={<ExplosiveEntry />} />
+          <Route path="/entry-explosive" element={<EntryExplosive />} />
+          <Route path="/blast-entry" element={<BlastEntry />} />
+          <Route path="/drilling-entry" element={<DrillingEntry />} />
+
 
 
         </Routes>
