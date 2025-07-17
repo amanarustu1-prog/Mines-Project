@@ -1,0 +1,791 @@
+/* ===== Drilling Entry Management Styles ===== */
+
+/* Base styles */
+.drilling-entry {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .drilling-entry-header {
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .drilling-entry-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .drilling-entry-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .drilling-entry-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .drilling-entry-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .drilling-entry-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .drilling-entry-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .drilling-entry-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* ===== Buttons ===== */
+  .drilling-entry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .drilling-entry-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .drilling-entry-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .drilling-entry-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .drilling-entry-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .drilling-entry-btn-success {
+    background: #10b981;
+    color: white;
+  }
+  
+  .drilling-entry-btn-success:hover {
+    background: #059669;
+  }
+  
+  .drilling-entry-btn-warning {
+    background: #f59e0b;
+    color: white;
+  }
+  
+  .drilling-entry-btn-warning:hover {
+    background: #d97706;
+  }
+  
+  .drilling-entry-btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+  
+  .drilling-entry-btn-danger:hover {
+    background: #b91c1c;
+  }
+  
+  .drilling-entry-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .drilling-entry-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .drilling-entry-btn-icon-danger {
+    color: #dc2626;
+  }
+  
+  .drilling-entry-btn-icon-danger:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+  }
+  
+  .drilling-entry-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .drilling-entry-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .drilling-entry-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  /* ===== Tabs ===== */
+  .drilling-entry-tabs {
+    margin-bottom: 2rem;
+  }
+  
+  .drilling-entry-tabs-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .drilling-entry-tabs-nav {
+    padding: 1rem;
+  }
+  
+  .drilling-entry-tabs-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+  
+  .drilling-entry-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  
+  .drilling-entry-tab:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+  }
+  
+  .drilling-entry-tab.active {
+    background: black;
+    color: white;
+  }
+  
+  .drilling-entry-tab-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  /* ===== Content Areas ===== */
+  .drilling-entry-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .drilling-entry-tab-content {
+    padding: 2rem;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  
+  .drilling-entry-section-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .drilling-entry-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .drilling-entry-section-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  /* ===== Cards ===== */
+  .drilling-entry-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+    overflow: hidden;
+  }
+  
+  .drilling-entry-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .drilling-entry-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+  }
+  
+  .drilling-entry-card-content {
+    padding: 1.5rem;
+  }
+  
+  .drilling-entry-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .drilling-entry-flex {
+    display: flex;
+  }
+  
+  .drilling-entry-items-center {
+    align-items: center;
+  }
+  
+  .drilling-entry-justify-between {
+    justify-content: space-between;
+  }
+  
+  .drilling-entry-gap-1 {
+    gap: 0.25rem;
+  }
+  
+  .drilling-entry-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .drilling-entry-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .drilling-entry-gap-4 {
+    gap: 1rem;
+  }
+  
+  .drilling-entry-gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .drilling-entry-grid {
+    display: grid;
+  }
+  
+  .drilling-entry-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .drilling-entry-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .drilling-entry-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .drilling-entry-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .drilling-entry-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .drilling-entry-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .drilling-entry-md-grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .drilling-entry-space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .drilling-entry-space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  .drilling-entry-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .drilling-entry-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .drilling-entry-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .drilling-entry-p-3 {
+    padding: 0.75rem;
+  }
+  
+  .drilling-entry-border {
+    border: 1px solid #e5e7eb;
+  }
+  
+  .drilling-entry-rounded {
+    border-radius: 0.375rem;
+  }
+  
+  /* ===== Typography ===== */
+  .drilling-entry-text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .drilling-entry-text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .drilling-entry-text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .drilling-entry-text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .drilling-entry-font-medium {
+    font-weight: 500;
+  }
+  
+  .drilling-entry-font-semibold {
+    font-weight: 600;
+  }
+  
+  .drilling-entry-font-bold {
+    font-weight: 700;
+  }
+  
+  .drilling-entry-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .drilling-entry-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .drilling-entry-text-gray-700 {
+    color: #374151;
+  }
+  
+  .drilling-entry-text-green-600 {
+    color: #059669;
+  }
+  
+  .drilling-entry-capitalize {
+    text-transform: capitalize;
+  }
+  
+  /* ===== Statistics Cards ===== */
+  .drilling-entry-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+  }
+  
+  .drilling-entry-stat-icon-blue {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  
+  .drilling-entry-stat-icon-green {
+    background: #d1fae5;
+    color: #059669;
+  }
+  
+  .drilling-entry-stat-icon-yellow {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  
+  .drilling-entry-stat-icon-purple {
+    background: #e0e7ff;
+    color: #7c3aed;
+  }
+  
+  .drilling-entry-stat-icon-red {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  /* ===== Form Elements ===== */
+  .drilling-entry-input,
+  .drilling-entry-select,
+  .drilling-entry-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    background: white;
+  }
+  
+  .drilling-entry-input:focus,
+  .drilling-entry-select:focus,
+  .drilling-entry-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .drilling-entry-input-readonly {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+  
+  .drilling-entry-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.375rem;
+  }
+  
+  /* ===== Form Grid ===== */
+  .drilling-entry-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .drilling-entry-form-group-full {
+    grid-column: 1 / -1;
+  }
+  
+  /* ===== Search and Filters ===== */
+  .drilling-entry-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .drilling-entry-search-container {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .drilling-entry-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: #6b7280;
+  }
+  
+  .drilling-entry-search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .drilling-entry-search-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ===== Tables ===== */
+  .drilling-entry-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .drilling-entry-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  
+  .drilling-entry-table th {
+    background: #f9fafb;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  
+  .drilling-entry-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+  }
+  
+  .drilling-entry-table tr:hover {
+    background: #f9fafb;
+  }
+  
+  .drilling-entry-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  /* ===== Badges ===== */
+  .drilling-entry-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .drilling-entry-badge-success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  
+  .drilling-entry-badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  
+  .drilling-entry-badge-error {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .drilling-entry-badge-secondary {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* ===== Modal Styles ===== */
+  .drilling-entry-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  
+  .drilling-entry-modal {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .drilling-entry-modal-lg {
+    max-width: 1000px;
+  }
+  
+  .drilling-entry-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .drilling-entry-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .drilling-entry-modal-close {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  
+  .drilling-entry-modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  
+  .drilling-entry-modal-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .drilling-entry-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Animations ===== */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .drilling-entry-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    
+    .drilling-entry-tabs-list {
+      flex-direction: column;
+    }
+    
+    .drilling-entry-tab {
+      justify-content: center;
+    }
+    
+    .drilling-entry-filters {
+      flex-direction: column;
+    }
+    
+    .drilling-entry-search-container {
+      min-width: auto;
+    }
+    
+    .drilling-entry-form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .drilling-entry-modal {
+      margin: 0;
+      height: 100vh;
+      border-radius: 0;
+    }
+    
+    .drilling-entry-table-container {
+      font-size: 0.75rem;
+    }
+    
+    .drilling-entry-table th,
+    .drilling-entry-table td {
+      padding: 0.5rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .drilling-entry {
+      padding: 0.5rem;
+    }
+    
+    .drilling-entry-tab-content {
+      padding: 1rem;
+    }
+    
+    .drilling-entry-card-content {
+      padding: 1rem;
+    }
+    
+    .drilling-entry-modal-content,
+    .drilling-entry-modal-header,
+    .drilling-entry-modal-footer {
+      padding: 1rem;
+    }
+  }
+  

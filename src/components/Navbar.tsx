@@ -1125,7 +1125,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: ' Mine Sites & Pits',
-            href: '/mining/processing',
+            href: '/pit-block',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
@@ -1162,14 +1162,14 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Explosive Entry',
-            href: '/mining/transport',
+            href: '/explosive-entry',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
           {
             title: 'Explosive Used Entry',
-            href: '/mining/transport',
+            href: '/entry-explosive',
             icon: Truck,
             description: 'Material transport and logistics'
           },
@@ -1195,13 +1195,13 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Blasting Schedule & Log Summary',
-            href: '/mining/resources',
+            href: '/blast-entry',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
             title: 'Drilling Activity Log Report',
-            href: '/mining/resources',
+            href: '/drilling-entry',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
