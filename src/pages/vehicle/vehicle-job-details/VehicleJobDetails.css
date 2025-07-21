@@ -1,0 +1,594 @@
+/* ===== Vehicle Job Details Styles ===== */
+
+/* Base styles */
+.vehicle-job-details {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .vehicle-job-details-header {
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .vehicle-job-details-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .vehicle-job-details-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .vehicle-job-details-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .vehicle-job-details-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .vehicle-job-details-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .vehicle-job-details-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .vehicle-job-details-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* ===== Buttons ===== */
+  .vehicle-job-details-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .vehicle-job-details-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .vehicle-job-details-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .vehicle-job-details-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .vehicle-job-details-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .vehicle-job-details-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .vehicle-job-details-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .vehicle-job-details-btn-icon-danger {
+    color: #dc2626;
+  }
+  
+  .vehicle-job-details-btn-icon-danger:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+  }
+  
+  .vehicle-job-details-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .vehicle-job-details-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .vehicle-job-details-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  /* ===== Content Areas ===== */
+  .vehicle-job-details-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .vehicle-job-details-tab-content {
+    padding: 2rem;
+  }
+  
+  .vehicle-job-details-section-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .vehicle-job-details-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .vehicle-job-details-section-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .vehicle-job-details-section-divider {
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .vehicle-job-details-section-divider h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+  }
+  
+  /* ===== Forms ===== */
+  .vehicle-job-details-form-section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .vehicle-job-details-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .vehicle-job-details-form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .vehicle-job-details-form-group-full {
+    grid-column: 1 / -1;
+  }
+  
+  .vehicle-job-details-form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .vehicle-job-details-form-input,
+  .vehicle-job-details-form-select,
+  .vehicle-job-details-form-textarea {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  
+  .vehicle-job-details-form-input:focus,
+  .vehicle-job-details-form-select:focus,
+  .vehicle-job-details-form-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vehicle-job-details-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+  }
+  
+  .vehicle-job-details-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Process Container ===== */
+  .vehicle-job-details-process-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .vehicle-job-details-process-container .vehicle-job-details-form-select {
+    flex: 1;
+  }
+  
+  /* ===== Process List ===== */
+  .vehicle-job-details-process-list {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .vehicle-job-details-process-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .vehicle-job-details-process-info {
+    flex: 1;
+  }
+  
+  .vehicle-job-details-process-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+  }
+  
+  .vehicle-job-details-process-description {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* ===== Cards ===== */
+  .vehicle-job-details-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+  
+  .vehicle-job-details-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vehicle-job-details-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+  }
+  
+  .vehicle-job-details-card-content {
+    padding: 1.5rem;
+  }
+  
+  .vehicle-job-details-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .vehicle-job-details-flex {
+    display: flex;
+  }
+  
+  .vehicle-job-details-items-center {
+    align-items: center;
+  }
+  
+  .vehicle-job-details-justify-between {
+    justify-content: space-between;
+  }
+  
+  .vehicle-job-details-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .vehicle-job-details-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .vehicle-job-details-gap-4 {
+    gap: 1rem;
+  }
+  
+  .vehicle-job-details-gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .vehicle-job-details-grid {
+    display: grid;
+  }
+  
+  .vehicle-job-details-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .vehicle-job-details-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .vehicle-job-details-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .vehicle-job-details-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .vehicle-job-details-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  
+  .vehicle-job-details-space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .vehicle-job-details-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .vehicle-job-details-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .vehicle-job-details-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ===== Typography ===== */
+  .vehicle-job-details-text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .vehicle-job-details-text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .vehicle-job-details-text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .vehicle-job-details-text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .vehicle-job-details-font-medium {
+    font-weight: 500;
+  }
+  
+  .vehicle-job-details-font-semibold {
+    font-weight: 600;
+  }
+  
+  .vehicle-job-details-font-bold {
+    font-weight: 700;
+  }
+  
+  .vehicle-job-details-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .vehicle-job-details-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .vehicle-job-details-text-gray-700 {
+    color: #374151;
+  }
+  
+  /* ===== Badges ===== */
+  .vehicle-job-details-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .vehicle-job-details-badge-success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  
+  .vehicle-job-details-badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  
+  .vehicle-job-details-badge-error {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .vehicle-job-details-badge-secondary {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* ===== Modals ===== */
+  .vehicle-job-details-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .vehicle-job-details-modal {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .vehicle-job-details-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+  }
+  
+  .vehicle-job-details-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .vehicle-job-details-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0.25rem;
+    line-height: 1;
+  }
+  
+  .vehicle-job-details-modal-close:hover {
+    color: #374151;
+  }
+  
+  .vehicle-job-details-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .vehicle-job-details-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .vehicle-job-details {
+      padding: 0.5rem;
+    }
+    
+    .vehicle-job-details-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .vehicle-job-details-form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .vehicle-job-details-form-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .vehicle-job-details-process-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .vehicle-job-details-process-item {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+  }
+  
+  /* ===== Print Styles ===== */
+  @media print {
+    .vehicle-job-details {
+      background: white;
+      padding: 0;
+    }
+    
+    .vehicle-job-details-header-actions,
+    .vehicle-job-details-btn {
+      display: none;
+    }
+    
+    .vehicle-job-details-content {
+      box-shadow: none;
+      border: none;
+    }
+  }
+  

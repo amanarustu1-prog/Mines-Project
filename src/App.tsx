@@ -53,6 +53,16 @@ import ExplosiveEntry from './pages/mining/explosive-entry/ExplosiveEntry'
 import EntryExplosive from './pages/mining/entry-explosive/EntryExplosive'
 import BlastEntry from './pages/mining/blast-entry/BlastEntry'
 import DrillingEntry from './pages/mining/drilling-entry/DrillingEntry'
+import DailyCheckList from './pages/vehicle/daily-check-list/DailyCheckList'
+import DailyCheckListMaster from './pages/vehicle/daily-check-list-master/DailyCheckListMaster'
+import VehicleMasterEntry from './pages/vehicle/vehicle-master-entry/VehicleMasterEntry'
+import VehicleJobCompletion from './pages/vehicle/vehicle-job-completion/VehicleJobCompletion'
+import VehicleJobDetails from './pages/vehicle/vehicle-job-details/VehicleJobDetails'
+import VehicleMasterDetails from './pages/vehicle/vehicle-master-details/VehicleMasterDetails'
+import VehicleRenewalDetails from './pages/vehicle/vehicle-renewal-details/VehicleRenewalDetails'
+import VehicleServiceType from './pages/vehicle/vehicle-service-type/VehicleServiceType'
+import VehicleServiceEntry from './pages/vehicle/vehicle-service-entry/VehicleServiceEntry'
+import DailyRunning from './pages/vehicle/daily-running/DailyRunning'
 
 
 
@@ -123,6 +133,20 @@ function App() {
           <Route path="/entry-explosive" element={<EntryExplosive />} />
           <Route path="/blast-entry" element={<BlastEntry />} />
           <Route path="/drilling-entry" element={<DrillingEntry />} />
+
+          {/* vehicle */}
+          <Route path="/daily-check-list" element={<DailyCheckList />} />
+          <Route path="/daily-check-list-master" element={<DailyCheckListMaster />} />
+          {/* <Route path="/daily-check-list-master-1" element={<DailyCheckListMaster1 />} /> */}
+          {/* <Route path="/daily-check-list-master-2" element={<DailyCheckListMaster2 />} /> */}
+          <Route path="/vehicle-master-entry" element={<VehicleMasterEntry />} />
+          <Route path="/vehicle-job-completion" element={<VehicleJobCompletion />} />
+          <Route path="/vehicle-job-details" element={<VehicleJobDetails />} />
+          <Route path="/vehicle-master-details" element={<VehicleMasterDetails />} />
+          <Route path="/vehicle-renewal-details" element={<VehicleRenewalDetails />} />
+          <Route path="/vehicle-service-type" element={<VehicleServiceType />} />
+          <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
+          <Route path="/daily-running" element={<DailyRunning />} />
 
 
 

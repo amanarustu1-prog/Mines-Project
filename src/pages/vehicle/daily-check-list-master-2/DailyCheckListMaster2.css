@@ -1,0 +1,566 @@
+/* ===== Daily Check List Master 2 Styles ===== */
+
+/* Base styles */
+.daily-check-list-master-2 {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .daily-check-list-master-2-header {
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .daily-check-list-master-2-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-check-list-master-2-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .daily-check-list-master-2-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .daily-check-list-master-2-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-check-list-master-2-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-master-2-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .daily-check-list-master-2-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .daily-check-list-master-2-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-check-list-master-2-tab-content {
+    padding: 2rem;
+  }
+  
+  /* ===== Buttons ===== */
+  .daily-check-list-master-2-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .daily-check-list-master-2-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .daily-check-list-master-2-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .daily-check-list-master-2-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .daily-check-list-master-2-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .daily-check-list-master-2-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-master-2-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .daily-check-list-master-2-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .daily-check-list-master-2-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .daily-check-list-master-2-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  /* ===== Form Styles ===== */
+  .daily-check-list-master-2-form-section {
+    margin-bottom: 2rem;
+  }
+  
+  .daily-check-list-master-2-form-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .daily-check-list-master-2-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .daily-check-list-master-2-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .daily-check-list-master-2-label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-master-2-input {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    background: white;
+  }
+  
+  .daily-check-list-master-2-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-master-2-select {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-master-2-select:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-master-2-textarea {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: white;
+  }
+  
+  .daily-check-list-master-2-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ===== Form Actions ===== */
+  .daily-check-list-master-2-form-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Equipment List ===== */
+  .daily-check-list-master-2-equipment-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .daily-check-list-master-2-equipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .daily-check-list-master-2-equipment-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-check-list-master-2-equipment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .daily-check-list-master-2-equipment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-master-2-equipment-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: black;
+  }
+  
+  .daily-check-list-master-2-equipment-bullet {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: black;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .daily-check-list-master-2-equipment-name {
+    font-weight: 500;
+    color: #374151;
+    flex: 1;
+  }
+  
+  .daily-check-list-master-2-equipment-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  /* ===== Task/Frequency Section ===== */
+  .daily-check-list-master-2-task-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .daily-check-list-master-2-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .daily-check-list-master-2-task-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-check-list-master-2-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .daily-check-list-master-2-task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-master-2-task-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: black;
+  }
+  
+  .daily-check-list-master-2-task-bullet {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: black;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .daily-check-list-master-2-task-name {
+    font-weight: 500;
+    color: #374151;
+    flex: 1;
+  }
+  
+  .daily-check-list-master-2-task-frequency {
+    background: rgba(0, 0, 0, 0.1);
+    color: #374151;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .daily-check-list-master-2-task-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  /* ===== Cards ===== */
+  .daily-check-list-master-2-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-master-2-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-master-2-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .daily-check-list-master-2-card-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .daily-check-list-master-2-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .daily-check-list-master-2-flex {
+    display: flex;
+  }
+  
+  .daily-check-list-master-2-items-center {
+    align-items: center;
+  }
+  
+  .daily-check-list-master-2-justify-between {
+    justify-content: space-between;
+  }
+  
+  .daily-check-list-master-2-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .daily-check-list-master-2-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .daily-check-list-master-2-gap-4 {
+    gap: 1rem;
+  }
+  
+  .daily-check-list-master-2-gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .daily-check-list-master-2-grid {
+    display: grid;
+  }
+  
+  .daily-check-list-master-2-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .daily-check-list-master-2-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .daily-check-list-master-2-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .daily-check-list-master-2-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .daily-check-list-master-2-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .daily-check-list-master-2-md-grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .daily-check-list-master-2-space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .daily-check-list-master-2-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .daily-check-list-master-2-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .daily-check-list-master-2-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ===== Typography ===== */
+  .daily-check-list-master-2-text-xs {
+    font-size: 0.75rem;
+  }
+  
+  .daily-check-list-master-2-text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-master-2-text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .daily-check-list-master-2-text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .daily-check-list-master-2-font-medium {
+    font-weight: 500;
+  }
+  
+  .daily-check-list-master-2-font-semibold {
+    font-weight: 600;
+  }
+  
+  .daily-check-list-master-2-font-bold {
+    font-weight: 700;
+  }
+  
+  .daily-check-list-master-2-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .daily-check-list-master-2-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .daily-check-list-master-2-text-gray-700 {
+    color: #374151;
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .daily-check-list-master-2-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .daily-check-list-master-2-header-actions {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .daily-check-list-master-2-form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .daily-check-list-master-2-form-actions {
+      flex-direction: column;
+    }
+    
+    .daily-check-list-master-2-equipment-actions,
+    .daily-check-list-master-2-task-actions {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+  
+  /* ===== Print Styles ===== */
+  @media print {
+    .daily-check-list-master-2 {
+      background: white;
+      padding: 0;
+    }
+    
+    .daily-check-list-master-2-header-actions,
+    .daily-check-list-master-2-form-actions {
+      display: none;
+    }
+    
+    .daily-check-list-master-2-content {
+      box-shadow: none;
+      border: 1px solid #e5e7eb;
+    }
+  }
+  
