@@ -239,7 +239,7 @@ const navigationItems: NavItem[] = [
 
 
   {
-    title: 'Sale',
+    title: 'Sale & Purchase',
     icon: Factory,
     sections: [
       {
@@ -278,7 +278,7 @@ const navigationItems: NavItem[] = [
         ]
       },
       {
-        title: 'Entries',
+        title: 'Sale',
         items: [
           {
             title: 'Create Challan',
@@ -304,32 +304,106 @@ const navigationItems: NavItem[] = [
             icon: Truck,
             description: 'Material transport and logistics'
           },
+
+           {
+            title: 'Extra TP',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'Scrape GST Bill',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+
         ]
       },
+
+{
+        title: 'Purchase',
+        items: [
+          {
+            title: 'Puchase',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Purchase with Ravanna',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Lease wise Purchase',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          
+        ]
+      },
+
+      {
+        title: 'Setting',
+        items: [
+          {
+            title: 'Challan setting',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Party Rate',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Merge Party',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          
+        ]
+      },
+
+
       {
         title: 'REPORTS',
         items: [
           {
-            title: 'Site Planning',
+            title: 'Challan Report',
             href: '/mining/planning',
             icon: MapPin,
-            description: 'Mine site planning and development',
-            badge: 'New'
+            description: 'Mine site planning and development'
+            
           },
           {
-            title: 'Material Extraction Report',
+            title: 'Bill Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
-            title: 'Blasting Schedule & Log Summary',
+            title: 'Lease Wise Purchase Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
-            title: 'Drilling Activity Log Report',
+            title: 'Purchase Report',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+           {
+            title: 'Party wise Sale Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
@@ -2634,7 +2708,7 @@ export function Navbar() {
                       <div className={cn(
                         "absolute top-full w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden navbar-dropdown custom-scrollbar",
                         // Smart positioning - ensure dropdown stays within screen bounds
-                        item.title === 'Dashboard' || item.title === 'Plant & Vehicle' || item.title === 'Sale' || item.title === 'Accounts'
+                        item.title === 'Dashboard' || item.title === 'Plant & Vehicle' || item.title === 'Sale & Purchase' || item.title === 'Accounts'
                           ? "left-0"
                           : item.title === 'Inventory' || item.title === 'Machines & Vehicles' || item.title === 'HR'
                             ? "left-0"
@@ -2671,7 +2745,7 @@ export function Navbar() {
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                   item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                     item.title === 'Mining' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
-                                      item.title === 'Sale' && item.sections ? "grid-cols-3" :
+                                      item.title === 'Sale & Purchase' && item.sections ? "grid-cols-5" :
                                         item.title === 'Accounts' && item.sections ? "grid-cols-3" :
                                           item.title === 'HR' && item.sections ? "grid-cols-6" :
                                             item.title === 'Machines & Vehicles' && item.sections ? "grid-cols-5" :
@@ -2690,7 +2764,7 @@ export function Navbar() {
                                 <div key={idx} className="space-y-3">
                                   <h4 className={cn(
                                     "text-sm font-semibold text-gray-700 uppercase tracking-wide border-b-2 border-blue-100 pb-2 mb-1",
-                                    (item.title === 'Inventory' || item.title === 'Dashboard' || item.title === 'Mining' || item.title === 'Sale' || item.title === 'Accounts' || item.title === 'Plant & Vehicle' || item.title === 'HR' || item.title === 'Workforce' || item.title === 'Safety & Legal' || item.title === 'Reports' || item.title === 'Setting' || item.title === 'Fuel' || item.title === 'Accounts') && "text-sm font-bold text-blue-800 border-b-2 border-blue-200"
+                                    (item.title === 'Inventory' || item.title === 'Dashboard' || item.title === 'Mining' || item.title === 'Sale & Purchase' || item.title === 'Accounts' || item.title === 'Plant & Vehicle' || item.title === 'HR' || item.title === 'Workforce' || item.title === 'Safety & Legal' || item.title === 'Reports' || item.title === 'Setting' || item.title === 'Fuel' || item.title === 'Accounts') && "text-sm font-bold text-blue-800 border-b-2 border-blue-200"
                                   )}>
                                     {section.title}
                                   </h4>
