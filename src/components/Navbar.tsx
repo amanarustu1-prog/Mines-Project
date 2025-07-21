@@ -304,6 +304,22 @@ const navigationItems: NavItem[] = [
             icon: Truck,
             description: 'Material transport and logistics'
           },
+
+           {
+            title: 'Extra TP',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'Scrape GST Bill',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+
         ]
       },
 
@@ -333,29 +349,61 @@ const navigationItems: NavItem[] = [
       },
 
       {
+        title: 'Setting',
+        items: [
+          {
+            title: 'Challan setting',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Party Rate',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Merge Party',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          
+        ]
+      },
+
+
+      {
         title: 'REPORTS',
         items: [
           {
-            title: 'Site Planning',
+            title: 'Challan Report',
             href: '/mining/planning',
             icon: MapPin,
-            description: 'Mine site planning and development',
-            badge: 'New'
+            description: 'Mine site planning and development'
+            
           },
           {
-            title: 'Material Extraction Report',
+            title: 'Bill Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
-            title: 'Blasting Schedule & Log Summary',
+            title: 'Lease Wise Purchase Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
-            title: 'Drilling Activity Log Report',
+            title: 'Purchase Report',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+           {
+            title: 'Party wise Sale Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
@@ -2668,7 +2716,7 @@ export function Navbar() {
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                   item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                     item.title === 'Mining' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
-                                      item.title === 'Sale & Purchase' && item.sections ? "grid-cols-4" :
+                                      item.title === 'Sale & Purchase' && item.sections ? "grid-cols-5" :
                                         item.title === 'Accounts' && item.sections ? "grid-cols-3" :
                                           item.title === 'HR' && item.sections ? "grid-cols-6" :
                                             item.title === 'Machines & Vehicles' && item.sections ? "grid-cols-5" :
