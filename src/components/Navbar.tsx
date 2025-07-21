@@ -691,180 +691,116 @@ const navigationItems: NavItem[] = [
   {
     title: 'Plant & Vehicle',
     icon: Factory,
-    // sections: [
-    //   {
-    //     title: 'MASTER TABLES',
-    //     items: [
-    //       {
-    //         title: 'Mines & Locations Master',
-    //         href: '/mining/extraction',
-    //         icon: Pickaxe,
-    //         description: 'Ore extraction operations and planning'
-    //       },
-    //       {
-    //         title: 'Blasting Zone Master',
-    //         href: '/mining/drilling',
-    //         icon: Drill,
-    //         description: 'Drilling operations and site management'
-    //       },
-    //       {
-    //         title: 'Permit & Lease Master',
-    //         href: '/mining/drilling',
-    //         icon: Drill,
-    //         description: 'Drilling operations and site management'
-    //       },
-    //       {
-    //         title: 'Crusher Unit Master',
-    //         href: '/mining/drilling',
-    //         icon: Drill,
-    //         description: 'Drilling operations and site management'
-    //       },
-    //       {
-    //         title: 'Explosive Type',
-    //         href: '/mining/drilling',
-    //         icon: Drill,
-    //         description: 'Drilling operations and site management'
-    //       },
-    //     ]
-    //   },
-    //   {
-    //     title: 'Cruher',
-    //     items: [
-    //       {
-    //         title: 'Crusher Unit Setup',
-    //         href: '/mining/processing',
-    //         icon: Wrench,
-    //         description: 'Material processing and refinement'
-    //       },
-    //       {
-    //         title: 'Daily Crushing Logs',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Output Quality (Grading)',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Downtime Logs',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Power & Fuel Consumption',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Maintenance Schedule',
-    //         href: '/crusher/maintenance/schedule',
-    //         icon: Calendar,
-    //         description: 'Crusher maintenance planning and scheduling'
-    //       },
-    //       {
-    //         title: 'Preventive Maintenance',
-    //         href: '/crusher/maintenance/preventive',
-    //         icon: Shield,
-    //         description: 'Preventive maintenance for crusher units'
-    //       },
-    //     ]
-    //   },
+    sections: [
+      {
+        title: 'MASTER TABLES',
+        items: [
+          {
+            title: 'Check List',
+            href: '/mining/extraction',
+            icon: Pickaxe,
+            description: 'Ore extraction operations and planning'
+          },
+          {
+            title: 'Grpwise CheckList',
+            href: '/mining/drilling',
+            icon: Drill,
+            description: 'Drilling operations and site management'
+          },
+          {
+            title: 'Equipment/Vehicle Master',
+            href: '/mining/drilling',
+            icon: Drill,
+            description: 'Drilling operations and site management'
+          },
+          {
+            title: 'Process Master',
+            href: '/mining/drilling',
+            icon: Drill,
+            description: 'Drilling operations and site management'
+          },
 
-    //   {
-    //     title: 'Mining',
-    //     items: [
-    //       {
-    //         title: ' Mine Sites & Pits',
-    //         href: '/mining/processing',
-    //         icon: Wrench,
-    //         description: 'Material processing and refinement'
-    //       },
-    //       {
-    //         title: 'Blast Entry',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Blasting Schedules',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Drilling Logs',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Raw Material Loading',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //       {
-    //         title: 'Safety & Compliance Logs',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
+        ]
+      },
+      {
+        title: 'Tram',
+        items: [
+          {
+            title: 'Enter Details- Check List',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Daily Running',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Job Completion',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Job Card prep',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
 
-    //       {
-    //         title: 'Explosive Entry',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-
-    //       {
-    //         title: 'Explosive Used Entry',
-    //         href: '/mining/transport',
-    //         icon: Truck,
-    //         description: 'Material transport and logistics'
-    //       },
-    //     ]
-    //   },
+          {
+            title: 'Maintenance Dates',
+            href: '/crusher/maintenance/schedule',
+            icon: Calendar,
+            description: 'Crusher maintenance planning and scheduling'
+          },
+          {
+            title: 'Vehicle Policy Udate',
+            href: '/crusher/maintenance/preventive',
+            icon: Shield,
+            description: 'Preventive maintenance for crusher units'
+          },
+        ]
+      },
 
 
-    //   {
-    //     title: 'REPORTS',
-    //     items: [
-    //       {
-    //         title: 'Site Planning',
-    //         href: '/mining/planning',
-    //         icon: MapPin,
-    //         description: 'Mine site planning and development',
-    //         badge: 'New'
-    //       },
-    //       {
-    //         title: 'Material Extraction Report',
-    //         href: '/mining/resources',
-    //         icon: Target,
-    //         description: 'Resource estimation and modeling'
-    //       },
-    //       {
-    //         title: 'Blasting Schedule & Log Summary',
-    //         href: '/mining/resources',
-    //         icon: Target,
-    //         description: 'Resource estimation and modeling'
-    //       },
-    //       {
-    //         title: 'Drilling Activity Log Report',
-    //         href: '/mining/resources',
-    //         icon: Target,
-    //         description: 'Resource estimation and modeling'
-    //       },
-    //     ]
-    //   },
 
 
-    // ]
+      {
+        title: 'REPORTS',
+        items: [
+          // {
+          //   title: 'Site Planning',
+          //   href: '/mining/planning',
+          //   icon: MapPin,
+          //   description: 'Mine site planning and development',
+          //   badge: 'New'
+          // },
+          // {
+          //   title: 'Material Extraction Report',
+          //   href: '/mining/resources',
+          //   icon: Target,
+          //   description: 'Resource estimation and modeling'
+          // },
+          // {
+          //   title: 'Blasting Schedule & Log Summary',
+          //   href: '/mining/resources',
+          //   icon: Target,
+          //   description: 'Resource estimation and modeling'
+          // },
+          // {
+          //   title: 'Drilling Activity Log Report',
+          //   href: '/mining/resources',
+          //   icon: Target,
+          //   description: 'Resource estimation and modeling'
+          // },
+        ]
+      },
+
+
+    ]
   },
 
   {
@@ -2671,7 +2607,7 @@ export function Navbar() {
                                 !item.featured ? "col-span-12" : "col-span-9",
                               item.title === 'Inventory' && item.sections && item.sections.length === 7 ? "grid-cols-4" :
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
-                                  item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 4 ? "grid-cols-4" :
+                                  item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
                                     item.title === 'Mining' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
                                       item.title === 'Sale' && item.sections ? "grid-cols-3" :
                                         item.title === 'Accounts' && item.sections ? "grid-cols-3" :
@@ -2697,7 +2633,7 @@ export function Navbar() {
                                     {section.title}
                                   </h4>
                                   <div className="space-y-1.5">
-                                    {section.items.map((subItem) => (
+                                    {section?.items?.map((subItem) => (
                                       <Link
                                         key={subItem.href}
                                         to={subItem.href}
