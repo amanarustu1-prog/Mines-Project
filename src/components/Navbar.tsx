@@ -319,6 +319,20 @@ const navigationItems: NavItem[] = [
             description: 'Material transport and logistics'
           },
 
+           {
+            title: 'E-Invoice',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'E-Way Bill',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
 
         ]
       },
@@ -1891,6 +1905,20 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Shift Timing',
+            href: '/quality/trends',
+            icon: TrendingUp,
+            description: 'Historical quality data and trends'
+          },
+
+            {
+            title: 'E-Invoice Detail',
+            href: '/quality/trends',
+            icon: TrendingUp,
+            description: 'Historical quality data and trends'
+          },
+
+            {
+            title: 'E-Way Bill Detail',
             href: '/quality/trends',
             icon: TrendingUp,
             description: 'Historical quality data and trends'
