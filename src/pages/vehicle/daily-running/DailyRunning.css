@@ -1,0 +1,834 @@
+/* ===== Daily Running Entry Styles ===== */
+
+/* Base styles */
+.daily-running {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .daily-running-header {
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .daily-running-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-running-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .daily-running-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .daily-running-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-running-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .daily-running-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* ===== Buttons ===== */
+  .daily-running-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .daily-running-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .daily-running-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .daily-running-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .daily-running-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .daily-running-btn-success {
+    background: #10b981;
+    color: white;
+  }
+  
+  .daily-running-btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+  
+  .daily-running-btn-warning {
+    background: #f59e0b;
+    color: white;
+  }
+  
+  .daily-running-btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+  }
+  
+  .daily-running-btn-danger {
+    background: #ef4444;
+    color: white;
+  }
+  
+  .daily-running-btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+  }
+  
+  .daily-running-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .daily-running-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .daily-running-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .daily-running-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .daily-running-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  /* ===== Tabs ===== */
+  .daily-running-tabs {
+    margin-bottom: 2rem;
+  }
+  
+  .daily-running-tabs-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-running-tabs-nav {
+    padding: 1rem;
+  }
+  
+  .daily-running-tabs-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+  
+  .daily-running-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  
+  .daily-running-tab:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+  }
+  
+  .daily-running-tab.active {
+    background: black;
+    color: white;
+  }
+  
+  .daily-running-tab-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  /* ===== Content Areas ===== */
+  .daily-running-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-running-tab-content {
+    padding: 2rem;
+  }
+  
+  .daily-running-section-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .daily-running-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-running-section-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  /* ===== Cards ===== */
+  .daily-running-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+  
+  .daily-running-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-running-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .daily-running-card-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .daily-running-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Forms ===== */
+  .daily-running-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .daily-running-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .daily-running-form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .daily-running-form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .daily-running-form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .daily-running-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .daily-running-form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+  }
+  
+  .daily-running-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  .daily-running-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-running-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-select:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-running-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .daily-running-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-running-checkbox {
+    width: 1rem;
+    height: 1rem;
+    accent-color: black;
+  }
+  
+  .daily-running-radio {
+    width: 1rem;
+    height: 1rem;
+    accent-color: black;
+  }
+  
+  .daily-running-radio-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .daily-running-radio-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .daily-running-flex {
+    display: flex;
+  }
+  
+  .daily-running-items-center {
+    align-items: center;
+  }
+  
+  .daily-running-items-end {
+    align-items: flex-end;
+  }
+  
+  .daily-running-justify-between {
+    justify-content: space-between;
+  }
+  
+  .daily-running-justify-center {
+    justify-content: center;
+  }
+  
+  .daily-running-gap-1 {
+    gap: 0.25rem;
+  }
+  
+  .daily-running-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .daily-running-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .daily-running-gap-4 {
+    gap: 1rem;
+  }
+  
+  .daily-running-gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .daily-running-grid {
+    display: grid;
+  }
+  
+  .daily-running-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .daily-running-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .daily-running-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .daily-running-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .daily-running-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .daily-running-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .daily-running-md-grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .daily-running-space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .daily-running-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .daily-running-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .daily-running-mb-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .daily-running-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .daily-running-ml-2 {
+    margin-left: 0.5rem;
+  }
+  
+  .daily-running-mr-2 {
+    margin-right: 0.5rem;
+  }
+  
+  .daily-running-p-4 {
+    padding: 1rem;
+  }
+  
+  .daily-running-px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .daily-running-py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* ===== Typography ===== */
+  .daily-running-text-xs {
+    font-size: 0.75rem;
+  }
+  
+  .daily-running-text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-text-base {
+    font-size: 1rem;
+  }
+  
+  .daily-running-text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .daily-running-text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .daily-running-text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .daily-running-font-medium {
+    font-weight: 500;
+  }
+  
+  .daily-running-font-semibold {
+    font-weight: 600;
+  }
+  
+  .daily-running-font-bold {
+    font-weight: 700;
+  }
+  
+  .daily-running-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .daily-running-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .daily-running-text-gray-700 {
+    color: #374151;
+  }
+  
+  .daily-running-text-gray-900 {
+    color: #111827;
+  }
+  
+  .daily-running-text-green-600 {
+    color: #059669;
+  }
+  
+  .daily-running-text-red-600 {
+    color: #dc2626;
+  }
+  
+  .daily-running-text-blue-600 {
+    color: #2563eb;
+  }
+  
+  /* ===== Status Indicators ===== */
+  .daily-running-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .daily-running-status-running {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .daily-running-status-idle {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .daily-running-status-breakdown {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  
+  /* ===== Table ===== */
+  .daily-running-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .daily-running-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  
+  .daily-running-table th {
+    background: #f9fafb;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-table td {
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-table tr:hover {
+    background: #f9fafb;
+  }
+  
+  .daily-running-table-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  /* ===== Modals ===== */
+  .daily-running-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .daily-running-modal {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+  }
+  
+  .daily-running-modal-lg {
+    max-width: 800px;
+  }
+  
+  .daily-running-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .daily-running-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-running-modal-close {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: all 0.2s;
+  }
+  
+  .daily-running-modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  
+  .daily-running-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .daily-running-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Filters ===== */
+  .daily-running-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .daily-running-search-container {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .daily-running-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: #9ca3af;
+  }
+  
+  .daily-running-search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+  }
+  
+  .daily-running-search-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .daily-running-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .daily-running-header-actions {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .daily-running-form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .daily-running-form-grid-2,
+    .daily-running-form-grid-3,
+    .daily-running-form-grid-4 {
+      grid-template-columns: 1fr;
+    }
+    
+    .daily-running-tabs-list {
+      flex-direction: column;
+    }
+    
+    .daily-running-tab {
+      justify-content: center;
+    }
+    
+    .daily-running-modal {
+      margin: 1rem;
+      width: calc(100% - 2rem);
+    }
+    
+    .daily-running-filters {
+      flex-direction: column;
+    }
+    
+    .daily-running-search-container {
+      min-width: auto;
+    }
+  }
+  
+  /* ===== Print Styles ===== */
+  @media print {
+    .daily-running-header-actions,
+    .daily-running-tabs-nav,
+    .daily-running-modal-overlay {
+      display: none;
+    }
+    
+    .daily-running {
+      background: white;
+      padding: 0;
+    }
+    
+    .daily-running-card {
+      box-shadow: none;
+      border: 1px solid #e5e7eb;
+    }
+  }
+  

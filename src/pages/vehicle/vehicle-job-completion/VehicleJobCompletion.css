@@ -1,0 +1,501 @@
+/* ===== Vehicle Job Completion Styles ===== */
+
+/* Base styles */
+.vehicle-job-completion {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .vehicle-job-completion-header {
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .vehicle-job-completion-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .vehicle-job-completion-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .vehicle-job-completion-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .vehicle-job-completion-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .vehicle-job-completion-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .vehicle-job-completion-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .vehicle-job-completion-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .vehicle-job-completion-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .vehicle-job-completion-tab-content {
+    padding: 2rem;
+  }
+  
+  /* ===== Buttons ===== */
+  .vehicle-job-completion-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .vehicle-job-completion-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .vehicle-job-completion-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .vehicle-job-completion-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .vehicle-job-completion-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .vehicle-job-completion-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .vehicle-job-completion-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .vehicle-job-completion-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+  }
+  
+  /* ===== Content Areas ===== */
+  .vehicle-job-completion-section-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .vehicle-job-completion-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .vehicle-job-completion-section-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .vehicle-job-completion-section-divider {
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .vehicle-job-completion-section-divider h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+  }
+  
+  /* ===== Job Details Display ===== */
+  .vehicle-job-completion-job-details {
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .vehicle-job-completion-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .vehicle-job-completion-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .vehicle-job-completion-detail-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .vehicle-job-completion-detail-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  
+  /* ===== Forms ===== */
+  .vehicle-job-completion-form-section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .vehicle-job-completion-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .vehicle-job-completion-form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .vehicle-job-completion-form-group-full {
+    grid-column: 1 / -1;
+  }
+  
+  .vehicle-job-completion-form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .vehicle-job-completion-form-input,
+  .vehicle-job-completion-form-select,
+  .vehicle-job-completion-form-textarea {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  
+  .vehicle-job-completion-form-input:focus,
+  .vehicle-job-completion-form-select:focus,
+  .vehicle-job-completion-form-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vehicle-job-completion-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+  }
+  
+  .vehicle-job-completion-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Cards ===== */
+  .vehicle-job-completion-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+  
+  .vehicle-job-completion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vehicle-job-completion-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+  }
+  
+  .vehicle-job-completion-card-content {
+    padding: 1.5rem;
+  }
+  
+  .vehicle-job-completion-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .vehicle-job-completion-flex {
+    display: flex;
+  }
+  
+  .vehicle-job-completion-items-center {
+    align-items: center;
+  }
+  
+  .vehicle-job-completion-justify-between {
+    justify-content: space-between;
+  }
+  
+  .vehicle-job-completion-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .vehicle-job-completion-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .vehicle-job-completion-gap-4 {
+    gap: 1rem;
+  }
+  
+  .vehicle-job-completion-gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .vehicle-job-completion-grid {
+    display: grid;
+  }
+  
+  .vehicle-job-completion-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .vehicle-job-completion-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .vehicle-job-completion-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .vehicle-job-completion-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .vehicle-job-completion-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  
+  .vehicle-job-completion-space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .vehicle-job-completion-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .vehicle-job-completion-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .vehicle-job-completion-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ===== Typography ===== */
+  .vehicle-job-completion-text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .vehicle-job-completion-text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .vehicle-job-completion-text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .vehicle-job-completion-text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .vehicle-job-completion-font-medium {
+    font-weight: 500;
+  }
+  
+  .vehicle-job-completion-font-semibold {
+    font-weight: 600;
+  }
+  
+  .vehicle-job-completion-font-bold {
+    font-weight: 700;
+  }
+  
+  .vehicle-job-completion-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .vehicle-job-completion-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .vehicle-job-completion-text-gray-700 {
+    color: #374151;
+  }
+  
+  /* ===== Badges ===== */
+  .vehicle-job-completion-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .vehicle-job-completion-badge-success {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .vehicle-job-completion-badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .vehicle-job-completion-badge-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .vehicle-job-completion-badge-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .vehicle-job-completion {
+      padding: 0.5rem;
+    }
+    
+    .vehicle-job-completion-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .vehicle-job-completion-tab-content {
+      padding: 1rem;
+    }
+    
+    .vehicle-job-completion-form-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .vehicle-job-completion-details-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .vehicle-job-completion-form-actions {
+      flex-direction: column;
+    }
+    
+    .vehicle-job-completion-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* ===== Print Styles ===== */
+  @media print {
+    .vehicle-job-completion {
+      background: white;
+      padding: 0;
+    }
+    
+    .vehicle-job-completion-header-actions,
+    .vehicle-job-completion-form-actions {
+      display: none;
+    }
+    
+    .vehicle-job-completion-content {
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+  }
+  

@@ -1,0 +1,627 @@
+/* ===== Daily Check List Styles ===== */
+
+/* Base styles */
+.daily-check-list {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+  }
+  
+  /* ===== Header ===== */
+  .daily-check-list-header {
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .daily-check-list-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-check-list-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .daily-check-list-header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+  }
+  
+  .daily-check-list-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-check-list-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  /* ===== Main Content ===== */
+  .daily-check-list-main {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* ===== Buttons ===== */
+  .daily-check-list-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .daily-check-list-btn-primary {
+    background: black;
+    color: white;
+  }
+  
+  .daily-check-list-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .daily-check-list-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .daily-check-list-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .daily-check-list-btn-success {
+    background: #10b981;
+    color: white;
+  }
+  
+  .daily-check-list-btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+  
+  .daily-check-list-btn-warning {
+    background: #f59e0b;
+    color: white;
+  }
+  
+  .daily-check-list-btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+  }
+  
+  .daily-check-list-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+  }
+  
+  .daily-check-list-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ===== Icons ===== */
+  .daily-check-list-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .daily-check-list-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  /* ===== Content Areas ===== */
+  .daily-check-list-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-check-list-tab-content {
+    padding: 2rem;
+  }
+  
+  /* ===== Form Sections ===== */
+  .daily-check-list-form-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .daily-check-list-form-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f3f4f6;
+  }
+  
+  .daily-check-list-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+  
+  .daily-check-list-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .daily-check-list-form-group-full {
+    grid-column: 1 / -1;
+  }
+  
+  .daily-check-list-form-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: end;
+  }
+  
+  /* ===== Form Elements ===== */
+  .daily-check-list-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  .daily-check-list-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-select:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    resize: vertical;
+    min-height: 100px;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ===== Cards ===== */
+  .daily-check-list-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .daily-check-list-card-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .daily-check-list-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  /* ===== Equipment List ===== */
+  .daily-check-list-equipment-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .daily-check-list-equipment-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-equipment-item:hover {
+    border-color: black;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .daily-check-list-equipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .daily-check-list-equipment-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 1rem;
+  }
+  
+  .daily-check-list-equipment-group {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-equipment-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  /* ===== Task List ===== */
+  .daily-check-list-task-list {
+    margin-top: 0.75rem;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 0.75rem;
+  }
+  
+  .daily-check-list-task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f9fafb;
+  }
+  
+  .daily-check-list-task-item:last-child {
+    border-bottom: none;
+  }
+  
+  .daily-check-list-task-details {
+    flex: 1;
+  }
+  
+  .daily-check-list-task-name {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+  
+  .daily-check-list-task-action {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-task-frequency {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  /* ===== Layout Utilities ===== */
+  .daily-check-list-flex {
+    display: flex;
+  }
+  
+  .daily-check-list-items-center {
+    align-items: center;
+  }
+  
+  .daily-check-list-justify-between {
+    justify-content: space-between;
+  }
+  
+  .daily-check-list-gap-2 {
+    gap: 0.5rem;
+  }
+  
+  .daily-check-list-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .daily-check-list-gap-4 {
+    gap: 1rem;
+  }
+  
+  .daily-check-list-grid {
+    display: grid;
+  }
+  
+  .daily-check-list-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .daily-check-list-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .daily-check-list-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .daily-check-list-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  
+  .daily-check-list-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .daily-check-list-mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .daily-check-list-mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ===== Typography ===== */
+  .daily-check-list-text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .daily-check-list-text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .daily-check-list-font-medium {
+    font-weight: 500;
+  }
+  
+  .daily-check-list-font-semibold {
+    font-weight: 600;
+  }
+  
+  .daily-check-list-text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .daily-check-list-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .daily-check-list-text-gray-700 {
+    color: #374151;
+  }
+  
+  /* ===== Badges ===== */
+  .daily-check-list-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .daily-check-list-badge-success {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .daily-check-list-badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .daily-check-list-badge-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  
+  /* ===== Modals ===== */
+  .daily-check-list-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .daily-check-list-modal {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .daily-check-list-modal-lg {
+    max-width: 800px;
+  }
+  
+  .daily-check-list-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .daily-check-list-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .daily-check-list-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    border: none;
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .daily-check-list-modal-close:hover {
+    background: #e5e7eb;
+    color: #374151;
+  }
+  
+  .daily-check-list-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .daily-check-list-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* ===== Responsive Design ===== */
+  @media (max-width: 768px) {
+    .daily-check-list {
+      padding: 0.5rem;
+    }
+    
+    .daily-check-list-header-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+    
+    .daily-check-list-form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .daily-check-list-equipment-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .daily-check-list-task-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+  
+  /* ===== Print Styles ===== */
+  @media print {
+    .daily-check-list-header-actions,
+    .daily-check-list-btn,
+    .daily-check-list-equipment-actions {
+      display: none !important;
+    }
+    
+    .daily-check-list {
+      background: white !important;
+    }
+    
+    .daily-check-list-content,
+    .daily-check-list-form-section,
+    .daily-check-list-card {
+      box-shadow: none !important;
+      border: 1px solid #e5e7eb !important;
+    }
+  }
+  

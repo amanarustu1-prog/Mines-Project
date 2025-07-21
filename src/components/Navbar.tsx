@@ -695,66 +695,62 @@ const navigationItems: NavItem[] = [
       {
         title: 'MASTER TABLES',
         items: [
+
+
           {
-            title: 'Check List',
-            href: '/mining/extraction',
+            title: 'Vehicle Master',
+            href: '/vehicle-master-entry',
             icon: Pickaxe,
             description: 'Ore extraction operations and planning'
           },
           {
-            title: 'Grpwise CheckList',
-            href: '/mining/drilling',
-            icon: Drill,
-            description: 'Drilling operations and site management'
-          },
-          {
-            title: 'Equipment/Vehicle Master',
-            href: '/mining/drilling',
-            icon: Drill,
-            description: 'Drilling operations and site management'
-          },
-          {
-            title: 'Process Master',
-            href: '/mining/drilling',
+            title: 'Machine Master',
+            href: 'daily-check-list-master',
             icon: Drill,
             description: 'Drilling operations and site management'
           },
 
+
         ]
       },
       {
-        title: 'Tram',
+        title: 'Check-List',
         items: [
           {
-            title: 'Enter Details- Check List',
-            href: '/mining/processing',
+            title: 'Check-List Setup',
+            href: '/daily-check-list',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
           {
-            title: 'Daily Running',
+            title: 'Group Wise Check-List',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Check-List Enter Detail',
             href: '/mining/transport',
             icon: Truck,
             description: 'Material transport and logistics'
           },
           {
             title: 'Job Completion',
-            href: '/mining/transport',
+            href: '/vehicle-job-completion',
             icon: Truck,
             description: 'Material transport and logistics'
           },
           {
             title: 'Job Card prep',
-            href: '/mining/transport',
+            href: '/vehicle-job-details',
             icon: Truck,
             description: 'Material transport and logistics'
           },
-
           {
-            title: 'Maintenance Dates',
-            href: '/crusher/maintenance/schedule',
-            icon: Calendar,
-            description: 'Crusher maintenance planning and scheduling'
+            title: 'Daily Running',
+            href: '/daily-running',
+            icon: Truck,
+            description: 'Material transport and logistics'
           },
           {
             title: 'Vehicle Policy Udate',
@@ -765,37 +761,103 @@ const navigationItems: NavItem[] = [
         ]
       },
 
+      {
+        title: 'Maintenance',
+        items: [
+          {
+            title: 'Machine/Vehicle Master',
+            href: '/vehicle-job-details',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Maintenance Type Master',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
 
+
+          {
+            title: 'Vehicle Service Entry',
+            href: '/vehicle-service-entry',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Machine Service Entry',
+            href: '/vehicle-service-type',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+          {
+            title: 'Spare Parts Master',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Service Vendor Master',
+            href: '/vehicle-renewal-details',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+        ]
+      },
 
 
       {
-        title: 'REPORTS',
+        title: 'Maintenance Schedule',
         items: [
-          // {
-          //   title: 'Site Planning',
-          //   href: '/mining/planning',
-          //   icon: MapPin,
-          //   description: 'Mine site planning and development',
-          //   badge: 'New'
-          // },
-          // {
-          //   title: 'Material Extraction Report',
-          //   href: '/mining/resources',
-          //   icon: Target,
-          //   description: 'Resource estimation and modeling'
-          // },
-          // {
-          //   title: 'Blasting Schedule & Log Summary',
-          //   href: '/mining/resources',
-          //   icon: Target,
-          //   description: 'Resource estimation and modeling'
-          // },
-          // {
-          //   title: 'Drilling Activity Log Report',
-          //   href: '/mining/resources',
-          //   icon: Target,
-          //   description: 'Resource estimation and modeling'
-          // },
+          {
+            title: 'Planned Maintenance Entry',
+            href: '/mining/planning',
+            icon: MapPin,
+            description: 'Mine site planning and development',
+            badge: 'New'
+          },
+          {
+            title: 'Maintenance Job Card',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+          {
+            title: 'Breakdown Maintenance',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+
+        ]
+      },
+
+
+      {
+        title: 'Reports',
+        items: [
+          {
+            title: 'Daily/Monthly Maintenance Report',
+            href: '/mining/planning',
+            icon: MapPin,
+            description: 'Mine site planning and development',
+            badge: 'New'
+          },
+          {
+            title: 'Downtime Summary',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+          {
+            title: 'Cost Analysis Report',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+
         ]
       },
 
@@ -2607,7 +2669,7 @@ export function Navbar() {
                                 !item.featured ? "col-span-12" : "col-span-9",
                               item.title === 'Inventory' && item.sections && item.sections.length === 7 ? "grid-cols-4" :
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
-                                  item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
+                                  item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                     item.title === 'Mining' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
                                       item.title === 'Sale' && item.sections ? "grid-cols-3" :
                                         item.title === 'Accounts' && item.sections ? "grid-cols-3" :
@@ -2633,7 +2695,7 @@ export function Navbar() {
                                     {section.title}
                                   </h4>
                                   <div className="space-y-1.5">
-                                    {section?.items?.map((subItem) => (
+                                    {section.items.map((subItem) => (
                                       <Link
                                         key={subItem.href}
                                         to={subItem.href}
