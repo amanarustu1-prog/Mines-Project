@@ -12,7 +12,7 @@ import Form4 from './pages/Form4'
 // Accounts pages
 import AccountsDashboard from './pages/accounts/Dashboard'
 import ChallanHistory from './pages/accounts/ChallanHistory'
-import CreateChallan from './pages/accounts/CreateChallan'
+
 
 // Dashboard pages
 import ActiveAssets from './pages/dashboard/ActiveAssets'
@@ -63,6 +63,13 @@ import VehicleRenewalDetails from './pages/vehicle/vehicle-renewal-details/Vehic
 import VehicleServiceType from './pages/vehicle/vehicle-service-type/VehicleServiceType'
 import VehicleServiceEntry from './pages/vehicle/vehicle-service-entry/VehicleServiceEntry'
 import DailyRunning from './pages/vehicle/daily-running/DailyRunning'
+import VehicleType from './pages/sale/vehicle-type/VehicleType'
+import LoadingCharge from './pages/sale/Loading-Charge/LoadingCharge'
+import SundryDebtors from './pages/sale/sundry-debtors/SundryDebtors'
+import ProductMasonry from './pages/sale/product-masonry/ProductMasonry'
+import TPCharges from './pages/sale/TP-Charge/TPCharges'
+import CreateChallan from './pages/sale/Create-challan/CreateChallan'
+
 
 
 
@@ -86,7 +93,7 @@ function App() {
           {/* Accounts */}
           <Route path="/accounts/dashboard" element={<AccountsDashboard />} />
           <Route path="/accounts/challan-history" element={<ChallanHistory />} />
-          <Route path="/accounts/create-challan" element={<CreateChallan />} />
+          {/* <Route path="/accounts/create-challan" element={<CreateChallan />} /> */}
 
           {/* Dashboard */}
           <Route path="/dashboard/active-assets" element={<ActiveAssets />} />
@@ -147,6 +154,14 @@ function App() {
           <Route path="/vehicle-service-type" element={<VehicleServiceType />} />
           <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
           <Route path="/daily-running" element={<DailyRunning />} />
+
+          {/* Sale */}
+          <Route path="/vehicle-type" element={<VehicleType />} />
+          <Route path="/loading-charge" element={<LoadingCharge />} />
+          <Route path="/sundry-debtors" element={<SundryDebtors />} />
+          <Route path="/product-masonry" element={<ProductMasonry />} />
+          <Route path="/tp-charges" element={<TPCharges />} />
+          <Route path="/create-challan" element={<CreateChallan />} />
 
 
 
