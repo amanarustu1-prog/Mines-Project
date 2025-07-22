@@ -246,32 +246,32 @@ const navigationItems: NavItem[] = [
         title: 'MASTER TABLES',
         items: [
           {
-            title: 'Udhar Party (Sundry Debtors)',
-            href: '/mining/extraction',
+            title: 'Udhar Party',
+            href: '/sundry-debtors',
             icon: Pickaxe,
             description: 'Ore extraction operations and planning'
           },
           {
             title: 'Product Master',
-            href: '/mining/drilling',
+            href: '/product-masonry',
             icon: Drill,
             description: 'Drilling operations and site management'
           },
           {
             title: 'Vehicle Type',
-            href: '/mining/drilling',
+            href: '/vehicle-type',
             icon: Drill,
             description: 'Drilling operations and site management'
           },
           {
             title: 'Loading Charge',
-            href: '/mining/drilling',
+            href: '/loading-charge',
             icon: Drill,
             description: 'Drilling operations and site management'
           },
           {
             title: 'TP Charge',
-            href: '/mining/drilling',
+            href: '/tp-charges',
             icon: Drill,
             description: 'Drilling operations and site management'
           },
@@ -281,8 +281,8 @@ const navigationItems: NavItem[] = [
         title: 'Sale',
         items: [
           {
-            title: 'Challan',
-            href: '/mining/processing',
+            title: 'Create Challan',
+            href: '/create-challan',
             icon: Wrench,
             description: 'Material processing and refinement'
           },         
