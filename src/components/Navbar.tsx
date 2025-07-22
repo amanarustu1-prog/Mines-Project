@@ -239,7 +239,7 @@ const navigationItems: NavItem[] = [
 
 
   {
-    title: 'Sale',
+    title: 'Sale & Purchase',
     icon: Factory,
     sections: [
       {
@@ -278,20 +278,14 @@ const navigationItems: NavItem[] = [
         ]
       },
       {
-        title: 'Entries',
+        title: 'Sale',
         items: [
           {
             title: 'Create Challan',
             href: '/create-challan',
             icon: Wrench,
             description: 'Material processing and refinement'
-          },
-          {
-            title: 'Search Challan',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
+          },         
           {
             title: 'Pending Challan',
             href: '/mining/transport',
@@ -304,32 +298,120 @@ const navigationItems: NavItem[] = [
             icon: Truck,
             description: 'Material transport and logistics'
           },
+
+           {
+            title: 'Extra TP',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'Scrape GST Bill',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'E-Invoice',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'E-Way Bill',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+
         ]
       },
+
+{
+        title: 'Purchase',
+        items: [
+          {
+            title: 'Puchase',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Purchase with Ravanna',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Lease wise Purchase',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          
+        ]
+      },
+
+      {
+        title: 'Setting',
+        items: [
+          {
+            title: 'Challan setting',
+            href: '/mining/processing',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
+          {
+            title: 'Party Rate',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Merge Party',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          
+        ]
+      },
+
+
       {
         title: 'REPORTS',
         items: [
           {
-            title: 'Site Planning',
+            title: 'Challan Report',
             href: '/mining/planning',
             icon: MapPin,
-            description: 'Mine site planning and development',
-            badge: 'New'
+            description: 'Mine site planning and development'
+            
           },
           {
-            title: 'Material Extraction Report',
+            title: 'Bill Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
-            title: 'Blasting Schedule & Log Summary',
+            title: 'Lease Wise Purchase Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
           {
-            title: 'Drilling Activity Log Report',
+            title: 'Purchase Report',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+           {
+            title: 'Party wise Sale Report',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
@@ -351,8 +433,7 @@ const navigationItems: NavItem[] = [
             title: 'Ledger Group',
             href: '/accounts/create-sales-order',
             icon: Briefcase,
-            description: 'Create new sales orders and quotes',
-            badge: 'New'
+            description: 'Create new sales orders and quotes'           
           },
           {
             title: 'Ledger Master',
@@ -361,17 +442,19 @@ const navigationItems: NavItem[] = [
             description: 'Sales performance and revenue overview'
           },
           {
-            title: 'Customer Management',
+            title: 'Merge Ledger',
             href: '/accounts/customers',
             icon: Users,
             description: 'Manage customer database and relationships'
           },
+
           {
-            title: 'Sales Reports',
-            href: '/accounts/sales-reports',
-            icon: BarChart3,
-            description: 'Detailed sales analytics and trends'
+            title: 'Opening Balance',
+            href: '/accounts/customers',
+            icon: Users,
+            description: 'Manage customer database and relationships'
           },
+          
         ]
       },
 
@@ -382,8 +465,8 @@ const navigationItems: NavItem[] = [
             title: 'Payment',
             href: '/accounts/create-challan',
             icon: Receipt,
-            description: 'Create new delivery challans and receipts',
-            badge: 'Popular'
+            description: 'Create new delivery challans and receipts'
+           
           },
           {
             title: 'Receipt',
@@ -402,13 +485,7 @@ const navigationItems: NavItem[] = [
             href: '/accounts/payments',
             icon: CreditCard,
             description: 'Track customer payments and receipts'
-          },
-          {
-            title: 'Purchase Orders',
-            href: '/accounts/purchase-orders',
-            icon: ShoppingCart,
-            description: 'Manage supplier purchase orders'
-          },
+          },         
         ]
       },
       {
@@ -484,7 +561,7 @@ const navigationItems: NavItem[] = [
         ]
       },
       {
-        title: 'Material Request & Approval',
+        title: 'Request & Approval',
         items: [
           {
             title: 'Material Request Entry',
@@ -509,7 +586,7 @@ const navigationItems: NavItem[] = [
       },
 
       {
-        title: 'Quotation Management',
+        title: 'Quotation',
         items: [
           {
             title: 'Request for Quotation (RFQ)',
@@ -541,7 +618,7 @@ const navigationItems: NavItem[] = [
         ]
       },
       {
-        title: 'Purchase Order Management',
+        title: 'Purchase Order',
         items: [
           {
             title: 'Create Purchase Order',
@@ -575,7 +652,7 @@ const navigationItems: NavItem[] = [
       },
 
       {
-        title: 'Goods Receipt Note (GRN)',
+        title: 'Goods Receipt Note',
         items: [
           {
             title: 'GRN Against PO',
@@ -619,7 +696,7 @@ const navigationItems: NavItem[] = [
       },
 
       {
-        title: 'Material Issue & Transfer',
+        title: 'Issue & Transfer',
         items: [
           {
             title: 'Material Issue',
@@ -697,26 +774,13 @@ const navigationItems: NavItem[] = [
         items: [
 
 
-          {
-            title: 'Vehicle Master',
-            href: '/vehicle-master-entry',
-            icon: Pickaxe,
-            description: 'Ore extraction operations and planning'
+         {
+            title: 'Machine/Vehicle Master',
+            href: '/vehicle-job-details',
+            icon: Wrench,
+            description: 'Material processing and refinement'
           },
-          {
-            title: 'Machine Master',
-            href: 'daily-check-list-master',
-            icon: Drill,
-            description: 'Drilling operations and site management'
-          },
-
-
-        ]
-      },
-      {
-        title: 'Check-List',
-        items: [
-          {
+ {
             title: 'Check-List Setup',
             href: '/daily-check-list',
             icon: Wrench,
@@ -728,48 +792,8 @@ const navigationItems: NavItem[] = [
             icon: Truck,
             description: 'Material transport and logistics'
           },
-          {
-            title: 'Check-List Enter Detail',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Job Completion',
-            href: '/vehicle-job-completion',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Job Card prep',
-            href: '/vehicle-job-details',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Daily Running',
-            href: '/daily-running',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Vehicle Policy Udate',
-            href: '/crusher/maintenance/preventive',
-            icon: Shield,
-            description: 'Preventive maintenance for crusher units'
-          },
-        ]
-      },
 
-      {
-        title: 'Maintenance',
-        items: [
-          {
-            title: 'Machine/Vehicle Master',
-            href: '/vehicle-job-details',
-            icon: Wrench,
-            description: 'Material processing and refinement'
-          },
+          
           {
             title: 'Maintenance Type Master',
             href: '/mining/processing',
@@ -777,21 +801,7 @@ const navigationItems: NavItem[] = [
             description: 'Material processing and refinement'
           },
 
-
-          {
-            title: 'Vehicle Service Entry',
-            href: '/vehicle-service-entry',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Machine Service Entry',
-            href: '/vehicle-service-type',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-
-          {
+           {
             title: 'Spare Parts Master',
             href: '/mining/transport',
             icon: Truck,
@@ -804,6 +814,82 @@ const navigationItems: NavItem[] = [
             description: 'Material transport and logistics'
           },
 
+          {
+            title: 'Vehicle Service Type',
+            href: '/vehicle-renewal-details',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+          {
+            title: 'Service Process Master',
+            href: '/vehicle-renewal-details',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+        ]
+      },
+      {
+        title: 'Check-List',
+        items: [
+         
+          {
+            title: 'Check-List Enter Detail',
+            href: '/mining/transport',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+         
+          {
+            title: 'Job Card prep',
+            href: '/vehicle-job-details',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+         
+         
+        ]
+      },
+
+      {
+        title: 'Service',
+        items: [
+                   {
+            title: 'Vehicle Service Entry',
+            href: '/vehicle-service-entry',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+          {
+            title: 'Machine Service Entry',
+            href: '/vehicle-service-type',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+            {
+            title: 'Vehicle Daily Running',
+            href: '/vehicle-service-type',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+            {
+            title: 'Vehicle Job Completion',
+            href: '/vehicle-service-type',
+            icon: Truck,
+            description: 'Material transport and logistics'
+          },
+
+           {
+            title: 'Vehicle Policy Udate',
+            href: '/crusher/maintenance/preventive',
+            icon: Shield,
+            description: 'Preventive maintenance for crusher units'
+          },
+         
+
         ]
       },
 
@@ -815,8 +901,8 @@ const navigationItems: NavItem[] = [
             title: 'Planned Maintenance Entry',
             href: '/mining/planning',
             icon: MapPin,
-            description: 'Mine site planning and development',
-            badge: 'New'
+            description: 'Mine site planning and development'
+           
           },
           {
             title: 'Maintenance Job Card',
@@ -826,6 +912,27 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Breakdown Maintenance',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+
+            {
+            title: 'AMC & Warranty',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+
+            {
+            title: 'Repair Log',
+            href: '/mining/resources',
+            icon: Target,
+            description: 'Resource estimation and modeling'
+          },
+
+           {
+            title: 'Spare Part Movement Log',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
@@ -869,6 +976,44 @@ const navigationItems: NavItem[] = [
     title: 'Fuel',
     icon: CheckCircle,
     sections: [
+
+      
+      {
+        title: 'Master Setup',
+        items: [
+          {
+            title: 'Fuel Type Master',
+            href: '/quality/standards',
+            icon: Target,
+            description: 'Third-Party Integrations',
+          },
+          {
+            title: 'Vehicle / Equipment Master with Tank Capacity',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'Fuel Pump Master',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Fuel Pump Master (with location & staff)'
+          },
+          {
+            title: 'Threshold / Alert Configuration',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Fuel Pump Master (with location & staff)'
+          },
+          {
+            title: 'Unit of Measurement Settings',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Unit of Measurement Settings (Liters, Gallons, etc.)'
+          },
+        ]
+      },
+
       {
         title: 'Fuel Stock Management',
         items: [
@@ -991,41 +1136,6 @@ const navigationItems: NavItem[] = [
         ]
       },
 
-      {
-        title: 'Master Setup',
-        items: [
-          {
-            title: 'Fuel Type Master',
-            href: '/quality/standards',
-            icon: Target,
-            description: 'Third-Party Integrations',
-          },
-          {
-            title: 'Vehicle / Equipment Master with Tank Capacity',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-          {
-            title: 'Fuel Pump Master',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Fuel Pump Master (with location & staff)'
-          },
-          {
-            title: 'Threshold / Alert Configuration',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Fuel Pump Master (with location & staff)'
-          },
-          {
-            title: 'Unit of Measurement Settings',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Unit of Measurement Settings (Liters, Gallons, etc.)'
-          },
-        ]
-      },
 
     ]
 
@@ -1451,6 +1561,53 @@ const navigationItems: NavItem[] = [
     icon: CheckCircle,
     sections: [
       {
+        title: 'MASTER TABLES',
+        items: [
+          {
+            title: 'Court Location',
+            href: '/quality/standards',
+            icon: Target,
+            description: 'Quality standards and specifications',
+
+          },
+          {
+            title: 'Type of Case',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
+          },
+          {
+            title: 'Thana',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
+          },
+
+          {
+            title: 'Case Stage',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
+          },
+
+          {
+            title: 'Case Status',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
+          },
+
+          {
+            title: 'Injury Type',
+            href: '/quality/certifications',
+            icon: Award,
+            description: 'Quality certifications and compliance'
+          },
+
+        ]
+      },
+
+      {
         title: 'Safety Incident Reporting',
         items: [
           {
@@ -1538,52 +1695,7 @@ const navigationItems: NavItem[] = [
           },
         ]
       },
-      {
-        title: 'MASTER TABLES',
-        items: [
-          {
-            title: 'Court Location',
-            href: '/quality/standards',
-            icon: Target,
-            description: 'Quality standards and specifications',
-
-          },
-          {
-            title: 'Type of Case',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-          {
-            title: 'Thana',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-
-          {
-            title: 'Case Stage',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-
-          {
-            title: 'Case Status',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-
-          {
-            title: 'Injury Type',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-
-        ]
-      },
+      
     ],
     featured: [
       {
@@ -1846,6 +1958,20 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Shift Timing',
+            href: '/quality/trends',
+            icon: TrendingUp,
+            description: 'Historical quality data and trends'
+          },
+
+            {
+            title: 'E-Invoice Detail',
+            href: '/quality/trends',
+            icon: TrendingUp,
+            description: 'Historical quality data and trends'
+          },
+
+            {
+            title: 'E-Way Bill Detail',
             href: '/quality/trends',
             icon: TrendingUp,
             description: 'Historical quality data and trends'
@@ -2634,7 +2760,7 @@ export function Navbar() {
                       <div className={cn(
                         "absolute top-full w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden navbar-dropdown custom-scrollbar",
                         // Smart positioning - ensure dropdown stays within screen bounds
-                        item.title === 'Dashboard' || item.title === 'Plant & Vehicle' || item.title === 'Sale' || item.title === 'Accounts'
+                        item.title === 'Dashboard' || item.title === 'Plant & Vehicle' || item.title === 'Sale & Purchase' || item.title === 'Accounts'
                           ? "left-0"
                           : item.title === 'Inventory' || item.title === 'Machines & Vehicles' || item.title === 'HR'
                             ? "left-0"
@@ -2667,11 +2793,11 @@ export function Navbar() {
                                 item.title === 'Crusher' || item.title === 'Accounts' || item.title === 'Workforce' ||
                                 item.title === 'Safety & Legal' || item.title === 'Reports' || item.title === 'Setting' || item.title === 'Fuel') ? "col-span-12" :
                                 !item.featured ? "col-span-12" : "col-span-9",
-                              item.title === 'Inventory' && item.sections && item.sections.length === 7 ? "grid-cols-4" :
+                              item.title === 'Inventory' && item.sections && item.sections.length === 7 ? "grid-cols-6" :
                                 item.title === 'Dashboard' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                   item.title === 'Plant & Vehicle' && item.sections && item.sections.length === 5 ? "grid-cols-5" :
                                     item.title === 'Mining' && item.sections && item.sections.length === 3 ? "grid-cols-3" :
-                                      item.title === 'Sale' && item.sections ? "grid-cols-3" :
+                                      item.title === 'Sale & Purchase' && item.sections ? "grid-cols-5" :
                                         item.title === 'Accounts' && item.sections ? "grid-cols-3" :
                                           item.title === 'HR' && item.sections ? "grid-cols-6" :
                                             item.title === 'Machines & Vehicles' && item.sections ? "grid-cols-5" :
@@ -2690,7 +2816,7 @@ export function Navbar() {
                                 <div key={idx} className="space-y-3">
                                   <h4 className={cn(
                                     "text-sm font-semibold text-gray-700 uppercase tracking-wide border-b-2 border-blue-100 pb-2 mb-1",
-                                    (item.title === 'Inventory' || item.title === 'Dashboard' || item.title === 'Mining' || item.title === 'Sale' || item.title === 'Accounts' || item.title === 'Plant & Vehicle' || item.title === 'HR' || item.title === 'Workforce' || item.title === 'Safety & Legal' || item.title === 'Reports' || item.title === 'Setting' || item.title === 'Fuel' || item.title === 'Accounts') && "text-sm font-bold text-blue-800 border-b-2 border-blue-200"
+                                    (item.title === 'Inventory' || item.title === 'Dashboard' || item.title === 'Mining' || item.title === 'Sale & Purchase' || item.title === 'Accounts' || item.title === 'Plant & Vehicle' || item.title === 'HR' || item.title === 'Workforce' || item.title === 'Safety & Legal' || item.title === 'Reports' || item.title === 'Setting' || item.title === 'Fuel' || item.title === 'Accounts') && "text-sm font-bold text-blue-800 border-b-2 border-blue-200"
                                   )}>
                                     {section.title}
                                   </h4>
