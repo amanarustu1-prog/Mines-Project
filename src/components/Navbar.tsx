@@ -246,8 +246,8 @@ const navigationItems: NavItem[] = [
         title: 'MASTER TABLES',
         items: [
           {
-            title: 'Udhar Party',
-            href: '/sundry-debtors',
+            title: 'Udhar Party (Sundry debitor)',
+            href: '/mining/extraction',
             icon: Pickaxe,
             description: 'Ore extraction operations and planning'
           },
