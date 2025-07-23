@@ -542,19 +542,19 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Material Group',
-            href: '/inventory/stock',
+            href: '/inventory/material-group',
             icon: Package,
             description: 'Current inventory and stock levels'
           },
           {
             title: 'Material Type',
-            href: '/inventory/forecast',
+            href: '/inventory/material-type',
             icon: TrendingUp,
             description: 'Predictive inventory modeling'
           },
           {
             title: 'Unit of Measurement',
-            href: '/inventory/forecast',
+            href: '/inventory/unit-of-measurement',
             icon: TrendingUp,
             description: 'Predictive inventory modeling'
           },
@@ -1348,25 +1348,25 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'DepartMent Master',
-            href: '/workforce/contractors',
+            href: '/Department-Master',
             icon: UserCheck,
             description: 'Contractor records and agreements'
           },
           {
             title: 'ID Proof',
-            href: '/workforce/contractors',
+            href: '/ID-Proof',
             icon: UserCheck,
             description: 'Contractor records and agreements'
           },
           {
             title: 'Maritial Status',
-            href: '/workforce/contractors',
+            href: '/Maritial-Status',
             icon: UserCheck,
             description: 'Contractor records and agreements'
           },
           {
             title: 'Leave Type Master',
-            href: '/LeaveType_Master',
+            href: '/leave-type-master',
 
             icon: UserCheck,
             description: 'Contractor records and agreements'

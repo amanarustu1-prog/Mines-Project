@@ -69,6 +69,13 @@ import SundryDebtors from './pages/sale/sundry-debtors/SundryDebtors'
 import ProductMasonry from './pages/sale/product-masonry/ProductMasonry'
 import TPCharges from './pages/sale/TP-Charge/TPCharges'
 import CreateChallan from './pages/sale/Create-challan/CreateChallan'
+import MaterialGroup from './pages/Inventory/Material-Group/MaterialGroup'
+import MaterialType from './pages/Inventory/Material-Type/MaterialType'
+import UnitofMeasurement from './pages/Inventory/Unit-Measurement/UnitofMeasurement'
+import DepartmentMaster from './pages/Hr/Department-Master/DepartmentMaster'
+import IDProof from './pages/Hr/ID-Proof/IDProof'
+import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
+import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 
 
 
@@ -126,8 +133,12 @@ function App() {
           <Route path="/salary-calculation" element={<SalaryCalculation />} />
           <Route path="/list-management" element={<ListManagement />} />
           <Route path="/shift-management" element={<ShiftManagement />} />
+          <Route path="/Department-Master" element={<DepartmentMaster />} />
+          <Route path="/ID-Proof" element={<IDProof />} />
+          <Route path="/maritial-status" element={<MaritialStatus />} />
+          <Route path="/leave-type-master" element={<LeaveTypeMaster />} />
 
-          {/* <Route path="/LeaveType_Master" element={<LeaveType_Master />} /> */}
+
 
           {/* Fuel */}
           <Route path="/fuel-management" element={<FuelManagement />} />
@@ -162,6 +173,12 @@ function App() {
           <Route path="/product-masonry" element={<ProductMasonry />} />
           <Route path="/tp-charges" element={<TPCharges />} />
           <Route path="/create-challan" element={<CreateChallan />} />
+
+
+          {/* Inventory */}
+          <Route path="/inventory/material-group" element={<MaterialGroup />} />
+          <Route path="/inventory/material-type" element={<MaterialType />} />
+          <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} /> 
 
 
 
