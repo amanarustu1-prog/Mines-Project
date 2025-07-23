@@ -76,6 +76,7 @@ import DepartmentMaster from './pages/Hr/Department-Master/DepartmentMaster'
 import IDProof from './pages/Hr/ID-Proof/IDProof'
 import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
+import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 
 
 
@@ -178,7 +179,8 @@ function App() {
           {/* Inventory */}
           <Route path="/inventory/material-group" element={<MaterialGroup />} />
           <Route path="/inventory/material-type" element={<MaterialType />} />
-          <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} /> 
+          <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
+          <Route path="/fuel/fuel-type-master" element={<FuelType />} />
 
 
 

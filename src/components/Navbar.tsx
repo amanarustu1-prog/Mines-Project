@@ -247,7 +247,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Udhar Party (Sundry debitor)',
-            href: '/mining/extraction',
+            href: '/sundry-debtors',
             icon: Pickaxe,
             description: 'Ore extraction operations and planning'
           },
@@ -776,7 +776,8 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Machine/Vehicle Master',
-            href: '/vehicle-job-details',
+            // href: '/vehicle-job-details',
+            href: '/vehicle-master-entry',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
@@ -983,7 +984,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Fuel Type Master',
-            href: '/quality/standards',
+            href: '/fuel/fuel-type-master',
             icon: Target,
             description: 'Third-Party Integrations',
           },

@@ -189,300 +189,300 @@ export default function VehicleServiceEntry() {
             {/* Main Content */}
             <div className="vehicle-service-entry-main">
                 <div className="vehicle-service-entry-content">
-                    <div className="vehicle-service-entry-tab-content">
-                        {/* Service Entry Form */}
-                        <div className="vehicle-service-entry-card">
-                            <div className="vehicle-service-entry-card-header">
-                                <div className="vehicle-service-entry-flex vehicle-service-entry-items-center vehicle-service-entry-gap-2">
-                                    <Truck className="vehicle-service-entry-icon" />
-                                    <h3 className="vehicle-service-entry-card-title">Service Entry Details</h3>
-                                </div>
+
+                    {/* Service Entry Form */}
+                    <div className="vehicle-service-entry-card">
+                        <div className="vehicle-service-entry-card-header">
+                            <div className="vehicle-service-entry-flex vehicle-service-entry-items-center vehicle-service-entry-gap-2">
+                                <Truck className="vehicle-service-entry-icon" />
+                                <h3 className="vehicle-service-entry-card-title">Service Entry Details</h3>
                             </div>
-                            <div className="vehicle-service-entry-card-content">
-                                <div className="vehicle-service-entry-form-grid">
-                                    {/* Equipment Identification No. */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">
-                                            Equipment Identification No. <span className="vehicle-service-entry-required">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.equipmentIdNo || ''}
-                                            onChange={(e) => handleInputChange('equipmentIdNo', e.target.value)}
-                                            placeholder="Enter equipment identification number"
-                                            disabled={!isEditing}
-                                        />
-                                        {errors.equipmentIdNo && (
-                                            <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
-                                                {errors.equipmentIdNo}
-                                            </span>
-                                        )}
-                                    </div>
+                        </div>
+                        <div className="vehicle-service-entry-card-content">
+                            <div className="vehicle-service-entry-form-grid">
+                                {/* Equipment Identification No. */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">
+                                        Equipment Identification No. <span className="vehicle-service-entry-required">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.equipmentIdNo || ''}
+                                        onChange={(e) => handleInputChange('equipmentIdNo', e.target.value)}
+                                        placeholder="Enter equipment identification number"
+                                        disabled={!isEditing}
+                                    />
+                                    {errors.equipmentIdNo && (
+                                        <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
+                                            {errors.equipmentIdNo}
+                                        </span>
+                                    )}
+                                </div>
 
-                                    {/* Service Day */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">
-                                            Service Day <span className="vehicle-service-entry-required">*</span>
-                                        </label>
-                                        <input
-                                            type="date"
-                                            className="vehicle-service-entry-date-input"
-                                            value={formData.serviceDay || ''}
-                                            onChange={(e) => handleInputChange('serviceDay', e.target.value)}
-                                            disabled={!isEditing}
-                                        />
-                                        {errors.serviceDay && (
-                                            <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
-                                                {errors.serviceDay}
-                                            </span>
-                                        )}
-                                    </div>
+                                {/* Service Day */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">
+                                        Service Day <span className="vehicle-service-entry-required">*</span>
+                                    </label>
+                                    <input
+                                        type="date"
+                                        className="vehicle-service-entry-date-input"
+                                        value={formData.serviceDay || ''}
+                                        onChange={(e) => handleInputChange('serviceDay', e.target.value)}
+                                        disabled={!isEditing}
+                                    />
+                                    {errors.serviceDay && (
+                                        <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
+                                            {errors.serviceDay}
+                                        </span>
+                                    )}
+                                </div>
 
-                                    {/* Current Meter Reading */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">
-                                            Current Meter Reading <span className="vehicle-service-entry-required">*</span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.currentMeterReading || ''}
-                                            onChange={(e) => handleInputChange('currentMeterReading', parseInt(e.target.value) || 0)}
-                                            placeholder="Enter current meter reading"
-                                            disabled={!isEditing}
-                                        />
-                                        {errors.currentMeterReading && (
-                                            <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
-                                                {errors.currentMeterReading}
-                                            </span>
-                                        )}
-                                    </div>
+                                {/* Current Meter Reading */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">
+                                        Current Meter Reading <span className="vehicle-service-entry-required">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.currentMeterReading || ''}
+                                        onChange={(e) => handleInputChange('currentMeterReading', parseInt(e.target.value) || 0)}
+                                        placeholder="Enter current meter reading"
+                                        disabled={!isEditing}
+                                    />
+                                    {errors.currentMeterReading && (
+                                        <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
+                                            {errors.currentMeterReading}
+                                        </span>
+                                    )}
+                                </div>
 
-                                    {/* Equipment Operator/Driver */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">
-                                            Equipment Operator/Driver <span className="vehicle-service-entry-required">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.equipmentOperator || ''}
-                                            onChange={(e) => handleInputChange('equipmentOperator', e.target.value)}
-                                            placeholder="Enter operator/driver name"
-                                            disabled={!isEditing}
-                                        />
-                                        {errors.equipmentOperator && (
-                                            <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
-                                                {errors.equipmentOperator}
-                                            </span>
-                                        )}
-                                    </div>
+                                {/* Equipment Operator/Driver */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">
+                                        Equipment Operator/Driver <span className="vehicle-service-entry-required">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.equipmentOperator || ''}
+                                        onChange={(e) => handleInputChange('equipmentOperator', e.target.value)}
+                                        placeholder="Enter operator/driver name"
+                                        disabled={!isEditing}
+                                    />
+                                    {errors.equipmentOperator && (
+                                        <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
+                                            {errors.equipmentOperator}
+                                        </span>
+                                    )}
+                                </div>
 
-                                    {/* Service Centre */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">
-                                            Service Centre <span className="vehicle-service-entry-required">*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.serviceCentre || ''}
-                                            onChange={(e) => handleInputChange('serviceCentre', e.target.value)}
-                                            placeholder="Enter service centre name"
-                                            disabled={!isEditing}
-                                        />
-                                        {errors.serviceCentre && (
-                                            <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
-                                                {errors.serviceCentre}
-                                            </span>
-                                        )}
-                                    </div>
+                                {/* Service Centre */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">
+                                        Service Centre <span className="vehicle-service-entry-required">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.serviceCentre || ''}
+                                        onChange={(e) => handleInputChange('serviceCentre', e.target.value)}
+                                        placeholder="Enter service centre name"
+                                        disabled={!isEditing}
+                                    />
+                                    {errors.serviceCentre && (
+                                        <span className="vehicle-service-entry-text-xs" style={{ color: '#dc2626' }}>
+                                            {errors.serviceCentre}
+                                        </span>
+                                    )}
+                                </div>
 
-                                    {/* Spare Cost */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Spare Cost</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.spareCost || ''}
-                                            onChange={(e) => handleInputChange('spareCost', parseFloat(e.target.value) || 0)}
-                                            placeholder="Enter spare cost"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                                {/* Spare Cost */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Spare Cost</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.spareCost || ''}
+                                        onChange={(e) => handleInputChange('spareCost', parseFloat(e.target.value) || 0)}
+                                        placeholder="Enter spare cost"
+                                        disabled={!isEditing}
+                                    />
+                                </div>
 
-                                    {/* Lube Cost */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Lube Cost</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.lubeCost || ''}
-                                            onChange={(e) => handleInputChange('lubeCost', parseFloat(e.target.value) || 0)}
-                                            placeholder="Enter lube cost"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                                {/* Lube Cost */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Lube Cost</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.lubeCost || ''}
+                                        onChange={(e) => handleInputChange('lubeCost', parseFloat(e.target.value) || 0)}
+                                        placeholder="Enter lube cost"
+                                        disabled={!isEditing}
+                                    />
+                                </div>
 
-                                    {/* Tyre/Tube Cost */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Tyre/Tube Cost</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.tyreTubeCost || ''}
-                                            onChange={(e) => handleInputChange('tyreTubeCost', parseFloat(e.target.value) || 0)}
-                                            placeholder="Enter tyre/tube cost"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                                {/* Tyre/Tube Cost */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Tyre/Tube Cost</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.tyreTubeCost || ''}
+                                        onChange={(e) => handleInputChange('tyreTubeCost', parseFloat(e.target.value) || 0)}
+                                        placeholder="Enter tyre/tube cost"
+                                        disabled={!isEditing}
+                                    />
+                                </div>
 
-                                    {/* Bill No */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Bill No</label>
-                                        <input
-                                            type="text"
-                                            className="vehicle-service-entry-input"
-                                            value={formData.billNo || ''}
-                                            onChange={(e) => handleInputChange('billNo', e.target.value)}
-                                            placeholder="Enter bill number"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                                {/* Bill No */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Bill No</label>
+                                    <input
+                                        type="text"
+                                        className="vehicle-service-entry-input"
+                                        value={formData.billNo || ''}
+                                        onChange={(e) => handleInputChange('billNo', e.target.value)}
+                                        placeholder="Enter bill number"
+                                        disabled={!isEditing}
+                                    />
+                                </div>
 
-                                    {/* Next Service Due Date */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Next Service Due Date</label>
-                                        <input
-                                            type="date"
-                                            className="vehicle-service-entry-date-input"
-                                            value={formData.nextServiceDueDate || ''}
-                                            onChange={(e) => handleInputChange('nextServiceDueDate', e.target.value)}
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                                {/* Next Service Due Date */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Next Service Due Date</label>
+                                    <input
+                                        type="date"
+                                        className="vehicle-service-entry-date-input"
+                                        value={formData.nextServiceDueDate || ''}
+                                        onChange={(e) => handleInputChange('nextServiceDueDate', e.target.value)}
+                                        disabled={!isEditing}
+                                    />
+                                </div>
 
-                                    {/* Lube Change Date */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Lube Change Date</label>
-                                        <input
-                                            type="date"
-                                            className="vehicle-service-entry-date-input"
-                                            value={formData.lubeChangeDate || ''}
-                                            onChange={(e) => handleInputChange('lubeChangeDate', e.target.value)}
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                                {/* Lube Change Date */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Lube Change Date</label>
+                                    <input
+                                        type="date"
+                                        className="vehicle-service-entry-date-input"
+                                        value={formData.lubeChangeDate || ''}
+                                        onChange={(e) => handleInputChange('lubeChangeDate', e.target.value)}
+                                        disabled={!isEditing}
+                                    />
+                                </div>
 
-                                    {/* Mode of Payment */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Mode of Payment</label>
-                                        <div className="vehicle-service-entry-payment-mode">
-                                            <div className="vehicle-service-entry-radio-group">
-                                                <input
-                                                    type="radio"
-                                                    id="cash"
-                                                    name="modeOfPayment"
-                                                    value="cash"
-                                                    className="vehicle-service-entry-radio"
-                                                    checked={formData.modeOfPayment === 'cash'}
-                                                    onChange={(e) => handleInputChange('modeOfPayment', e.target.value)}
-                                                    disabled={!isEditing}
-                                                />
-                                                <label htmlFor="cash" className="vehicle-service-entry-radio-label">Cash</label>
-                                            </div>
-                                            <div className="vehicle-service-entry-radio-group">
-                                                <input
-                                                    type="radio"
-                                                    id="cheque"
-                                                    name="modeOfPayment"
-                                                    value="cheque"
-                                                    className="vehicle-service-entry-radio"
-                                                    checked={formData.modeOfPayment === 'cheque'}
-                                                    onChange={(e) => handleInputChange('modeOfPayment', e.target.value)}
-                                                    disabled={!isEditing}
-                                                />
-                                                <label htmlFor="cheque" className="vehicle-service-entry-radio-label">Cheque</label>
-                                            </div>
-                                            <div className="vehicle-service-entry-radio-group">
-                                                <input
-                                                    type="radio"
-                                                    id="online"
-                                                    name="modeOfPayment"
-                                                    value="online"
-                                                    className="vehicle-service-entry-radio"
-                                                    checked={formData.modeOfPayment === 'online'}
-                                                    onChange={(e) => handleInputChange('modeOfPayment', e.target.value)}
-                                                    disabled={!isEditing}
-                                                />
-                                                <label htmlFor="online" className="vehicle-service-entry-radio-label">Online</label>
-                                            </div>
+                                {/* Mode of Payment */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Mode of Payment</label>
+                                    <div className="vehicle-service-entry-payment-mode">
+                                        <div className="vehicle-service-entry-radio-group">
+                                            <input
+                                                type="radio"
+                                                id="cash"
+                                                name="modeOfPayment"
+                                                value="cash"
+                                                className="vehicle-service-entry-radio"
+                                                checked={formData.modeOfPayment === 'cash'}
+                                                onChange={(e) => handleInputChange('modeOfPayment', e.target.value)}
+                                                disabled={!isEditing}
+                                            />
+                                            <label htmlFor="cash" className="vehicle-service-entry-radio-label">Cash</label>
+                                        </div>
+                                        <div className="vehicle-service-entry-radio-group">
+                                            <input
+                                                type="radio"
+                                                id="cheque"
+                                                name="modeOfPayment"
+                                                value="cheque"
+                                                className="vehicle-service-entry-radio"
+                                                checked={formData.modeOfPayment === 'cheque'}
+                                                onChange={(e) => handleInputChange('modeOfPayment', e.target.value)}
+                                                disabled={!isEditing}
+                                            />
+                                            <label htmlFor="cheque" className="vehicle-service-entry-radio-label">Cheque</label>
+                                        </div>
+                                        <div className="vehicle-service-entry-radio-group">
+                                            <input
+                                                type="radio"
+                                                id="online"
+                                                name="modeOfPayment"
+                                                value="online"
+                                                className="vehicle-service-entry-radio"
+                                                checked={formData.modeOfPayment === 'online'}
+                                                onChange={(e) => handleInputChange('modeOfPayment', e.target.value)}
+                                                disabled={!isEditing}
+                                            />
+                                            <label htmlFor="online" className="vehicle-service-entry-radio-label">Online</label>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* Full-width fields */}
-                                <div className="vehicle-service-entry-form-grid">
-                                    {/* Spare Details */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Spare Details</label>
-                                        <textarea
-                                            className="vehicle-service-entry-textarea"
-                                            value={formData.spareDetails || ''}
-                                            onChange={(e) => handleInputChange('spareDetails', e.target.value)}
-                                            placeholder="Enter spare details"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
-
-                                    {/* Remarks */}
-                                    <div className="vehicle-service-entry-form-group">
-                                        <label className="vehicle-service-entry-label">Remarks</label>
-                                        <textarea
-                                            className="vehicle-service-entry-textarea"
-                                            value={formData.remarks || ''}
-                                            onChange={(e) => handleInputChange('remarks', e.target.value)}
-                                            placeholder="Enter remarks"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
+                            {/* Full-width fields */}
+                            <div className="vehicle-service-entry-form-grid">
+                                {/* Spare Details */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Spare Details</label>
+                                    <textarea
+                                        className="vehicle-service-entry-textarea"
+                                        value={formData.spareDetails || ''}
+                                        onChange={(e) => handleInputChange('spareDetails', e.target.value)}
+                                        placeholder="Enter spare details"
+                                        disabled={!isEditing}
+                                    />
                                 </div>
 
-                                {/* Form Actions */}
-                                <div className="vehicle-service-entry-form-actions">
-                                    {!isEditing ? (
+                                {/* Remarks */}
+                                <div className="vehicle-service-entry-form-group">
+                                    <label className="vehicle-service-entry-label">Remarks</label>
+                                    <textarea
+                                        className="vehicle-service-entry-textarea"
+                                        value={formData.remarks || ''}
+                                        onChange={(e) => handleInputChange('remarks', e.target.value)}
+                                        placeholder="Enter remarks"
+                                        disabled={!isEditing}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Form Actions */}
+                            <div className="vehicle-service-entry-form-actions">
+                                {!isEditing ? (
+                                    <button
+                                        className="vehicle-service-entry-btn vehicle-service-entry-btn-warning"
+                                        onClick={handleModify}
+                                    >
+                                        <Edit3 className="vehicle-service-entry-icon" />
+                                        Modify Details
+                                    </button>
+                                ) : (
+                                    <>
                                         <button
-                                            className="vehicle-service-entry-btn vehicle-service-entry-btn-warning"
-                                            onClick={handleModify}
+                                            className="vehicle-service-entry-btn vehicle-service-entry-btn-secondary"
+                                            onClick={handleReset}
                                         >
-                                            <Edit3 className="vehicle-service-entry-icon" />
-                                            Modify Details
+                                            Reset
                                         </button>
-                                    ) : (
-                                        <>
-                                            <button
-                                                className="vehicle-service-entry-btn vehicle-service-entry-btn-secondary"
-                                                onClick={handleReset}
-                                            >
-                                                Reset
-                                            </button>
-                                            <button
-                                                className="vehicle-service-entry-btn vehicle-service-entry-btn-success"
-                                                onClick={handleSave}
-                                            >
-                                                <Save className="vehicle-service-entry-icon" />
-                                                Save LCV Service Details
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
+                                        <button
+                                            className="vehicle-service-entry-btn vehicle-service-entry-btn-success"
+                                            onClick={handleSave}
+                                        >
+                                            <Save className="vehicle-service-entry-icon" />
+                                            Save LCV Service Details
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

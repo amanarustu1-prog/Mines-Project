@@ -386,13 +386,17 @@ export default function VehicleMasterEntry() {
 
                                     <div className="vehicle-master-entry-form-group">
                                         <label className="vehicle-master-entry-form-label">Equipment/Vehicle Type</label>
-                                        <input
-                                            type="text"
-                                            value={formData.equipmentType || ''}
+                                        
+                                        <select
+                                            value={formData.costHead || ''}
                                             onChange={(e) => handleInputChange('equipmentType', e.target.value)}
-                                            className="vehicle-master-entry-form-input"
-                                            placeholder="Enter equipment type"
-                                        />
+                                            className="vehicle-master-entry-form-select"
+                                        >
+                                            <option value="">Equipmeny/vehicle type</option>
+                                            <option value="Main">Main</option>
+                                            <option value="Aux">Aux</option>
+                                            <option value="Cont">Cont</option>
+                                        </select>
                                     </div>
 
                                     <div className="vehicle-master-entry-form-group">
