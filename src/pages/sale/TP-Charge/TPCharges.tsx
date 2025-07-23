@@ -1,11 +1,28 @@
 import React, { useState } from 'react';
 import './TPCharges.css';
 
-// Icons
-const Truck = ({ className }: { className?: string }) => (
+// Icon components (simplified SVG icons)
+function Truck({ className }: { className?: string }) {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13" />
+      <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+      <circle cx="5.5" cy="18.5" r="2.5" />
+      <circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  );
+}
+
+function Car({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h3m-1 4h6m4 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2.5M7 10H5a2 2 0 00-2 2v8a2 2 0 002 2h2m3 0h6m-6 0v-4m0 4v4m6-4v4m0 0h2a2 2 0 002-2v-8a2 2 0 00-2-2h-2.5" />
+    </svg>
+  );
+}
+const List = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
   </svg>
 );
 
@@ -15,284 +32,456 @@ const Plus = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const Filter = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+  </svg>
+);
+
+const Search = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
 const Edit3 = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
   </svg>
 );
 
-// Types
-interface TPCharge {
-  id: string;
-  chargeName: string;
-  chargeType: 'Fixed' | 'Percentage' | 'Per Unit';
-  rate: number;
-  description: string;
-  status: 'active' | 'inactive';
-}
+const Save = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+  </svg>
+);
 
-const TPCharges: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('list');
+const Download = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+);
+
+const ToggleLeft = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+  </svg>
+);
+
+const ToggleRight = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+// Sample data structure for list items
+const sampleItem = {
+  id: 0,
+  code: '',
+  description: '',
+  isActive: true,
+  createdDate: '',
+  lastModified: ''
+};
+
+export default function LoadingCharge() {
+  const [activeTab, setActiveTab] = useState('list-overview');
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Sample data
-  const [tpCharges, setTpCharges] = useState<TPCharge[]>([
+  // Sample list data
+  const [listData, setListData] = useState([
     {
-      id: 'TPC001',
-      chargeName: 'Loading Charges',
-      chargeType: 'Per Unit',
-      rate: 50,
-      description: 'Charges for loading operations',
-      status: 'active'
+      id: 1,
+      code: 'DEPT001',
+      description: 'Human Resources Department',
+      isActive: true,
+      createdDate: '2025-01-10',
+      lastModified: '2025-07-15'
     },
     {
-      id: 'TPC002',
-      chargeName: 'Unloading Charges',
-      chargeType: 'Per Unit',
-      rate: 40,
-      description: 'Charges for unloading operations',
-      status: 'active'
+      id: 2,
+      code: 'DEPT002',
+      description: 'Finance and Accounting',
+      isActive: true,
+      createdDate: '2025-01-10',
+      lastModified: '2025-07-14'
+    },
+    {
+      id: 3,
+      code: 'DEPT003',
+      description: 'Mining Operations',
+      isActive: true,
+      createdDate: '2025-01-12',
+      lastModified: '2025-07-13'
+    },
+    {
+      id: 4,
+      code: 'DEPT004',
+      description: 'Equipment Maintenance',
+      isActive: false,
+      createdDate: '2025-01-15',
+      lastModified: '2025-07-12'
+    },
+    {
+      id: 5,
+      code: 'DEPT005',
+      description: 'Safety and Compliance',
+      isActive: true,
+      createdDate: '2025-01-18',
+      lastModified: '2025-07-11'
+    },
+    {
+      id: 6,
+      code: 'DEPT006',
+      description: 'Quality Control',
+      isActive: false,
+      createdDate: '2025-01-20',
+      lastModified: '2025-07-10'
     }
   ]);
 
-  const [formData, setFormData] = useState<Omit<TPCharge, 'id'>>({
-    chargeName: '',
-    chargeType: 'Fixed',
-    rate: 0,
+  // New item form data
+  const [newItem, setNewItem] = useState({
+    code: '',
     description: '',
-    status: 'active'
+    isActive: true
   });
 
-  const handleInputChange = (field: string, value: string | number) => {
-    setFormData(prev => ({
+  const tabs = [
+    { id: 'list-overview', label: 'List Overview', icon: List }
+  ];
+
+  const handleInputChange = (field: string, value: string) => {
+    setNewItem(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingId) {
-      // Update existing charge
-      setTpCharges(prev =>
-        prev.map(charge =>
-          charge.id === editingId
-            ? { ...formData, id: editingId }
-            : charge
-        )
-      );
-    } else {
-      // Add new charge
-      const newCharge = {
-        ...formData,
-        id: `TPC${String(tpCharges.length + 1).padStart(3, '0')}`
-      };
-      setTpCharges(prev => [...prev, newCharge]);
+  const handleSaveItem = () => {
+    if (!newItem.code.trim() || !newItem.description.trim()) {
+      alert('Please fill in all required fields');
+      return;
     }
-    setShowAddModal(false);
-    resetForm();
-  };
 
-  const resetForm = () => {
-    setFormData({
-      chargeName: '',
-      chargeType: 'Fixed',
-      rate: 0,
+    // Check if code already exists
+    const codeExists = listData.some(item => item.code.toLowerCase() === newItem.code.toLowerCase());
+    if (codeExists) {
+      alert('Code already exists. Please use a different code.');
+      return;
+    }
+
+    const newEntry = {
+      id: listData.length + 1,
+      ...newItem,
+      createdDate: new Date().toISOString().split('T')[0],
+      lastModified: new Date().toISOString().split('T')[0]
+    };
+
+    setListData(prev => [...prev, newEntry]);
+    setNewItem({
+      code: '',
       description: '',
-      status: 'active'
+      isActive: true
     });
-    setEditingId(null);
+    alert('Item saved successfully!');
   };
 
-  const handleEdit = (charge: TPCharge) => {
-    setFormData({
-      chargeName: charge.chargeName,
-      chargeType: charge.chargeType,
-      rate: charge.rate,
-      description: charge.description,
-      status: charge.status
-    });
-    setEditingId(charge.id);
-    setShowAddModal(true);
+  const toggleItemStatus = (id: number) => {
+    setListData(prev =>
+      prev.map(item =>
+        item.id === id
+          ? {
+            ...item,
+            isActive: !item.isActive,
+            lastModified: new Date().toISOString().split('T')[0]
+          }
+          : item
+      )
+    );
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this charge?')) {
-      setTpCharges(prev => prev.filter(charge => charge.id !== id));
+  // Filter and search logic
+  const filteredData = listData.filter(item => {
+    const matchesSearch =
+      item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && item.isActive) ||
+      (statusFilter === 'inactive' && !item.isActive);
+
+    return matchesSearch && matchesStatus;
+  });
+
+  const activeCount = listData.filter(item => item.isActive).length;
+  const inactiveCount = listData.filter(item => !item.isActive).length;
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'list-overview':
+        return (
+          <div className="list-space-y-4">
+            {/* Summary Cards */}
+            <div className="list-grid-3">
+
+
+              <div className="list-card mb-0">
+                <div className="list-summary-card">
+                  <div className="list-summary-content">
+                    <div className="list-summary-icon active">
+                      <ToggleRight className="list-icon-lg" />
+                    </div>
+                    <div>
+                      <p className="list-summary-text">Active Items</p>
+                      <p className="list-summary-number active">{activeCount}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="list-card mb-0">
+                <div className="list-summary-card">
+                  <div className="list-summary-content">
+                    <div className="list-summary-icon inactive">
+                      <ToggleLeft className="list-icon-lg" />
+                    </div>
+                    <div>
+                      <p className="list-summary-text">Inactive Items</p>
+                      <p className="list-summary-number inactive">{inactiveCount}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="list-card mb-0">
+                <div className="list-summary-card">
+                  <div className="list-summary-content">
+                    <div className="list-summary-icon total">
+                      <List className="list-icon-lg" />
+                    </div>
+                    <div>
+                      <p className="list-summary-text">Total Items</p>
+                      <p className="list-summary-number total">{listData.length}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Add New Item Form - Minimalist */}
+            <div className="list-card compact">
+              <div className="list-card-content compact py-3">
+                <div className="list-compact-form">
+
+                  <div className="list-compact-grid grid grid-cols-3 gap-4">
+
+                    <input
+                      type="text"
+                      value={newItem.amount}
+                      onChange={(e) => handleInputChange('amount', e.target.value)}
+                      className="list-compact-input col-span-1"
+                      placeholder="Amount"
+                      maxLength={500}
+                    />
+
+                    <select
+                      value={newItem.isActive ? 'active' : 'inactive'}
+                      onChange={(e) => handleInputChange('isActive', e.target.value === 'active')}
+                      className="list-compact-select col-span-1"
+                    >
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+
+                    <div className="list-compact-actions col-span-1">
+                      <button
+                        onClick={handleSaveItem}
+                        className="list-button primary small"
+                      >
+                        <Save className="list-icon-sm" />
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setNewItem({ code: '', description: '', isActive: true })}
+                        className="list-button outline small"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </div>
+            </div>
+
+            {/* Filter and Search Bar */}
+
+
+            {/* Items Table */}
+            <div className="list-card">
+              {/* <div className="list-card-header">
+                                <h3 className="list-card-title">
+                                    <List className="list-icon-sm" />
+                                    Items List ({filteredData.length} items)
+                                </h3>
+
+
+                                <div className="list-filter-bar">
+                                    <div className="list-filter-section">
+                                        <div className="list-filter-group">
+                                            <label className="list-filter-label">
+                                                <Filter className="list-icon-sm" />
+                                                Status Filter
+                                            </label>
+                                            <select
+                                                value={statusFilter}
+                                                onChange={(e) => setStatusFilter(e.target.value)}
+                                                className="list-filter-select"
+                                            >
+                                                <option value="all">All Items</option>
+                                                <option value="active">Active Only</option>
+                                                <option value="inactive">Inactive Only</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="list-search-group">
+                                            <label className="list-filter-label">
+                                                <Search className="list-icon-sm" />
+                                                Search
+                                            </label>
+                                            <div className="list-search-wrapper">
+                                                <Search className="list-search-icon" />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search by code or description..."
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                    className="list-search-input"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="list-filter-actions">
+                                        <button className="list-button outline small">
+                                            <Download className="list-icon-sm" />
+                                            Export
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div> */}
+              <div className="list-card-content" style={{ padding: 0 }}>
+                <div className="list-table-container">
+                  <table className="list-table">
+                    <thead className="list-table-header">
+                      <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created Date</th>
+                        <th>Last Modified</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredData.map((item) => (
+                        <tr key={item.id} className="list-table-row">
+                          <td className="list-table-cell code">{item.code}</td>
+                          <td className="list-table-cell description">{item.description}</td>
+                          <td className="list-table-cell">
+                            <span className={`list-badge ${item.isActive ? 'active' : 'inactive'}`}>
+                              {item.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                          </td>
+                          <td className="list-table-cell mono">{new Date(item.createdDate).toLocaleDateString('en-GB')}</td>
+                          <td className="list-table-cell mono">{new Date(item.lastModified).toLocaleDateString('en-GB')}</td>
+                          <td className="list-table-cell">
+                            <div className="list-action-buttons">
+                              <button
+                                onClick={() => toggleItemStatus(item.id)}
+                                className={`list-button ghost ${item.isActive ? 'danger' : 'success'}`}
+                                title={item.isActive ? 'Deactivate' : 'Activate'}
+                              >
+                                {item.isActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
+                              </button>
+                              <button
+                                className="list-button ghost primary"
+                                title="Edit"
+                              >
+                                <Edit3 className="list-icon-sm" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {filteredData.length === 0 && (
+                        <tr>
+                          <td colSpan={6} className="list-table-cell empty">
+                            No items found matching your criteria
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
     }
   };
-
-  const filteredCharges = tpCharges.filter(charge =>
-    charge.chargeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    charge.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
-    <div className="tp-charges-container px-0 mt-5 container">
-      <div className="tp-header">
-        <div className="tp-header-content">
-          <div className="tp-header-info">
-            <div className="tp-header-icon">
-              <Truck className="tp-icon" />
+    <div className="list-management-container ">
+      {/* Header */}
+      <div className="list-header ">
+        <div className="list-header-content container">
+          <div className="list-header-info">
+            <div className="list-header-icon">
+              <Car className="list-icon-sm" />
             </div>
             <div>
-              <h1>TP Charges</h1>
-              <p>Manage Transport Partner Charges</p>
+              <h1 className="list-header-title">TP Charge</h1>
+              <p className="list-header-subtitle">Master data for loading charges with codes and descriptions</p>
             </div>
           </div>
-          <button
-            className="tp-button primary"
-            onClick={() => setShowAddModal(true)}
-          >
-            <Plus className="tp-icon" />
-            Add New Charge
-          </button>
         </div>
       </div>
 
-      <div className="tp-main-content">
-        <div className="tp-search-bar">
-          <div className="search-wrapper">
-            <input
-              type="text"
-              placeholder="Search charges..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
+      {/* Main Container */}
+      <div className="list-main-container container">
 
-        <div className="tp-table-container">
-          <table className="tp-table">
-            <thead>
-              <tr>
-                <th>Charge ID</th>
-                <th>Charge Name</th>
-                <th>Type</th>
-                <th>Rate</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCharges.map(charge => (
-                <tr key={charge.id}>
-                  <td>{charge.id}</td>
-                  <td>{charge.chargeName}</td>
-                  <td>{charge.chargeType}</td>
-                  <td>{charge.rate} {charge.chargeType === 'Percentage' ? '%' : '₹'}</td>
-                  <td>
-                    <span className={`status-badge ${charge.status}`}>
-                      {charge.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      className="action-btn edit"
-                      onClick={() => handleEdit(charge)}
-                    >
-                      <Edit3 className="tp-icon" />
-                    </button>
-                    <button
-                      className="action-btn delete"
-                      onClick={() => handleDelete(charge.id)}
-                    >
-                      ×
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {/* Tab Navigation */}
+        {/* <div className="list-tab-navigation">
+                                <nav className="list-tab-nav">
+                                    <div className="list-tab-list">
+                                        {tabs.map((tab) => (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setActiveTab(tab.id)}
+                                                className={`list-tab-button ${activeTab === tab.id ? 'active' : 'inactive'}`}
+                                            >
+                                                <tab.icon className="list-icon-sm" />
+                                                {tab.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </nav>
+                            </div> */}
+
+        {/* Content Area */}
+        {renderTabContent()}
       </div>
-
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>{editingId ? 'Edit' : 'Add New'} TP Charge</h3>
-              <button onClick={() => setShowAddModal(false)}>×</button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Charge Name *</label>
-                <input
-                  type="text"
-                  value={formData.chargeName}
-                  onChange={(e) => handleInputChange('chargeName', e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Charge Type *</label>
-                <select
-                  value={formData.chargeType}
-                  onChange={(e) => handleInputChange('chargeType', e.target.value as any)}
-                  required
-                >
-                  <option value="Fixed">Fixed Amount</option>
-                  <option value="Percentage">Percentage</option>
-                  <option value="Per Unit">Per Unit</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Rate *</label>
-                <input
-                  type="number"
-                  value={formData.rate}
-                  onChange={(e) => handleInputChange('rate', parseFloat(e.target.value))}
-                  min="0"
-                  step={formData.chargeType === 'Percentage' ? '0.01' : '1'}
-                  required
-                />
-                <span className="input-suffix">
-                  {formData.chargeType === 'Percentage' ? '%' : '₹'}
-                </span>
-              </div>
-
-              <div className="form-group">
-                <label>Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => handleInputChange('status', e.target.value as 'active' | 'inactive')}
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={() => setShowAddModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="submit-btn">
-                  {editingId ? 'Update' : 'Save'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
-};
-
-export default TPCharges;
+}

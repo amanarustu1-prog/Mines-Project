@@ -285,7 +285,7 @@ const navigationItems: NavItem[] = [
             href: '/create-challan',
             icon: Wrench,
             description: 'Material processing and refinement'
-          },         
+          },
           {
             title: 'Pending Challan',
             href: '/mining/transport',
@@ -299,28 +299,28 @@ const navigationItems: NavItem[] = [
             description: 'Material transport and logistics'
           },
 
-           {
+          {
             title: 'Extra TP',
             href: '/mining/transport',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
-           {
+          {
             title: 'Scrape GST Bill',
             href: '/mining/transport',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
-           {
+          {
             title: 'E-Invoice',
             href: '/mining/transport',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
-           {
+          {
             title: 'E-Way Bill',
             href: '/mining/transport',
             icon: Truck,
@@ -331,7 +331,7 @@ const navigationItems: NavItem[] = [
         ]
       },
 
-{
+      {
         title: 'Purchase',
         items: [
           {
@@ -352,7 +352,7 @@ const navigationItems: NavItem[] = [
             icon: Truck,
             description: 'Material transport and logistics'
           },
-          
+
         ]
       },
 
@@ -377,7 +377,7 @@ const navigationItems: NavItem[] = [
             icon: Truck,
             description: 'Material transport and logistics'
           },
-          
+
         ]
       },
 
@@ -390,7 +390,7 @@ const navigationItems: NavItem[] = [
             href: '/mining/planning',
             icon: MapPin,
             description: 'Mine site planning and development'
-            
+
           },
           {
             title: 'Bill Report',
@@ -410,7 +410,7 @@ const navigationItems: NavItem[] = [
             icon: Target,
             description: 'Resource estimation and modeling'
           },
-           {
+          {
             title: 'Party wise Sale Report',
             href: '/mining/resources',
             icon: Target,
@@ -433,7 +433,7 @@ const navigationItems: NavItem[] = [
             title: 'Ledger Group',
             href: '/accounts/create-sales-order',
             icon: Briefcase,
-            description: 'Create new sales orders and quotes'           
+            description: 'Create new sales orders and quotes'
           },
           {
             title: 'Ledger Master',
@@ -454,7 +454,7 @@ const navigationItems: NavItem[] = [
             icon: Users,
             description: 'Manage customer database and relationships'
           },
-          
+
         ]
       },
 
@@ -466,7 +466,7 @@ const navigationItems: NavItem[] = [
             href: '/accounts/create-challan',
             icon: Receipt,
             description: 'Create new delivery challans and receipts'
-           
+
           },
           {
             title: 'Receipt',
@@ -485,7 +485,7 @@ const navigationItems: NavItem[] = [
             href: '/accounts/payments',
             icon: CreditCard,
             description: 'Track customer payments and receipts'
-          },         
+          },
         ]
       },
       {
@@ -774,13 +774,13 @@ const navigationItems: NavItem[] = [
         items: [
 
 
-         {
+          {
             title: 'Machine/Vehicle Master',
             href: '/vehicle-job-details',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
- {
+          {
             title: 'Check-List Setup',
             href: '/daily-check-list',
             icon: Wrench,
@@ -793,7 +793,7 @@ const navigationItems: NavItem[] = [
             description: 'Material transport and logistics'
           },
 
-          
+
           {
             title: 'Maintenance Type Master',
             href: '/mining/processing',
@@ -801,7 +801,7 @@ const navigationItems: NavItem[] = [
             description: 'Material processing and refinement'
           },
 
-           {
+          {
             title: 'Spare Parts Master',
             href: '/mining/transport',
             icon: Truck,
@@ -833,29 +833,29 @@ const navigationItems: NavItem[] = [
       {
         title: 'Check-List',
         items: [
-         
+
           {
             title: 'Check-List Enter Detail',
             href: '/mining/transport',
             icon: Truck,
             description: 'Material transport and logistics'
           },
-         
+
           {
             title: 'Job Card prep',
             href: '/vehicle-job-details',
             icon: Truck,
             description: 'Material transport and logistics'
           },
-         
-         
+
+
         ]
       },
 
       {
         title: 'Service',
         items: [
-                   {
+          {
             title: 'Vehicle Service Entry',
             href: '/vehicle-service-entry',
             icon: Truck,
@@ -868,27 +868,27 @@ const navigationItems: NavItem[] = [
             description: 'Material transport and logistics'
           },
 
-            {
+          {
             title: 'Vehicle Daily Running',
             href: '/vehicle-service-type',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
-            {
+          {
             title: 'Vehicle Job Completion',
             href: '/vehicle-service-type',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
-           {
+          {
             title: 'Vehicle Policy Udate',
             href: '/crusher/maintenance/preventive',
             icon: Shield,
             description: 'Preventive maintenance for crusher units'
           },
-         
+
 
         ]
       },
@@ -902,7 +902,7 @@ const navigationItems: NavItem[] = [
             href: '/mining/planning',
             icon: MapPin,
             description: 'Mine site planning and development'
-           
+
           },
           {
             title: 'Maintenance Job Card',
@@ -917,21 +917,21 @@ const navigationItems: NavItem[] = [
             description: 'Resource estimation and modeling'
           },
 
-            {
+          {
             title: 'AMC & Warranty',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
 
-            {
+          {
             title: 'Repair Log',
             href: '/mining/resources',
             icon: Target,
             description: 'Resource estimation and modeling'
           },
 
-           {
+          {
             title: 'Spare Part Movement Log',
             href: '/mining/resources',
             icon: Target,
@@ -977,7 +977,7 @@ const navigationItems: NavItem[] = [
     icon: CheckCircle,
     sections: [
 
-      
+
       {
         title: 'Master Setup',
         items: [
@@ -1695,7 +1695,7 @@ const navigationItems: NavItem[] = [
           },
         ]
       },
-      
+
     ],
     featured: [
       {
@@ -1963,14 +1963,14 @@ const navigationItems: NavItem[] = [
             description: 'Historical quality data and trends'
           },
 
-            {
+          {
             title: 'E-Invoice Detail',
             href: '/quality/trends',
             icon: TrendingUp,
             description: 'Historical quality data and trends'
           },
 
-            {
+          {
             title: 'E-Way Bill Detail',
             href: '/quality/trends',
             icon: TrendingUp,
