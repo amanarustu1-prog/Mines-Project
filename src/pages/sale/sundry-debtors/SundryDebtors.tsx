@@ -616,6 +616,7 @@ export default function SundryDebtors() {
             {/* List Tab */}
             {activeTab === 'list' && (
               <div className="sundry-debtors-tab-content">
+                
                 <div className="sundry-debtors-section-header">
                   <h2 className="sundry-debtors-section-title">Sundry Debtors List</h2>
                   <p className="sundry-debtors-section-subtitle">

@@ -33,12 +33,6 @@ const FileText = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const List = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-    </svg>
-);
-
 const Settings = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -57,6 +51,35 @@ const Search = ({ className }: { className?: string }) => (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
 );
+
+const Users = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m9 5.197v1M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+);
+
+
+
+const List = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+    </svg>
+);
+
+const BarChart3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 13l4-4L11 13l4-4 4 4M3 21h18" />
+    </svg>
+);
+
+const CreditCard = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+    </svg>
+);
+
+
+
 
 // Types
 interface VehicleMasterEntry {
@@ -386,7 +409,7 @@ export default function VehicleMasterEntry() {
 
                                     <div className="vehicle-master-entry-form-group">
                                         <label className="vehicle-master-entry-form-label">Equipment/Vehicle Type</label>
-                                        
+
                                         <select
                                             value={formData.costHead || ''}
                                             onChange={(e) => handleInputChange('equipmentType', e.target.value)}
@@ -666,6 +689,52 @@ export default function VehicleMasterEntry() {
                                     </p>
                                 </div>
 
+                                {/* Statistics */}
+                                <div className="vehicle-master-entry-stats-grid">
+                                    <div className="vehicle-master-entry-stat-card">
+                                        <div className="vehicle-master-entry-stat-header">
+                                            <div className="vehicle-master-entry-stat-icon vehicle-master-entry-stat-icon-blue">
+                                                <Car className="vehicle-master-entry-icon" />
+                                            </div>
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-value">{vehicles.length}</div>
+                                        <div className="vehicle-master-entry-stat-label">Total Vehicles</div>
+                                    </div>
+                                    <div className="vehicle-master-entry-stat-card">
+                                        <div className="vehicle-master-entry-stat-header">
+                                            <div className="vehicle-master-entry-stat-icon vehicle-master-entry-stat-icon-green">
+                                                <BarChart3 className="vehicle-master-entry-icon" />
+                                            </div>
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-value">
+                                            {vehicles.filter(v => v.costHead === 'Main').length}
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-label">Main Fleet</div>
+                                    </div>
+                                    <div className="vehicle-master-entry-stat-card">
+                                        <div className="vehicle-master-entry-stat-header">
+                                            <div className="vehicle-master-entry-stat-icon vehicle-master-entry-stat-icon-yellow">
+                                                <Settings className="vehicle-master-entry-icon" />
+                                            </div>
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-value">
+                                            {vehicles.filter(v => v.costHead === 'Aux').length}
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-label">Auxiliary Vehicles</div>
+                                    </div>
+                                    <div className="vehicle-master-entry-stat-card">
+                                        <div className="vehicle-master-entry-stat-header">
+                                            <div className="vehicle-master-entry-stat-icon vehicle-master-entry-stat-icon-purple">
+                                                <FileText className="vehicle-master-entry-icon" />
+                                            </div>
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-value">
+                                            {vehicles.filter(v => v.costHead === 'Cont').length}
+                                        </div>
+                                        <div className="vehicle-master-entry-stat-label">Contract Vehicles</div>
+                                    </div>
+                                </div>
+
                                 {/* Search */}
                                 <div className="vehicle-master-entry-search-section">
                                     <div className="vehicle-master-entry-search-container">
@@ -688,39 +757,35 @@ export default function VehicleMasterEntry() {
                                                 <th>SNO</th>
                                                 <th>Reg No</th>
                                                 <th>Make</th>
-                                                <th>Id No.</th>
                                                 <th>Model</th>
-                                                <th>Chasis</th>
-                                                <th>Pol No</th>
-                                                <th>Pol Ren Dt</th>
-                                                <th>Pol Exp Dt</th>
-                                                <th>Rem Dt</th>
-                                                <th>PUC Dt</th>
-                                                <th>PUC Ren Dt</th>
-                                                <th>PUC Rem Dt</th>
-                                                <th>Road Tax</th>
-                                                <th>Empty Wt</th>
-                                                <th>Action</th>
+                                                <th>Type</th>
+                                                <th>Chasis No</th>
+                                                <th>Policy No</th>
+                                                <th>Insurance Exp</th>
+                                                <th>Fitness Exp</th>
+                                                <th>PUC Exp</th>
+                                                <th>Tax Exp</th>
+                                                <th>Permit Exp</th>
+                                                <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {filteredVehicles.map((vehicle, index) => (
                                                 <tr key={vehicle.id}>
                                                     <td>{index + 1}</td>
-                                                    <td>{vehicle.regNo}</td>
-                                                    <td>{vehicle.make}</td>
-                                                    <td>{vehicle.idNo}</td>
-                                                    <td>{vehicle.model}</td>
-                                                    <td>{vehicle.engineChasisNo}</td>
-                                                    <td>{vehicle.policyNo}</td>
-                                                    <td>{vehicle.renewsOn}</td>
-                                                    <td>{vehicle.expiresOn}</td>
-                                                    <td>{vehicle.roadTaxRenewalDate}</td>
-                                                    <td>{vehicle.pucRenewDate}</td>
-                                                    <td>{vehicle.pucRenewDate}</td>
-                                                    <td>{vehicle.pucExpiryDate}</td>
-                                                    <td>{vehicle.roadTaxAmount}</td>
-                                                    <td>{vehicle.emptyWeight}</td>
+                                                    <td className="text-nowrap">{vehicle.regNo}</td>
+                                                    <td className="text-nowrap">{vehicle.make}</td>
+                                                    <td className="text-nowrap">{vehicle.model}</td>
+                                                    <td className="text-nowrap">{vehicle.costHead || '-'}</td>
+                                                    <td className="text-nowrap" title={vehicle.engineChasisNo}>
+                                                        {vehicle.engineChasisNo.substring(0, 10)}{vehicle.engineChasisNo.length > 10 ? '...' : ''}
+                                                    </td>
+                                                    <td className="text-nowrap">{vehicle.policyNo || '-'}</td>
+                                                    <td className="text-nowrap">{vehicle.expiresOn || '-'}</td>
+                                                    <td className="text-nowrap">{vehicle.fitnessExpDate || '-'}</td>
+                                                    <td className="text-nowrap">{vehicle.pucExpiryDate || '-'}</td>
+                                                    <td className="text-nowrap">{vehicle.roadTaxExpDate || '-'}</td>
+                                                    <td className="text-nowrap">{vehicle.permitExpiryDate || '-'}</td>
                                                     <td>
                                                         <div className="vehicle-master-entry-table-actions">
                                                             <button
