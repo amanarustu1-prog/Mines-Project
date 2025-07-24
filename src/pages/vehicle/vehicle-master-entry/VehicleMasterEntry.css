@@ -172,7 +172,7 @@
 
 .vehicle-master-entry-tabs-nav {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .vehicle-master-entry-tabs-list {
@@ -214,7 +214,7 @@
 /* ===== Content Areas ===== */
 .vehicle-master-entry-section-header {
   margin-bottom: 1rem;
-  text-align: center;
+  /* text-align: center; */
 }
 
 .vehicle-master-entry-section-title {
@@ -306,13 +306,13 @@
 
 /* ===== Search ===== */
 .vehicle-master-entry-search-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .vehicle-master-entry-search-container {
   position: relative;
   max-width: 400px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 
 .vehicle-master-entry-search-input {
@@ -411,6 +411,77 @@
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
+  margin: 0;
+}
+
+/* ===== Statistics Grid ===== */
+.vehicle-master-entry-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.vehicle-master-entry-stat-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vehicle-master-entry-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.vehicle-master-entry-stat-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.vehicle-master-entry-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+.vehicle-master-entry-stat-icon-blue {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.vehicle-master-entry-stat-icon-green {
+  background-color: #d1fae5;
+  color: #10b981;
+}
+
+.vehicle-master-entry-stat-icon-yellow {
+  background-color: #fef3c7;
+  color: #f59e0b;
+}
+
+.vehicle-master-entry-stat-icon-purple {
+  background-color: #ede9fe;
+  color: #8b5cf6;
+}
+
+.vehicle-master-entry-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.vehicle-master-entry-stat-label {
+  font-size: 0.75rem;
+  color: #6b7280;
   margin: 0;
 }
 
@@ -614,4 +685,84 @@
   .vehicle-master-entry-table td {
     padding: 0.5rem;
   }
+}
+
+.sundry-debtors-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sundry-debtors-stat-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.sundry-debtors-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.sundry-debtors-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+/* ===== Icons ===== */
+.sundry-debtors-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.sundry-debtors-icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.sundry-debtors-stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.sundry-debtors-stat-label {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.sundry-debtors-stat-icon-blue {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+.sundry-debtors-stat-icon-green {
+  background: rgba(34, 197, 94, 0.1);
+  color: #059669;
+}
+
+.sundry-debtors-stat-icon-yellow {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.sundry-debtors-stat-icon-purple {
+  background: rgba(147, 51, 234, 0.1);
+  color: #7c3aed;
+}
+
+.sundry-debtors-stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
 }
