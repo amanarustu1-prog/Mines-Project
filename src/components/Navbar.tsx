@@ -431,7 +431,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Ledger Group',
-            href: '/accounts/create-sales-order',
+            href: '/ledger-group',
             icon: Briefcase,
             description: 'Create new sales orders and quotes'
           },
@@ -871,14 +871,14 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Vehicle Daily Running',
-            href: '/vehicle-service-type',
+            href: '/daily-running',
             icon: Truck,
             description: 'Material transport and logistics'
           },
 
           {
             title: 'Vehicle Job Completion',
-            href: '/vehicle-service-type',
+            href: '/vehicle-job-completion',
             icon: Truck,
             description: 'Material transport and logistics'
           },

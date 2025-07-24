@@ -1,0 +1,832 @@
+/* ===== Ledger Management Styles ===== */
+
+/* Base styles */
+.ledger-management {
+    min-height: 100vh;
+    background: white;
+    padding: 1rem;
+}
+
+/* ===== Header ===== */
+.ledger-management-header {
+    margin-bottom: 1rem;
+    margin-top: 4.5rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ledger-management-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 0.85rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ledger-management-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ledger-management-header-icon {
+    width: 2rem;
+    height: 2rem;
+    color: black;
+}
+
+.ledger-management-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.ledger-management-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.75rem;
+}
+
+.ledger-management-header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* ===== Main Content ===== */
+.ledger-management-main {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===== Buttons ===== */
+.ledger-management-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.ledger-management-btn-primary {
+    background: black;
+    color: white;
+}
+
+.ledger-management-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ledger-management-btn-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+.ledger-management-btn-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+}
+
+.ledger-management-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ledger-management-btn-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: black;
+}
+
+.ledger-management-btn-icon-danger {
+    color: #dc2626;
+}
+
+.ledger-management-btn-icon-danger:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+}
+
+.ledger-management-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== Icons ===== */
+.ledger-management-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.ledger-management-icon-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+/* ===== Tabs ===== */
+.ledger-management-tabs {
+    margin-bottom: 1rem;
+}
+
+.ledger-management-tabs-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ledger-management-tabs-nav {
+    padding: 0.85rem;
+}
+
+.ledger-management-tabs-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+}
+
+.ledger-management-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.ledger-management-tab:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+}
+
+.ledger-management-tab.active {
+    background: black;
+    color: white;
+}
+
+.ledger-management-tab-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* ===== Content Areas ===== */
+.ledger-management-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ledger-management-tab-content {
+    padding: 1rem;
+}
+
+.ledger-management-section-header {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.ledger-management-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.ledger-management-section-subtitle {
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+}
+
+/* ===== Cards ===== */
+.ledger-management-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+}
+
+.ledger-management-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.ledger-management-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+}
+
+.ledger-management-card-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.ledger-management-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* ===== Layout Utilities ===== */
+.ledger-management-flex {
+    display: flex;
+}
+
+.ledger-management-items-center {
+    align-items: center;
+}
+
+.ledger-management-justify-between {
+    justify-content: space-between;
+}
+
+.ledger-management-gap-2 {
+    gap: 0.5rem;
+}
+
+.ledger-management-gap-3 {
+    gap: 0.75rem;
+}
+
+.ledger-management-gap-4 {
+    gap: 1rem;
+}
+
+.ledger-management-gap-6 {
+    gap: 1.5rem;
+}
+
+.ledger-management-grid {
+    display: grid;
+}
+
+.ledger-management-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.ledger-management-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ledger-management-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ledger-management-grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+    .ledger-management-md-grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ledger-management-md-grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ledger-management-md-grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.ledger-management-space-y-2>*+* {
+    margin-top: 0.5rem;
+}
+
+.ledger-management-space-y-4>*+* {
+    margin-top: 1rem;
+}
+
+.ledger-management-mt-4 {
+    margin-top: 1rem;
+}
+
+.ledger-management-mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+/* ===== Typography ===== */
+.ledger-management-text-xs {
+    font-size: 0.75rem;
+}
+
+.ledger-management-text-sm {
+    font-size: 0.875rem;
+}
+
+.ledger-management-text-lg {
+    font-size: 1.125rem;
+}
+
+.ledger-management-text-2xl {
+    font-size: 1.5rem;
+}
+
+.ledger-management-font-medium {
+    font-weight: 500;
+}
+
+.ledger-management-font-semibold {
+    font-weight: 600;
+}
+
+.ledger-management-font-bold {
+    font-weight: 700;
+}
+
+.ledger-management-text-gray-500 {
+    color: #6b7280;
+}
+
+.ledger-management-text-gray-600 {
+    color: #4b5563;
+}
+
+.ledger-management-text-gray-700 {
+    color: #374151;
+}
+
+/* ===== Statistics Cards ===== */
+.ledger-management-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.ledger-management-stat-icon-blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.ledger-management-stat-icon-green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.ledger-management-stat-icon-yellow {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.ledger-management-stat-icon-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.ledger-management-stat-icon-red {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* ===== Progress Bar ===== */
+.ledger-management-progress-bar {
+    width: 100%;
+    height: 0.5rem;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.ledger-management-progress-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+/* ===== Badges ===== */
+.ledger-management-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.ledger-management-badge-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.ledger-management-badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.ledger-management-badge-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.ledger-management-badge-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.ledger-management-badge-debit {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.ledger-management-badge-credit {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+/* ===== Table ===== */
+.ledger-management-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    background: white;
+}
+
+.ledger-management-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.875rem;
+}
+
+.ledger-management-table th {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.ledger-management-table td {
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: top;
+}
+
+.ledger-management-table tr:hover {
+    background: #f9fafb;
+}
+
+.ledger-management-table .debit {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.ledger-management-table .credit {
+    color: #059669;
+    font-weight: 600;
+}
+
+.ledger-management-table .balance {
+    font-weight: 600;
+}
+
+/* ===== Forms ===== */
+.ledger-management-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.ledger-management-search-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.ledger-management-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: #6b7280;
+}
+
+.ledger-management-search-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+}
+
+.ledger-management-search-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.ledger-management-select {
+    min-width: 150px;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+}
+
+.ledger-management-select:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.ledger-management-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+}
+
+.ledger-management-input:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.ledger-management-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.875rem;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.ledger-management-textarea:focus {
+    outline: none;
+    border-color: black;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.ledger-management-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.ledger-management-form-group {
+    margin-bottom: 1rem;
+}
+
+.ledger-management-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* ===== Ledger Entry Form ===== */
+.ledger-entry-form {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.ledger-entry-form h3 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.ledger-entry-amount {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.ledger-entry-summary {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.ledger-entry-summary-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #374151;
+}
+
+.ledger-entry-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+}
+
+.ledger-entry-summary-total {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    font-weight: 600;
+}
+
+/* ===== Modals ===== */
+.ledger-management-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.ledger-management-modal {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.ledger-management-modal-lg {
+    max-width: 800px;
+}
+
+.ledger-management-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ledger-management-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.ledger-management-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s;
+}
+
+.ledger-management-modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.ledger-management-modal-content {
+    padding: 1.5rem;
+}
+
+.ledger-management-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+    .ledger-management-header-content {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .ledger-management-header-actions {
+        justify-content: center;
+    }
+
+    .ledger-management-tabs-list {
+        justify-content: flex-start;
+    }
+
+    .ledger-management-section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ledger-management-filters {
+        flex-direction: column;
+    }
+
+    .ledger-management-search-container {
+        min-width: auto;
+    }
+
+    .ledger-management-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .ledger-entry-amount {
+        grid-template-columns: 1fr;
+    }
+
+    .ledger-management-modal {
+        margin: 0.5rem;
+        max-width: none;
+    }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+
+    .ledger-management-header-actions,
+    .ledger-management-btn,
+    .ledger-management-tabs-nav,
+    .ledger-management-filters {
+        display: none !important;
+    }
+
+    .ledger-management {
+        padding: 0;
+    }
+
+    .ledger-management-content {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+
+    .ledger-management-table {
+        font-size: 0.75rem;
+    }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ledger-management-tab-content {
+    animation: fadeIn 0.2s ease-in-out;
+}

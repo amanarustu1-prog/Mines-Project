@@ -47,13 +47,13 @@ const SaveIcon = () => (
 );
 
 const DownloadIcon = () => (
-    <svg className="employee-master-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="employee-master-icon" fill="none" stroke="black" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
     </svg>
 );
 
 const Edit3Icon = () => (
-    <svg className="employee-master-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="employee-master-icon" fill="none" stroke="black" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
 );
@@ -309,9 +309,26 @@ function EmployeeMaster() {
                                                     <td className="employee-master-value">{formatCurrency(employee.salary)}</td>
                                                     <td>{getStatusBadge(employee.status)}</td>
                                                     <td>
-                                                        <div style={{ display: 'flex', gap: '0.25rem' }}>
-                                                            <button className="employee-master-button-ghost">
+                                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                            <button 
+                                                                className="employee-master-button-ghost"
+                                                                title="Edit Employee"
+                                                                onClick={() => console.log('Edit:', employee.id)}
+                                                            >
                                                                 <Edit3Icon />
+                                                            </button>
+                                                            <button 
+                                                                className="employee-master-button-ghost"
+                                                                title="Delete Employee"
+                                                                onClick={() => {
+                                                                    if (window.confirm(`Are you sure you want to delete ${employee.name}?`)) {
+                                                                        console.log('Delete:', employee.id);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <svg className="employee-master-icon" fill="none" stroke="red" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                </svg>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -489,6 +506,7 @@ function EmployeeMaster() {
                                         <button
                                             onClick={handleSaveEmployee}
                                             className="employee-master-button employee-master-button-success"
+                                            style={{ backgroundColor: 'black', color: 'white' }}
                                             disabled={!newEmployee.empNo || !newEmployee.name || !newEmployee.fatherName || !newEmployee.mobile || !newEmployee.email || !newEmployee.designation || !newEmployee.department}
                                         >
                                             <SaveIcon />
@@ -594,15 +612,15 @@ function EmployeeMaster() {
                 <div className="employee-master-header-content">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                         <div className="employee-master-logo">
-                            <UserIcon style={{ color: 'white' }} />
+                            <UserIcon />
                         </div>
                         <div>
                             <h1 className="employee-master-title">Employee Master</h1>
                             <p className="employee-master-subtitle">Comprehensive employee information management system</p>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button className="employee-master-button employee-master-button-outline employee-master-button-sm">
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'black' }}>
+                        <button className="employee-master-button employee-master-button-outline employee-master-button-sm" style={{ color: 'black' }}>
                             <DownloadIcon />
                             Export
                         </button>
@@ -611,7 +629,8 @@ function EmployeeMaster() {
             </div>
 
             {/* Main Container */}
-            <div className="employee-master-main container">
+            {/* container */}
+            <div className="employee-master-main ">
 
                 {/* Tab Navigation */}
                 <div className="employee-master-tabs">
