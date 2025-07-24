@@ -1,30 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import './CreateChallan.css';
 
-// Icons
-const ArrowLeft = ({ className }: { className?: string }) => (
+// Icon components
+const Receipt = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-    </svg>
-);
-
-const Calendar = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-);
-
-const User = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    </svg>
-);
-
-const Truck = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5l-5-5 4-4 5 5v6a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h7l5 5v11z" />
     </svg>
 );
 
@@ -34,758 +14,1483 @@ const Plus = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const Save = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+    </svg>
+);
+
+const Download = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+);
+
+const List = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+    </svg>
+);
+
+const Calendar = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
+    </svg>
+);
+
+const Search = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+);
+
 const Trash2 = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 22H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+);
+
+const Edit3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+);
+
+const BarChart3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 13l4-4L11 13l4-4 4 4M3 21h18" />
     </svg>
 );
 
 // Types
-interface Customer {
+interface ProductDetail {
     id: string;
     name: string;
-    phone: string;
-    address: string;
-}
-
-interface Vehicle {
-    id: string;
-    number: string;
-    type: string;
-}
-
-interface ProductItem {
-    id: string;
-    productName: string;
     rate: number;
-    quantity: number;
-    billRate: number;
+    grossWeight: number;
+    dateTime: string;
+    netWeight: number;
+    lessWeight: number;
+    gtWeight: number;
     amount: number;
 }
 
-interface ChallanFormData {
-    customerId: string;
-    challanDate: string;
-    challanNumber: string;
-    billingType: 'per_ton' | 'per_vehicle' | 'lumpsum';
-    vehicleNumber: string;
-    driverName: string;
-    transporterName: string;
-    loadingPoint: string;
-    destination: string;
-    grossWeight: number;
+interface WeightDetail {
     tareWeight: number;
+    dateTime: string;
     netWeight: number;
-    products: ProductItem[];
-    remarks: string;
+    lessWeight: number;
+    totalGTWeight: number;
+    vehicleCommission: number;
 }
 
-// Sample data
-const CUSTOMERS: Customer[] = [
-    { id: '1', name: 'ABC Construction', phone: '9876543210', address: '123 Main St, City' },
-    { id: '2', name: 'XYZ Builders', phone: '9876543211', address: '456 Park Ave, Town' },
-    { id: '3', name: 'PQR Infra', phone: '9876543212', address: '789 Market Rd, Village' },
-];
+interface ChallanFormData {
+    challanNo: string;
+    financialYear: string;
+    autoGenerated: boolean;
+    dateTime: string;
+    paymentType: 'cash' | 'credit';
 
-const VEHICLES: Vehicle[] = [
-    { id: 'v1', number: 'RJ14 AB 1234', type: 'Truck' },
-    { id: 'v2', number: 'RJ14 CD 5678', type: 'Truck' },
-    { id: 'v3', number: 'RJ14 EF 9012', type: 'Truck' },
-];
+    // Consignee details
+    consignee: string;
+    address: string;
+    state: string;
+    district: string;
+    pin: string;
+    contact: string;
+    emailId: string;
 
-const PRODUCTS = [
-    { id: 'p1', name: 'Sand', rate: 1200 },
-    { id: 'p2', name: 'Grit', rate: 1000 },
-    { id: 'p3', name: 'Stone Dust', rate: 800 },
-    { id: 'p4', name: 'Boulder', rate: 2000 },
-    { id: 'p5', name: 'Aggregate 10mm', rate: 1500 },
-    { id: 'p6', name: 'Aggregate 20mm', rate: 1400 },
-];
+    // Vehicle details
+    advAmount: number;
+    vehicleType: string;
+    vehicleNo: string;
+    vehicleRemarks: string;
+    driverName: string;
+    driverNumber: string;
 
-const LOADING_POINTS = [
-    'Crusher Plant 1',
-    'Crusher Plant 2',
-    'Stockyard',
-    'Quarry Site 1',
-    'Quarry Site 2',
-];
+    // GST details
+    gstBill: boolean;
+    gstNumber: string;
+    gstName: string;
+    gstAddress: string;
+    gstState: string;
+    gstDistrict: string;
+    gstPin: string;
 
-const DESTINATIONS = [
-    'ABC Construction Site',
-    'XYZ Builders Project',
-    'PQR Infra Site',
-    'Customer Site',
-    'Other',
-];
+    // Additional fields
+    endUser: boolean;
+    dealer: boolean;
+    balance: number;
+    limit: number;
 
-const CreateChallan: React.FC = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState<ChallanFormData>({
-        customerId: '',
-        challanDate: new Date().toISOString().split('T')[0],
-        challanNumber: `CH-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`,
-        billingType: 'per_ton',
-        vehicleNumber: '',
+    // Product and weight details
+    productDetails: ProductDetail[];
+    weightDetails: WeightDetail;
+
+    // Amount details
+    amount: number;
+    loading: number;
+    commission: number;
+    total: number;
+    gstAmount: number;
+    royalty: number;
+    tpAmount: number;
+    freightAmt: number;
+    extraAmt: number;
+    grandTotal: number;
+}
+
+export default function CreateChallan() {
+    const [activeTab, setActiveTab] = useState('history');
+    const [challanData, setChallanData] = useState<ChallanFormData>({
+        challanNo: 'S',
+        financialYear: '2025-2026',
+        autoGenerated: true,
+        dateTime: '23/07/2025 19:57:00',
+        paymentType: 'cash',
+
+        consignee: '',
+        address: '',
+        state: '',
+        district: '',
+        pin: '',
+        contact: '',
+        emailId: '',
+
+        advAmount: 0,
+        vehicleType: '',
+        vehicleNo: '',
+        vehicleRemarks: '',
         driverName: '',
-        transporterName: '',
-        loadingPoint: LOADING_POINTS[0],
-        destination: DESTINATIONS[0],
-        grossWeight: 0,
-        tareWeight: 0,
-        netWeight: 0,
-        products: [{
-            id: '1',
-            productName: '',
-            rate: 0,
-            quantity: 0,
-            billRate: 0,
-            amount: 0
-        }],
-        remarks: ''
+        driverNumber: '',
+
+        gstBill: false,
+        gstNumber: '',
+        gstName: '',
+        gstAddress: '',
+        gstState: '',
+        gstDistrict: '',
+        gstPin: '',
+
+        endUser: true,
+        dealer: false,
+        balance: 0,
+        limit: 0,
+
+        productDetails: [],
+        weightDetails: {
+            tareWeight: 0,
+            dateTime: '',
+            netWeight: 0,
+            lessWeight: 0,
+            totalGTWeight: 0,
+            vehicleCommission: 0,
+        },
+
+        amount: 0,
+        loading: 0,
+        commission: 0,
+        total: 0,
+        gstAmount: 0,
+        royalty: 0,
+        tpAmount: 0,
+        freightAmt: 0,
+        extraAmt: 0,
+        grandTotal: 0,
     });
 
-    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-    const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [productDetails, setProductDetails] = useState<ProductDetail[]>([
+        {
+            id: '1',
+            name: '',
+            rate: 0,
+            grossWeight: 0,
+            dateTime: '',
+            netWeight: 0,
+            lessWeight: 0,
+            gtWeight: 0,
+            amount: 0,
+        },
+    ]);
 
-    // Handle form input changes
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: name === 'grossWeight' || name === 'tareWeight' || name === 'netWeight'
-                ? parseFloat(value) || 0
-                : value
-        }));
-
-        // Auto-calculate net weight when gross or tare weight changes
-        if (name === 'grossWeight' || name === 'tareWeight') {
-            const gross = name === 'grossWeight' ? (parseFloat(value) || 0) : formData.grossWeight;
-            const tare = name === 'tareWeight' ? (parseFloat(value) || 0) : formData.tareWeight;
-            const net = Math.max(0, gross - tare);
-
-            setFormData(prev => ({
-                ...prev,
-                netWeight: net,
-                products: prev.products.map(p => ({
-                    ...p,
-                    quantity: net,
-                    amount: net * p.rate
-                }))
-            }));
+    // Demo challan history data
+    const [challanHistory] = useState([
+        {
+            id: 'CHN001',
+            challanNo: 'S/2025-2026/001',
+            date: '2025-07-24',
+            time: '09:30:00',
+            consignee: 'ABC Construction Ltd.',
+            vehicleNo: 'MH12AB1234',
+            driverName: 'Rajesh Kumar',
+            productName: 'Crushed Stone',
+            quantity: 15.5,
+            amount: 125000,
+            status: 'Completed',
+            paymentType: 'Cash'
+        },
+        {
+            id: 'CHN002',
+            challanNo: 'S/2025-2026/002',
+            date: '2025-07-24',
+            time: '11:15:00',
+            consignee: 'XYZ Builders Pvt Ltd',
+            vehicleNo: 'MH14CD5678',
+            driverName: 'Suresh Patil',
+            productName: 'River Sand',
+            quantity: 12.0,
+            amount: 85000,
+            status: 'In Transit',
+            paymentType: 'Credit'
+        },
+        {
+            id: 'CHN003',
+            challanNo: 'S/2025-2026/003',
+            date: '2025-07-23',
+            time: '14:45:00',
+            consignee: 'Metro Infrastructure',
+            vehicleNo: 'MH16EF9012',
+            driverName: 'Amit Sharma',
+            productName: 'Gravel',
+            quantity: 18.2,
+            amount: 95000,
+            status: 'Completed',
+            paymentType: 'Cash'
+        },
+        {
+            id: 'CHN004',
+            challanNo: 'S/2025-2026/004',
+            date: '2025-07-23',
+            time: '16:20:00',
+            consignee: 'Sai Construction',
+            vehicleNo: 'MH18GH3456',
+            driverName: 'Vikram Singh',
+            productName: 'M-Sand',
+            quantity: 20.0,
+            amount: 110000,
+            status: 'Pending',
+            paymentType: 'Credit'
+        },
+        {
+            id: 'CHN005',
+            challanNo: 'S/2025-2026/005',
+            date: '2025-07-22',
+            time: '10:30:00',
+            consignee: 'Royal Developers',
+            vehicleNo: 'MH20IJ7890',
+            driverName: 'Mahesh Yadav',
+            productName: 'Crushed Stone',
+            quantity: 16.8,
+            amount: 135000,
+            status: 'Completed',
+            paymentType: 'Cash'
+        },
+        {
+            id: 'CHN006',
+            challanNo: 'S/2025-2026/006',
+            date: '2025-07-22',
+            time: '13:15:00',
+            consignee: 'Green Build Solutions',
+            vehicleNo: 'MH22KL2345',
+            driverName: 'Ravi Desai',
+            productName: 'River Sand',
+            quantity: 14.5,
+            amount: 98000,
+            status: 'In Transit',
+            paymentType: 'Credit'
+        },
+        {
+            id: 'CHN007',
+            challanNo: 'S/2025-2026/007',
+            date: '2025-07-21',
+            time: '08:45:00',
+            consignee: 'Prime Infrastructure',
+            vehicleNo: 'MH24MN6789',
+            driverName: 'Deepak Joshi',
+            productName: 'Aggregate',
+            quantity: 22.1,
+            amount: 155000,
+            status: 'Completed',
+            paymentType: 'Cash'
+        },
+        {
+            id: 'CHN008',
+            challanNo: 'S/2025-2026/008',
+            date: '2025-07-21',
+            time: '15:30:00',
+            consignee: 'Skyline Constructions',
+            vehicleNo: 'MH26OP0123',
+            driverName: 'Santosh Pawar',
+            productName: 'Stone Chips',
+            quantity: 19.3,
+            amount: 142000,
+            status: 'Completed',
+            paymentType: 'Credit'
+        },
+        {
+            id: 'CHN009',
+            challanNo: 'S/2025-2026/009',
+            date: '2025-07-20',
+            time: '11:00:00',
+            consignee: 'Unity Builders',
+            vehicleNo: 'MH28QR4567',
+            driverName: 'Ganesh Kulkarni',
+            productName: 'Crushed Stone',
+            quantity: 17.6,
+            amount: 128000,
+            status: 'Cancelled',
+            paymentType: 'Cash'
+        },
+        {
+            id: 'CHN010',
+            challanNo: 'S/2025-2026/010',
+            date: '2025-07-20',
+            time: '17:15:00',
+            consignee: 'Modern Contractors',
+            vehicleNo: 'MH30ST8901',
+            driverName: 'Pravin Jadhav',
+            productName: 'M-Sand',
+            quantity: 21.4,
+            amount: 118000,
+            status: 'Completed',
+            paymentType: 'Credit'
         }
-    };
+    ]);
 
-    // Handle customer selection
-    const handleCustomerSelect = (customer: Customer) => {
-        setSelectedCustomer(customer);
-        setFormData(prev => ({
+    // Filter states for history
+    const [historyFilters, setHistoryFilters] = useState({
+        searchTerm: '',
+        dateFrom: '',
+        dateTo: '',
+        status: '',
+        paymentType: '',
+        consignee: ''
+    });
+
+    // Filtered history data
+    const filteredHistory = challanHistory.filter(challan => {
+        const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+            challan.consignee.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+            challan.vehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+            challan.driverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
+
+        const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
+        const matchesDateTo = !historyFilters.dateTo || challan.date <= historyFilters.dateTo;
+        const matchesStatus = !historyFilters.status || challan.status === historyFilters.status;
+        const matchesPaymentType = !historyFilters.paymentType || challan.paymentType === historyFilters.paymentType;
+        const matchesConsignee = !historyFilters.consignee || challan.consignee.toLowerCase().includes(historyFilters.consignee.toLowerCase());
+
+        return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
+    });
+
+    const handleInputChange = (field: keyof ChallanFormData, value: any) => {
+        setChallanData(prev => ({
             ...prev,
-            customerId: customer.id
+            [field]: value,
         }));
     };
 
-    // Handle vehicle selection
-    const handleVehicleSelect = (vehicle: Vehicle) => {
-        setSelectedVehicle(vehicle);
-        setFormData(prev => ({
-            ...prev,
-            vehicleNumber: vehicle.number
-        }));
+    const addProductDetail = () => {
+        const newProduct: ProductDetail = {
+            id: Date.now().toString(),
+            name: '',
+            rate: 0,
+            grossWeight: 0,
+            dateTime: '',
+            netWeight: 0,
+            lessWeight: 0,
+            gtWeight: 0,
+            amount: 0,
+        };
+        setProductDetails([...productDetails, newProduct]);
     };
 
-    // Handle product changes
-    const handleProductChange = (index: number, field: string, value: string | number) => {
-        setFormData(prev => {
-            const updatedProducts = [...prev.products];
-            const product = { ...updatedProducts[index] };
-
-            // @ts-ignore - Dynamic property access
-            product[field] = typeof value === 'string' && !isNaN(Number(value)) ? parseFloat(value) : value;
-
-            // Calculate amount if rate or quantity changes
-            if (field === 'rate' || field === 'quantity') {
-                product.amount = (product.rate || 0) * (product.quantity || 0);
-            }
-
-            updatedProducts[index] = product;
-
-            return {
-                ...prev,
-                products: updatedProducts
-            };
-        });
+    const removeProductDetail = (id: string) => {
+        setProductDetails(productDetails.filter(product => product.id !== id));
     };
 
-    // Add new product row
-    const addProductRow = () => {
-        setFormData(prev => ({
-            ...prev,
-            products: [
-                ...prev.products,
-                {
-                    id: Date.now().toString(),
-                    productName: '',
-                    rate: 0,
-                    quantity: prev.netWeight || 0,
-                    billRate: 0,
-                    amount: 0
-                }
-            ]
-        }));
+    const updateProductDetail = (id: string, field: keyof ProductDetail, value: any) => {
+        setProductDetails(productDetails.map(product =>
+            product.id === id ? { ...product, [field]: value } : product
+        ));
     };
 
-    // Remove product row
-    const removeProductRow = (index: number) => {
-        if (formData.products.length > 1) {
-            setFormData(prev => ({
-                ...prev,
-                products: prev.products.filter((_, i) => i !== index)
-            }));
-        }
-    };
-
-    // Calculate totals
     const calculateTotals = () => {
-        return formData.products.reduce((acc, product) => ({
-            quantity: acc.quantity + (product.quantity || 0),
-            amount: acc.amount + (product.amount || 0)
-        }), { quantity: 0, amount: 0 });
+        const subtotal = challanData.amount + challanData.loading + challanData.commission;
+        const grandTotal = subtotal + challanData.gstAmount + challanData.royalty +
+            challanData.tpAmount + challanData.freightAmt + challanData.extraAmt;
+
+        handleInputChange('total', subtotal);
+        handleInputChange('grandTotal', grandTotal);
     };
 
-    const { quantity: totalQuantity, amount: totalAmount } = calculateTotals();
-
-    // Handle form submission
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        // Simulate API call
-        setTimeout(() => {
-            console.log('Form submitted:', formData);
-            setIsSubmitting(false);
-            // Show success message or redirect
-            alert('Challan created successfully!');
-            // navigate('/challans');
-        }, 1000);
+    const saveChallan = () => {
+        console.log('Saving challan:', challanData);
+        // Implement save logic
+        alert('Challan saved successfully!');
     };
 
-    // Handle reset form
-    const handleReset = () => {
-        if (window.confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
-            setFormData({
-                customerId: '',
-                challanDate: new Date().toISOString().split('T')[0],
-                challanNumber: `CH-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`,
-                billingType: 'per_ton',
-                vehicleNumber: '',
-                driverName: '',
-                transporterName: '',
-                loadingPoint: LOADING_POINTS[0],
-                destination: DESTINATIONS[0],
-                grossWeight: 0,
-                tareWeight: 0,
-                netWeight: 0,
-                products: [{
-                    id: '1',
-                    productName: '',
-                    rate: 0,
-                    quantity: 0,
-                    billRate: 0,
-                    amount: 0
-                }],
-                remarks: ''
-            });
-            setSelectedCustomer(null);
-            setSelectedVehicle(null);
-        }
+    const printChallan = () => {
+        window.print();
     };
 
     return (
-        <div className="create-challan-container px-0 container">
-            {/* Header Section */}
-            <div className="challan-header">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="btn-back"
-                >
-                    <ArrowLeft className="icon" />
-                    Back
-                </button>
-                <h1>Create Challan</h1>
-                <div className="challan-number">
-                    <span>Challan #: {formData.challanNumber}</span>
+        <div className="challan-screen">
+            {/* Header */}
+            <div className="challan-screen-header">
+                <div className="challan-screen-header-content">
+                    <div className="challan-screen-title-section">
+                        <Receipt className="challan-screen-header-icon" />
+                        <div>
+                            <h1 className="challan-screen-title">Challan Management</h1>
+                            <p className="challan-screen-subtitle">Create and manage mining transport challans</p>
+                        </div>
+                    </div>
+                    <div className="challan-screen-header-actions">
+                        <button className="challan-screen-btn challan-screen-btn-secondary" onClick={printChallan}>
+                            <Download className="challan-screen-icon" />
+                            Print
+                        </button>
+                        <button className="challan-screen-btn challan-screen-btn-primary" onClick={saveChallan}>
+                            <Save className="challan-screen-icon" />
+                            Save Challan
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="challan-form px-0">
-                {/* Customer & Challan Info Section */}
-                <div className="challan-section">
-                    <div className="section-header">
-                        <h2>Customer & Challan Information</h2>
-                    </div>
-                    <div className="form-grid p-3">
-                        <div className="form-group">
-                            <label>Customer <span className="required">*</span></label>
-                            <div className="dropdown">
+            {/* Main Content */}
+            <div className="challan-screen-main">
+                {/* Tabs */}
+                <div className="challan-screen-tabs">
+                    <div className="challan-screen-tabs-container">
+                        <nav className="challan-screen-tabs-nav">
+                            <div className="challan-screen-tabs-list">
                                 <button
-                                    type="button"
-                                    className="dropdown-toggle"
-                                    onClick={() => document.getElementById('customerDropdown')?.classList.toggle('show')}
+                                    className={`challan-screen-tab ${activeTab === 'history' ? 'active' : ''}`}
+                                    onClick={() => setActiveTab('history')}
                                 >
-                                    {selectedCustomer ? selectedCustomer.name : 'Select Customer'}
+                                    <List className="challan-screen-tab-icon" />
+                                    Challan History
                                 </button>
-                                <div id="customerDropdown" className="dropdown-content">
-                                    <input
-                                        type="text"
-                                        placeholder="Search customer..."
-                                        className="dropdown-search"
-                                        onChange={(e) => {
-                                            const search = e.target.value.toLowerCase();
-                                            const items = document.querySelectorAll('.customer-item');
-                                            items.forEach(item => {
-                                                const text = item.textContent?.toLowerCase() || '';
-                                                (item as HTMLElement).style.display = text.includes(search) ? 'block' : 'none';
-                                            });
-                                        }}
-                                    />
-                                    {CUSTOMERS.map(customer => (
-                                        <div
-                                            key={customer.id}
-                                            className="dropdown-item customer-item"
-                                            onClick={() => {
-                                                handleCustomerSelect(customer);
-                                                document.getElementById('customerDropdown')?.classList.remove('show');
-                                            }}
-                                        >
-                                            <div className="customer-name">{customer.name}</div>
-                                            <div className="customer-phone">{customer.phone}</div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <button
+                                    className={`challan-screen-tab ${activeTab === 'create' ? 'active' : ''}`}
+                                    onClick={() => setActiveTab('create')}
+                                >
+                                    <Plus className="challan-screen-tab-icon" />
+                                    Create Challan
+                                </button>
+
                             </div>
-                            {selectedCustomer && (
-                                <div className="customer-details">
-                                    <div className="customer-address">
-                                        <User className="icon-sm" />
-                                        <span>{selectedCustomer.address}</span>
+                        </nav>
+                    </div>
+                </div>
+
+                {/* Create Challan Tab */}
+                <div className={`challan-screen-tab-content ${activeTab === 'create' ? 'active' : ''}`}>
+                    <div className="challan-screen-form-container">
+
+                        {/* Basic Challan Information */}
+                        <div className="challan-screen-form-section">
+                            <h3 className="challan-screen-form-section-title">
+                                <Receipt className="challan-screen-icon" />
+                                Challan
+                            </h3>
+
+                            <div className="challan-screen-form-row-4">
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">
+                                        Challan No <span className="challan-screen-label-required">*</span>
+                                    </label>
+                                    <div className="challan-screen-form-group-inline">
+                                        <input
+                                            type="text"
+                                            className="challan-screen-input"
+                                            value={challanData.challanNo}
+                                            onChange={(e) => handleInputChange('challanNo', e.target.value)}
+                                            style={{ width: '60px' }}
+                                        />
+                                        <span>/</span>
+                                        <input
+                                            type="text"
+                                            className="challan-screen-input"
+                                            value={challanData.financialYear}
+                                            onChange={(e) => handleInputChange('financialYear', e.target.value)}
+                                            style={{ width: '100px' }}
+                                        />
+                                        <span>/</span>
+                                        <span className="challan-screen-text-sm challan-screen-text-gray-600">
+                                            Auto Generated
+                                        </span>
                                     </div>
                                 </div>
-                            )}
-                        </div>
 
-                        <div className="form-group">
-                            <label>Challan Date <span className="required">*</span></label>
-                            <div className="input-with-icon">
-                                <Calendar className="input-icon" />
-                                <input
-                                    type="date"
-                                    name="challanDate"
-                                    value={formData.challanDate}
-                                    onChange={handleInputChange}
-                                    className="form-control"
-                                    required
-                                />
-                            </div>
-                        </div>
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Date/Time :</label>
+                                    <input
+                                        type="datetime-local"
+                                        className="challan-screen-input"
+                                        value={challanData.dateTime}
+                                        onChange={(e) => handleInputChange('dateTime', e.target.value)}
+                                    />
+                                </div>
 
-                        <div className="form-group">
-                            <label>Billing Type <span className="required">*</span></label>
-                            <div className="radio-group">
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="billingType"
-                                        value="per_ton"
-                                        checked={formData.billingType === 'per_ton'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span className="radio-custom"></span>
-                                    Per Ton
-                                </label>
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="billingType"
-                                        value="per_vehicle"
-                                        checked={formData.billingType === 'per_vehicle'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span className="radio-custom"></span>
-                                    Per Vehicle
-                                </label>
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="billingType"
-                                        value="lumpsum"
-                                        checked={formData.billingType === 'lumpsum'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span className="radio-custom"></span>
-                                    Lumpsum
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <div className="challan-screen-form-group-radio">
+                                    <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
+                                        <input
+                                            type="radio"
+                                            name="paymentType"
+                                            value="cash"
+                                            checked={challanData.paymentType === 'cash'}
+                                            onChange={(e) => handleInputChange('paymentType', e.target.value)}
+                                            className="challan-screen-radio"
+                                        />
+                                        Cash
+                                    </label>
+                                    <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
+                                        <input
+                                            type="radio"
+                                            name="paymentType"
+                                            value="credit"
+                                            checked={challanData.paymentType === 'credit'}
+                                            onChange={(e) => handleInputChange('paymentType', e.target.value)}
+                                            className="challan-screen-radio"
+                                        />
+                                        Credit
+                                    </label>
+                                </div>
 
-                {/* Vehicle & Transport Section */}
-                <div className="challan-section">
-                    <div className="section-header">
-                        <h2>Vehicle & Transport Details</h2>
-                    </div>
-                    <div className="form-grid">
-                        <div className="form-group">
-                            <label>Vehicle Number <span className="required">*</span></label>
-                            <div className="dropdown">
-                                <button
-                                    type="button"
-                                    className="dropdown-toggle"
-                                    onClick={() => document.getElementById('vehicleDropdown')?.classList.toggle('show')}
-                                >
-                                    {selectedVehicle ? selectedVehicle.number : 'Select Vehicle'}
-                                </button>
-                                <div id="vehicleDropdown" className="dropdown-content">
-                                    <input
-                                        type="text"
-                                        placeholder="Search vehicle..."
-                                        className="dropdown-search"
-                                        onChange={(e) => {
-                                            const search = e.target.value.toLowerCase();
-                                            const items = document.querySelectorAll('.vehicle-item');
-                                            items.forEach(item => {
-                                                const text = item.textContent?.toLowerCase() || '';
-                                                (item as HTMLElement).style.display = text.includes(search) ? 'block' : 'none';
-                                            });
-                                        }}
-                                    />
-                                    {VEHICLES.map(vehicle => (
-                                        <div
-                                            key={vehicle.id}
-                                            className="dropdown-item vehicle-item"
-                                            onClick={() => {
-                                                handleVehicleSelect(vehicle);
-                                                document.getElementById('vehicleDropdown')?.classList.remove('show');
-                                            }}
-                                        >
-                                            <div className="vehicle-number">{vehicle.number}</div>
-                                            <div className="vehicle-type">{vehicle.type}</div>
-                                        </div>
-                                    ))}
+                                <div className="challan-screen-balance-section">
+                                    <span className="challan-screen-balance-label">Balance :</span>
+                                    <span className="challan-screen-balance-value">{challanData.balance}</span>
+                                    <div className="challan-screen-limit-section">
+                                        <span className="challan-screen-balance-label">Limit :</span>
+                                        <span className="challan-screen-balance-value">{challanData.limit}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label>Driver Name</label>
-                            <input
-                                type="text"
-                                name="driverName"
-                                value={formData.driverName}
-                                onChange={handleInputChange}
-                                className="form-control"
-                                placeholder="Enter driver name"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Transporter Name</label>
-                            <input
-                                type="text"
-                                name="transporterName"
-                                value={formData.transporterName}
-                                onChange={handleInputChange}
-                                className="form-control"
-                                placeholder="Enter transporter name"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Loading Point <span className="required">*</span></label>
-                            <select
-                                name="loadingPoint"
-                                value={formData.loadingPoint}
-                                onChange={handleInputChange}
-                                className="form-control"
-                                required
-                            >
-                                {LOADING_POINTS.map(point => (
-                                    <option key={point} value={point}>{point}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Destination <span className="required">*</span></label>
-                            <select
-                                name="destination"
-                                value={formData.destination}
-                                onChange={handleInputChange}
-                                className="form-control"
-                                required
-                            >
-                                {DESTINATIONS.map(dest => (
-                                    <option key={dest} value={dest}>{dest}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Product Details Section */}
-                <div className="challan-section">
-                    <div className="section-header">
-                        <h2>Product Details</h2>
-                        <button
-                            type="button"
-                            className="btn-add"
-                            onClick={addProductRow}
-                        >
-                            <Plus className="icon" />
-                            Add Product
-                        </button>
-                    </div>
-
-                    <div className="table-responsive">
-                        <table className="product-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Product Name <span className="required">*</span></th>
-                                    <th>Rate (₹) <span className="required">*</span></th>
-                                    <th>Quantity (MT) <span className="required">*</span></th>
-                                    <th>Bill Rate (₹) <span className="required">*</span></th>
-                                    <th>Amount (₹)</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {formData.products.map((product, index) => (
-                                    <tr key={product.id}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                            <select
-                                                value={product.productName}
-                                                onChange={(e) => {
-                                                    const selectedProduct = PRODUCTS.find(p => p.name === e.target.value);
-                                                    if (selectedProduct) {
-                                                        handleProductChange(index, 'productName', selectedProduct.name);
-                                                        handleProductChange(index, 'rate', selectedProduct.rate);
-                                                        handleProductChange(index, 'billRate', selectedProduct.rate);
-                                                    }
-                                                }}
-                                                className="form-control"
-                                                required
-                                            >
-                                                <option value="">Select Product</option>
-                                                {PRODUCTS.map(p => (
-                                                    <option key={p.id} value={p.name}>
-                                                        {p.name}
-                                                    </option>
-                                                ))}
+                        {/* Consignee Details */}
+                        <div className="challan-screen-form-section">
+                            <div className="challan-screen-form-row-2">
+                                <div>
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">
+                                            Consignee <span className="challan-screen-label-required">*</span>
+                                        </label>
+                                        <div className="challan-screen-form-group-inline">
+                                            <select className="challan-screen-select" style={{ flex: 1 }}>
+                                                <option value="">Select Consignee</option>
+                                                <option value="consignee1">Consignee 1</option>
+                                                <option value="consignee2">Consignee 2</option>
                                             </select>
-                                        </td>
-                                        <td>
+                                            <button className="challan-screen-btn-icon" style={{ backgroundColor: 'orange', color: 'white' }}>
+                                                <Search className="challan-screen-icon-sm" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Address :</label>
+                                        <textarea
+                                            className="challan-screen-textarea"
+                                            rows={3}
+                                            value={challanData.address}
+                                            onChange={(e) => handleInputChange('address', e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="challan-screen-form-row-2">
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">State :</label>
+                                            <select
+                                                className="challan-screen-select"
+                                                value={challanData.state}
+                                                onChange={(e) => handleInputChange('state', e.target.value)}
+                                            >
+                                                <option value="">Select State</option>
+                                                <option value="maharashtra">Maharashtra</option>
+                                                <option value="gujarat">Gujarat</option>
+                                                <option value="karnataka">Karnataka</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">District :</label>
+                                            <select
+                                                className="challan-screen-select"
+                                                value={challanData.district}
+                                                onChange={(e) => handleInputChange('district', e.target.value)}
+                                            >
+                                                <option value="">Select District</option>
+                                                <option value="pune">Pune</option>
+                                                <option value="mumbai">Mumbai</option>
+                                                <option value="nagpur">Nagpur</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-row-3">
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">PIN :</label>
+                                            <select
+                                                className="challan-screen-select"
+                                                value={challanData.pin}
+                                                onChange={(e) => handleInputChange('pin', e.target.value)}
+                                            >
+                                                <option value="">Select PIN</option>
+                                                <option value="411001">411001</option>
+                                                <option value="411002">411002</option>
+                                                <option value="411003">411003</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Contact# :</label>
                                             <input
-                                                type="number"
-                                                value={product.rate || ''}
-                                                onChange={(e) => handleProductChange(index, 'rate', e.target.value)}
-                                                className="form-control"
-                                                min="0"
-                                                step="0.01"
-                                                required
+                                                type="tel"
+                                                className="challan-screen-input"
+                                                value={challanData.contact}
+                                                onChange={(e) => handleInputChange('contact', e.target.value)}
                                             />
-                                        </td>
-                                        <td>
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">EmailID :</label>
                                             <input
-                                                type="number"
-                                                value={product.quantity || ''}
-                                                onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
-                                                className="form-control"
-                                                min="0"
-                                                step="0.01"
-                                                required
+                                                type="email"
+                                                className="challan-screen-input"
+                                                value={challanData.emailId}
+                                                onChange={(e) => handleInputChange('emailId', e.target.value)}
                                             />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                value={product.billRate || ''}
-                                                onChange={(e) => handleProductChange(index, 'billRate', e.target.value)}
-                                                className="form-control"
-                                                min="0"
-                                                step="0.01"
-                                                required
-                                            />
-                                        </td>
-                                        <td>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Adv. Amount :</label>
+                                        <input
+                                            type="number"
+                                            className="challan-screen-input"
+                                            value={challanData.advAmount}
+                                            onChange={(e) => handleInputChange('advAmount', parseFloat(e.target.value) || 0)}
+                                        />
+                                    </div>
+
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Vehicle Type :</label>
+                                        <div className="challan-screen-form-group-inline">
+                                            <select className="challan-screen-select" style={{ flex: 1 }}>
+                                                <option value="">Select Vehicle Type</option>
+                                                <option value="truck">Truck</option>
+                                                <option value="trailer">Trailer</option>
+                                                <option value="dumper">Dumper</option>
+                                            </select>
+                                            <button className="challan-screen-btn-icon" style={{ backgroundColor: 'orange', color: 'white' }}>
+                                                <Search className="challan-screen-icon-sm" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Vehicle No :</label>
+                                        <div className="challan-screen-form-group-inline">
+                                            <select className="challan-screen-select" style={{ flex: 1 }}>
+                                                <option value="">Select Vehicle No</option>
+                                                <option value="MH12AB1234">MH12AB1234</option>
+                                                <option value="MH14CD5678">MH14CD5678</option>
+                                            </select>
+                                            <button className="challan-screen-btn-icon" style={{ backgroundColor: 'orange', color: 'white' }}>
+                                                <Search className="challan-screen-icon-sm" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Vehicle Remarks :</label>
+                                        <textarea
+                                            className="challan-screen-textarea"
+                                            rows={2}
+                                            value={challanData.vehicleRemarks}
+                                            onChange={(e) => handleInputChange('vehicleRemarks', e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="challan-screen-form-row-2">
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Driver Name :</label>
                                             <input
                                                 type="text"
-                                                value={product.amount.toFixed(2)}
-                                                className="form-control"
-                                                readOnly
+                                                className="challan-screen-input"
+                                                value={challanData.driverName}
+                                                onChange={(e) => handleInputChange('driverName', e.target.value)}
                                             />
-                                        </td>
-                                        <td>
-                                            {formData.products.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    className="btn-icon btn-danger"
-                                                    onClick={() => removeProductRow(index)}
-                                                    title="Remove product"
-                                                >
-                                                    <Trash2 className="icon" />
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colSpan={3} className="text-right">
-                                        <strong>Total:</strong>
-                                    </td>
-                                    <td>
-                                        <strong>{totalQuantity.toFixed(2)} MT</strong>
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <strong>₹{totalAmount.toFixed(2)}</strong>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Driver# :</label>
+                                            <input
+                                                type="tel"
+                                                className="challan-screen-input"
+                                                value={challanData.driverNumber}
+                                                onChange={(e) => handleInputChange('driverNumber', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-group-radio">
+                                        <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
+                                            <input
+                                                type="radio"
+                                                name="userType"
+                                                value="endUser"
+                                                checked={challanData.endUser}
+                                                onChange={(e) => handleInputChange('endUser', e.target.checked)}
+                                                className="challan-screen-radio"
+                                            />
+                                            End-User
+                                        </label>
+                                        <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
+                                            <input
+                                                type="radio"
+                                                name="userType"
+                                                value="dealer"
+                                                checked={challanData.dealer}
+                                                onChange={(e) => handleInputChange('dealer', e.target.checked)}
+                                                className="challan-screen-radio"
+                                            />
+                                            Dealer
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* GST Details */}
+                        <div className="challan-screen-form-section">
+                            <div className="challan-screen-form-row-2">
+                                <div>
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={challanData.gstBill}
+                                                onChange={(e) => handleInputChange('gstBill', e.target.checked)}
+                                                className="challan-screen-checkbox"
+                                            />
+                                            GST Bill
+                                        </label>
+                                    </div>
+
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">GST# :</label>
+                                        <input
+                                            type="text"
+                                            className="challan-screen-input"
+                                            value={challanData.gstNumber}
+                                            onChange={(e) => handleInputChange('gstNumber', e.target.value)}
+                                            disabled={!challanData.gstBill}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Name :</label>
+                                        <div className="challan-screen-form-group-inline">
+                                            <select
+                                                className="challan-screen-select"
+                                                style={{ flex: 1 }}
+                                                disabled={!challanData.gstBill}
+                                            >
+                                                <option value="">Select Name</option>
+                                                <option value="company1">Company 1</option>
+                                                <option value="company2">Company 2</option>
+                                            </select>
+                                            <button
+                                                className="challan-screen-btn-icon"
+                                                style={{ backgroundColor: 'orange', color: 'white' }}
+                                                disabled={!challanData.gstBill}
+                                            >
+                                                <Search className="challan-screen-icon-sm" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-group">
+                                        <label className="challan-screen-label">Address :</label>
+                                        <textarea
+                                            className="challan-screen-textarea"
+                                            rows={2}
+                                            value={challanData.gstAddress}
+                                            onChange={(e) => handleInputChange('gstAddress', e.target.value)}
+                                            disabled={!challanData.gstBill}
+                                        />
+                                    </div>
+
+                                    <div className="challan-screen-form-row-3">
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">State :</label>
+                                            <select
+                                                className="challan-screen-select"
+                                                value={challanData.gstState}
+                                                onChange={(e) => handleInputChange('gstState', e.target.value)}
+                                                disabled={!challanData.gstBill}
+                                            >
+                                                <option value="">Select State</option>
+                                                <option value="maharashtra">Maharashtra</option>
+                                                <option value="gujarat">Gujarat</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">District :</label>
+                                            <select
+                                                className="challan-screen-select"
+                                                value={challanData.gstDistrict}
+                                                onChange={(e) => handleInputChange('gstDistrict', e.target.value)}
+                                                disabled={!challanData.gstBill}
+                                            >
+                                                <option value="">Select District</option>
+                                                <option value="pune">Pune</option>
+                                                <option value="mumbai">Mumbai</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">PIN :</label>
+                                            <select
+                                                className="challan-screen-select"
+                                                value={challanData.gstPin}
+                                                onChange={(e) => handleInputChange('gstPin', e.target.value)}
+                                                disabled={!challanData.gstBill}
+                                            >
+                                                <option value="">Select PIN</option>
+                                                <option value="411001">411001</option>
+                                                <option value="411002">411002</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Product Detail */}
+                        <div className="challan-screen-form-section">
+                            <div className="challan-screen-flex challan-screen-items-center challan-screen-justify-between challan-screen-mb-6">
+                                <h3 className="challan-screen-form-section-title">
+                                    Product Detail
+                                </h3>
+                                <button
+                                    className="challan-screen-btn challan-screen-btn-primary"
+                                    onClick={addProductDetail}
+                                >
+                                    <Plus className="challan-screen-icon" />
+                                    Add Product
+                                </button>
+                            </div>
+
+                            <div className="challan-screen-table-container">
+                                <table className="challan-screen-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Name</th>
+                                            <th>Rate</th>
+                                            <th>Gross Weight</th>
+                                            <th>Date/Time</th>
+                                            <th>Net Weight</th>
+                                            <th>Less Weight</th>
+                                            <th>GT Weight</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {productDetails.map((product, index) => (
+                                            <tr key={product.id}>
+                                                <td>{index + 1}</td>
+                                                <td>
+                                                    <select
+                                                        className="challan-screen-select"
+                                                        value={product.name}
+                                                        onChange={(e) => updateProductDetail(product.id, 'name', e.target.value)}
+                                                    >
+                                                        <option value="">Select Product</option>
+                                                        <option value="stone">Stone</option>
+                                                        <option value="sand">Sand</option>
+                                                        <option value="gravel">Gravel</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="challan-screen-input"
+                                                        value={product.rate}
+                                                        onChange={(e) => updateProductDetail(product.id, 'rate', parseFloat(e.target.value) || 0)}
+                                                        style={{ width: '80px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="challan-screen-input"
+                                                        value={product.grossWeight}
+                                                        onChange={(e) => updateProductDetail(product.id, 'grossWeight', parseFloat(e.target.value) || 0)}
+                                                        style={{ width: '100px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="datetime-local"
+                                                        className="challan-screen-input"
+                                                        value={product.dateTime}
+                                                        onChange={(e) => updateProductDetail(product.id, 'dateTime', e.target.value)}
+                                                        style={{ width: '160px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="challan-screen-input"
+                                                        value={product.netWeight}
+                                                        onChange={(e) => updateProductDetail(product.id, 'netWeight', parseFloat(e.target.value) || 0)}
+                                                        style={{ width: '100px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="challan-screen-input"
+                                                        value={product.lessWeight}
+                                                        onChange={(e) => updateProductDetail(product.id, 'lessWeight', parseFloat(e.target.value) || 0)}
+                                                        style={{ width: '100px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="challan-screen-input"
+                                                        value={product.gtWeight}
+                                                        onChange={(e) => updateProductDetail(product.id, 'gtWeight', parseFloat(e.target.value) || 0)}
+                                                        style={{ width: '100px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="challan-screen-input"
+                                                        value={product.amount}
+                                                        onChange={(e) => updateProductDetail(product.id, 'amount', parseFloat(e.target.value) || 0)}
+                                                        style={{ width: '100px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {productDetails.length > 1 && (
+                                                        <button
+                                                            className="challan-screen-btn-icon challan-screen-btn-icon-danger"
+                                                            onClick={() => removeProductDetail(product.id)}
+                                                        >
+                                                            <Trash2 className="challan-screen-icon-sm" />
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Weight Detail */}
+                        <div className="challan-screen-form-section">
+                            <h3 className="challan-screen-form-section-title">Weight Detail</h3>
+
+                            <div className="challan-screen-form-row-6">
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Tare Weight</label>
+                                    <input
+                                        type="number"
+                                        className="challan-screen-input"
+                                        value={challanData.weightDetails.tareWeight}
+                                        onChange={(e) => handleInputChange('weightDetails', {
+                                            ...challanData.weightDetails,
+                                            tareWeight: parseFloat(e.target.value) || 0
+                                        })}
+                                    />
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Date/Time</label>
+                                    <input
+                                        type="datetime-local"
+                                        className="challan-screen-input"
+                                        value={challanData.weightDetails.dateTime}
+                                        onChange={(e) => handleInputChange('weightDetails', {
+                                            ...challanData.weightDetails,
+                                            dateTime: e.target.value
+                                        })}
+                                    />
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Net Weight</label>
+                                    <input
+                                        type="number"
+                                        className="challan-screen-input"
+                                        value={challanData.weightDetails.netWeight}
+                                        onChange={(e) => handleInputChange('weightDetails', {
+                                            ...challanData.weightDetails,
+                                            netWeight: parseFloat(e.target.value) || 0
+                                        })}
+                                    />
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Less Weight</label>
+                                    <input
+                                        type="number"
+                                        className="challan-screen-input"
+                                        value={challanData.weightDetails.lessWeight}
+                                        onChange={(e) => handleInputChange('weightDetails', {
+                                            ...challanData.weightDetails,
+                                            lessWeight: parseFloat(e.target.value) || 0
+                                        })}
+                                    />
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Total GT Weight</label>
+                                    <input
+                                        type="number"
+                                        className="challan-screen-input"
+                                        value={challanData.weightDetails.totalGTWeight}
+                                        onChange={(e) => handleInputChange('weightDetails', {
+                                            ...challanData.weightDetails,
+                                            totalGTWeight: parseFloat(e.target.value) || 0
+                                        })}
+                                    />
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Vehicle Commission</label>
+                                    <input
+                                        type="number"
+                                        className="challan-screen-input"
+                                        value={challanData.weightDetails.vehicleCommission}
+                                        onChange={(e) => handleInputChange('weightDetails', {
+                                            ...challanData.weightDetails,
+                                            vehicleCommission: parseFloat(e.target.value) || 0
+                                        })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Amount Detail */}
+                        <div className="challan-screen-form-section">
+                            <h3 className="challan-screen-form-section-title">Amount Detail</h3>
+
+                            <div className="challan-screen-form-row-2">
+                                <div>
+                                    <div className="challan-screen-form-row-3">
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Amount</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.amount}
+                                                onChange={(e) => handleInputChange('amount', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Loading</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.loading}
+                                                onChange={(e) => handleInputChange('loading', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Commission</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.commission}
+                                                onChange={(e) => handleInputChange('commission', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="challan-screen-form-row-4">
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">GST Amount</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.gstAmount}
+                                                onChange={(e) => handleInputChange('gstAmount', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Royalty</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.royalty}
+                                                onChange={(e) => handleInputChange('royalty', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">TP Amount</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.tpAmount}
+                                                onChange={(e) => handleInputChange('tpAmount', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+
+                                        <div className="challan-screen-form-group">
+                                            <label className="challan-screen-label">Freight Amt</label>
+                                            <input
+                                                type="number"
+                                                className="challan-screen-input"
+                                                value={challanData.freightAmt}
+                                                onChange={(e) => handleInputChange('freightAmt', parseFloat(e.target.value) || 0)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="challan-screen-summary">
+                                    <div className="challan-screen-summary-row">
+                                        <span className="challan-screen-summary-label">Total</span>
+                                        <span className="challan-screen-summary-value">{challanData.total}</span>
+                                    </div>
+                                    <div className="challan-screen-summary-row">
+                                        <span className="challan-screen-summary-label">Extra Amount</span>
+                                        <input
+                                            type="number"
+                                            className="challan-screen-input"
+                                            value={challanData.extraAmt}
+                                            onChange={(e) => handleInputChange('extraAmt', parseFloat(e.target.value) || 0)}
+                                            style={{ width: '120px', textAlign: 'right' }}
+                                        />
+                                    </div>
+                                    <div className="challan-screen-summary-row">
+                                        <span className="challan-screen-summary-label">Grand Total</span>
+                                        <span className="challan-screen-summary-value">{challanData.grandTotal}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="challan-screen-action-buttons">
+                            <button className="challan-screen-btn challan-screen-btn-secondary">
+                                Cancel
+                            </button>
+                            <button
+                                className="challan-screen-btn challan-screen-btn-primary"
+                                onClick={calculateTotals}
+                            >
+                                Calculate
+                            </button>
+                            <button
+                                className="challan-screen-btn challan-screen-btn-primary"
+                                onClick={saveChallan}
+                            >
+                                <Save className="challan-screen-icon" />
+                                Save Challan
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Weight Information Section */}
-                <div className="challan-section">
-                    <div className="section-header">
-                        <h2>Weight Information (in MT)</h2>
-                    </div>
-                    <div className="form-grid form-grid-3">
-                        <div className="form-group">
-                            <label>Gross Weight <span className="required">*</span></label>
-                            <input
-                                type="number"
-                                name="grossWeight"
-                                value={formData.grossWeight || ''}
-                                onChange={handleInputChange}
-                                className="form-control"
-                                min="0"
-                                step="0.01"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Tare Weight <span className="required">*</span></label>
-                            <input
-                                type="number"
-                                name="tareWeight"
-                                value={formData.tareWeight || ''}
-                                onChange={handleInputChange}
-                                className="form-control"
-                                min="0"
-                                step="0.01"
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Net Weight</label>
-                            <input
-                                type="number"
-                                name="netWeight"
-                                value={formData.netWeight || ''}
-                                readOnly
-                                className="form-control"
-                            />
-                        </div>
-                    </div>
-                </div>
+                {/* Challan History Tab */}
+                <div className={`challan-screen-tab-content ${activeTab === 'history' ? 'active' : ''}`}>
+                    <div className="challan-screen-form-container">
 
-                {/* Summary Section */}
-                <div className="challan-section">
-                    <div className="section-header">
-                        <h2>Summary</h2>
-                    </div>
-                    <div className="summary-grid">
-                        <div className="summary-item">
-                            <span>Total Quantity:</span>
-                            <span>{totalQuantity.toFixed(2)} MT</span>
-                        </div>
-                        <div className="summary-item">
-                            <span>Total Amount:</span>
-                            <span>₹{totalAmount.toFixed(2)}</span>
-                        </div>
-                        <div className="summary-item">
-                            <span>CGST (9%):</span>
-                            <span>₹{(totalAmount * 0.09).toFixed(2)}</span>
-                        </div>
-                        <div className="summary-item">
-                            <span>SGST (9%):</span>
-                            <span>₹{(totalAmount * 0.09).toFixed(2)}</span>
-                        </div>
-                        <div className="summary-item total">
-                            <span>Grand Total:</span>
-                            <span>₹{(totalAmount * 1.18).toFixed(2)}</span>
-                        </div>
-                    </div>
-                </div>
+                        {/* Search and Filter Section */}
+                        <div className="challan-screen-form-section">
+                            <h3 className="challan-screen-form-section-title">
+                                <Search className="challan-screen-icon" />
+                                Search & Filter Challans
+                            </h3>
 
-                {/* Remarks Section */}
-                <div className="challan-section">
-                    <div className="section-header">
-                        <h2>Remarks</h2>
-                    </div>
-                    <div className="form-group">
-                        <textarea
-                            name="remarks"
-                            value={formData.remarks}
-                            onChange={handleInputChange}
-                            className="form-control"
-                            rows={3}
-                            placeholder="Enter any additional remarks or notes..."
-                        ></textarea>
-                    </div>
-                </div>
+                            <div className="challan-screen-form-row-3">
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Search</label>
+                                    <div className="challan-screen-form-group-inline">
+                                        <Search className="challan-screen-icon-sm" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b7280', pointerEvents: 'none' }} />
+                                        <input
+                                            type="text"
+                                            className="challan-screen-input"
+                                            placeholder="Search by Challan No, Consignee, Vehicle No..."
+                                            value={historyFilters.searchTerm}
+                                            onChange={(e) => setHistoryFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
+                                            style={{ paddingLeft: '40px' }}
+                                        />
+                                    </div>
+                                </div>
 
-                {/* Form Actions */}
-                <div className="form-actions">
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={handleReset}
-                    >
-                        Reset
-                    </button>
-                    <div className="action-buttons">
-                        <button
-                            type="button"
-                            className="btn btn-outline"
-                            onClick={() => {
-                                // Save as draft logic
-                                console.log('Saving as draft:', formData);
-                                alert('Challan saved as draft successfully!');
-                            }}
-                        >
-                            Save as Draft
-                        </button>
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Generating...' : 'Generate Challan'}
-                        </button>
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">From Date</label>
+                                    <input
+                                        type="date"
+                                        className="challan-screen-input"
+                                        value={historyFilters.dateFrom}
+                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
+                                    />
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">To Date</label>
+                                    <input
+                                        type="date"
+                                        className="challan-screen-input"
+                                        value={historyFilters.dateTo}
+                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, dateTo: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="challan-screen-form-row-3">
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Status</label>
+                                    <select
+                                        className="challan-screen-select"
+                                        value={historyFilters.status}
+                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, status: e.target.value }))}
+                                    >
+                                        <option value="">All Status</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="In Transit">In Transit</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Payment Type</label>
+                                    <select
+                                        className="challan-screen-select"
+                                        value={historyFilters.paymentType}
+                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, paymentType: e.target.value }))}
+                                    >
+                                        <option value="">All Payment Types</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Credit">Credit</option>
+                                    </select>
+                                </div>
+
+                                <div className="challan-screen-form-group">
+                                    <label className="challan-screen-label">Consignee</label>
+                                    <input
+                                        type="text"
+                                        className="challan-screen-input"
+                                        placeholder="Filter by Consignee"
+                                        value={historyFilters.consignee}
+                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, consignee: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Clear Filters Button */}
+                            <div className="challan-screen-form-row-1" style={{ marginTop: '1rem' }}>
+                                <button
+                                    className="challan-screen-btn challan-screen-btn-secondary"
+                                    onClick={() => setHistoryFilters({
+                                        searchTerm: '',
+                                        dateFrom: '',
+                                        dateTo: '',
+                                        status: '',
+                                        paymentType: '',
+                                        consignee: ''
+                                    })}
+                                >
+                                    Clear Filters
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Summary Statistics */}
+                        <div className="challan-screen-form-section">
+                            <h3 className="challan-screen-form-section-title">
+                                <BarChart3 className="challan-screen-icon" />
+                                Summary Statistics
+                            </h3>
+
+                            <div className="challan-screen-form-row-4">
+                                <div className="challan-screen-summary-card">
+                                    <div className="challan-screen-summary-card-content">
+                                        <div className="challan-screen-summary-card-title">Total Challans</div>
+                                        <div className="challan-screen-summary-card-value">{filteredHistory.length}</div>
+                                    </div>
+                                </div>
+
+                                <div className="challan-screen-summary-card">
+                                    <div className="challan-screen-summary-card-content">
+                                        <div className="challan-screen-summary-card-title">Total Amount</div>
+                                        <div className="challan-screen-summary-card-value">
+                                            ₹{filteredHistory.reduce((sum, challan) => sum + challan.amount, 0).toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="challan-screen-summary-card">
+                                    <div className="challan-screen-summary-card-content">
+                                        <div className="challan-screen-summary-card-title">Total Quantity</div>
+                                        <div className="challan-screen-summary-card-value">
+                                            {filteredHistory.reduce((sum, challan) => sum + challan.quantity, 0).toFixed(1)} MT
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="challan-screen-summary-card">
+                                    <div className="challan-screen-summary-card-content">
+                                        <div className="challan-screen-summary-card-title">Completed</div>
+                                        <div className="challan-screen-summary-card-value">
+                                            {filteredHistory.filter(c => c.status === 'Completed').length}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Challan History Table */}
+                        <div className="challan-screen-form-section">
+                            <div className="challan-screen-flex challan-screen-items-center challan-screen-justify-between challan-screen-mb-6">
+                                <h3 className="challan-screen-form-section-title">
+                                    <List className="challan-screen-icon" />
+                                    Challan History ({filteredHistory.length} records)
+                                </h3>
+                                <div className="challan-screen-flex challan-screen-gap-2">
+                                    <button className="challan-screen-btn challan-screen-btn-secondary">
+                                        <Download className="challan-screen-icon" />
+                                        Export Excel
+                                    </button>
+                                    <button className="challan-screen-btn challan-screen-btn-secondary">
+                                        <Download className="challan-screen-icon" />
+                                        Export PDF
+                                    </button>
+                                    <button className="challan-screen-btn challan-screen-btn-primary" onClick={() => setActiveTab('create')}>
+                                        <Plus className="challan-screen-icon" />
+                                        Create Challan
+                                    </button>
+
+                                </div>
+                            </div>
+
+                            <div className="challan-screen-table-container" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                                <table className="challan-screen-table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Challan No</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Consignee</th>
+                                            <th>Vehicle No</th>
+                                            <th>Driver Name</th>
+                                            <th>Product</th>
+                                            <th>Quantity (MT)</th>
+                                            <th>Amount (₹)</th>
+                                            <th>Payment</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredHistory.length > 0 ? (
+                                            filteredHistory.map((challan, index) => (
+                                                <tr key={challan.id}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        <span className="challan-screen-challan-no">{challan.challanNo}</span>
+                                                    </td>
+                                                    <td>{new Date(challan.date).toLocaleDateString('en-IN')}</td>
+                                                    <td>{challan.time}</td>
+                                                    <td>
+                                                        <span className="challan-screen-consignee-name">{challan.consignee}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="challan-screen-vehicle-no">{challan.vehicleNo}</span>
+                                                    </td>
+                                                    <td>{challan.driverName}</td>
+                                                    <td>{challan.productName}</td>
+                                                    <td className="challan-screen-text-right">{challan.quantity.toFixed(1)}</td>
+                                                    <td className="challan-screen-text-right">₹{challan.amount.toLocaleString()}</td>
+                                                    <td>
+                                                        <span className={`challan-screen-payment-badge ${challan.paymentType.toLowerCase()}`}>
+                                                            {challan.paymentType}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`challan-screen-status-badge ${challan.status.toLowerCase().replace(' ', '-')}`}>
+                                                            {challan.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="challan-screen-action-buttons-row">
+                                                            <button
+                                                                className="challan-screen-btn-icon challan-screen-btn-icon-primary"
+                                                                title="View Details"
+                                                            >
+                                                                <Receipt className="challan-screen-icon-sm" />
+                                                            </button>
+                                                            <button
+                                                                className="challan-screen-btn-icon challan-screen-btn-icon-secondary"
+                                                                title="Print Challan"
+                                                            >
+                                                                <Download className="challan-screen-icon-sm" />
+                                                            </button>
+                                                            {challan.status === 'Pending' && (
+                                                                <button
+                                                                    className="challan-screen-btn-icon challan-screen-btn-icon-success"
+                                                                    title="Edit Challan"
+                                                                >
+                                                                    <Edit3 className="challan-screen-icon-sm" />
+                                                                </button>
+                                                            )}
+                                                            {(challan.status === 'Pending' || challan.status === 'In Transit') && (
+                                                                <button
+                                                                    className="challan-screen-btn-icon challan-screen-btn-icon-danger"
+                                                                    title="Cancel Challan"
+                                                                >
+                                                                    <Trash2 className="challan-screen-icon-sm" />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={13} className="challan-screen-no-data">
+                                                    <div className="challan-screen-no-data-content">
+                                                        <Receipt className="challan-screen-no-data-icon" />
+                                                        <p>No challans found matching your criteria</p>
+                                                        <p className="challan-screen-text-sm">Try adjusting your search filters</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
-};
-
-export default CreateChallan;
-
+}

@@ -10,8 +10,8 @@ import Form3 from './pages/Form3'
 import Form4 from './pages/Form4'
 
 // Accounts pages
-import AccountsDashboard from './pages/accounts/Dashboard'
-import ChallanHistory from './pages/accounts/ChallanHistory'
+// import AccountsDashboard from './pages/accounts/Dashboard'
+// import ChallanHistory from './pages/accounts/ChallanHistory'
 
 
 // Dashboard pages
@@ -77,6 +77,7 @@ import IDProof from './pages/Hr/ID-Proof/IDProof'
 import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
+import Ledger from './pages/Accounts/ledger/Ledger'
 
 
 
@@ -95,12 +96,12 @@ function App() {
           <Route path="/formthree" element={<FormThree />} />
           <Route path="/formfour" element={<FormFour />} />
           <Route path="/form2" element={<Form2 />} />
-          <Route path="/form3" element={<Form3 />} />
-          <Route path="/form4" element={<Form4 />} />
+          {/* <Route path="/form3" element={<Form3 />} />
+          <Route path="/form4" element={<Form4 />} /> */}
 
           {/* Accounts */}
-          <Route path="/accounts/dashboard" element={<AccountsDashboard />} />
-          <Route path="/accounts/challan-history" element={<ChallanHistory />} />
+          {/* <Route path="/accounts/dashboard" element={<AccountsDashboard />} /> */}
+          {/* <Route path="/accounts/challan-history" element={<ChallanHistory />} /> */}
           {/* <Route path="/accounts/create-challan" element={<CreateChallan />} /> */}
 
           {/* Dashboard */}
@@ -174,6 +175,7 @@ function App() {
           <Route path="/product-masonry" element={<ProductMasonry />} />
           <Route path="/tp-charges" element={<TPCharges />} />
           <Route path="/create-challan" element={<CreateChallan />} />
+          {/* <Route path="/challan-screen" element={<ChallanScreen />} /> */}
 
 
           {/* Inventory */}
@@ -181,6 +183,10 @@ function App() {
           <Route path="/inventory/material-type" element={<MaterialType />} />
           <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
           <Route path="/fuel/fuel-type-master" element={<FuelType />} />
+
+
+          {/* Accounts */}
+          <Route path="/ledger-group" element={<Ledger />} />
 
 
 
