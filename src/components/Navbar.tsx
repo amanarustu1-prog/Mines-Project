@@ -281,22 +281,17 @@ const navigationItems: NavItem[] = [
         title: 'Sale',
         items: [
           {
-            title: 'Create Challan',
+            title: 'Challan',
             href: '/create-challan',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
+               
           {
             title: 'Pending Challan',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
-          },
-          {
-            title: 'Deleted Challan',
-            href: '/mining/transport',
-            icon: Truck,
-            description: 'Material transport and logistics'
+            href: '/create-challan',
+            icon: Wrench,
+            description: 'Material processing and refinement'
           },
 
           {
