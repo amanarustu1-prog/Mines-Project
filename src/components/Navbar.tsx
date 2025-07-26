@@ -2725,7 +2725,7 @@ export function Navbar() {
                         {/* { <item.icon className="h-4 w-4" /> } */}
                         <span>{item.title}</span>
                         {item.badge && (
-                          <Badge variant="secondary" className="text-xs px-1.5 py-0.5 ml-1">
+                          <Badge variant="default" className="text-xs px-1.5 py-0.5 ml-1">
                             {item.badge}
                           </Badge>
                         )}
@@ -2754,7 +2754,7 @@ export function Navbar() {
                     {/* Mega Menu Dropdown */}
                     {openDropdown === item.title && (
                       <div className={cn(
-                        "absolute top-full w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden navbar-dropdown custom-scrollbar",
+                        "absolute top-full w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-[60]  navbar-dropdown custom-scrollbar",
                         // Smart positioning - ensure dropdown stays within screen bounds
                         item.title === 'Dashboard' || item.title === 'Plant & Vehicle' || item.title === 'Sale & Purchase' || item.title === 'Accounts'
                           ? "left-0"
