@@ -2708,8 +2708,8 @@ export function Navbar() {
         {/* Navigation Menu Bar */}
         <div className="hidden lg:block container bg-white/60 backdrop-blur-sm relative border-b border-gray-50" ref={dropdownRef}>
           <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center py-3">
-              <div className="flex items-center space-x-1 px-2 bg-gray-50/80 rounded-xl p-1.5 shadow-sm border border-gray-200/50">
+            <div className="flex items-center justify-center py-2">
+              <div className="flex items-center space-x-1 px-1 bg-gray-50/80 rounded-xl p-1.5 shadow-sm border border-gray-200/50">
                 {navigationItems.map((item) => (
                   <div key={item.title} className="">
                     {item.href ? (
@@ -2954,7 +2954,7 @@ export function Navbar() {
                   <button
                     onClick={handleMoreMenuToggle}
                     className={cn(
-                      "flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap",
+                      "flex items-center space-x-2 px-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap",
                       moreMenuOpen
                         ? "bg-white text-blue-700 shadow-md"
                         : "text-gray-600 hover:text-gray-900 hover:bg-white/70 hover:shadow-sm"
