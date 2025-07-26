@@ -435,1062 +435,477 @@ export default function CreateChallan() {
     };
 
     return (
-        <div className="challan-screen">
-            {/* Header */}
-            <div className="challan-screen-header">
-                <div className="challan-screen-header-content">
-                    <div className="challan-screen-title-section">
-                        <Receipt className="challan-screen-header-icon" />
-                        <div>
-                            <h1 className="challan-screen-title">Challan Management</h1>
-                            <p className="challan-screen-subtitle">Create and manage mining transport challans</p>
-                        </div>
-                    </div>
-                    <div className="challan-screen-header-actions">
-                        <button className="challan-screen-btn challan-screen-btn-secondary" onClick={printChallan}>
-                            <Download className="challan-screen-icon" />
-                            Print
-                        </button>
-                        <button className="challan-screen-btn challan-screen-btn-primary" onClick={saveChallan}>
-                            <Save className="challan-screen-icon" />
-                            Save Challan
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="challan-screen-main">
-                {/* Tabs */}
-                <div className="challan-screen-tabs">
-                    <div className="challan-screen-tabs-container">
-                        <nav className="challan-screen-tabs-nav">
-                            <div className="challan-screen-tabs-list">
-                                <button
-                                    className={`challan-screen-tab ${activeTab === 'history' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('history')}
-                                >
-                                    <List className="challan-screen-tab-icon" />
-                                    Challan History
-                                </button>
-                                <button
-                                    className={`challan-screen-tab ${activeTab === 'create' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('create')}
-                                >
-                                    <Plus className="challan-screen-tab-icon" />
-                                    Create Challan
-                                </button>
-
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-
-                {/* Create Challan Tab */}
-                <div className={`challan-screen-tab-content ${activeTab === 'create' ? 'active' : ''}`}>
-                    <div className="challan-screen-form-container">
-
-                        {/* Basic Challan Information */}
-                        <div className="challan-screen-form-section">
-                            <h3 className="challan-screen-form-section-title">
-                                <Receipt className="challan-screen-icon" />
-                                Challan
-                            </h3>
-
-                            <div className="challan-screen-form-row-4">
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">
-                                        Challan No <span className="challan-screen-label-required">*</span>
+        <>
+            <main className="dashboard-main ">
+                {/* left sidebar  */}
+                {/* main content area  */}
+                <div className="main-content-area mt-4">
+                    {/* <div className="content-top-nav  ">
+                        <ul>
+                            <li>
+                                <a className="active" href="#">
+                                    Challan{" "}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">TP</a>
+                            </li>
+                            <li>
+                                <a href="#">BILL</a>
+                            </li>
+                        </ul>
+                    </div> */}
+                    <div className="main-content-wrapper mt-5 ">
+                        <div className="row align-items-center">
+                            <div className="col-xl-6">
+                                <div className="d-flex align-items-center gap-2">
+                                    <label
+                                        htmlFor="product-desc"
+                                        className="mb-0"
+                                        style={{ minWidth: 70 }}
+                                    >
+                                        Challan# 
                                     </label>
-                                    <div className="challan-screen-form-group-inline">
+                                    <div className="product-des-input d-flex gap-2 flex-grow-1">
                                         <input
                                             type="text"
-                                            className="challan-screen-input"
-                                            value={challanData.challanNo}
-                                            onChange={(e) => handleInputChange('challanNo', e.target.value)}
-                                            style={{ width: '60px' }}
+                                            id="product-desc-1"
+                                            defaultValue="$"
+                                            style={{ flex: 1 }}
                                         />
-                                        <span>/</span>
                                         <input
                                             type="text"
-                                            className="challan-screen-input"
-                                            value={challanData.financialYear}
-                                            onChange={(e) => handleInputChange('financialYear', e.target.value)}
-                                            style={{ width: '100px' }}
+                                            id="date-pick-bano"
+                                            style={{ flex: 1 }}
+                                            readOnly=""
                                         />
-                                        <span>/</span>
-                                        <span className="challan-screen-text-sm challan-screen-text-gray-600">
-                                            Auto Generated
-                                        </span>
+                                        <input
+                                            type="text"
+                                            id="product-desc-bano-<?=uniqid()?>"
+                                            defaultValue="Auto Generated"
+                                            style={{ flex: 1 }}
+                                            disabled=""
+                                        />
                                     </div>
                                 </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Date/Time :</label>
-                                    <input
-                                        type="datetime-local"
-                                        className="challan-screen-input"
-                                        value={challanData.dateTime}
-                                        onChange={(e) => handleInputChange('dateTime', e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group-radio">
-                                    <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
-                                        <input
-                                            type="radio"
-                                            name="paymentType"
-                                            value="cash"
-                                            checked={challanData.paymentType === 'cash'}
-                                            onChange={(e) => handleInputChange('paymentType', e.target.value)}
-                                            className="challan-screen-radio"
-                                        />
-                                        Cash
+                            </div>
+                            <div className="col-xl-3 mt-3 mt-xl-0">
+                                <div className="d-flex align-items-center gap-2">
+                                    <label
+                                        htmlFor="generic-desc"
+                                        className="mb-0"
+                                        style={{ minWidth: 70 }}
+                                    >
+                                        Date/Time
                                     </label>
-                                    <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
-                                        <input
-                                            type="radio"
-                                            name="paymentType"
-                                            value="credit"
-                                            checked={challanData.paymentType === 'credit'}
-                                            onChange={(e) => handleInputChange('paymentType', e.target.value)}
-                                            className="challan-screen-radio"
-                                        />
+                                    <div className="product-des-input flex-grow-1">
+                                        <input type="text" id="generic-desc" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xl-3 mt-3 mt-xl-0">
+                                <div className="d-flex align-items-center gap-2">
+                                    <label>
+                                        <input type="radio" name="paymentType" defaultValue="cash" /> Cash
+                                    </label>
+                                    <label style={{ marginLeft: 20 }}>
+                                        <input type="radio" name="paymentType" defaultValue="credit" />{" "}
                                         Credit
                                     </label>
                                 </div>
-
-                                <div className="challan-screen-balance-section">
-                                    <span className="challan-screen-balance-label">Balance :</span>
-                                    <span className="challan-screen-balance-value">{challanData.balance}</span>
-                                    <div className="challan-screen-limit-section">
-                                        <span className="challan-screen-balance-label">Limit :</span>
-                                        <span className="challan-screen-balance-value">{challanData.limit}</span>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-
-                        {/* Consignee Details */}
-                        <div className="challan-screen-form-section">
-                            <div className="challan-screen-form-row-2">
-                                <div>
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">
-                                            Consignee <span className="challan-screen-label-required">*</span>
-                                        </label>
-                                        <div className="challan-screen-form-group-inline">
-                                            <select className="challan-screen-select" style={{ flex: 1 }}>
-                                                <option value="">Select Consignee</option>
-                                                <option value="consignee1">Consignee 1</option>
-                                                <option value="consignee2">Consignee 2</option>
-                                            </select>
-                                            <button className="challan-screen-btn-icon" style={{ backgroundColor: 'orange', color: 'white' }}>
-                                                <Search className="challan-screen-icon-sm" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Address :</label>
-                                        <textarea
-                                            className="challan-screen-textarea"
-                                            rows={3}
-                                            value={challanData.address}
-                                            onChange={(e) => handleInputChange('address', e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="challan-screen-form-row-2">
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">State :</label>
-                                            <select
-                                                className="challan-screen-select"
-                                                value={challanData.state}
-                                                onChange={(e) => handleInputChange('state', e.target.value)}
-                                            >
-                                                <option value="">Select State</option>
-                                                <option value="maharashtra">Maharashtra</option>
-                                                <option value="gujarat">Gujarat</option>
-                                                <option value="karnataka">Karnataka</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">District :</label>
-                                            <select
-                                                className="challan-screen-select"
-                                                value={challanData.district}
-                                                onChange={(e) => handleInputChange('district', e.target.value)}
-                                            >
-                                                <option value="">Select District</option>
-                                                <option value="pune">Pune</option>
-                                                <option value="mumbai">Mumbai</option>
-                                                <option value="nagpur">Nagpur</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-row-3">
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">PIN :</label>
-                                            <select
-                                                className="challan-screen-select"
-                                                value={challanData.pin}
-                                                onChange={(e) => handleInputChange('pin', e.target.value)}
-                                            >
-                                                <option value="">Select PIN</option>
-                                                <option value="411001">411001</option>
-                                                <option value="411002">411002</option>
-                                                <option value="411003">411003</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Contact# :</label>
-                                            <input
-                                                type="tel"
-                                                className="challan-screen-input"
-                                                value={challanData.contact}
-                                                onChange={(e) => handleInputChange('contact', e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">EmailID :</label>
-                                            <input
-                                                type="email"
-                                                className="challan-screen-input"
-                                                value={challanData.emailId}
-                                                onChange={(e) => handleInputChange('emailId', e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Adv. Amount :</label>
-                                        <input
-                                            type="number"
-                                            className="challan-screen-input"
-                                            value={challanData.advAmount}
-                                            onChange={(e) => handleInputChange('advAmount', parseFloat(e.target.value) || 0)}
-                                        />
-                                    </div>
-
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Vehicle Type :</label>
-                                        <div className="challan-screen-form-group-inline">
-                                            <select className="challan-screen-select" style={{ flex: 1 }}>
-                                                <option value="">Select Vehicle Type</option>
-                                                <option value="truck">Truck</option>
-                                                <option value="trailer">Trailer</option>
-                                                <option value="dumper">Dumper</option>
-                                            </select>
-                                            <button className="challan-screen-btn-icon" style={{ backgroundColor: 'orange', color: 'white' }}>
-                                                <Search className="challan-screen-icon-sm" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Vehicle No :</label>
-                                        <div className="challan-screen-form-group-inline">
-                                            <select className="challan-screen-select" style={{ flex: 1 }}>
-                                                <option value="">Select Vehicle No</option>
-                                                <option value="MH12AB1234">MH12AB1234</option>
-                                                <option value="MH14CD5678">MH14CD5678</option>
-                                            </select>
-                                            <button className="challan-screen-btn-icon" style={{ backgroundColor: 'orange', color: 'white' }}>
-                                                <Search className="challan-screen-icon-sm" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Vehicle Remarks :</label>
-                                        <textarea
-                                            className="challan-screen-textarea"
-                                            rows={2}
-                                            value={challanData.vehicleRemarks}
-                                            onChange={(e) => handleInputChange('vehicleRemarks', e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="challan-screen-form-row-2">
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Driver Name :</label>
-                                            <input
-                                                type="text"
-                                                className="challan-screen-input"
-                                                value={challanData.driverName}
-                                                onChange={(e) => handleInputChange('driverName', e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Driver# :</label>
-                                            <input
-                                                type="tel"
-                                                className="challan-screen-input"
-                                                value={challanData.driverNumber}
-                                                onChange={(e) => handleInputChange('driverNumber', e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-group-radio">
-                                        <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
-                                            <input
-                                                type="radio"
-                                                name="userType"
-                                                value="endUser"
-                                                checked={challanData.endUser}
-                                                onChange={(e) => handleInputChange('endUser', e.target.checked)}
-                                                className="challan-screen-radio"
-                                            />
-                                            End-User
-                                        </label>
-                                        <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
-                                            <input
-                                                type="radio"
-                                                name="userType"
-                                                value="dealer"
-                                                checked={challanData.dealer}
-                                                onChange={(e) => handleInputChange('dealer', e.target.checked)}
-                                                className="challan-screen-radio"
-                                            />
-                                            Dealer
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* GST Details */}
-                        <div className="challan-screen-form-section">
-                            <div className="challan-screen-form-row-2">
-                                <div>
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-flex challan-screen-items-center challan-screen-gap-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={challanData.gstBill}
-                                                onChange={(e) => handleInputChange('gstBill', e.target.checked)}
-                                                className="challan-screen-checkbox"
-                                            />
-                                            GST Bill
-                                        </label>
-                                    </div>
-
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">GST# :</label>
-                                        <input
-                                            type="text"
-                                            className="challan-screen-input"
-                                            value={challanData.gstNumber}
-                                            onChange={(e) => handleInputChange('gstNumber', e.target.value)}
-                                            disabled={!challanData.gstBill}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Name :</label>
-                                        <div className="challan-screen-form-group-inline">
-                                            <select
-                                                className="challan-screen-select"
-                                                style={{ flex: 1 }}
-                                                disabled={!challanData.gstBill}
-                                            >
-                                                <option value="">Select Name</option>
-                                                <option value="company1">Company 1</option>
-                                                <option value="company2">Company 2</option>
-                                            </select>
-                                            <button
-                                                className="challan-screen-btn-icon"
-                                                style={{ backgroundColor: 'orange', color: 'white' }}
-                                                disabled={!challanData.gstBill}
-                                            >
-                                                <Search className="challan-screen-icon-sm" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-group">
-                                        <label className="challan-screen-label">Address :</label>
-                                        <textarea
-                                            className="challan-screen-textarea"
-                                            rows={2}
-                                            value={challanData.gstAddress}
-                                            onChange={(e) => handleInputChange('gstAddress', e.target.value)}
-                                            disabled={!challanData.gstBill}
-                                        />
-                                    </div>
-
-                                    <div className="challan-screen-form-row-3">
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">State :</label>
-                                            <select
-                                                className="challan-screen-select"
-                                                value={challanData.gstState}
-                                                onChange={(e) => handleInputChange('gstState', e.target.value)}
-                                                disabled={!challanData.gstBill}
-                                            >
-                                                <option value="">Select State</option>
-                                                <option value="maharashtra">Maharashtra</option>
-                                                <option value="gujarat">Gujarat</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">District :</label>
-                                            <select
-                                                className="challan-screen-select"
-                                                value={challanData.gstDistrict}
-                                                onChange={(e) => handleInputChange('gstDistrict', e.target.value)}
-                                                disabled={!challanData.gstBill}
-                                            >
-                                                <option value="">Select District</option>
-                                                <option value="pune">Pune</option>
-                                                <option value="mumbai">Mumbai</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">PIN :</label>
-                                            <select
-                                                className="challan-screen-select"
-                                                value={challanData.gstPin}
-                                                onChange={(e) => handleInputChange('gstPin', e.target.value)}
-                                                disabled={!challanData.gstBill}
-                                            >
-                                                <option value="">Select PIN</option>
-                                                <option value="411001">411001</option>
-                                                <option value="411002">411002</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Product Detail */}
-                        <div className="challan-screen-form-section">
-                            <div className="challan-screen-flex challan-screen-items-center challan-screen-justify-between challan-screen-mb-6">
-                                <h3 className="challan-screen-form-section-title">
-                                    Product Detail
-                                </h3>
-                                <button
-                                    className="challan-screen-btn challan-screen-btn-primary"
-                                    onClick={addProductDetail}
-                                >
-                                    <Plus className="challan-screen-icon" />
-                                    Add Product
-                                </button>
-                            </div>
-
-                            <div className="challan-screen-table-container">
-                                <table className="challan-screen-table">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
-                                            <th>Name</th>
-                                            <th>Rate</th>
-                                            <th>Gross Weight</th>
-                                            <th>Date/Time</th>
-                                            <th>Net Weight</th>
-                                            <th>Less Weight</th>
-                                            <th>GT Weight</th>
-                                            <th>Amount</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {productDetails.map((product, index) => (
-                                            <tr key={product.id}>
-                                                <td>{index + 1}</td>
-                                                <td>
-                                                    <select
-                                                        className="challan-screen-select"
-                                                        value={product.name}
-                                                        onChange={(e) => updateProductDetail(product.id, 'name', e.target.value)}
-                                                    >
-                                                        <option value="">Select Product</option>
-                                                        <option value="stone">Stone</option>
-                                                        <option value="sand">Sand</option>
-                                                        <option value="gravel">Gravel</option>
+                            <div className="col-xxl-9 col-12 mt-2">
+                                <div className="row">
+                                    <div className="col-xl-4 col-sm-6">
+                                        <div className="form-block ">
+                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="ritcNo">
+                                                        Consignee<span>*</span>
+                                                    </label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
+                                                    <select name="" id="ritcNo" style={{ width: "100%" }}>
+                                                        <option value={54075290}>54075290</option>
+                                                        <option value={54075291}>54075291</option>
                                                     </select>
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="number"
-                                                        className="challan-screen-input"
-                                                        value={product.rate}
-                                                        onChange={(e) => updateProductDetail(product.id, 'rate', parseFloat(e.target.value) || 0)}
-                                                        style={{ width: '80px' }}
+                                                </div>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="prType">
+                                                        Address <span>*</span>
+                                                    </label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
+                                                    <textarea
+                                                        name=""
+                                                        id="prType"
+                                                        className="py-0"
+                                                        style={{ width: "100%" }}
+                                                        defaultValue={""}
                                                     />
-                                                </td>
-                                                <td>
+                                                </div>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="ritcNo">
+                                                        State<span>*</span>
+                                                    </label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
+                                                    <select name="" id="ritcNo" style={{ width: "100%" }}>
+                                                        <option value="Maharashtra">Maharashtra</option>
+                                                        <option value="Gujarat">Gujarat</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="prUnit">
+                                                        District
+                                                        <span>*</span>
+                                                    </label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
+                                                    <select name="" id="prUnit" style={{ width: "100%" }}>
+                                                        <option value="BANO">BANO</option>
+                                                        <option value="BANO">BANO</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="prUnitPrice">
+                                                        PIN <span>*</span>
+                                                    </label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
+                                                    <select name="" id="prUnitPrice" style={{ width: "100%" }}>
+                                                        <option value={100.0}>100.000000</option>
+                                                        <option value={100.0}>100.000000</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="prAmountUSD">Contact#</label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
+                                                    <input type="text" id="prAmountUSD" defaultValue={100.0} />
+                                                </div>
+                                                <div className="single-info-block col-xl-3">
+                                                    <label htmlFor="prAmountINR">EmailID</label>
+                                                </div>
+                                                <div className="col-xl-9 col-12">
                                                     <input
-                                                        type="number"
-                                                        className="challan-screen-input"
-                                                        value={product.grossWeight}
-                                                        onChange={(e) => updateProductDetail(product.id, 'grossWeight', parseFloat(e.target.value) || 0)}
-                                                        style={{ width: '100px' }}
+                                                        type="text"
+                                                        id="prAmountINR"
+                                                        readOnly=""
+                                                        defaultValue={100.0}
                                                     />
-                                                </td>
-                                                <td>
+                                                </div>
+                                                {/* ROW */}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-3 col-sm-6  ">
+                                        <div className="form-block ">
+                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                <div className="single-info-block col-xl-5">
+                                                    <label htmlFor="endUse">
+                                                        Adv. Amount <span>*</span>
+                                                    </label>
+                                                </div>
+                                                <div className="col-xl-7 col-12">
                                                     <input
-                                                        type="datetime-local"
-                                                        className="challan-screen-input"
-                                                        value={product.dateTime}
-                                                        onChange={(e) => updateProductDetail(product.id, 'dateTime', e.target.value)}
-                                                        style={{ width: '160px' }}
+                                                        type="text"
+                                                        id="endUse"
+                                                        defaultValue={0.0}
+                                                        style={{ width: "100%" }}
                                                     />
-                                                </td>
-                                                <td>
+                                                </div>
+                                                <div className="single-info-block col-xl-5">
+                                                    <label htmlFor="prCTH">Vehicle Type</label>
+                                                </div>
+                                                <div className="col-xl-7 col-12">
+                                                    <select name="" id="prCTH" style={{ width: "100%" }}>
+                                                        <option value="BANO">BANO</option>
+                                                        <option value="BANO">BANO</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-5">
+                                                    <label htmlFor="prCET">Vehicle No.</label>
+                                                </div>
+                                                <div className="col-xl-7 col-12">
+                                                    <select name="" id="prCET" style={{ width: "100%" }}>
+                                                        <option value="NOEXCISE">NOEXCISE</option>
+                                                        <option value="DEPB">DEPB</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-5">
+                                                    <label htmlFor="prCode">Driver Name</label>
+                                                </div>
+                                                <div className="col-xl-7 col-12">
                                                     <input
-                                                        type="number"
-                                                        className="challan-screen-input"
-                                                        value={product.netWeight}
-                                                        onChange={(e) => updateProductDetail(product.id, 'netWeight', parseFloat(e.target.value) || 0)}
-                                                        style={{ width: '100px' }}
+                                                        type="text"
+                                                        id="prCode"
+                                                        placeholder="Product Code "
+                                                        style={{ width: "100%" }}
                                                     />
-                                                </td>
-                                                <td>
+                                                </div>
+                                                <div className="single-info-block col-xl-5">
+                                                    <label htmlFor="prUnitPrice">Driver#</label>
+                                                </div>
+                                                <div className="col-xl-7 col-12">
                                                     <input
-                                                        type="number"
-                                                        className="challan-screen-input"
-                                                        value={product.lessWeight}
-                                                        onChange={(e) => updateProductDetail(product.id, 'lessWeight', parseFloat(e.target.value) || 0)}
-                                                        style={{ width: '100px' }}
+                                                        type="text"
+                                                        id="prUnitPrice"
+                                                        defaultValue={0}
+                                                        style={{ width: "100%" }}
                                                     />
-                                                </td>
-                                                <td>
+                                                </div>
+                                                <div className="single-info-block col-xl-5">
+                                                    <label htmlFor="dutyRate">Vehicle Remarks</label>
+                                                </div>
+                                                <div className="col-xl-7 col-12">
+                                                    <textarea
+                                                        name=""
+                                                        id="dutyRate"
+                                                        className="py-0"
+                                                        style={{ width: "100%" }}
+                                                        defaultValue={""}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-5 mt-3 mt-xl-0">
+                                        <div className="form-block bigger-form-block">
+                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                <div className="single-info-block col-xl-2">
+                                                    <label htmlFor="CountryOrigin">GST#</label>
+                                                </div>
+                                                <div className="col-xl-10">
                                                     <input
-                                                        type="number"
-                                                        className="challan-screen-input"
-                                                        value={product.gtWeight}
-                                                        onChange={(e) => updateProductDetail(product.id, 'gtWeight', parseFloat(e.target.value) || 0)}
-                                                        style={{ width: '100px' }}
+                                                        type="text"
+                                                        id="CountryOrigin"
+                                                        style={{ width: "100%" }}
                                                     />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="number"
-                                                        className="challan-screen-input"
-                                                        value={product.amount}
-                                                        onChange={(e) => updateProductDetail(product.id, 'amount', parseFloat(e.target.value) || 0)}
-                                                        style={{ width: '100px' }}
+                                                </div>
+                                                <div className="single-info-block col-xl-2">
+                                                    <label htmlFor="SchemeCode">Name</label>
+                                                </div>
+                                                <div className="col-xl-10">
+                                                    <select name="" id="SchemeCode" style={{ width: "100%" }}>
+                                                        <option value="Raw Material">Raw Material</option>
+                                                        <option value="Finished Goods">Finished Goods</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-2">
+                                                    <label htmlFor="EximDesc">Address</label>
+                                                </div>
+                                                <div className="col-xl-10">
+                                                    <textarea
+                                                        name=""
+                                                        id="EximDesc"
+                                                        value="DEPB Post Export"
+                                                        defaultValue={"DEPB Post Export"}
                                                     />
-                                                </td>
-                                                <td>
-                                                    {productDetails.length > 1 && (
-                                                        <button
-                                                            className="challan-screen-btn-icon challan-screen-btn-icon-danger"
-                                                            onClick={() => removeProductDetail(product.id)}
+                                                </div>
+                                                <div className="single-info-block col-xl-2">
+                                                    <label htmlFor="noten">State</label>
+                                                </div>
+                                                <div className="col-xl-10">
+                                                    <select name="" id="noten" style={{ width: "100%" }}>
+                                                        <option value="Raw Material">Raw Material</option>
+                                                        <option value="Finished Goods">Finished Goods</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-2">
+                                                    <label htmlFor="Sno2">District</label>
+                                                </div>
+                                                <div className="col-xl-10">
+                                                    <select name="" id="Sno2" style={{ width: "100%" }}>
+                                                        <option value="BANO1">BANO1</option>
+                                                        <option value="BANO2">BANO2</option>
+                                                    </select>
+                                                </div>
+                                                <div className="single-info-block col-xl-2">
+                                                    <label htmlFor="SchemDes">PIN</label>
+                                                </div>
+                                                <div className="col-xl-10">
+                                                    <select name="" id="SchemDes" style={{ width: "100%" }}>
+                                                        <option value="BANO">BANO</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-12 mt-2">
+                                    <div className="product-details-table mb-2">
+                                        <div className="product-des-box product-details-form ">
+                                            <div className="product-form-container ">
+                                                <div className="row g-3 align-items-center">
+                                                    <div className="col-md-2 mt-0">
+                                                        <label className="MAINTABLE_LABEL">Product Name</label>
+                                                        <select
+                                                            name=""
+                                                            id="CountryOrigin"
+                                                            style={{ width: "100%" }}
                                                         >
-                                                            <Trash2 className="challan-screen-icon-sm" />
-                                                        </button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* Weight Detail */}
-                        <div className="challan-screen-form-section">
-                            <h3 className="challan-screen-form-section-title">Weight Detail</h3>
-
-                            <div className="challan-screen-form-row-6">
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Tare Weight</label>
-                                    <input
-                                        type="number"
-                                        className="challan-screen-input"
-                                        value={challanData.weightDetails.tareWeight}
-                                        onChange={(e) => handleInputChange('weightDetails', {
-                                            ...challanData.weightDetails,
-                                            tareWeight: parseFloat(e.target.value) || 0
-                                        })}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Date/Time</label>
-                                    <input
-                                        type="datetime-local"
-                                        className="challan-screen-input"
-                                        value={challanData.weightDetails.dateTime}
-                                        onChange={(e) => handleInputChange('weightDetails', {
-                                            ...challanData.weightDetails,
-                                            dateTime: e.target.value
-                                        })}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Net Weight</label>
-                                    <input
-                                        type="number"
-                                        className="challan-screen-input"
-                                        value={challanData.weightDetails.netWeight}
-                                        onChange={(e) => handleInputChange('weightDetails', {
-                                            ...challanData.weightDetails,
-                                            netWeight: parseFloat(e.target.value) || 0
-                                        })}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Less Weight</label>
-                                    <input
-                                        type="number"
-                                        className="challan-screen-input"
-                                        value={challanData.weightDetails.lessWeight}
-                                        onChange={(e) => handleInputChange('weightDetails', {
-                                            ...challanData.weightDetails,
-                                            lessWeight: parseFloat(e.target.value) || 0
-                                        })}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Total GT Weight</label>
-                                    <input
-                                        type="number"
-                                        className="challan-screen-input"
-                                        value={challanData.weightDetails.totalGTWeight}
-                                        onChange={(e) => handleInputChange('weightDetails', {
-                                            ...challanData.weightDetails,
-                                            totalGTWeight: parseFloat(e.target.value) || 0
-                                        })}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Vehicle Commission</label>
-                                    <input
-                                        type="number"
-                                        className="challan-screen-input"
-                                        value={challanData.weightDetails.vehicleCommission}
-                                        onChange={(e) => handleInputChange('weightDetails', {
-                                            ...challanData.weightDetails,
-                                            vehicleCommission: parseFloat(e.target.value) || 0
-                                        })}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Amount Detail */}
-                        <div className="challan-screen-form-section">
-                            <h3 className="challan-screen-form-section-title">Amount Detail</h3>
-
-                            <div className="challan-screen-form-row-2">
-                                <div>
-                                    <div className="challan-screen-form-row-3">
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Amount</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.amount}
-                                                onChange={(e) => handleInputChange('amount', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Loading</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.loading}
-                                                onChange={(e) => handleInputChange('loading', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Commission</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.commission}
-                                                onChange={(e) => handleInputChange('commission', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="challan-screen-form-row-4">
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">GST Amount</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.gstAmount}
-                                                onChange={(e) => handleInputChange('gstAmount', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Royalty</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.royalty}
-                                                onChange={(e) => handleInputChange('royalty', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">TP Amount</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.tpAmount}
-                                                onChange={(e) => handleInputChange('tpAmount', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-
-                                        <div className="challan-screen-form-group">
-                                            <label className="challan-screen-label">Freight Amt</label>
-                                            <input
-                                                type="number"
-                                                className="challan-screen-input"
-                                                value={challanData.freightAmt}
-                                                onChange={(e) => handleInputChange('freightAmt', parseFloat(e.target.value) || 0)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="challan-screen-summary">
-                                    <div className="challan-screen-summary-row">
-                                        <span className="challan-screen-summary-label">Total</span>
-                                        <span className="challan-screen-summary-value">{challanData.total}</span>
-                                    </div>
-                                    <div className="challan-screen-summary-row">
-                                        <span className="challan-screen-summary-label">Extra Amount</span>
-                                        <input
-                                            type="number"
-                                            className="challan-screen-input"
-                                            value={challanData.extraAmt}
-                                            onChange={(e) => handleInputChange('extraAmt', parseFloat(e.target.value) || 0)}
-                                            style={{ width: '120px', textAlign: 'right' }}
-                                        />
-                                    </div>
-                                    <div className="challan-screen-summary-row">
-                                        <span className="challan-screen-summary-label">Grand Total</span>
-                                        <span className="challan-screen-summary-value">{challanData.grandTotal}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="challan-screen-action-buttons">
-                            <button className="challan-screen-btn challan-screen-btn-secondary">
-                                Cancel
-                            </button>
-                            <button
-                                className="challan-screen-btn challan-screen-btn-primary"
-                                onClick={calculateTotals}
-                            >
-                                Calculate
-                            </button>
-                            <button
-                                className="challan-screen-btn challan-screen-btn-primary"
-                                onClick={saveChallan}
-                            >
-                                <Save className="challan-screen-icon" />
-                                Save Challan
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Challan History Tab */}
-                <div className={`challan-screen-tab-content ${activeTab === 'history' ? 'active' : ''}`}>
-                    <div className="challan-screen-form-container">
-
-                        {/* Search and Filter Section */}
-                        <div className="challan-screen-form-section">
-                            <h3 className="challan-screen-form-section-title">
-                                <Search className="challan-screen-icon" />
-                                Search & Filter Challans
-                            </h3>
-
-                            <div className="challan-screen-form-row-3">
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Search</label>
-                                    <div className="challan-screen-form-group-inline">
-                                        <Search className="challan-screen-icon-sm" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b7280', pointerEvents: 'none' }} />
-                                        <input
-                                            type="text"
-                                            className="challan-screen-input"
-                                            placeholder="Search by Challan No, Consignee, Vehicle No..."
-                                            value={historyFilters.searchTerm}
-                                            onChange={(e) => setHistoryFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
-                                            style={{ paddingLeft: '40px' }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">From Date</label>
-                                    <input
-                                        type="date"
-                                        className="challan-screen-input"
-                                        value={historyFilters.dateFrom}
-                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
-                                    />
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">To Date</label>
-                                    <input
-                                        type="date"
-                                        className="challan-screen-input"
-                                        value={historyFilters.dateTo}
-                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, dateTo: e.target.value }))}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="challan-screen-form-row-3">
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Status</label>
-                                    <select
-                                        className="challan-screen-select"
-                                        value={historyFilters.status}
-                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, status: e.target.value }))}
-                                    >
-                                        <option value="">All Status</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="In Transit">In Transit</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                    </select>
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Payment Type</label>
-                                    <select
-                                        className="challan-screen-select"
-                                        value={historyFilters.paymentType}
-                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, paymentType: e.target.value }))}
-                                    >
-                                        <option value="">All Payment Types</option>
-                                        <option value="Cash">Cash</option>
-                                        <option value="Credit">Credit</option>
-                                    </select>
-                                </div>
-
-                                <div className="challan-screen-form-group">
-                                    <label className="challan-screen-label">Consignee</label>
-                                    <input
-                                        type="text"
-                                        className="challan-screen-input"
-                                        placeholder="Filter by Consignee"
-                                        value={historyFilters.consignee}
-                                        onChange={(e) => setHistoryFilters(prev => ({ ...prev, consignee: e.target.value }))}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Clear Filters Button */}
-                            <div className="challan-screen-form-row-1" style={{ marginTop: '1rem' }}>
-                                <button
-                                    className="challan-screen-btn challan-screen-btn-secondary"
-                                    onClick={() => setHistoryFilters({
-                                        searchTerm: '',
-                                        dateFrom: '',
-                                        dateTo: '',
-                                        status: '',
-                                        paymentType: '',
-                                        consignee: ''
-                                    })}
-                                >
-                                    Clear Filters
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Summary Statistics */}
-                        <div className="challan-screen-form-section">
-                            <h3 className="challan-screen-form-section-title">
-                                <BarChart3 className="challan-screen-icon" />
-                                Summary Statistics
-                            </h3>
-
-                            <div className="challan-screen-form-row-4">
-                                <div className="challan-screen-summary-card">
-                                    <div className="challan-screen-summary-card-content">
-                                        <div className="challan-screen-summary-card-title">Total Challans</div>
-                                        <div className="challan-screen-summary-card-value">{filteredHistory.length}</div>
-                                    </div>
-                                </div>
-
-                                <div className="challan-screen-summary-card">
-                                    <div className="challan-screen-summary-card-content">
-                                        <div className="challan-screen-summary-card-title">Total Amount</div>
-                                        <div className="challan-screen-summary-card-value">
-                                            ₹{filteredHistory.reduce((sum, challan) => sum + challan.amount, 0).toLocaleString()}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="challan-screen-summary-card">
-                                    <div className="challan-screen-summary-card-content">
-                                        <div className="challan-screen-summary-card-title">Total Quantity</div>
-                                        <div className="challan-screen-summary-card-value">
-                                            {filteredHistory.reduce((sum, challan) => sum + challan.quantity, 0).toFixed(1)} MT
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="challan-screen-summary-card">
-                                    <div className="challan-screen-summary-card-content">
-                                        <div className="challan-screen-summary-card-title">Completed</div>
-                                        <div className="challan-screen-summary-card-value">
-                                            {filteredHistory.filter(c => c.status === 'Completed').length}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Challan History Table */}
-                        <div className="challan-screen-form-section">
-                            <div className="challan-screen-flex challan-screen-items-center challan-screen-justify-between challan-screen-mb-6">
-                                <h3 className="challan-screen-form-section-title">
-                                    <List className="challan-screen-icon" />
-                                    Challan History ({filteredHistory.length} records)
-                                </h3>
-                                <div className="challan-screen-flex challan-screen-gap-2">
-                                    <button className="challan-screen-btn challan-screen-btn-secondary">
-                                        <Download className="challan-screen-icon" />
-                                        Export Excel
-                                    </button>
-                                    <button className="challan-screen-btn challan-screen-btn-secondary">
-                                        <Download className="challan-screen-icon" />
-                                        Export PDF
-                                    </button>
-                                    <button className="challan-screen-btn challan-screen-btn-primary" onClick={() => setActiveTab('create')}>
-                                        <Plus className="challan-screen-icon" />
-                                        Create Challan
-                                    </button>
-
-                                </div>
-                            </div>
-
-                            <div className="challan-screen-table-container" style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                                <table className="challan-screen-table">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
-                                            <th>Challan No</th>
-                                            <th>Date</th>
-                                            <th>Time</th>
-                                            <th>Consignee</th>
-                                            <th>Vehicle No</th>
-                                            <th>Driver Name</th>
-                                            <th>Product</th>
-                                            <th>Quantity (MT)</th>
-                                            <th>Amount (₹)</th>
-                                            <th>Payment</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredHistory.length > 0 ? (
-                                            filteredHistory.map((challan, index) => (
-                                                <tr key={challan.id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>
-                                                        <span className="challan-screen-challan-no">{challan.challanNo}</span>
-                                                    </td>
-                                                    <td>{new Date(challan.date).toLocaleDateString('en-IN')}</td>
-                                                    <td>{challan.time}</td>
-                                                    <td>
-                                                        <span className="challan-screen-consignee-name">{challan.consignee}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span className="challan-screen-vehicle-no">{challan.vehicleNo}</span>
-                                                    </td>
-                                                    <td>{challan.driverName}</td>
-                                                    <td>{challan.productName}</td>
-                                                    <td className="challan-screen-text-right">{challan.quantity.toFixed(1)}</td>
-                                                    <td className="challan-screen-text-right">₹{challan.amount.toLocaleString()}</td>
-                                                    <td>
-                                                        <span className={`challan-screen-payment-badge ${challan.paymentType.toLowerCase()}`}>
-                                                            {challan.paymentType}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span className={`challan-screen-status-badge ${challan.status.toLowerCase().replace(' ', '-')}`}>
-                                                            {challan.status}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div className="challan-screen-action-buttons-row">
-                                                            <button
-                                                                className="challan-screen-btn-icon challan-screen-btn-icon-primary"
-                                                                title="View Details"
-                                                            >
-                                                                <Receipt className="challan-screen-icon-sm" />
-                                                            </button>
-                                                            <button
-                                                                className="challan-screen-btn-icon challan-screen-btn-icon-secondary"
-                                                                title="Print Challan"
-                                                            >
-                                                                <Download className="challan-screen-icon-sm" />
-                                                            </button>
-                                                            {challan.status === 'Pending' && (
-                                                                <button
-                                                                    className="challan-screen-btn-icon challan-screen-btn-icon-success"
-                                                                    title="Edit Challan"
-                                                                >
-                                                                    <Edit3 className="challan-screen-icon-sm" />
-                                                                </button>
-                                                            )}
-                                                            {(challan.status === 'Pending' || challan.status === 'In Transit') && (
-                                                                <button
-                                                                    className="challan-screen-btn-icon challan-screen-btn-icon-danger"
-                                                                    title="Cancel Challan"
-                                                                >
-                                                                    <Trash2 className="challan-screen-icon-sm" />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={13} className="challan-screen-no-data">
-                                                    <div className="challan-screen-no-data-content">
-                                                        <Receipt className="challan-screen-no-data-icon" />
-                                                        <p>No challans found matching your criteria</p>
-                                                        <p className="challan-screen-text-sm">Try adjusting your search filters</p>
+                                                            <option value="Korea Rebublic of">
+                                                                Korea Rebublic of
+                                                            </option>
+                                                            <option value="US Rebublic of">US Rebublic of</option>
+                                                        </select>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL" htmlFor="SchemDes">
+                                                            Rate
+                                                        </label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col  mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Gross Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Net Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col mt-0" style={{ minWidth: 150 }}>
+                                                        <label className="MAINTABLE_LABEL">Less Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">GT Weight</label>
+                                                        <input type="number" id="SchemDes" readOnly="" />
+                                                    </div>
+                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Amount</label>
+                                                        <input type="number" id="SchemDes" readOnly="" />
+                                                    </div>
+                                                    <div className="col-md-2 mt-0">
+                                                        <label className="MAINTABLE_LABEL">Date/Time</label>
+                                                        <input type="text" id="SchemDes" readOnly="" />
+                                                    </div>
+                                                    <div className="col">
+                                                        <button className="btn btn-warning p-1 py-0">
+                                                            <svg
+                                                                className="text-white"
+                                                                style={{ width: 20, height: 25 }}
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={2}
+                                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                                />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="product-details-table mb-2">
+                                        <div className="product-des-box product-details-form ">
+                                            <div className="product-form-container ">
+                                                <div className="row g-3">
+                                                    <div className="col-2 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Tare Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Net Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Less Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Total GT Weight</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-1 mt-0" style={{ minWidth: 150 }}>
+                                                        <label className="MAINTABLE_LABEL">
+                                                            Vehicle Commision
+                                                        </label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-md-2 mt-0">
+                                                        <label className="MAINTABLE_LABEL">Date/Time</label>
+                                                        <input type="text" id="SchemDes" readOnly="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="product-details-table mb-2">
+                                        <div className="product-des-box product-details-form">
+                                            <div className="product-form-container ">
+                                                <div className="row g-3">
+                                                    <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Amount</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Loading</label>
+                                                        <select
+                                                            name=""
+                                                            id="CountryOrigin"
+                                                            style={{ width: "100%" }}
+                                                        >
+                                                            <option value="Korea Rebublic of">
+                                                                Korea Rebublic of
+                                                            </option>
+                                                            <option value="US Rebublic of">US Rebublic of</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Commission</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div
+                                                        className="col-md-1 col-sm-6 mt-0"
+                                                        style={{ minWidth: 130 }}
+                                                    >
+                                                        <label className="MAINTABLE_LABEL">GT Amount</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
+                                                        <label className="MAINTABLE_LABEL">Royalty</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-md-2 mt-0">
+                                                        <label className="MAINTABLE_LABEL">Tp Amount</label>
+                                                        <select
+                                                            name=""
+                                                            id="CountryOrigin"
+                                                            style={{ width: "100%" }}
+                                                        >
+                                                            <option value="Korea Rebublic of">
+                                                                Korea Rebublic of
+                                                            </option>
+                                                            <option value="US Rebublic of">US Rebublic of</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Freight Amount</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                        <label className="MAINTABLE_LABEL">Total</label>
+                                                        <input type="number" id="SchemDes" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </main>
+
+        </>
     );
 }
