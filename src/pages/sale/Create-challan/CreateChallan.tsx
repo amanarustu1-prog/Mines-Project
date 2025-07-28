@@ -888,7 +888,7 @@ export default function CreateChallan() {
 
                         {isModalOpen && (
                             <div className="modal-overlay">
-                                <div className="modal-content mt-3">
+                                <div className="modal-content">
                                     {/* Modal Header */}
                                     <div className="modal-header">
                                         <div className="content-top-nav  ">
@@ -917,7 +917,7 @@ export default function CreateChallan() {
 
                                         <div className="row align-items-center">
 
-                                            <div className="col-xl-6">
+                                            <div className="col-xl-5">
                                                 <div className="d-flex align-items-center gap-2">
                                                     <label
                                                         htmlFor="product-desc"
@@ -963,7 +963,7 @@ export default function CreateChallan() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-xl-3 mt-3 mt-xl-0">
+                                            <div className="col-xl-2 mt-3 mt-xl-0">
                                                 <div className="d-flex align-items-center gap-2">
                                                     <label className="d-flex align-items-center" style={{ gap: 6 }}>
                                                         <input type="radio" name="paymentType" defaultValue="cash" />
@@ -975,6 +975,35 @@ export default function CreateChallan() {
                                                     </label>
                                                 </div>
                                             </div>
+                                            <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
+                                                <div className="flex gap-2 ">
+                                                    {/* Save Button */}
+                                                    <button
+                                                        type="button"
+                                                        className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                        style={{ backgroundColor: "#34C759" }}
+                                                    >
+                                                        <FiSave size={18} />
+                                                        Save
+                                                    </button>
+
+                                                    {/* Print Button */}
+                                                    <button
+                                                        type="button"
+                                                        className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                        style={{ backgroundColor: "#212529" }}
+                                                        onClick={() => window.print()}
+                                                    >
+                                                        <FiPrinter size={18} />
+                                                        Print
+                                                    </button>
+                                                </div>
+
+                                            </div>
+
+
+
+
                                             <div className="col-xxl-9 col-12 mt-2">
                                                 <div className="row">
                                                     <div className="col-xl-4 col-sm-6">
@@ -1193,6 +1222,7 @@ export default function CreateChallan() {
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                                 <div className="col-12 mt-2">
                                                     <div className="product-details-table mb-2">
@@ -1364,36 +1394,6 @@ export default function CreateChallan() {
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div className="row mt-3 mb-2">
-                                            <div className="col-md-12 d-flex justify-content-end">
-                                                <div className="flex gap-3 mt-4">
-                                                    {/* Save Button */}
-                                                    <button
-                                                        type="button"
-                                                        className="flex items-center gap-2 px-4 py-2 rounded-md text-white"
-                                                        style={{ backgroundColor: "#34C759" }}
-                                                    >
-                                                        <FiSave size={18} />
-                                                        Save
-                                                    </button>
-
-                                                    {/* Print Button */}
-                                                    <button
-                                                        type="button"
-                                                        className="flex items-center gap-2 px-4 py-2 rounded-md text-white"
-                                                        style={{ backgroundColor: "#212529" }}
-                                                    >
-                                                        <FiPrinter size={18} />
-                                                        Print
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
 
 
                                     </div>

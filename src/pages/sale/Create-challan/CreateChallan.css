@@ -33,52 +33,73 @@ GOBAL CSS START
 
 
 .content-top-nav {
-  /* padding: 5px 10px; */
-  background: #FFFFFF;
-  /* border-bottom: 1px solid #E8E8E9; */
+  background: transparent;
+  margin: 0;
+  padding: 0;
 }
 
 .content-top-nav ul {
   display: flex;
   align-items: center;
   gap: 25px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.content-top-nav ul li {
+  margin: 0;
+  padding: 0;
 }
 
 .content-top-nav ul a {
   display: block;
-  padding: 5px;
+  padding: 0px 0;
   position: relative;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.content-top-nav ul a:hover {
+  color: #111827;
 }
 
 .content-top-nav ul a::before {
   content: '';
-  clear: both;
-  display: block;
-  width: 0%;
-  height: 2px;
-  background: var(--blue-color);
   position: absolute;
   left: 0;
-  top: 110%;
-  transition: 0.3s;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #dc2626;
+  transition: width 0.3s ease;
 }
 
-.content-top-nav ul a.active::before,
+.content-top-nav ul a.active,
 .content-top-nav ul a:hover::before {
   width: 100%;
 }
 
-
-.desktop-navbar ul li a {
-  display: block;
-  font-size: 14px;
-  color: #ffffff;
+.content-top-nav ul a.active {
+  color: #dc2626;
   font-weight: 600;
 }
 
-.desktop-navbar ul li a:hover {
-  color: #FF5266;
+/* Modal specific styles */
+.modal-header .content-top-nav {
+  flex-grow: 1;
+}
+
+.modal-header .content-top-nav ul {
+  gap: 15px;
+}
+
+.modal-header .content-top-nav ul a {
+  font-size: 15px;
+  padding: 0px 0;
 }
 
 .admin-profile a {
@@ -763,7 +784,6 @@ GOBAL CSS START
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  overflow-y: auto;
   padding: 20px;
 }
 
@@ -773,7 +793,7 @@ GOBAL CSS START
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-height: 90vh;
+  max-height: 99vh;
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
