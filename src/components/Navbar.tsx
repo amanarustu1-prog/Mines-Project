@@ -289,14 +289,14 @@ const navigationItems: NavItem[] = [
                
           {
             title: 'Pending Challan',
-            href: '/create-challan',
+            href: '/pending-challan',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
 
           {
             title: 'Extra TP',
-            href: '/mining/transport',
+            href: '/extra-tp',
             icon: Truck,
             description: 'Material transport and logistics'
           },
@@ -2552,9 +2552,9 @@ export function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-      <div className="w-full pt-3">
+      <div className="w-full pt-2">
         {/* Top Bar - Search and Actions */}
-        <div className="flex items-center justify-between h-12 px-4 sm:px-6 lg:px-8 border-b border-gray-50">
+        <div className="flex items-center justify-between h-16  px-4 sm:px-6 lg:px-8 border-b border-gray-50">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-shrink-0 max-w-[320px]">
             <Link to="/" className="flex items-center space-x-3 group">

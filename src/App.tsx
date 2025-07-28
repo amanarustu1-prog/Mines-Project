@@ -78,6 +78,8 @@ import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 import Ledger from './pages/Accounts/ledger/Ledger'
+import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
+import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
 
 
 
@@ -175,6 +177,8 @@ function App() {
           <Route path="/product-masonry" element={<ProductMasonry />} />
           <Route path="/tp-charges" element={<TPCharges />} />
           <Route path="/create-challan" element={<CreateChallan />} />
+          <Route path="/pending-challan" element={<PendingChallan />} />
+          <Route path="/extra-tp" element={<ExtraTP />} />
           {/* <Route path="/challan-screen" element={<ChallanScreen />} /> */}
 
 
