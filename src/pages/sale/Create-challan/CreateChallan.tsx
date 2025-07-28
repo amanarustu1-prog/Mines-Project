@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './CreateChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
+import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
+import { FiX } from "react-icons/fi";
 
 // Icon components
 const Receipt = ({ className }: { className?: string }) => (
@@ -208,6 +210,8 @@ interface ChallanTableItem {
 
 export default function CreateChallan() {
     const [activeTab, setActiveTab] = useState('challanOverview');
+    const [showInput, setShowInput] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [challanData, setChallanData] = useState<ChallanFormData>({
         challanNo: 'S',
         financialYear: '2025-2026',
@@ -343,6 +347,14 @@ export default function CreateChallan() {
             ...prev,
             [field]: value,
         }));
+    };
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
     };
 
     const handleInputChangeItem = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -667,776 +679,730 @@ export default function CreateChallan() {
             <main className="dashboard-main ">
 
                 <div className="main-content-area ">
-                    {/* <div className="content-top-nav  ">
-                        <ul>
-                            <li>
-                                <a className="active" href="#">
-                                    Challan{" "}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">TP</a>
-                            </li>
-                            <li>
-                                <a href="#">BILL</a>
-                            </li>
-                        </ul>
-                    </div> */}
-
-
-
-
-
-
                     <div className="main-content-wrapper mt-5 ">
+                        <div className="relative mt-4 mb-3">
+                            <div className="py-3 employee-create-challan-card flex flex-wrap  items-end gap-4 w-full">
+                                {/* Dates Section */}
+                                <div className="flex items-center gap-2">
+                                    <label className=" whitespace-nowrap employee-master-metric-label">From :</label>
+                                    <input
+                                        type="date"
+                                        className="border rounded px-2 py-1 w-[130px]"
+                                        defaultValue="2025-07-23"
+                                    />
+                                    <input
+                                        type="time"
+                                        className="border rounded px-2 py-1 w-[80px]"
+                                        defaultValue="00:00"
+                                    />
+
+                                    <label className=" whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
+                                    <input
+                                        type="date"
+                                        className="border rounded px-2 py-1 w-[130px]"
+                                        defaultValue="2025-07-23"
+                                    />
+                                    <input
+                                        type="time"
+                                        className="border rounded px-2 py-1 w-[80px]"
+                                        defaultValue="19:35"
+                                    />
+                                </div>
+
+                                {/* Consignee Section */}
+                                <div className="flex items-center gap-2 ml-6">
+                                    <label className=" whitespace-nowrap employee-master-metric-label">Consignee :</label>
+                                    <select className="border rounded px-2 py-1 w-[400px]">
+                                        <option value="">Select Consignee</option>
+                                        <option value="ABC">ABC</option>
+                                        <option value="XYZ">XYZ</option>
+                                    </select>
+                                </div>
+
+                                <div className="flex flex-row-reverse items-center gap-2" >
+                                    <button
+                                        onClick={() => setShowInput(!showInput)}
+                                        className="text-gray-600 border rounded p-2 hover:bg-gray-100 transition"
+                                    >
+                                        <FiSearch size={18} />
+                                    </button>
+                                    {showInput && (
+                                        <input
+                                            type="text"
+                                            placeholder="Search "
+                                            className="border rounded px-2 py-1 w-[400px] transition-all"
+                                            autoFocus
+                                        />
+                                    )}
+                                </div>
 
 
-                        <div className="challan-screen-tabs mt-4">
-                            <div className="challan-screen-tabs-container">
-                                <nav className="challan-screen-tabs-nav">
-                                    <div className="challan-screen-tabs-list">
-                                        <button
-                                            className={`challan-screen-tab ${activeTab === 'challanOverview' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('challanOverview')}
-                                        >
-                                            <List className="challan-screen-tab-icon" />
-                                            Challan Overview
-                                        </button>
-                                        <button
-                                            className={`challan-screen-tab ${activeTab === 'addChallan' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('addChallan')}
-                                        >
-                                            <Plus className="challan-screen-tab-icon" />
-                                            Add Challan
-                                        </button>
-                                        <button
-                                            className={`challan-screen-tab ${activeTab === 'report' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('report')}
-                                        >
-                                            <Receipt className="challan-screen-tab-icon" />
-                                            Report
-                                        </button>
-
-                                    </div>
-                                </nav>
                             </div>
                         </div>
 
-                        {/* Tab Content */}
-                        <div className="tab-content mt-3">
-                            {/* Challan Overview Tab */}
-                            <div className={`tab-pane fade ${activeTab === 'challanOverview' ? 'show active' : ''}`}>
-                                <div className="employee-master-space-y-2">
-                                    {/* Employee Summary Cards */}
-                                    <div className="employee-master-summary-grid ">
-                                        <div className="employee-master-summary-card">
-                                            <div className="employee-master-summary-content">
-                                                <div className="employee-master-summary-item">
-                                                    <div className="employee-master-icon-container employee-master-icon-blue">
-                                                        <UsersIcon />
-                                                    </div>
-                                                    <div>
-                                                        <p className="employee-master-metric-label">Pending Challan</p>
-                                                        <p className="employee-master-metric-value employee-master-metric-blue">1</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div className="employee-master-summary-card">
-                                            <div className="employee-master-summary-content">
-                                                <div className="employee-master-summary-item">
-                                                    <div className="employee-master-icon-container employee-master-icon-green">
-                                                        <CheckCircleIcon />
-                                                    </div>
-                                                    <div>
-                                                        <p className="employee-master-metric-label">Approved Challan</p>
-                                                        <p className="employee-master-metric-value employee-master-metric-green">
-                                                            {challanData?.status === 'Active' ? 1 : 0}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div className="employee-master-summary-card">
-                                            <div className="employee-master-summary-content">
-                                                <div className="employee-master-summary-item">
-                                                    <div className="employee-master-icon-container employee-master-icon-purple">
-                                                        <TrendingUpIcon />
-                                                    </div>
-                                                    <div>
-                                                        <p className="employee-master-metric-label">Rejected Challan</p>
-                                                        <p className="employee-master-metric-value employee-master-metric-purple">
-                                                            {new Set([challanData?.department]).size}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                        <div className="employee-master-space-y-2">
+                            {/* Employee Summary Cards */}
+                            <div className="employee-master-summary-grid ">
+                                <div className="employee-master-summary-card">
+                                    <div className="employee-master-summary-content">
+                                        <div className="employee-master-summary-item">
+                                            <div className="employee-master-icon-container employee-master-icon-blue">
+                                                <UsersIcon />
                                             </div>
-                                        </div>
-
-                                        <div className="employee-master-summary-card">
-                                            <div className="employee-master-summary-content">
-                                                <div className="employee-master-summary-item">
-                                                    <div className="employee-master-icon-container employee-master-icon-yellow">
-                                                        <ClockIcon />
-                                                    </div>
-                                                    <div>
-                                                        <p className="employee-master-metric-label">Total Challan</p>
-                                                        <p className="employee-master-metric-value employee-master-metric-yellow">
-                                                            {new Date(challanData?.joiningDate).getMonth() === new Date().getMonth() &&
-                                                                new Date(challanData?.joiningDate).getFullYear() === new Date().getFullYear() ? 1 : 0}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                            <div>
+                                                <p className="employee-master-metric-label">Pending Challan</p>
+                                                <p className="employee-master-metric-value employee-master-metric-blue">1</p>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    {/* Employee List Table */}
-                                    <div className="employee-master-card">
-                                        <div className="employee-master-card-header mt-2">
-                                            <div className="relative">
-                                                <div className="flex flex-wrap items-end gap-4 w-full">
-                                                    {/* Dates Section */}
-                                                    <div className="flex items-center gap-2">
-                                                        <label className=" whitespace-nowrap">From :</label>
-                                                        <input
-                                                            type="date"
-                                                            className="border rounded px-2 py-1 w-[130px]"
-                                                            defaultValue="2025-07-23"
-                                                        />
-                                                        <input
-                                                            type="time"
-                                                            className="border rounded px-2 py-1 w-[80px]"
-                                                            defaultValue="00:00"
-                                                        />
-
-                                                        <label className=" whitespace-nowrap ml-4">To :</label>
-                                                        <input
-                                                            type="date"
-                                                            className="border rounded px-2 py-1 w-[130px]"
-                                                            defaultValue="2025-07-23"
-                                                        />
-                                                        <input
-                                                            type="time"
-                                                            className="border rounded px-2 py-1 w-[80px]"
-                                                            defaultValue="19:35"
-                                                        />
-                                                    </div>
-
-                                                    {/* Consignee Section */}
-                                                    <div className="flex items-center gap-2 ml-6">
-                                                        <label className=" whitespace-nowrap">Consignee :</label>
-                                                        <select className="border rounded px-2 py-1 w-[400px]">
-                                                            <option value="">Select Consignee</option>
-                                                            <option value="ABC">ABC</option>
-                                                            <option value="XYZ">XYZ</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                <div className="employee-master-summary-card">
+                                    <div className="employee-master-summary-content">
+                                        <div className="employee-master-summary-item">
+                                            <div className="employee-master-icon-container employee-master-icon-green">
+                                                <CheckCircleIcon />
                                             </div>
-                                            <button
-                                                className="employee-master-button employee-master-button-primary employee-master-button-sm"
-                                                onClick={() => setActiveTab('addChallan')}
-                                            >
-                                                <PlusIcon />
-                                                Add Challan
-                                            </button>
+                                            <div>
+                                                <p className="employee-master-metric-label">Approved Challan</p>
+                                                <p className="employee-master-metric-value employee-master-metric-green">
+                                                    {challanData?.status === 'Active' ? 1 : 0}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="employee-master-card-content" style={{ padding: 0 }}>
-                                            <div className="employee-master-table-container" style={{
-                                                overflowX: 'auto',
-                                                overflowY: 'auto',
-                                                maxHeight: '400px',
+                                    </div>
+                                </div>
 
-                                            }}>
-                                                <table className="employee-master-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Check</th>
-                                                            <th>Challan No</th>
-                                                            <th>Challan Date</th>
-                                                            <th>Consignee</th>
-                                                            <th>PartyAddress</th>
-                                                            <th>Vehicle No</th>
-                                                            <th>Product Name</th>
-                                                            <th>Gross Weight</th>
-                                                            <th>Net Weight</th>
-                                                            <th>Less Weight</th>
-                                                            <th>GT Weight</th>
-                                                            <th>Amount</th>
-                                                            <th>Rate</th>
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {challanTableData.map((item) => (
-                                                            <tr key={item.id}>
-                                                                <td><input type="checkbox" className="form-check-input" checked /></td>
-                                                                <td>{item.challanNo}</td>
-                                                                <td>{item.challanDate}</td>
-                                                                <td>{item.consignee}</td>
-                                                                <td>{item.partyAddress}</td>
-                                                                <td>{item.vehicleNo}</td>
-                                                                <td>{item.productName}</td>
-                                                                <td>{item.grossWeight.toLocaleString()}</td>
-                                                                <td>{item.netWeight.toLocaleString()}</td>
-                                                                <td>{item.lessWeight.toLocaleString()}</td>
-                                                                <td>{item.gtWeight.toLocaleString()}</td>
-                                                                <td>₹{item.amount.toLocaleString()}</td>
-                                                                <td>₹{item.rate.toFixed(2)}</td>
-                                                                <td>
-                                                                    <div className="d-flex gap-1">
-                                                                        <button className="btn btn-sm btn-primary">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3.36l.894-1.838 6.316-6.316a4.5 4.5 0 01-1.255-3.97l1.06-.659 1.977 1.977m-2.036 5.036L6.5 3.36l.894 1.838 6.316 6.316a4.5 4.5 0 01-1.255 3.97l1.06-.659 1.977 1.977z" />
-                                                                            </svg>
-                                                                        </button>
-                                                                        <button className="btn btn-sm btn-danger">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
+                                <div className="employee-master-summary-card">
+                                    <div className="employee-master-summary-content">
+                                        <div className="employee-master-summary-item">
+                                            <div className="employee-master-icon-container employee-master-icon-purple">
+                                                <TrendingUpIcon />
+                                            </div>
+                                            <div>
+                                                <p className="employee-master-metric-label">Rejected Challan</p>
+                                                <p className="employee-master-metric-value employee-master-metric-purple">
+                                                    {new Set([challanData?.department]).size}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="employee-master-summary-card">
+                                    <div className="employee-master-summary-content">
+                                        <div className="employee-master-summary-item">
+                                            <div className="employee-master-icon-container employee-master-icon-yellow">
+                                                <ClockIcon />
+                                            </div>
+                                            <div>
+                                                <p className="employee-master-metric-label">Total Challan</p>
+                                                <p className="employee-master-metric-value employee-master-metric-yellow">
+                                                    {new Date(challanData?.joiningDate).getMonth() === new Date().getMonth() &&
+                                                        new Date(challanData?.joiningDate).getFullYear() === new Date().getFullYear() ? 1 : 0}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Add Challan Tab */}
-                            <div className={`tab-pane fade ${activeTab === 'addChallan' ? 'show active' : ''}`}>
-                                <div className="row align-items-center">
-                                    <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                        <div className="d-flex align-items-center gap-2">
-                                            <label
-                                                htmlFor="product-desc"
-                                                className="mb-0"
-                                                style={{ minWidth: 70 }}
-                                            >
-                                                Challan#
-                                            </label>
-                                            <div className="product-des-input d-flex gap-2 flex-grow-1">
-                                                <input
-                                                    type="text"
-                                                    id="product-desc-1"
-                                                    defaultValue="$"
-                                                    style={{ flex: 1 }}
-                                                />
-                                                <input
-                                                    type="text"
-                                                    id="date-pick-bano"
-                                                    style={{ flex: 1 }}
-                                                    readOnly=""
-                                                />
-                                                <input
-                                                    type="text"
-                                                    id="product-desc-bano-<?=uniqid()?>"
-                                                    defaultValue="Auto Generated"
-                                                    style={{ flex: 1 }}
-                                                    disabled=""
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 mt-3 mt-xl-0">
-                                        <div className="d-flex align-items-center gap-2">
-                                            <label
-                                                htmlFor="generic-desc"
-                                                className="mb-0"
-                                                style={{ minWidth: 70 }}
-                                            >
-                                                Date/Time
-                                            </label>
-                                            <div className="product-des-input flex-grow-1">
-                                                <input type="text" id="generic-desc" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-3 mt-3 mt-xl-0">
-                                        <div className="d-flex align-items-center gap-2">
-                                            <label className="d-flex align-items-center" style={{ gap: 6 }}>
-                                                <input type="radio" name="paymentType" defaultValue="cash" />
-                                                Cash
-                                            </label>
-                                            <label className="d-flex align-items-center" style={{ gap: 6, marginLeft: 20 }}>
-                                                <input type="radio" name="paymentType" defaultValue="credit" />{" "}
-                                                Credit
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="col-xxl-9 col-12 mt-2">
-                                        <div className="row">
-                                            <div className="col-xl-4 col-sm-6">
-                                                <div className="form-block ">
-                                                    <div className="row align-items-center" style={{ rowGap: 6 }}>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="ritcNo">
-                                                                Consignee<span>*</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <select name="" id="ritcNo" style={{ width: "100%" }}>
-                                                                <option value={54075290}>54075290</option>
-                                                                <option value={54075291}>54075291</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="prType">
-                                                                Address <span>*</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <textarea
-                                                                name=""
-                                                                id="prType"
-                                                                className="py-0"
-                                                                style={{ width: "100%" }}
-                                                                defaultValue={""}
-                                                            />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="ritcNo">
-                                                                State<span>*</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <select name="" id="ritcNo" style={{ width: "100%" }}>
-                                                                <option value="Maharashtra">Maharashtra</option>
-                                                                <option value="Gujarat">Gujarat</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="prUnit">
-                                                                District
-                                                                <span>*</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <select name="" id="prUnit" style={{ width: "100%" }}>
-                                                                <option value="BANO">BANO</option>
-                                                                <option value="BANO">BANO</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="prUnitPrice">
-                                                                PIN <span>*</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <select name="" id="prUnitPrice" style={{ width: "100%" }}>
-                                                                <option value={100.0}>100.000000</option>
-                                                                <option value={100.0}>100.000000</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="prAmountUSD">Contact#</label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <input type="text" id="prAmountUSD" defaultValue={100.0} />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-3">
-                                                            <label htmlFor="prAmountINR">EmailID</label>
-                                                        </div>
-                                                        <div className="col-xl-9 col-12">
-                                                            <input
-                                                                type="text"
-                                                                id="prAmountINR"
-                                                                readOnly=""
-                                                                defaultValue={100.0}
-                                                            />
-                                                        </div>
-                                                        {/* ROW */}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-3 col-sm-6  ">
-                                                <div className="form-block ">
-                                                    <div className="row align-items-center" style={{ rowGap: 6 }}>
-                                                        <div className="single-info-block col-xl-5">
-                                                            <label htmlFor="endUse">
-                                                                Adv. Amount <span>*</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="col-xl-7 col-12">
-                                                            <input
-                                                                type="text"
-                                                                id="endUse"
-                                                                defaultValue={0.0}
-                                                                style={{ width: "100%" }}
-                                                            />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-5">
-                                                            <label htmlFor="prCTH">Vehicle Type</label>
-                                                        </div>
-                                                        <div className="col-xl-7 col-12">
-                                                            <select name="" id="prCTH" style={{ width: "100%" }}>
-                                                                <option value="BANO">BANO</option>
-                                                                <option value="BANO">BANO</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-5">
-                                                            <label htmlFor="prCET">Vehicle No.</label>
-                                                        </div>
-                                                        <div className="col-xl-7 col-12">
-                                                            <select name="" id="prCET" style={{ width: "100%" }}>
-                                                                <option value="NOEXCISE">NOEXCISE</option>
-                                                                <option value="DEPB">DEPB</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-5">
-                                                            <label htmlFor="prCode">Driver Name</label>
-                                                        </div>
-                                                        <div className="col-xl-7 col-12">
-                                                            <input
-                                                                type="text"
-                                                                id="prCode"
-                                                                placeholder="Product Code "
-                                                                style={{ width: "100%" }}
-                                                            />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-5">
-                                                            <label htmlFor="prUnitPrice">Driver#</label>
-                                                        </div>
-                                                        <div className="col-xl-7 col-12">
-                                                            <input
-                                                                type="text"
-                                                                id="prUnitPrice"
-                                                                defaultValue={0}
-                                                                style={{ width: "100%" }}
-                                                            />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-5">
-                                                            <label htmlFor="dutyRate">Vehicle Remarks</label>
-                                                        </div>
-                                                        <div className="col-xl-7 col-12">
-                                                            <textarea
-                                                                name=""
-                                                                id="dutyRate"
-                                                                className="py-0"
-                                                                style={{ width: "100%" }}
-                                                                defaultValue={""}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-5 mt-3 mt-xl-0">
-                                                <div className="form-block bigger-form-block">
-                                                    <div className="row align-items-center" style={{ rowGap: 6 }}>
-                                                        <div className="single-info-block col-xl-2">
-                                                            <label htmlFor="CountryOrigin">GST#</label>
-                                                        </div>
-                                                        <div className="col-xl-10">
-                                                            <input
-                                                                type="text"
-                                                                id="CountryOrigin"
-                                                                style={{ width: "100%" }}
-                                                            />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-2">
-                                                            <label htmlFor="SchemeCode">Name</label>
-                                                        </div>
-                                                        <div className="col-xl-10">
-                                                            <select name="" id="SchemeCode" style={{ width: "100%" }}>
-                                                                <option value="Raw Material">Raw Material</option>
-                                                                <option value="Finished Goods">Finished Goods</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-2">
-                                                            <label htmlFor="EximDesc">Address</label>
-                                                        </div>
-                                                        <div className="col-xl-10">
-                                                            <textarea
-                                                                name=""
-                                                                id="EximDesc"
-                                                                value="DEPB Post Export"
-                                                                defaultValue={"DEPB Post Export"}
-                                                            />
-                                                        </div>
-                                                        <div className="single-info-block col-xl-2">
-                                                            <label htmlFor="noten">State</label>
-                                                        </div>
-                                                        <div className="col-xl-10">
-                                                            <select name="" id="noten" style={{ width: "100%" }}>
-                                                                <option value="Raw Material">Raw Material</option>
-                                                                <option value="Finished Goods">Finished Goods</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-2">
-                                                            <label htmlFor="Sno2">District</label>
-                                                        </div>
-                                                        <div className="col-xl-10">
-                                                            <select name="" id="Sno2" style={{ width: "100%" }}>
-                                                                <option value="BANO1">BANO1</option>
-                                                                <option value="BANO2">BANO2</option>
-                                                            </select>
-                                                        </div>
-                                                        <div className="single-info-block col-xl-2">
-                                                            <label htmlFor="SchemDes">PIN</label>
-                                                        </div>
-                                                        <div className="col-xl-10">
-                                                            <select name="" id="SchemDes" style={{ width: "100%" }}>
-                                                                <option value="BANO">BANO</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 mt-2">
-                                            <div className="product-details-table mb-2">
-                                                <div className="product-des-box product-details-form ">
-                                                    <div className="product-form-container ">
-                                                        <div className="row g-3 align-items-center">
-                                                            <div className="col-md-2 mt-0">
-                                                                <label className="MAINTABLE_LABEL">Product Name</label>
-                                                                <select
-                                                                    name=""
-                                                                    id="CountryOrigin"
-                                                                    style={{ width: "100%" }}
-                                                                >
-                                                                    <option value="Korea Rebublic of">
-                                                                        Korea Rebublic of
-                                                                    </option>
-                                                                    <option value="US Rebublic of">US Rebublic of</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL" htmlFor="SchemDes">
-                                                                    Rate
-                                                                </label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col  mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Gross Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Net Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col mt-0" style={{ minWidth: 150 }}>
-                                                                <label className="MAINTABLE_LABEL">Less Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">GT Weight</label>
-                                                                <input type="number" id="SchemDes" readOnly="" />
-                                                            </div>
-                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Amount</label>
-                                                                <input type="number" id="SchemDes" readOnly="" />
-                                                            </div>
-                                                            <div className="col-md-2 mt-0">
-                                                                <label className="MAINTABLE_LABEL">Date/Time</label>
-                                                                <input type="text" id="SchemDes" readOnly="" />
-                                                            </div>
-                                                            <div className="col">
-                                                                <button className="btn btn-warning p-1 py-0">
-                                                                    <svg
-                                                                        className="text-white"
-                                                                        style={{ width: 20, height: 25 }}
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        viewBox="0 0 24 24"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                    >
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            strokeWidth={2}
-                                                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                                                        />
+                            {/* Employee List Table */}
+                            <div className="employee-master-card">
+                                <div className="employee-master-card-header mt-2 flex justify-end">
+
+                                    <button
+                                        className="employee-master-button employee-master-button-primary employee-master-button-sm"
+                                        onClick={handleOpenModal}
+                                    >
+                                        <PlusIcon /> Add Challan
+                                    </button>
+
+                                </div>
+                                <div className="employee-master-card-content" style={{ padding: 0 }}>
+                                    <div className="employee-master-table-container" style={{
+                                        overflowX: 'auto',
+                                        overflowY: 'auto',
+                                        maxHeight: '400px',
+
+                                    }}>
+                                        <table className="employee-master-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Check</th>
+                                                    <th>Challan No</th>
+                                                    <th>Challan Date</th>
+                                                    <th>Consignee</th>
+                                                    <th>PartyAddress</th>
+                                                    <th>Vehicle No</th>
+                                                    <th>Product Name</th>
+                                                    <th>Gross Weight</th>
+                                                    <th>Net Weight</th>
+                                                    <th>Less Weight</th>
+                                                    <th>GT Weight</th>
+                                                    <th>Amount</th>
+                                                    <th>Rate</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {challanTableData.map((item) => (
+                                                    <tr key={item.id}>
+                                                        <td><input type="checkbox" className="form-check-input" checked /></td>
+                                                        <td>{item.challanNo}</td>
+                                                        <td>{item.challanDate}</td>
+                                                        <td>{item.consignee}</td>
+                                                        <td>{item.partyAddress}</td>
+                                                        <td>{item.vehicleNo}</td>
+                                                        <td>{item.productName}</td>
+                                                        <td>{item.grossWeight.toLocaleString()}</td>
+                                                        <td>{item.netWeight.toLocaleString()}</td>
+                                                        <td>{item.lessWeight.toLocaleString()}</td>
+                                                        <td>{item.gtWeight.toLocaleString()}</td>
+                                                        <td>₹{item.amount.toLocaleString()}</td>
+                                                        <td>₹{item.rate.toFixed(2)}</td>
+                                                        <td>
+                                                            <div className="d-flex gap-1">
+                                                                <button className="btn btn-sm btn-primary">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3.36l.894-1.838 6.316-6.316a4.5 4.5 0 01-1.255-3.97l1.06-.659 1.977 1.977m-2.036 5.036L6.5 3.36l.894 1.838 6.316 6.316a4.5 4.5 0 01-1.255 3.97l1.06-.659 1.977 1.977z" />
+                                                                    </svg>
+                                                                </button>
+                                                                <button className="btn btn-sm btn-danger">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                                     </svg>
                                                                 </button>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="product-details-table mb-2">
-                                                <div className="product-des-box product-details-form ">
-                                                    <div className="product-form-container ">
-                                                        <div className="row g-3">
-                                                            <div className="col-2 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Tare Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Net Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Less Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Total GT Weight</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-1 mt-0" style={{ minWidth: 150 }}>
-                                                                <label className="MAINTABLE_LABEL">
-                                                                    Vehicle Commision
-                                                                </label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-md-2 mt-0">
-                                                                <label className="MAINTABLE_LABEL">Date/Time</label>
-                                                                <input type="text" id="SchemDes" readOnly="" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="product-details-table mb-2">
-                                                <div className="product-des-box product-details-form">
-                                                    <div className="product-form-container ">
-                                                        <div className="row g-3">
-                                                            <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Amount</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Loading</label>
-                                                                <select
-                                                                    name=""
-                                                                    id="CountryOrigin"
-                                                                    style={{ width: "100%" }}
-                                                                >
-                                                                    <option value="Korea Rebublic of">
-                                                                        Korea Rebublic of
-                                                                    </option>
-                                                                    <option value="US Rebublic of">US Rebublic of</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Commission</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div
-                                                                className="col-md-1 col-sm-6 mt-0"
-                                                                style={{ minWidth: 130 }}
-                                                            >
-                                                                <label className="MAINTABLE_LABEL">GT Amount</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
-                                                                <label className="MAINTABLE_LABEL">Royalty</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-md-2 mt-0">
-                                                                <label className="MAINTABLE_LABEL">Tp Amount</label>
-                                                                <select
-                                                                    name=""
-                                                                    id="CountryOrigin"
-                                                                    style={{ width: "100%" }}
-                                                                >
-                                                                    <option value="Korea Rebublic of">
-                                                                        Korea Rebublic of
-                                                                    </option>
-                                                                    <option value="US Rebublic of">US Rebublic of</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Freight Amount</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                            <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                <label className="MAINTABLE_LABEL">Total</label>
-                                                                <input type="number" id="SchemDes" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {/* {renderItemsTable()} */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Report Tab */}
-                            <div className={`tab-pane fade ${activeTab === 'report' ? 'show active' : ''}`}>
-                                <div className="employee-master-space-y-4">
-                                    <div className="employee-master-card">
-                                        <div className="employee-master-card-header">
-                                            <h3 className="employee-master-card-title">
-                                                <FileTextIcon />
-                                                Challan Reports & Analytics
-                                            </h3>
-                                        </div>
-                                        <div className="employee-master-card-content employee-master-space-y-4">
-                                            <div className="employee-master-report-grid">
-                                                <div className="employee-master-report-card">
-                                                    <UsersIcon style={{ width: '2rem', height: '2rem', color: '#2563eb', margin: '0 auto 0.5rem' }} />
-                                                    <h3 className="employee-master-font-semibold employee-master-text-gray-900">Challan Directory</h3>
-                                                    <p className="employee-master-text-sm employee-master-text-gray-600" style={{ marginBottom: '0.75rem' }}>Complete challan list with details</p>
-                                                    <button className="employee-master-button employee-master-button-outline employee-master-button-sm">
-                                                        <DownloadIcon />
-                                                        Download
-                                                    </button>
-                                                </div>
-
-                                                <div className="employee-master-report-card">
-                                                    <TrendingUpIcon style={{ width: '2rem', height: '2rem', color: '#059669', margin: '0 auto 0.5rem' }} />
-                                                    <h3 className="employee-master-font-semibold employee-master-text-gray-900">Challan Wise Report</h3>
-                                                    <p className="employee-master-text-sm employee-master-text-gray-600" style={{ marginBottom: '0.75rem' }}>Challan distribution by type</p>
-                                                    <button className="employee-master-button employee-master-button-outline employee-master-button-sm">
-                                                        <DownloadIcon />
-                                                        Download
-                                                    </button>
-                                                </div>
-
-                                                <div className="employee-master-report-card">
-                                                    <ClockIcon style={{ width: '2rem', height: '2rem', color: '#d97706', margin: '0 auto 0.5rem' }} />
-                                                    <h3 className="employee-master-font-semibold employee-master-text-gray-900">Challan Report</h3>
-                                                    <p className="employee-master-text-sm employee-master-text-gray-600" style={{ marginBottom: '0.75rem' }}>Monthly and yearly challan analysis</p>
-                                                    <button className="employee-master-button employee-master-button-outline employee-master-button-sm">
-                                                        <DownloadIcon />
-                                                        Download
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="employee-master-stats-container">
-                                                <h4 className="employee-master-stats-title">Challan Statistics</h4>
-                                                <div className="employee-master-stats-grid">
-                                                    <div className="employee-master-stat-item">
-                                                        <div className="employee-master-stat-value employee-master-text-blue-600">1</div>
-                                                        <div className="employee-master-stat-label" style={{ color: '#1d4ed8' }}>Total Challans</div>
-                                                    </div>
-                                                    <div className="employee-master-stat-item">
-                                                        <div className="employee-master-stat-value" style={{ color: '#059669' }}>
-                                                            {challanData?.totalAmount || '0.00'}
-                                                        </div>
-                                                        <div className="employee-master-stat-label" style={{ color: '#047857' }}>Total Amount</div>
-                                                    </div>
-                                                    <div className="employee-master-stat-item">
-                                                        <div className="employee-master-stat-value" style={{ color: '#d97706' }}>
-                                                            {challanData?.products?.length || 0}
-                                                        </div>
-                                                        <div className="employee-master-stat-label" style={{ color: '#b45309' }}>Products</div>
-                                                    </div>
-                                                    <div className="employee-master-stat-item">
-                                                        <div className="employee-master-stat-value" style={{ color: '#7c3aed' }}>
-                                                            {challanData?.paymentType || 'N/A'}
-                                                        </div>
-                                                        <div className="employee-master-stat-label" style={{ color: '#6d28d9' }}>Payment Type</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        {isModalOpen && (
+                            <div className="modal-overlay">
+                                <div className="modal-content mt-3">
+                                    {/* Modal Header */}
+                                    <div className="modal-header">
+                                        <div className="content-top-nav  ">
+                                            <ul>
+                                                <li>
+                                                    <a className="active" href="#">
+                                                        Challan{" "}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">TP</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">BILL</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <button onClick={handleCloseModal} className="text-gray-600 hover:text-red-500 p-2">
+                                            <FiX size={20} />
+                                        </button>
+                                    </div>
+
+                                    {/* Modal Body */}
+                                    <div className="modal-body p-2">
+
+
+                                        <div className="row align-items-center">
+
+                                            <div className="col-xl-6">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <label
+                                                        htmlFor="product-desc"
+                                                        className="mb-0"
+                                                        style={{ minWidth: 70 }}
+                                                    >
+                                                        Challan#
+                                                    </label>
+                                                    <div className="product-des-input d-flex gap-2 flex-grow-1">
+                                                        <input
+                                                            type="text"
+                                                            id="product-desc-1"
+                                                            defaultValue="$"
+                                                            style={{ flex: 1 }}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            id="date-pick-bano"
+                                                            style={{ flex: 1 }}
+                                                            readOnly=""
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            id="product-desc-bano-<?=uniqid()?>"
+                                                            defaultValue="Auto Generated"
+                                                            style={{ flex: 1 }}
+                                                            disabled=""
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-xl-3 mt-3 mt-xl-0">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <label
+                                                        htmlFor="generic-desc"
+                                                        className="mb-0"
+                                                        style={{ minWidth: 70 }}
+                                                    >
+                                                        Date/Time
+                                                    </label>
+                                                    <div className="product-des-input flex-grow-1">
+                                                        <input type="text" id="generic-desc" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-xl-3 mt-3 mt-xl-0">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <label className="d-flex align-items-center" style={{ gap: 6 }}>
+                                                        <input type="radio" name="paymentType" defaultValue="cash" />
+                                                        Cash
+                                                    </label>
+                                                    <label className="d-flex align-items-center" style={{ gap: 6, marginLeft: 20 }}>
+                                                        <input type="radio" name="paymentType" defaultValue="credit" />{" "}
+                                                        Credit
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="col-xxl-9 col-12 mt-2">
+                                                <div className="row">
+                                                    <div className="col-xl-4 col-sm-6">
+                                                        <div className="form-block ">
+                                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="ritcNo">
+                                                                        Consignee<span>*</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <select name="" id="ritcNo" style={{ width: "100%" }}>
+                                                                        <option value={54075290}>54075290</option>
+                                                                        <option value={54075291}>54075291</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="prType">
+                                                                        Address <span>*</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <textarea
+                                                                        name=""
+                                                                        id="prType"
+                                                                        className="py-0"
+                                                                        style={{ width: "100%" }}
+                                                                        defaultValue={""}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="ritcNo">
+                                                                        State<span>*</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <select name="" id="ritcNo" style={{ width: "100%" }}>
+                                                                        <option value="Maharashtra">Maharashtra</option>
+                                                                        <option value="Gujarat">Gujarat</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="prUnit">
+                                                                        District
+                                                                        <span>*</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <select name="" id="prUnit" style={{ width: "100%" }}>
+                                                                        <option value="BANO">BANO</option>
+                                                                        <option value="BANO">BANO</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="prUnitPrice">
+                                                                        PIN <span>*</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <select name="" id="prUnitPrice" style={{ width: "100%" }}>
+                                                                        <option value={100.0}>100.000000</option>
+                                                                        <option value={100.0}>100.000000</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="prAmountUSD">Contact#</label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <input type="text" id="prAmountUSD" defaultValue={100.0} />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-3">
+                                                                    <label htmlFor="prAmountINR">EmailID</label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="prAmountINR"
+                                                                        readOnly=""
+                                                                        defaultValue={100.0}
+                                                                    />
+                                                                </div>
+                                                                {/* ROW */}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-xl-3 col-sm-6  ">
+                                                        <div className="form-block ">
+                                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                <div className="single-info-block col-xl-5">
+                                                                    <label htmlFor="endUse">
+                                                                        Adv. Amount <span>*</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="col-xl-7 col-12">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="endUse"
+                                                                        defaultValue={0.0}
+                                                                        style={{ width: "100%" }}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-5">
+                                                                    <label htmlFor="prCTH">Vehicle Type</label>
+                                                                </div>
+                                                                <div className="col-xl-7 col-12">
+                                                                    <select name="" id="prCTH" style={{ width: "100%" }}>
+                                                                        <option value="BANO">BANO</option>
+                                                                        <option value="BANO">BANO</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-5">
+                                                                    <label htmlFor="prCET">Vehicle No.</label>
+                                                                </div>
+                                                                <div className="col-xl-7 col-12">
+                                                                    <select name="" id="prCET" style={{ width: "100%" }}>
+                                                                        <option value="NOEXCISE">NOEXCISE</option>
+                                                                        <option value="DEPB">DEPB</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-5">
+                                                                    <label htmlFor="prCode">Driver Name</label>
+                                                                </div>
+                                                                <div className="col-xl-7 col-12">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="prCode"
+                                                                        placeholder="Product Code "
+                                                                        style={{ width: "100%" }}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-5">
+                                                                    <label htmlFor="prUnitPrice">Driver#</label>
+                                                                </div>
+                                                                <div className="col-xl-7 col-12">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="prUnitPrice"
+                                                                        defaultValue={0}
+                                                                        style={{ width: "100%" }}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-5">
+                                                                    <label htmlFor="dutyRate">Vehicle Remarks</label>
+                                                                </div>
+                                                                <div className="col-xl-7 col-12">
+                                                                    <textarea
+                                                                        name=""
+                                                                        id="dutyRate"
+                                                                        className="py-0"
+                                                                        style={{ width: "100%" }}
+                                                                        defaultValue={""}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-xl-5 mt-3 mt-xl-0">
+                                                        <div className="form-block bigger-form-block">
+                                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                <div className="single-info-block col-xl-2">
+                                                                    <label htmlFor="CountryOrigin">GST#</label>
+                                                                </div>
+                                                                <div className="col-xl-10">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="CountryOrigin"
+                                                                        style={{ width: "100%" }}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-2">
+                                                                    <label htmlFor="SchemeCode">Name</label>
+                                                                </div>
+                                                                <div className="col-xl-10">
+                                                                    <select name="" id="SchemeCode" style={{ width: "100%" }}>
+                                                                        <option value="Raw Material">Raw Material</option>
+                                                                        <option value="Finished Goods">Finished Goods</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-2">
+                                                                    <label htmlFor="EximDesc">Address</label>
+                                                                </div>
+                                                                <div className="col-xl-10">
+                                                                    <textarea
+                                                                        name=""
+                                                                        id="EximDesc"
+                                                                        value="DEPB Post Export"
+                                                                        defaultValue={"DEPB Post Export"}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-2">
+                                                                    <label htmlFor="noten">State</label>
+                                                                </div>
+                                                                <div className="col-xl-10">
+                                                                    <select name="" id="noten" style={{ width: "100%" }}>
+                                                                        <option value="Raw Material">Raw Material</option>
+                                                                        <option value="Finished Goods">Finished Goods</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-2">
+                                                                    <label htmlFor="Sno2">District</label>
+                                                                </div>
+                                                                <div className="col-xl-10">
+                                                                    <select name="" id="Sno2" style={{ width: "100%" }}>
+                                                                        <option value="BANO1">BANO1</option>
+                                                                        <option value="BANO2">BANO2</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="single-info-block col-xl-2">
+                                                                    <label htmlFor="SchemDes">PIN</label>
+                                                                </div>
+                                                                <div className="col-xl-10">
+                                                                    <select name="" id="SchemDes" style={{ width: "100%" }}>
+                                                                        <option value="BANO">BANO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 mt-2">
+                                                    <div className="product-details-table mb-2">
+                                                        <div className="product-des-box product-details-form ">
+                                                            <div className="product-form-container ">
+                                                                <div className="row g-3 align-items-center">
+                                                                    <div className="col-md-2 mt-0">
+                                                                        <label className="MAINTABLE_LABEL">Product Name</label>
+                                                                        <select
+                                                                            name=""
+                                                                            id="CountryOrigin"
+                                                                            style={{ width: "100%" }}
+                                                                        >
+                                                                            <option value="Korea Rebublic of">
+                                                                                Korea Rebublic of
+                                                                            </option>
+                                                                            <option value="US Rebublic of">US Rebublic of</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL" htmlFor="SchemDes">
+                                                                            Rate
+                                                                        </label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col  mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Gross Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Net Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col mt-0" style={{ minWidth: 150 }}>
+                                                                        <label className="MAINTABLE_LABEL">Less Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">GT Weight</label>
+                                                                        <input type="number" id="SchemDes" readOnly="" />
+                                                                    </div>
+                                                                    <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Amount</label>
+                                                                        <input type="number" id="SchemDes" readOnly="" />
+                                                                    </div>
+                                                                    <div className="col-md-2 mt-0">
+                                                                        <label className="MAINTABLE_LABEL">Date/Time</label>
+                                                                        <input type="text" id="SchemDes" readOnly="" />
+                                                                    </div>
+                                                                    <div className="col">
+                                                                        <button className="btn btn-warning p-1 py-0">
+                                                                            <svg
+                                                                                className="text-white"
+                                                                                style={{ width: 20, height: 25 }}
+                                                                                fill="none"
+                                                                                stroke="currentColor"
+                                                                                viewBox="0 0 24 24"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                            >
+                                                                                <path
+                                                                                    strokeLinecap="round"
+                                                                                    strokeLinejoin="round"
+                                                                                    strokeWidth={2}
+                                                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                                                />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="product-details-table mb-2">
+                                                        <div className="product-des-box product-details-form ">
+                                                            <div className="product-form-container ">
+                                                                <div className="row g-3">
+                                                                    <div className="col-2 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Tare Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Net Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Less Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Total GT Weight</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-1 mt-0" style={{ minWidth: 150 }}>
+                                                                        <label className="MAINTABLE_LABEL">
+                                                                            Vehicle Commision
+                                                                        </label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-md-2 mt-0">
+                                                                        <label className="MAINTABLE_LABEL">Date/Time</label>
+                                                                        <input type="text" id="SchemDes" readOnly="" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="product-details-table mb-2">
+                                                        <div className="product-des-box product-details-form">
+                                                            <div className="product-form-container ">
+                                                                <div className="row g-3">
+                                                                    <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Amount</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Loading</label>
+                                                                        <select
+                                                                            name=""
+                                                                            id="CountryOrigin"
+                                                                            style={{ width: "100%" }}
+                                                                        >
+                                                                            <option value="Korea Rebublic of">
+                                                                                Korea Rebublic of
+                                                                            </option>
+                                                                            <option value="US Rebublic of">US Rebublic of</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Commission</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div
+                                                                        className="col-md-1 col-sm-6 mt-0"
+                                                                        style={{ minWidth: 130 }}
+                                                                    >
+                                                                        <label className="MAINTABLE_LABEL">GT Amount</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
+                                                                        <label className="MAINTABLE_LABEL">Royalty</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-md-2 mt-0">
+                                                                        <label className="MAINTABLE_LABEL">Tp Amount</label>
+                                                                        <select
+                                                                            name=""
+                                                                            id="CountryOrigin"
+                                                                            style={{ width: "100%" }}
+                                                                        >
+                                                                            <option value="Korea Rebublic of">
+                                                                                Korea Rebublic of
+                                                                            </option>
+                                                                            <option value="US Rebublic of">US Rebublic of</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Freight Amount</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <label className="MAINTABLE_LABEL">Total</label>
+                                                                        <input type="number" id="SchemDes" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {/* {renderItemsTable()} */}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="row mt-3 mb-2">
+                                            <div className="col-md-12 d-flex justify-content-end">
+                                                <div className="flex gap-3 mt-4">
+                                                    {/* Save Button */}
+                                                    <button
+                                                        type="button"
+                                                        className="flex items-center gap-2 px-4 py-2 rounded-md text-white"
+                                                        style={{ backgroundColor: "#34C759" }}
+                                                    >
+                                                        <FiSave size={18} />
+                                                        Save
+                                                    </button>
+
+                                                    {/* Print Button */}
+                                                    <button
+                                                        type="button"
+                                                        className="flex items-center gap-2 px-4 py-2 rounded-md text-white"
+                                                        style={{ backgroundColor: "#212529" }}
+                                                    >
+                                                        <FiPrinter size={18} />
+                                                        Print
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+
+
 
 
 
@@ -1445,7 +1411,12 @@ export default function CreateChallan() {
 
 
 
+
                 </div>
+
+
+
+
             </main>
 
         </>
