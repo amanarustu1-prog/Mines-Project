@@ -317,7 +317,7 @@ GOBAL CSS START
 .dashboard-main textarea {
   border: 1px solid #cccccc;
   border-radius: 2px;
-  padding: 4px 10px;
+  padding: 3px 10px;
   display: block;
   background: #fff;
   width: 100%;
@@ -337,7 +337,7 @@ GOBAL CSS START
 .dashboard-main select {
   border: 1px solid #cccccc;
   border-radius: 2px;
-  padding: 4px 10px !important;
+  padding: 3px 10px !important;
   display: block;
   background: #fff;
   width: 100%;

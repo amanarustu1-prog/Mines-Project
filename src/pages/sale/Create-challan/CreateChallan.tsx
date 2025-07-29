@@ -3,6 +3,7 @@ import './CreateChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
 import { FiX } from "react-icons/fi";
+import { FaEdit } from 'react-icons/fa';
 
 // Icon components
 const Receipt = ({ className }: { className?: string }) => (
@@ -680,7 +681,7 @@ export default function CreateChallan() {
 
                 <div className="main-content-area ">
                     <div className="main-content-wrapper mt-5 ">
-                        <div className="relative mt-4 mb-3">
+                        <div className="relative lg:mt-8 mb-3">
                             <div className="py-3 employee-create-challan-card flex flex-wrap  items-end gap-4 w-full">
                                 {/* Dates Section */}
                                 <div className="flex items-center gap-2">
@@ -844,13 +845,13 @@ export default function CreateChallan() {
                                                     <th>GT Weight</th>
                                                     <th>Amount</th>
                                                     <th>Rate</th>
-                                                    <th>Actions</th>
+                                                   
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {challanTableData.map((item) => (
                                                     <tr key={item.id}>
-                                                        <td><input type="checkbox" className="form-check-input" checked /></td>
+                                                         <td><FaEdit className="" size={20}  /></td>
                                                         <td>{item.challanNo}</td>
                                                         <td>{item.challanDate}</td>
                                                         <td>{item.consignee}</td>
@@ -863,20 +864,7 @@ export default function CreateChallan() {
                                                         <td>{item.gtWeight.toLocaleString()}</td>
                                                         <td>₹{item.amount.toLocaleString()}</td>
                                                         <td>₹{item.rate.toFixed(2)}</td>
-                                                        <td>
-                                                            <div className="d-flex gap-1">
-                                                                <button className="btn btn-sm btn-primary">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3.36l.894-1.838 6.316-6.316a4.5 4.5 0 01-1.255-3.97l1.06-.659 1.977 1.977m-2.036 5.036L6.5 3.36l.894 1.838 6.316 6.316a4.5 4.5 0 01-1.255 3.97l1.06-.659 1.977 1.977z" />
-                                                                    </svg>
-                                                                </button>
-                                                                <button className="btn btn-sm btn-danger">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
-                                                        </td>
+                                                       
                                                     </tr>
                                                 ))}
                                             </tbody>
