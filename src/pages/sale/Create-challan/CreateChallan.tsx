@@ -678,12 +678,10 @@ export default function CreateChallan() {
     return (
         <>
             <main className="dashboard-main ">
-
                 <div className="main-content-area ">
                     <div className="main-content-wrapper mt-5 ">
                         <div className="relative lg:mt-8 mb-3">
-                            <div className="py-3 employee-create-challan-card flex flex-wrap  items-end gap-4 w-full">
-                                {/* Dates Section */}
+                            <div className="py-3 employee-create-challan-card flex flex-wrap items-end gap-4 w-full" >
                                 <div className="flex items-center gap-2">
                                     <label className=" whitespace-nowrap employee-master-metric-label">From :</label>
                                     <input
@@ -710,7 +708,7 @@ export default function CreateChallan() {
                                     />
                                 </div>
 
-                                {/* Consignee Section */}
+                           
                                 <div className="flex items-center gap-2 ml-6">
                                     <label className=" whitespace-nowrap employee-master-metric-label">Consignee :</label>
                                     <select className="border rounded px-2 py-1 w-[400px]">
@@ -822,13 +820,8 @@ export default function CreateChallan() {
                                     </button>
 
                                 </div>
-                                <div className="employee-master-card-content" style={{ padding: 0 }}>
-                                    <div className="employee-master-table-container" style={{
-                                        overflowX: 'auto',
-                                        overflowY: 'auto',
-                                        maxHeight: '400px',
-
-                                    }}>
+                                <div className="employee-master-card-content" style={{ padding: '0' }}>
+                                    <div className="employee-master-table-container">
                                         <table className="employee-master-table">
                                             <thead>
                                                 <tr>
@@ -845,7 +838,6 @@ export default function CreateChallan() {
                                                     <th>GT Weight</th>
                                                     <th>Amount</th>
                                                     <th>Rate</th>
-                                                   
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1410,27 +1402,3 @@ export default function CreateChallan() {
         </>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

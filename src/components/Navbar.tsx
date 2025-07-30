@@ -331,7 +331,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Puchase',
-            href: '/mining/processing',
+            href: '/purchase',
             icon: Wrench,
             description: 'Material processing and refinement'
           },
@@ -362,7 +362,7 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Party Rate',
-            href: '/mining/transport',
+            href: '/party-rate',
             icon: Truck,
             description: 'Material transport and logistics'
           },
