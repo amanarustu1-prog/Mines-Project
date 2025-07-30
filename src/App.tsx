@@ -80,6 +80,8 @@ import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 import Ledger from './pages/Accounts/ledger/Ledger'
 import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
+import Purchase from './pages/sale/Puchase/Puchase'
+import PartyRate from './pages/sale/Party-Rate/PartyRate'
 
 
 
@@ -179,6 +181,8 @@ function App() {
           <Route path="/create-challan" element={<CreateChallan />} />
           <Route path="/pending-challan" element={<PendingChallan />} />
           <Route path="/extra-tp" element={<ExtraTP />} />
+          <Route path="/purchase" element={<Purchase />} />
+          <Route path="/party-rate" element={<PartyRate />} />
           {/* <Route path="/challan-screen" element={<ChallanScreen />} /> */}
 
 
