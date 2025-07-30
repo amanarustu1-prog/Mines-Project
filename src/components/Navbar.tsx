@@ -2499,12 +2499,23 @@ export function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isActiveLink = (href: string) => {
+    // Only return true for exact path matches
     return pathname === href;
   };
 
   const isActiveParent = (item: NavItem) => {
-    if (item.href) return isActiveLink(item.href);
-    return item.children?.some(child => isActiveLink(child.href)) || false;
+    if (item.href && isActiveLink(item.href)) return true;
+    
+    // Check direct children
+    const hasActiveChild = item.children?.some(child => isActiveLink(child.href));
+    if (hasActiveChild) return true;
+    
+    // Check items in sections
+    const hasActiveSectionItem = item.sections?.some(section => 
+      section.items?.some(subItem => isActiveLink(subItem.href))
+    );
+    
+    return hasActiveSectionItem || false;
   };
 
   const handleDropdownToggle = (title: string) => {
