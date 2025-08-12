@@ -10,10 +10,12 @@
   .quotation-entry-header {
     background: white;
     border-bottom: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 90px;
   }
   
   .quotation-entry-header-content {
-    max-width: 72rem;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1rem;
     display: flex;
@@ -46,7 +48,7 @@
   
   /* Main Content */
   .quotation-entry-main {
-    max-width: 72rem;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1.5rem 1rem;
   }

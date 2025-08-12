@@ -11,10 +11,12 @@
   .material-header {
     background-color: #ffffff;
     border-bottom: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 90px;
   }
   
   .material-header-content {
-    max-width: 1152px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1rem;
     display: flex;
@@ -54,7 +56,7 @@
   
   /* Main container */
   .material-main-container {
-    max-width: 1152px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1.5rem 1rem;
   }

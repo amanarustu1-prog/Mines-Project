@@ -103,9 +103,9 @@ const SearchIcon = ({ className }: { className?: string }) => (
     </svg>
 );
 
-interface ChallanItem {
+// Base interface for common product fields
+interface BaseProductFields {
     id: string;
-    productName: string;
     rate: number;
     grossWeight: number;
     netWeight: number;
@@ -115,16 +115,14 @@ interface ChallanItem {
     dateTime: string;
 }
 
-interface ProductDetail {
-    id: string;
+// ChallanItem is used in the form state
+interface ChallanItem extends BaseProductFields {
+    productName: string;
+}
+
+// ProductDetail is used in the form data
+interface ProductDetail extends BaseProductFields {
     name: string;
-    rate: number;
-    grossWeight: number;
-    dateTime: string;
-    netWeight: number;
-    lessWeight: number;
-    gtWeight: number;
-    amount: number;
 }
 
 interface WeightDetail {
@@ -360,22 +358,166 @@ export default function CreateChallan() {
 
     const handleInputChangeItem = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setCurrentItem(prev => ({
-            ...prev,
-            [name]: name === 'productName' ? value : Number(value)
-        }));
+        const newValue = name === 'productName' ? value : parseFloat(value) || 0;
+        
+        updateCalculations({
+            ...currentItem,
+            [name]: newValue
+        });
     };
 
-    const calculateGTWeight = (netWeight: number, lessWeight: number) => {
+    const handleChallanInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value, type } = e.target as HTMLInputElement;
+        let newValue: any = value;
+        
+        if (type === 'number') {
+            newValue = parseFloat(value) || 0;
+        } else if (type === 'checkbox') {
+            newValue = (e.target as HTMLInputElement).checked;
+        }
+        
+        handleInputChange(name as keyof ChallanFormData, newValue);
+    };
+
+    // Calculate GT Weight (Gross Weight - Tare Weight - Less Weight)
+    const calculateGTWeight = (netWeight: number, lessWeight: number): number => {
         return Math.max(0, netWeight - lessWeight);
     };
 
-    const calculateAmount = (rate: number, gtWeight: number) => {
-        return rate * gtWeight;
+    // Calculate total amount (Rate * GT Weight)
+    const calculateAmount = (rate: number, gtWeight: number): number => {
+        return parseFloat((rate * gtWeight).toFixed(2));
     };
 
+    // Update calculations when item values change
+    const updateCalculations = (item: Partial<ChallanItem>) => {
+        if (item.netWeight !== undefined || item.lessWeight !== undefined) {
+            const gtWeight = calculateGTWeight(
+                item.netWeight || currentItem.netWeight || 0,
+                item.lessWeight || currentItem.lessWeight || 0
+            );
+            const amount = calculateAmount(
+                item.rate !== undefined ? item.rate : (currentItem.rate || 0),
+                gtWeight
+            );
+            
+            setCurrentItem(prev => ({
+                ...prev,
+                ...item,
+                gtWeight,
+                amount
+            }));
+        } else if (item.rate !== undefined) {
+            const amount = calculateAmount(
+                item.rate,
+                currentItem.gtWeight || 0
+            );
+            setCurrentItem(prev => ({
+                ...prev,
+                ...item,
+                amount
+            }));
+        } else {
+            setCurrentItem(prev => ({
+                ...prev,
+                ...item
+            }));
+        }
+    };
+
+    // Remove item from challan
+    const handleRemoveItem = (id: string) => {
+        setChallanItems(challanItems.filter(item => item.id !== id));
+    };
+
+    // Edit existing item
+    const handleEditItem = (id: string) => {
+        const itemToEdit = challanItems.find(item => item.id === id);
+        if (itemToEdit) {
+            setCurrentItem(itemToEdit);
+            handleRemoveItem(id);
+        }
+    };
+
+    // Print challan
+    const handlePrint = () => {
+        window.print();
+    };
+
+    // Update challan data when items or related fields change
+    React.useEffect(() => {
+        // Recalculate totals when challan items or related fields change
+        const { totalGTWeight, totalAmount, gstAmount, grandTotal } = calculateTotals();
+        
+        // Update state with new calculations
+        setChallanData(prev => ({
+            ...prev,
+            amount: totalAmount,
+            gstAmount,
+            grandTotal,
+            weightDetails: {
+                ...prev.weightDetails,
+                totalGTWeight,
+                netWeight: challanItems.reduce((sum, item) => sum + (item.netWeight || 0), 0)
+            }
+        }));
+    }, [challanItems, challanData.loading, challanData.commission, challanData.royalty, challanData.tpAmount, challanData.freightAmt, challanData.extraAmt, challanData.gstBill]);
+
+    // Handle form submission
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+        
+        // Calculate totals
+        const totalGTWeight = challanItems.reduce((sum, item) => sum + item.gtWeight, 0);
+        const totalAmount = challanItems.reduce((sum, item) => sum + item.amount, 0);
+        const gstAmount = challanData.gstBill ? totalAmount * 0.18 : 0; // 18% GST
+        const grandTotal = totalAmount + gstAmount + (challanData.freightAmt || 0) + (challanData.extraAmt || 0);
+
+        // Update challan data with calculated values
+        const updatedChallan = {
+            ...challanData,
+            productDetails: [...challanItems],
+            amount: totalAmount,
+            gstAmount,
+            grandTotal,
+            weightDetails: {
+                ...challanData.weightDetails,
+                totalGTWeight,
+                netWeight: challanItems.reduce((sum, item) => sum + item.netWeight, 0)
+            }
+        };
+
+        setChallanData(updatedChallan);
+        
+        // Here you would typically send the data to an API
+        console.log('Submitting challan:', updatedChallan);
+        alert('Challan saved successfully!');
+    };
+
+    // Validate form before submission
+    const validateForm = (): boolean => {
+        if (!challanData.consignee) {
+            alert('Please enter consignee name');
+            return false;
+        }
+        if (!challanData.vehicleNo) {
+            alert('Please enter vehicle number');
+            return false;
+        }
+        if (challanItems.length === 0) {
+            alert('Please add at least one product');
+            return false;
+        }
+        return true;
+    };
+
+    // Add new challan item
     const handleAddItem = () => {
-        if (!currentItem.productName) return;
+        if (!currentItem.productName || !currentItem.rate || !currentItem.grossWeight) {
+            alert('Please fill all required fields');
+            return;
+        }
 
         const gtWeight = calculateGTWeight(currentItem.netWeight || 0, currentItem.lessWeight || 0);
         const amount = calculateAmount(currentItem.rate || 0, gtWeight);
@@ -486,23 +628,95 @@ export default function CreateChallan() {
         ));
     };
 
+    // Calculate totals including all challan items and additional charges
     const calculateTotals = () => {
-        const subtotal = challanData.amount + challanData.loading + challanData.commission;
-        const grandTotal = subtotal + challanData.gstAmount + challanData.royalty +
-            challanData.tpAmount + challanData.freightAmt + challanData.extraAmt;
+        // Calculate item-based totals with proper type safety
+        const totals = {
+            totalGTWeight: 0,
+            totalAmount: 0,
+            totalNetWeight: 0
+        };
 
-        handleInputChange('total', subtotal);
-        handleInputChange('grandTotal', grandTotal);
+        // Calculate totals from challan items
+        challanItems.forEach(item => {
+            totals.totalGTWeight += item.gtWeight || 0;
+            totals.totalAmount += item.amount || 0;
+            totals.totalNetWeight += item.netWeight || 0;
+        });
+
+        const { totalGTWeight, totalAmount, totalNetWeight } = totals;
+        const gstAmount = challanData.gstBill ? totalAmount * 0.18 : 0;
+        
+        // Calculate subtotal and grand total including all charges
+        const subtotal = totalAmount + (challanData.loading || 0) + (challanData.commission || 0);
+        const grandTotal = subtotal + gstAmount + (challanData.royalty || 0) + 
+                         (challanData.tpAmount || 0) + (challanData.freightAmt || 0) + (challanData.extraAmt || 0);
+
+        // Convert ChallanItem[] to ProductDetail[] with proper type safety
+        const productDetails: ProductDetail[] = challanItems.map(item => ({
+            id: item.id,
+            name: item.productName,
+            rate: item.rate || 0,
+            grossWeight: item.grossWeight || 0,
+            netWeight: item.netWeight || 0,
+            lessWeight: item.lessWeight || 0,
+            gtWeight: item.gtWeight || 0,
+            amount: item.amount || 0,
+            dateTime: item.dateTime || new Date().toISOString()
+        }));
+
+        // Update the state with the new data
+        setChallanData(prev => {
+            const updated = {
+                ...prev,
+                amount: totalAmount,
+                gstAmount,
+                total: subtotal,
+                grandTotal,
+                productDetails,
+                weightDetails: {
+                    ...prev.weightDetails,
+                    totalGTWeight,
+                    netWeight: totalNetWeight
+                }
+            };
+            return updated as ChallanFormData;
+        });
+
+        return { totalGTWeight, totalAmount, gstAmount, grandTotal };
     };
 
-    const saveChallan = () => {
-        console.log('Saving challan:', challanData);
-        // Implement save logic
-        alert('Challan saved successfully!');
+    const saveChallan = async () => {
+        try {
+            // Validate required fields
+            if (!challanData.consignee || !challanData.vehicleNo || challanItems.length === 0) {
+                alert('Please fill all required fields and add at least one product');
+                return;
+            }
+
+            // Ensure all calculations are up to date
+            await calculateTotals();
+            
+            console.log('Saving challan:', challanData);
+            
+            // Here you would typically make an API call to save the data
+            // await api.saveChallan(challanData);
+            
+            alert('Challan saved successfully!');
+        } catch (error) {
+            console.error('Error saving challan:', error);
+            alert('Failed to save challan. Please try again.');
+        }
     };
 
     const printChallan = () => {
-        window.print();
+        // Ensure all calculations are up to date before printing
+        calculateTotals();
+        
+        // Add a small delay to ensure state is updated
+        setTimeout(() => {
+            window.print();
+        }, 100);
     };
 
     // Demo challan history data
