@@ -1,0 +1,902 @@
+/* Request Quotation CSS - Standalone stylesheet */
+
+/* Base styles */
+.rfq-management-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  /* Header styles */
+  .rfq-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .rfq-header-content {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .rfq-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .rfq-header-icon {
+    width: 2rem;
+    height: 2rem;
+    background-color: #1d4ed8;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .rfq-header-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .rfq-header-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main container */
+  .rfq-main-container {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Card styles */
+  .rfq-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1rem;
+  }
+  
+  .rfq-card-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .rfq-card-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  
+  .rfq-card-content {
+    padding: 0 1.5rem 1.5rem;
+  }
+  
+  /* Tab navigation */
+  .rfq-tab-navigation {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+  }
+  
+  .rfq-tab-nav {
+    padding: 1rem;
+  }
+  
+  .rfq-tab-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+  
+  .rfq-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .rfq-tab-button.active {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+  }
+  
+  .rfq-tab-button.inactive {
+    color: #4b5563;
+    background-color: transparent;
+  }
+  
+  .rfq-tab-button.inactive:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+  }
+  
+  /* Grid layouts */
+  .rfq-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .rfq-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* Summary cards */
+  .rfq-summary-card {
+    padding: 1rem;
+  }
+  
+  .rfq-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .rfq-summary-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .rfq-summary-icon.total {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+  
+  .rfq-summary-icon.pending {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  
+  .rfq-summary-icon.received {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+  
+  .rfq-summary-icon.overdue {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .rfq-summary-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .rfq-summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .rfq-summary-number.total {
+    color: #1d4ed8;
+  }
+  
+  .rfq-summary-number.pending {
+    color: #d97706;
+  }
+  
+  .rfq-summary-number.received {
+    color: #059669;
+  }
+  
+  .rfq-summary-number.overdue {
+    color: #dc2626;
+  }
+  
+  /* Search and Filter */
+  .rfq-search-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-search-filter {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  
+  .rfq-search-container,
+  .rfq-filter-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .rfq-search-container {
+    flex: 1;
+    max-width: 24rem;
+  }
+  
+  .rfq-filter-container {
+    min-width: 12rem;
+  }
+  
+  .rfq-search-input,
+  .rfq-filter-select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    padding-left: 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .rfq-search-input:focus,
+  .rfq-filter-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1d4ed8;
+    border-color: #1d4ed8;
+  }
+  
+  .rfq-search-icon,
+  .rfq-filter-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: #6b7280;
+    width: 1rem;
+    height: 1rem;
+    z-index: 10;
+  }
+  
+  /* Table styles */
+  .rfq-table-container {
+    overflow-x: auto;
+  }
+  
+  .rfq-table {
+    width: 100%;
+    font-size: 0.875rem;
+  }
+  
+  .rfq-table-header {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .rfq-table-header th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .rfq-table-row:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .rfq-table-row:nth-child(odd) {
+    background-color: #f9fafb;
+  }
+  
+  .rfq-table-cell {
+    padding: 0.75rem;
+  }
+  
+  .rfq-table-cell.rfq-no {
+    font-weight: 500;
+    color: #1d4ed8;
+  }
+  
+  .rfq-table-cell.title {
+    font-weight: 500;
+  }
+  
+  .rfq-table-cell.mono {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  }
+  
+  .rfq-table-cell.center {
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .rfq-table-cell.truncate {
+    color: #4b5563;
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .rfq-table-cell.small {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+    font-size: 0.75rem;
+  }
+  
+  /* Form styles */
+  .rfq-form-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .rfq-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-form-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  
+  .rfq-form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .rfq-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+  
+  .rfq-form-input,
+  .rfq-form-select,
+  .rfq-form-textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .rfq-form-input:focus,
+  .rfq-form-select:focus,
+  .rfq-form-textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1d4ed8;
+    border-color: #1d4ed8;
+  }
+  
+  .rfq-form-input.readonly {
+    background-color: #f9fafb;
+    font-weight: 500;
+  }
+  
+  .rfq-form-input.readonly.small {
+    font-size: 0.75rem;
+  }
+  
+  .rfq-form-textarea {
+    resize: vertical;
+  }
+  
+  /* Vendor Selection */
+  .rfq-vendor-selection {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .rfq-vendor-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-vendor-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .rfq-vendor-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+  }
+  
+  .rfq-vendor-item:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .rfq-vendor-item.selected {
+    border-color: #1d4ed8;
+    background-color: #eff6ff;
+  }
+  
+  .rfq-vendor-checkbox {
+    margin-right: 0.5rem;
+  }
+  
+  .rfq-vendor-info {
+    flex: 1;
+  }
+  
+  .rfq-vendor-name {
+    font-weight: 500;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+  }
+  
+  .rfq-vendor-contact {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Button styles */
+  .rfq-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .rfq-button.primary {
+    background-color: #1d4ed8;
+    color: white;
+  }
+  
+  .rfq-button.primary:hover {
+    background-color: #1e40af;
+  }
+  
+  .rfq-button.success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .rfq-button.success:hover {
+    background-color: #047857;
+  }
+  
+  .rfq-button.danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .rfq-button.danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .rfq-button.outline {
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .rfq-button.outline:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+  
+  .rfq-button.small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .rfq-button.ghost {
+    background-color: transparent;
+    color: #6b7280;
+    border: none;
+    padding: 0.25rem;
+  }
+  
+  .rfq-button.ghost.primary {
+    color: #1d4ed8;
+  }
+  
+  .rfq-button.ghost.primary:hover {
+    background-color: #eff6ff;
+  }
+  
+  .rfq-button.ghost.success {
+    color: #059669;
+  }
+  
+  .rfq-button.ghost.success:hover {
+    background-color: #ecfdf5;
+  }
+  
+  .rfq-button.ghost.danger {
+    color: #dc2626;
+  }
+  
+  .rfq-button.ghost.danger:hover {
+    background-color: #fef2f2;
+  }
+  
+  /* Badge styles */
+  .rfq-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  
+  .rfq-badge.draft {
+    background-color: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+  }
+  
+  .rfq-badge.sent {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border-color: #93c5fd;
+  }
+  
+  .rfq-badge.review {
+    background-color: #fef3c7;
+    color: #d97706;
+    border-color: #fcd34d;
+  }
+  
+  .rfq-badge.completed {
+    background-color: #d1fae5;
+    color: #059669;
+    border-color: #a7f3d0;
+  }
+  
+  .rfq-badge.cancelled {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
+  }
+  
+  .rfq-badge.priority {
+    border: 1px solid #e5e7eb;
+  }
+  
+  .rfq-badge.priority.urgent {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+  }
+  
+  .rfq-badge.priority.high {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fcd34d;
+  }
+  
+  .rfq-badge.priority.medium {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-color: #93c5fd;
+  }
+  
+  .rfq-badge.priority.low {
+    background-color: #f3f4f6;
+    color: #4b5563;
+    border-color: #d1d5db;
+  }
+  
+  /* Modal styles */
+  .rfq-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .rfq-modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 28rem;
+    margin: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .rfq-modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+  
+  .rfq-modal-info {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+  }
+  
+  .rfq-modal-info p {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin: 0.25rem 0;
+  }
+  
+  .rfq-modal-info span {
+    font-weight: 500;
+  }
+  
+  .rfq-modal-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  
+  /* Empty state */
+  .rfq-empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+  }
+  
+  .rfq-empty-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    color: #d1d5db;
+  }
+  
+  /* Statistics section */
+  .rfq-stats-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #dbeafe;
+    border-radius: 0.5rem;
+  }
+  
+  .rfq-stats-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+  
+  .rfq-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .rfq-stats-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .rfq-stats-number.blue {
+    color: #1d4ed8;
+  }
+  
+  .rfq-stats-number.green {
+    color: #059669;
+  }
+  
+  .rfq-stats-number.yellow {
+    color: #d97706;
+  }
+  
+  .rfq-stats-number.purple {
+    color: #7c3aed;
+  }
+  
+  .rfq-stats-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0.25rem 0 0 0;
+  }
+  
+  .rfq-stats-label.blue {
+    color: #1e40af;
+  }
+  
+  .rfq-stats-label.green {
+    color: #047857;
+  }
+  
+  .rfq-stats-label.yellow {
+    color: #b45309;
+  }
+  
+  .rfq-stats-label.purple {
+    color: #6d28d9;
+  }
+  
+  /* Reports section */
+  .rfq-reports-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .rfq-reports-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .rfq-report-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .rfq-report-icon {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.5rem;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .rfq-report-icon.blue {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+  
+  .rfq-report-icon.green {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+  
+  .rfq-report-icon.orange {
+    background-color: #fed7aa;
+    color: #ea580c;
+  }
+  
+  .rfq-report-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+  
+  .rfq-report-description {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Utility classes */
+  .rfq-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .rfq-space-y-6 > * + * {
+    margin-top: 1.5rem;
+  }
+  
+  .rfq-border-t {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+  }
+  
+  .rfq-flex {
+    display: flex;
+  }
+  
+  .rfq-flex-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .rfq-flex-gap-1 {
+    gap: 0.25rem;
+  }
+  
+  /* Icon sizing */
+  .rfq-icon-sm {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .rfq-icon-md {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .rfq-icon-lg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .rfq-main-container {
+      padding: 1rem;
+    }
+    
+    .rfq-header-content {
+      padding: 0.75rem;
+    }
+    
+    .rfq-card-header,
+    .rfq-card-content {
+      padding: 1rem;
+    }
+    
+    .rfq-table-cell {
+      padding: 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+  

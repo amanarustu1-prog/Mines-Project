@@ -82,6 +82,26 @@ import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
 import Purchase from './pages/sale/Puchase/Puchase'
 import PartyRate from './pages/sale/Party-Rate/PartyRate'
+import MaterialRequestEntry from './pages/Inventory/material-request-entry/MaterialRequestEntry'
+import RequestApproval from './pages/Inventory/request-approval/RequestApproval'
+import RejectApprovedRequests from './pages/Inventory/reject-approved-requests/RejectApprovedRequests'
+import RequestQuotation from './pages/Inventory/request-quotation/RequestQuotation'
+import QuotationEntry from './pages/Inventory/quotation-entry/QuotationEntry'
+import QuotationComparison from './pages/Inventory/quotation-comparison/QuotationComparison'
+import QuotationApprove from './pages/Inventory/quotation-approve/QuotationApprove'
+import GRNAgainstPO from './pages/Inventory/grn-against-po/GRNAgainstPO'
+import DirectGRN from './pages/Inventory/a-direct-grn/DirectGRN'
+import MaterialInspectionEntry from './pages/Inventory/material-inspection-entry/MaterialInspectionEntry'
+import SerialNumberUniquePartCodeEntry from './pages/Inventory/serial-number-unique-part-code-entry/SerialNumberUniquePartCodeEntry'
+import StockUpdatePostGRN from './pages/Inventory/stock-update-post-grn/StockUpdatePostGRN'
+import MaterialIssue from './pages/Inventory/material-issue/MaterialIssue'
+import StoreToStore from './pages/Inventory/store-to-store/StoreToStore'
+import InterDepartmentTransfer from './pages/Inventory/inter-department-transfer/InterDepartmentTransfer'
+import PurchaseBillEntry from './pages/Inventory/purchase-bill-entry/PurchaseBillEntry'
+import RGPReturn from './pages/Inventory/rgp-return/RGPReturn'
+import NRGPEntry from './pages/Inventory/nrgp-entry/NRGPEntry'
+import InEntryAgainstNRGP from './pages/Inventory/in-entry-against-nrgp/InEntryAgainstNRGP'
+import RGPEntry from './pages/Inventory/rgp-entry/RGPEntry'
 
 
 
@@ -186,11 +206,45 @@ function App() {
           {/* <Route path="/challan-screen" element={<ChallanScreen />} /> */}
 
 
+
+          {/* <Route path="/create-purchase-order" element={<CreatePurchaseOrder />} />
+          <Route path="/po-approval" element={<POApproval />} />
+          <Route path="/modify-po" element={<ModifyPO />} />
+          <Route path="/po-print" element={<POPrint />} /> */}
+
+
           {/* Inventory */}
           <Route path="/inventory/material-group" element={<MaterialGroup />} />
           <Route path="/inventory/material-type" element={<MaterialType />} />
           <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
           <Route path="/fuel/fuel-type-master" element={<FuelType />} />
+
+          <Route path="/material-request-entry" element={<MaterialRequestEntry />} />
+          <Route path="/request-approval" element={<RequestApproval />} />
+          <Route path="/Reject-Approved-Requests" element={<RejectApprovedRequests />} />
+          <Route path="/Request-Quotation" element={<RequestQuotation />} />
+          <Route path="/Quotation-Entry" element={<QuotationEntry />} />
+          <Route path="/Quotation-Comparison" element={<QuotationComparison />} />
+          <Route path="/Quotation-Approve" element={<QuotationApprove />} />
+
+          {/* GRN Management */}
+          <Route path="/grn-against-po" element={<GRNAgainstPO />} />
+          <Route path="/a-direct-grn" element={<DirectGRN />} />
+          <Route path="/material-inspection-entry" element={<MaterialInspectionEntry />} />
+          <Route path="/serial-number-unique-part-code-entry" element={<SerialNumberUniquePartCodeEntry />} />
+          <Route path="/stock-update-post-grn" element={<StockUpdatePostGRN />} />
+
+          {/* Material Issue & Transfer */}
+          <Route path="/material-issue" element={<MaterialIssue />} />
+          <Route path="/store-to-store" element={<StoreToStore />} />
+          <Route path="/inter-department-transfer" element={<InterDepartmentTransfer />} />
+          <Route path="/purchase-bill-entry" element={<PurchaseBillEntry />} />
+
+          {/* Gate Pass Management */}
+          <Route path="/RGP-Entry" element={<RGPEntry />} /> 
+          <Route path="/RGP-Return" element={<RGPReturn />} />
+          <Route path="/NRGP-Entry" element={<NRGPEntry />} />
+          <Route path="/In-EntryAgainst-NRGP" element={<InEntryAgainstNRGP />} />
 
 
           {/* Accounts */}

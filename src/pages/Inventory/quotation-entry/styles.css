@@ -1,0 +1,647 @@
+/* Quotation Entry Module Styles */
+
+/* Main Container */
+.quotation-entry-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+  }
+  
+  /* Header Styles */
+  .quotation-entry-header {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .quotation-entry-header-content {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .quotation-entry-logo {
+    width: 2rem;
+    height: 2rem;
+    background-color: #7c3aed;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quotation-entry-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .quotation-entry-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main Content */
+  .quotation-entry-main {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Tab Navigation */
+  .quotation-entry-tabs {
+    margin-bottom: 1.5rem;
+  }
+  
+  .quotation-entry-tabs-container {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+  
+  .quotation-entry-nav {
+    padding: 1rem;
+  }
+  
+  .quotation-entry-tab-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+  
+  .quotation-entry-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+  }
+  
+  .quotation-entry-tab-button.active {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+    border: 1px solid #c4b5fd;
+  }
+  
+  .quotation-entry-tab-button:not(.active) {
+    color: #6b7280;
+  }
+  
+  .quotation-entry-tab-button:not(.active):hover {
+    color: #111827;
+    background-color: #f3f4f6;
+  }
+  
+  /* Cards */
+  .quotation-entry-card {
+    border-radius: 0.5rem;
+    border: none;
+    background: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .quotation-entry-card-header {
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .quotation-entry-card-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  
+  .quotation-entry-card-content {
+    padding: 1.5rem;
+  }
+  
+  /* Summary Cards */
+  .quotation-entry-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-entry-summary-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .quotation-entry-summary-card {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+  
+  .quotation-entry-summary-content {
+    padding: 1rem;
+  }
+  
+  .quotation-entry-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .quotation-entry-icon-container {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quotation-entry-icon-orange {
+    background-color: #fed7aa;
+  }
+  
+  .quotation-entry-icon-green {
+    background-color: #dcfce7;
+  }
+  
+  .quotation-entry-icon-blue {
+    background-color: #dbeafe;
+  }
+  
+  .quotation-entry-icon-purple {
+    background-color: #f3e8ff;
+  }
+  
+  .quotation-entry-metric-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .quotation-entry-metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .quotation-entry-metric-orange {
+    color: #ea580c;
+  }
+  
+  .quotation-entry-metric-green {
+    color: #059669;
+  }
+  
+  .quotation-entry-metric-blue {
+    color: #2563eb;
+  }
+  
+  .quotation-entry-metric-purple {
+    color: #7c3aed;
+  }
+  
+  /* Table Styles */
+  .quotation-entry-table-container {
+    overflow-x: auto;
+  }
+  
+  .quotation-entry-table {
+    width: 100%;
+    font-size: 0.875rem;
+    border-collapse: collapse;
+  }
+  
+  .quotation-entry-table thead {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .quotation-entry-table th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .quotation-entry-table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+  }
+  
+  .quotation-entry-table tbody tr:nth-child(odd) {
+    background-color: white;
+  }
+  
+  .quotation-entry-table td {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+  
+  /* Form Elements */
+  .quotation-entry-form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .quotation-entry-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .quotation-entry-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    background: white;
+  }
+  
+  .quotation-entry-input:focus {
+    outline: none;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+  
+  .quotation-entry-input-readonly {
+    background-color: #f9fafb;
+    color: #374151;
+  }
+  
+  .quotation-entry-textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .quotation-entry-select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+  }
+  
+  .quotation-entry-select:focus {
+    outline: none;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+  
+  /* Buttons */
+  .quotation-entry-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    gap: 0.5rem;
+  }
+  
+  .quotation-entry-button-primary {
+    background-color: #7c3aed;
+    color: white;
+  }
+  
+  .quotation-entry-button-primary:hover {
+    background-color: #6d28d9;
+  }
+  
+  .quotation-entry-button-success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .quotation-entry-button-success:hover {
+    background-color: #047857;
+  }
+  
+  .quotation-entry-button-success:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .quotation-entry-button-danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .quotation-entry-button-danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .quotation-entry-button-outline {
+    background: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .quotation-entry-button-outline:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .quotation-entry-button-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    height: 2rem;
+  }
+  
+  .quotation-entry-button-ghost {
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+  }
+  
+  .quotation-entry-button-ghost:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* Badges */
+  .quotation-entry-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  
+  .quotation-entry-badge-draft {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+  }
+  
+  .quotation-entry-badge-sent-to-vendors {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-color: #bfdbfe;
+  }
+  
+  .quotation-entry-badge-evaluation {
+    background-color: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+  
+  .quotation-entry-badge-approved {
+    background-color: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+  
+  .quotation-entry-badge-priority-low {
+    background-color: #e0e7ff;
+    color: #4338ca;
+    border-color: #c7d2fe;
+  }
+  
+  .quotation-entry-badge-priority-medium {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+  }
+  
+  .quotation-entry-badge-priority-high {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-color: #fecaca;
+  }
+  
+  .quotation-entry-badge-priority-urgent {
+    background-color: #fecaca;
+    color: #7f1d1d;
+    border-color: #f87171;
+  }
+  
+  .quotation-entry-badge-category {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+    border-color: #e9d5ff;
+  }
+  
+  /* Modal Styles */
+  .quotation-entry-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .quotation-entry-modal {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 32rem;
+    margin: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .quotation-entry-modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 1rem 0;
+  }
+  
+  .quotation-entry-modal-info {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .quotation-entry-modal-info p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.25rem 0;
+  }
+  
+  .quotation-entry-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  
+  /* Grid Layout */
+  .quotation-entry-grid {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .quotation-entry-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .quotation-entry-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .quotation-entry-grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-entry-md-grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .quotation-entry-md-grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  
+  /* Space utilities */
+  .quotation-entry-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .quotation-entry-space-y-6 > * + * {
+    margin-top: 1.5rem;
+  }
+  
+  /* Text utilities */
+  .quotation-entry-text-xs {
+    font-size: 0.75rem;
+  }
+  
+  .quotation-entry-text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .quotation-entry-text-center {
+    text-align: center;
+  }
+  
+  .quotation-entry-font-medium {
+    font-weight: 500;
+  }
+  
+  .quotation-entry-font-semibold {
+    font-weight: 600;
+  }
+  
+  .quotation-entry-font-bold {
+    font-weight: 700;
+  }
+  
+  .quotation-entry-font-mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+  
+  /* Color utilities */
+  .quotation-entry-text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .quotation-entry-text-gray-700 {
+    color: #374151;
+  }
+  
+  .quotation-entry-text-blue {
+    color: #2563eb;
+  }
+  
+  /* Border utilities */
+  .quotation-entry-border-t {
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* Padding utilities */
+  .quotation-entry-pt-6 {
+    padding-top: 1.5rem;
+  }
+  
+  /* Icon utilities */
+  .quotation-entry-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .quotation-entry-icon-sm {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+  
+  /* Responsive utilities */
+  @media (max-width: 768px) {
+    .quotation-entry-header-content {
+      padding: 0.75rem;
+    }
+    
+    .quotation-entry-main {
+      padding: 1rem;
+    }
+    
+    .quotation-entry-modal {
+      margin: 0.5rem;
+      padding: 1rem;
+    }
+    
+    .quotation-entry-tab-list {
+      padding: 0.5rem;
+    }
+    
+    .quotation-entry-tab-button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+    
+    .quotation-entry-table th,
+    .quotation-entry-table td {
+      padding: 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+  
+  /* Animation utilities */
+  @keyframes quotation-entry-fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .quotation-entry-fade-in {
+    animation: quotation-entry-fadeIn 0.3s ease-out;
+  }
+  
