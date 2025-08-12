@@ -1,0 +1,831 @@
+/* Quotation Comparison CSS - Standalone stylesheet */
+
+/* Base styles */
+.quotation-management-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  /* Header styles */
+  .quotation-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .quotation-header-content {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .quotation-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .quotation-header-icon {
+    width: 2rem;
+    height: 2rem;
+    background-color: #7c3aed;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .quotation-header-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .quotation-header-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main container */
+  .quotation-main-container {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Card styles */
+  .quotation-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1rem;
+  }
+  
+  .quotation-card-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .quotation-card-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  
+  .quotation-card-content {
+    padding: 0 1.5rem 1.5rem;
+  }
+  
+  /* Tab navigation */
+  .quotation-tab-navigation {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+  }
+  
+  .quotation-tab-nav {
+    padding: 1rem;
+  }
+  
+  .quotation-tab-list {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+  
+  .quotation-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .quotation-tab-button.active {
+    background-color: #e9d5ff;
+    color: #7c3aed;
+    border: 1px solid #c4b5fd;
+  }
+  
+  .quotation-tab-button.inactive {
+    color: #4b5563;
+    background-color: transparent;
+  }
+  
+  .quotation-tab-button.inactive:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+  }
+  
+  /* Grid layouts */
+  .quotation-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .quotation-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* Summary cards */
+  .quotation-summary-card {
+    padding: 1rem;
+  }
+  
+  .quotation-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .quotation-summary-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quotation-summary-icon.pending {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  
+  .quotation-summary-icon.approved {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+  
+  .quotation-summary-icon.rejected {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .quotation-summary-icon.total {
+    background-color: #e9d5ff;
+    color: #7c3aed;
+  }
+  
+  .quotation-summary-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .quotation-summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .quotation-summary-number.pending {
+    color: #d97706;
+  }
+  
+  .quotation-summary-number.approved {
+    color: #059669;
+  }
+  
+  .quotation-summary-number.rejected {
+    color: #dc2626;
+  }
+  
+  .quotation-summary-number.total {
+    color: #7c3aed;
+  }
+  
+  /* Table styles */
+  .quotation-table-container {
+    overflow-x: auto;
+  }
+  
+  .quotation-table {
+    width: 100%;
+    font-size: 0.875rem;
+  }
+  
+  .quotation-table-header {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .quotation-table-header th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .quotation-table-row:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .quotation-table-row:nth-child(odd) {
+    background-color: #f9fafb;
+  }
+  
+  .quotation-table-cell {
+    padding: 0.75rem;
+  }
+  
+  .quotation-table-cell.emp-no {
+    font-weight: 500;
+    color: #7c3aed;
+  }
+  
+  .quotation-table-cell.name {
+    font-weight: 500;
+  }
+  
+  .quotation-table-cell.mono {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  }
+  
+  .quotation-table-cell.center {
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .quotation-table-cell.truncate {
+    color: #4b5563;
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .quotation-table-cell.small {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+    font-size: 0.75rem;
+  }
+  
+  /* Form styles */
+  .quotation-form-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .quotation-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-form-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  
+  .quotation-form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .quotation-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+  
+  .quotation-form-input,
+  .quotation-form-select,
+  .quotation-form-textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .quotation-form-input:focus,
+  .quotation-form-select:focus,
+  .quotation-form-textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #7c3aed;
+    border-color: #7c3aed;
+  }
+  
+  .quotation-form-input.readonly {
+    background-color: #f9fafb;
+    font-weight: 500;
+  }
+  
+  .quotation-form-input.readonly.small {
+    font-size: 0.75rem;
+  }
+  
+  .quotation-form-textarea {
+    resize: vertical;
+  }
+  
+  /* Button styles */
+  .quotation-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .quotation-button.primary {
+    background-color: #7c3aed;
+    color: white;
+  }
+  
+  .quotation-button.primary:hover {
+    background-color: #6d28d9;
+  }
+  
+  .quotation-button.success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .quotation-button.success:hover {
+    background-color: #047857;
+  }
+  
+  .quotation-button.danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .quotation-button.danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .quotation-button.outline {
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .quotation-button.outline:hover {
+    background-color: #f9fafb;
+  }
+  
+  .quotation-button.ghost {
+    background-color: transparent;
+    color: #6b7280;
+    border: none;
+    padding: 0.25rem;
+  }
+  
+  .quotation-button.ghost:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  
+  .quotation-button.small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .quotation-button.icon-only {
+    padding: 0.5rem;
+  }
+  
+  /* Badge styles */
+  .quotation-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+  
+  .quotation-badge.status.under-review {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fbbf24;
+  }
+  
+  .quotation-badge.status.pending-approval {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fbbf24;
+  }
+  
+  .quotation-badge.status.approved {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-color: #10b981;
+  }
+  
+  .quotation-badge.status.rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-color: #f87171;
+  }
+  
+  .quotation-badge.category.raw-materials {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-color: #60a5fa;
+  }
+  
+  .quotation-badge.category.equipment {
+    background-color: #ecfdf5;
+    color: #166534;
+    border-color: #34d399;
+  }
+  
+  .quotation-badge.category.consumables {
+    background-color: #e9d5ff;
+    color: #7c3aed;
+    border-color: #c4b5fd;
+  }
+  
+  .quotation-badge.category.safety {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-color: #f87171;
+  }
+  
+  .quotation-badge.category.maintenance {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-color: #fbbf24;
+  }
+  
+  .quotation-badge.category.tools {
+    background-color: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+  }
+  
+  /* Modal styles */
+  .quotation-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .quotation-modal-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 28rem;
+    margin: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .quotation-modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+  
+  .quotation-modal-info {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+  }
+  
+  .quotation-modal-info p {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin: 0.25rem 0;
+  }
+  
+  .quotation-modal-info span {
+    font-weight: 500;
+  }
+  
+  .quotation-modal-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  
+  /* Vendor card styles */
+  .quotation-vendor-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #fefefe;
+  }
+  
+  .quotation-vendor-header {
+    margin-bottom: 1rem;
+  }
+  
+  .quotation-vendor-header h5 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #7c3aed;
+    margin: 0;
+  }
+  
+  .quotation-vendor-summary {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background-color: #e9d5ff;
+    border-radius: 0.375rem;
+    text-align: center;
+    color: #7c3aed;
+  }
+  
+  /* Best vendor preview */
+  .quotation-best-vendor-preview {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .quotation-best-vendor-preview h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #166534;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .quotation-best-vendor-card {
+    background-color: #dcfce7;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+  }
+  
+  .quotation-best-vendor-card p {
+    font-size: 0.875rem;
+    color: #166534;
+    margin: 0.25rem 0;
+  }
+  
+  /* Report cards */
+  .quotation-reports-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-reports-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .quotation-report-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    background-color: #ffffff;
+    transition: all 0.2s;
+  }
+  
+  .quotation-report-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quotation-report-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 auto 0.75rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quotation-report-icon.blue {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+  
+  .quotation-report-icon.green {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+  
+  .quotation-report-icon.orange {
+    background-color: #fed7aa;
+    color: #ea580c;
+  }
+  
+  .quotation-report-icon.purple {
+    background-color: #e9d5ff;
+    color: #7c3aed;
+  }
+  
+  .quotation-report-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+  
+  .quotation-report-description {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Statistics section */
+  .quotation-stats-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #e9d5ff;
+    border-radius: 0.5rem;
+  }
+  
+  .quotation-stats-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #7c3aed;
+    margin: 0 0 1rem 0;
+  }
+  
+  .quotation-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  @media (min-width: 768px) {
+    .quotation-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .quotation-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #ffffff;
+    border-radius: 0.375rem;
+  }
+  
+  .quotation-stat-label {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  .quotation-stat-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #7c3aed;
+  }
+  
+  /* Section titles */
+  .quotation-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  /* Form actions */
+  .quotation-form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* Required field indicator */
+  .required {
+    color: #dc2626;
+  }
+  
+  /* Utility classes */
+  .quotation-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .quotation-space-y-6 > * + * {
+    margin-top: 1.5rem;
+  }
+  
+  .quotation-border-t {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+  }
+  
+  .quotation-flex {
+    display: flex;
+  }
+  
+  .quotation-flex-gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .quotation-flex-gap-1 {
+    gap: 0.25rem;
+  }
+  
+  /* Icon sizing */
+  .quotation-icon-sm {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .quotation-icon-md {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .quotation-icon-lg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .quotation-main-container {
+      padding: 1rem;
+    }
+    
+    .quotation-header-content {
+      padding: 0.75rem;
+    }
+    
+    .quotation-card-header,
+    .quotation-card-content {
+      padding: 1rem;
+    }
+    
+    .quotation-table-cell {
+      padding: 0.5rem;
+      font-size: 0.75rem;
+    }
+  
+    .quotation-reports-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .quotation-stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  

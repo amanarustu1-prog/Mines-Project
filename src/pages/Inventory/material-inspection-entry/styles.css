@@ -1,0 +1,777 @@
+/* Material Inspection Entry Styles */
+/* Following leave-management design patterns with white background (#f9fafb) and blue theme accents (#2563eb) */
+
+/* Base Layout - Following leave-management pattern exactly */
+.material-inspection-container {
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Header Styling - Matches leave-management header */
+  .material-inspection-header {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .material-inspection-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .material-inspection-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .material-inspection-header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border-radius: 0.5rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .material-inspection-header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .material-inspection-header-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main Container */
+  .material-inspection-main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Tab Navigation - Matching leave-management exactly */
+  .material-inspection-tab-navigation {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .material-inspection-tab-nav {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-tab-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .material-inspection-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  
+  .material-inspection-tab-button.active {
+    color: #2563eb;
+    background-color: #eff6ff;
+    border-bottom-color: #2563eb;
+  }
+  
+  .material-inspection-tab-button.inactive {
+    color: #6b7280;
+  }
+  
+  .material-inspection-tab-button.inactive:hover {
+    color: #374151;
+    background-color: #f9fafb;
+  }
+  
+  /* Utility Classes */
+  .material-inspection-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .material-inspection-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .material-inspection-icon-sm {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Card Components - Following leave-management pattern */
+  .material-inspection-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+  
+  .material-inspection-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+  }
+  
+  .material-inspection-card-content {
+    padding: 1.5rem;
+  }
+  
+  /* Summary Cards */
+  .material-inspection-summary-card {
+    padding: 1rem;
+  }
+  
+  .material-inspection-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .material-inspection-summary-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .material-inspection-summary-icon.total {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+  }
+  
+  .material-inspection-summary-icon.completed {
+    background: linear-gradient(135deg, #059669, #10b981);
+  }
+  
+  .material-inspection-summary-icon.pending {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+  }
+  
+  .material-inspection-summary-icon.quality {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  }
+  
+  .material-inspection-summary-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .material-inspection-summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .material-inspection-summary-number.total {
+    color: #2563eb;
+  }
+  
+  .material-inspection-summary-number.completed {
+    color: #059669;
+  }
+  
+  .material-inspection-summary-number.pending {
+    color: #d97706;
+  }
+  
+  .material-inspection-summary-number.quality {
+    color: #7c3aed;
+  }
+  
+  /* Table Styles - Following leave-management pattern */
+  .material-inspection-table-container {
+    overflow-x: auto;
+    margin: -1rem;
+    padding: 1rem;
+  }
+  
+  .material-inspection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  
+  .material-inspection-table-header th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  
+  .material-inspection-table-row {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-table-row:hover {
+    background-color: #f9fafb;
+  }
+  
+  .material-inspection-table-cell {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+  
+  .material-inspection-table-cell.inspection-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #2563eb;
+  }
+  
+  .material-inspection-table-cell.grn-ref {
+    font-family: 'Courier New', monospace;
+    color: #059669;
+  }
+  
+  .material-inspection-table-cell.mono {
+    font-family: 'Courier New', monospace;
+    color: #4b5563;
+  }
+  
+  .material-inspection-table-cell.inspector {
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .material-inspection-table-cell.vendor {
+    color: #4b5563;
+  }
+  
+  .material-inspection-table-cell.center {
+    text-align: center;
+  }
+  
+  .material-inspection-table-cell .accepted {
+    color: #059669;
+    font-weight: 600;
+  }
+  
+  .material-inspection-table-cell .rejected {
+    color: #dc2626;
+    font-weight: 600;
+  }
+  
+  /* Quality Score Styles */
+  .quality-score .score {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  
+  .quality-score .score.good {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .quality-score .score.fair {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+  
+  .quality-score .score.poor {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  
+  /* Badge Styles */
+  .material-inspection-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .material-inspection-badge.type.incoming {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .material-inspection-badge.type.random {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .material-inspection-badge.type.critical {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  
+  .material-inspection-badge.type.batch {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  
+  .material-inspection-badge.type.pre-delivery {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+  }
+  
+  .material-inspection-badge.status.completed {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .material-inspection-badge.status.inprogress {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .material-inspection-badge.status.hold {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+  
+  /* Form Styles - Following leave-management pattern */
+  .material-inspection-form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .material-inspection-form-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #2563eb;
+    display: inline-block;
+  }
+  
+  .material-inspection-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .material-inspection-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .material-inspection-form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .material-inspection-form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .material-inspection-form-input,
+  .material-inspection-form-select,
+  .material-inspection-form-textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .material-inspection-form-input:focus,
+  .material-inspection-form-select:focus,
+  .material-inspection-form-textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+  
+  .material-inspection-form-input.readonly {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+  
+  .material-inspection-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  /* Section Headers */
+  .material-inspection-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  
+  .material-inspection-section-header h4 {
+    margin: 0;
+    border: none;
+    padding: 0;
+    display: block;
+  }
+  
+  /* Items Container */
+  .material-inspection-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .material-inspection-item-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+  
+  .material-inspection-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-item-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .material-inspection-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Quality Metrics Section */
+  .material-inspection-metrics-section {
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-metrics-card {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+  
+  .material-inspection-metrics-card h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    border: none;
+    padding: 0;
+    display: block;
+  }
+  
+  .material-inspection-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .metric-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: white;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .metric-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .metric-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  .metric-value.accepted {
+    color: #059669;
+  }
+  
+  .metric-value.rejected {
+    color: #dc2626;
+  }
+  
+  .metric-value.rate.good {
+    color: #059669;
+  }
+  
+  .metric-value.rate.fair {
+    color: #d97706;
+  }
+  
+  .metric-value.rate.poor {
+    color: #dc2626;
+  }
+  
+  /* Button Styles - Following leave-management pattern */
+  .material-inspection-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .material-inspection-button.small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .material-inspection-button.primary {
+    background-color: #2563eb;
+    color: white;
+  }
+  
+  .material-inspection-button.primary:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .material-inspection-button.success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .material-inspection-button.success:hover {
+    background-color: #047857;
+  }
+  
+  .material-inspection-button.danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .material-inspection-button.danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .material-inspection-button.outline {
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .material-inspection-button.outline:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+  
+  /* Form Actions */
+  .material-inspection-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 2rem;
+  }
+  
+  /* Reports Section */
+  .material-inspection-reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .material-inspection-report-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .material-inspection-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .material-inspection-report-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .material-inspection-report-icon.blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .material-inspection-report-icon.green {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .material-inspection-report-icon.orange {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+  
+  .material-inspection-report-icon.purple {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+  }
+  
+  .material-inspection-report-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+  }
+  
+  .material-inspection-report-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Statistics Section */
+  .material-inspection-stats-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #2563eb;
+    display: inline-block;
+  }
+  
+  .material-inspection-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .material-inspection-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .material-inspection-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .material-inspection-stat-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .material-inspection-main-container {
+      padding: 1rem;
+    }
+    
+    .material-inspection-tab-button {
+      font-size: 0.8125rem;
+      padding: 0.75rem 1rem;
+    }
+    
+    .material-inspection-form-grid,
+    .material-inspection-item-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .material-inspection-grid-4 {
+      grid-template-columns: 1fr;
+    }
+    
+    .material-inspection-table-container {
+      font-size: 0.8125rem;
+    }
+    
+    .material-inspection-form-actions {
+      flex-direction: column;
+    }
+    
+    .material-inspection-form-actions .material-inspection-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  

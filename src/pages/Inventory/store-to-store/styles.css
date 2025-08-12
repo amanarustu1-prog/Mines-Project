@@ -1,0 +1,708 @@
+/* Store to Store Styles */
+/* Following leave-management design patterns with white background (#f9fafb) and red theme accents (#dc2626) */
+
+/* Base Layout - Following leave-management pattern exactly */
+.store-to-store-container {
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Header Styling - Matches leave-management header */
+  .store-to-store-header {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .store-to-store-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .store-to-store-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .store-to-store-header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    border-radius: 0.5rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .store-to-store-header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .store-to-store-header-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main Container */
+  .store-to-store-main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Tab Navigation - Matching leave-management exactly */
+  .store-to-store-tab-navigation {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .store-to-store-tab-nav {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-tab-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .store-to-store-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  
+  .store-to-store-tab-button.active {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-bottom-color: #dc2626;
+  }
+  
+  .store-to-store-tab-button.inactive {
+    color: #6b7280;
+  }
+  
+  .store-to-store-tab-button.inactive:hover {
+    color: #374151;
+    background-color: #f9fafb;
+  }
+  
+  /* Utility Classes */
+  .store-to-store-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .store-to-store-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .store-to-store-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Card Components - Following leave-management pattern */
+  .store-to-store-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+  
+  .store-to-store-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+  }
+  
+  .store-to-store-card-content {
+    padding: 1.5rem;
+  }
+  
+  .store-to-store-tab-content {
+    padding: 1.5rem;
+  }
+  
+  /* Summary Cards */
+  .store-to-store-summary-card {
+    padding: 1rem;
+  }
+  
+  .store-to-store-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .store-to-store-summary-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .store-to-store-summary-icon.total {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+  }
+  
+  .store-to-store-summary-icon.pending {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+  }
+  
+  .store-to-store-summary-icon.approved {
+    background: linear-gradient(135deg, #059669, #10b981);
+  }
+  
+  .store-to-store-summary-icon.completed {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+  }
+  
+  .store-to-store-summary-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .store-to-store-summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .store-to-store-summary-number.total {
+    color: #dc2626;
+  }
+  
+  .store-to-store-summary-number.pending {
+    color: #d97706;
+  }
+  
+  .store-to-store-summary-number.approved {
+    color: #059669;
+  }
+  
+  .store-to-store-summary-number.completed {
+    color: #2563eb;
+  }
+  
+  /* Table Styles - Following leave-management pattern */
+  .store-to-store-table-container {
+    overflow-x: auto;
+    margin: -1rem;
+    padding: 1rem;
+  }
+  
+  .store-to-store-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  
+  .store-to-store-table-header th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  
+  .store-to-store-table-row {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-table-row:hover {
+    background-color: #f9fafb;
+  }
+  
+  .store-to-store-table-cell {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+  
+  .store-to-store-table-cell.transfer-no {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #dc2626;
+  }
+  
+  .store-to-store-table-cell.store-name {
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .store-to-store-table-cell.requester {
+    font-size: 0.8125rem;
+    color: #6b7280;
+  }
+  
+  .store-to-store-table-cell.center {
+    text-align: center;
+  }
+  
+  .store-to-store-table-cell.value {
+    font-weight: 600;
+    color: #2563eb;
+    text-align: right;
+  }
+  
+  /* Badge Styles */
+  .store-to-store-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .store-to-store-badge.priority.normal {
+    background-color: #f9fafb;
+    color: #6b7280;
+  }
+  
+  .store-to-store-badge.priority.high {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+  
+  .store-to-store-badge.priority.urgent {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  
+  .store-to-store-badge.status.pending {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+  
+  .store-to-store-badge.status.approved {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .store-to-store-badge.status.completed {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  /* Form Styles - Following leave-management pattern */
+  .store-to-store-form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .store-to-store-form-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #dc2626;
+    display: inline-block;
+  }
+  
+  .store-to-store-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .store-to-store-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .store-to-store-form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .store-to-store-form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .store-to-store-form-input,
+  .store-to-store-form-select,
+  .store-to-store-form-textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .store-to-store-form-input:focus,
+  .store-to-store-form-select:focus,
+  .store-to-store-form-textarea:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+  
+  .store-to-store-form-input.readonly {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+  
+  .store-to-store-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  /* Section Headers */
+  .store-to-store-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  
+  .store-to-store-section-header h4 {
+    margin: 0;
+    border: none;
+    padding: 0;
+    display: block;
+  }
+  
+  /* Items Container */
+  .store-to-store-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .store-to-store-item-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+  
+  .store-to-store-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-item-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .store-to-store-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Button Styles - Following leave-management pattern */
+  .store-to-store-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .store-to-store-button.small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .store-to-store-button.primary {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .store-to-store-button.primary:hover {
+    background-color: #b91c1c;
+  }
+  
+  .store-to-store-button.success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .store-to-store-button.success:hover {
+    background-color: #047857;
+  }
+  
+  .store-to-store-button.danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .store-to-store-button.danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .store-to-store-button.outline {
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .store-to-store-button.outline:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+  
+  /* Form Actions */
+  .store-to-store-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 2rem;
+  }
+  
+  /* Reports Section */
+  .store-to-store-reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .store-to-store-report-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .store-to-store-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .store-to-store-report-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .store-to-store-report-icon.red {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  
+  .store-to-store-report-icon.green {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .store-to-store-report-icon.blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .store-to-store-report-icon.orange {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+  
+  .store-to-store-report-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+  }
+  
+  .store-to-store-report-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Statistics Section */
+  .store-to-store-stats-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #dc2626;
+    display: inline-block;
+  }
+  
+  .store-to-store-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .store-to-store-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .store-to-store-stat-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  /* Modal Styles - Following leave-management pattern */
+  .store-to-store-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .store-to-store-modal {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .store-to-store-modal-header {
+    padding: 1.5rem 1.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .store-to-store-modal-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+  }
+  
+  .store-to-store-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .store-to-store-modal-actions {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .store-to-store-main-container {
+      padding: 1rem;
+    }
+    
+    .store-to-store-tab-button {
+      font-size: 0.8125rem;
+      padding: 0.75rem 1rem;
+    }
+    
+    .store-to-store-form-grid,
+    .store-to-store-item-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .store-to-store-grid-4 {
+      grid-template-columns: 1fr;
+    }
+    
+    .store-to-store-table-container {
+      font-size: 0.8125rem;
+    }
+    
+    .store-to-store-form-actions {
+      flex-direction: column;
+    }
+    
+    .store-to-store-form-actions .store-to-store-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  

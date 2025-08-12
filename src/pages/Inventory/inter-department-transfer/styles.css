@@ -1,0 +1,708 @@
+/* Inter Department Transfer Styles */
+/* Following leave-management design patterns with white background (#f9fafb) and green theme accents (#059669) */
+
+/* Base Layout - Following leave-management pattern exactly */
+.inter-dept-container {
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Header Styling - Matches leave-management header */
+  .inter-dept-header {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .inter-dept-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .inter-dept-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .inter-dept-header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #059669, #10b981);
+    border-radius: 0.5rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .inter-dept-header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .inter-dept-header-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main Container */
+  .inter-dept-main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Tab Navigation - Matching leave-management exactly */
+  .inter-dept-tab-navigation {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .inter-dept-tab-nav {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-tab-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .inter-dept-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  
+  .inter-dept-tab-button.active {
+    color: #059669;
+    background-color: #f0fdf4;
+    border-bottom-color: #059669;
+  }
+  
+  .inter-dept-tab-button.inactive {
+    color: #6b7280;
+  }
+  
+  .inter-dept-tab-button.inactive:hover {
+    color: #374151;
+    background-color: #f9fafb;
+  }
+  
+  /* Utility Classes */
+  .inter-dept-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .inter-dept-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .inter-dept-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Card Components - Following leave-management pattern */
+  .inter-dept-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+  
+  .inter-dept-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+  }
+  
+  .inter-dept-card-content {
+    padding: 1.5rem;
+  }
+  
+  .inter-dept-tab-content {
+    padding: 1.5rem;
+  }
+  
+  /* Summary Cards */
+  .inter-dept-summary-card {
+    padding: 1rem;
+  }
+  
+  .inter-dept-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .inter-dept-summary-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .inter-dept-summary-icon.total {
+    background: linear-gradient(135deg, #059669, #10b981);
+  }
+  
+  .inter-dept-summary-icon.pending {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+  }
+  
+  .inter-dept-summary-icon.approved {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+  }
+  
+  .inter-dept-summary-icon.completed {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  }
+  
+  .inter-dept-summary-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .inter-dept-summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .inter-dept-summary-number.total {
+    color: #059669;
+  }
+  
+  .inter-dept-summary-number.pending {
+    color: #d97706;
+  }
+  
+  .inter-dept-summary-number.approved {
+    color: #2563eb;
+  }
+  
+  .inter-dept-summary-number.completed {
+    color: #7c3aed;
+  }
+  
+  /* Table Styles - Following leave-management pattern */
+  .inter-dept-table-container {
+    overflow-x: auto;
+    margin: -1rem;
+    padding: 1rem;
+  }
+  
+  .inter-dept-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  
+  .inter-dept-table-header th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  
+  .inter-dept-table-row {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-table-row:hover {
+    background-color: #f9fafb;
+  }
+  
+  .inter-dept-table-cell {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+  
+  .inter-dept-table-cell.transfer-no {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #059669;
+  }
+  
+  .inter-dept-table-cell.dept-name {
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .inter-dept-table-cell.requester {
+    font-size: 0.8125rem;
+    color: #6b7280;
+  }
+  
+  .inter-dept-table-cell.center {
+    text-align: center;
+  }
+  
+  .inter-dept-table-cell.value {
+    font-weight: 600;
+    color: #2563eb;
+    text-align: right;
+  }
+  
+  /* Badge Styles */
+  .inter-dept-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .inter-dept-badge.priority.normal {
+    background-color: #f9fafb;
+    color: #6b7280;
+  }
+  
+  .inter-dept-badge.priority.high {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+  
+  .inter-dept-badge.priority.urgent {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  
+  .inter-dept-badge.status.pending {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+  
+  .inter-dept-badge.status.approved {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .inter-dept-badge.status.completed {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+  }
+  
+  /* Form Styles - Following leave-management pattern */
+  .inter-dept-form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .inter-dept-form-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #059669;
+    display: inline-block;
+  }
+  
+  .inter-dept-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .inter-dept-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .inter-dept-form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .inter-dept-form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .inter-dept-form-input,
+  .inter-dept-form-select,
+  .inter-dept-form-textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .inter-dept-form-input:focus,
+  .inter-dept-form-select:focus,
+  .inter-dept-form-textarea:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  }
+  
+  .inter-dept-form-input.readonly {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+  
+  .inter-dept-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  /* Section Headers */
+  .inter-dept-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  
+  .inter-dept-section-header h4 {
+    margin: 0;
+    border: none;
+    padding: 0;
+    display: block;
+  }
+  
+  /* Items Container */
+  .inter-dept-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .inter-dept-item-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+  
+  .inter-dept-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-item-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .inter-dept-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Button Styles - Following leave-management pattern */
+  .inter-dept-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .inter-dept-button.small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .inter-dept-button.primary {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .inter-dept-button.primary:hover {
+    background-color: #047857;
+  }
+  
+  .inter-dept-button.success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .inter-dept-button.success:hover {
+    background-color: #047857;
+  }
+  
+  .inter-dept-button.danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .inter-dept-button.danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .inter-dept-button.outline {
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .inter-dept-button.outline:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+  
+  /* Form Actions */
+  .inter-dept-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 2rem;
+  }
+  
+  /* Reports Section */
+  .inter-dept-reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .inter-dept-report-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .inter-dept-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .inter-dept-report-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .inter-dept-report-icon.green {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .inter-dept-report-icon.blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .inter-dept-report-icon.purple {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+  }
+  
+  .inter-dept-report-icon.orange {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+  
+  .inter-dept-report-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+  }
+  
+  .inter-dept-report-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Statistics Section */
+  .inter-dept-stats-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #059669;
+    display: inline-block;
+  }
+  
+  .inter-dept-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .inter-dept-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .inter-dept-stat-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  /* Modal Styles - Following leave-management pattern */
+  .inter-dept-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .inter-dept-modal {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .inter-dept-modal-header {
+    padding: 1.5rem 1.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .inter-dept-modal-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+  }
+  
+  .inter-dept-modal-content {
+    padding: 1.5rem;
+  }
+  
+  .inter-dept-modal-actions {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .inter-dept-main-container {
+      padding: 1rem;
+    }
+    
+    .inter-dept-tab-button {
+      font-size: 0.8125rem;
+      padding: 0.75rem 1rem;
+    }
+    
+    .inter-dept-form-grid,
+    .inter-dept-item-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .inter-dept-grid-4 {
+      grid-template-columns: 1fr;
+    }
+    
+    .inter-dept-table-container {
+      font-size: 0.8125rem;
+    }
+    
+    .inter-dept-form-actions {
+      flex-direction: column;
+    }
+    
+    .inter-dept-form-actions .inter-dept-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  

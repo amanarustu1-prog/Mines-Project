@@ -1,0 +1,768 @@
+/* Serial Number Unique Part Code Entry Styles */
+/* Following leave-management design patterns with white background (#f9fafb) and purple theme accents (#7c3aed) */
+
+/* Base Layout - Following leave-management pattern exactly */
+.serial-entry-container {
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Header Styling - Matches leave-management header */
+  .serial-entry-header {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .serial-entry-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .serial-entry-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .serial-entry-header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    border-radius: 0.5rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .serial-entry-header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .serial-entry-header-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  /* Main Container */
+  .serial-entry-main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Tab Navigation - Matching leave-management exactly */
+  .serial-entry-tab-navigation {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .serial-entry-tab-nav {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-tab-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .serial-entry-tab-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  
+  .serial-entry-tab-button.active {
+    color: #7c3aed;
+    background-color: #f3e8ff;
+    border-bottom-color: #7c3aed;
+  }
+  
+  .serial-entry-tab-button.inactive {
+    color: #6b7280;
+  }
+  
+  .serial-entry-tab-button.inactive:hover {
+    color: #374151;
+    background-color: #f9fafb;
+  }
+  
+  /* Utility Classes */
+  .serial-entry-space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .serial-entry-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .serial-entry-icon-sm {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Card Components - Following leave-management pattern */
+  .serial-entry-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+  
+  .serial-entry-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+  }
+  
+  .serial-entry-card-content {
+    padding: 1.5rem;
+  }
+  
+  /* Summary Cards */
+  .serial-entry-summary-card {
+    padding: 1rem;
+  }
+  
+  .serial-entry-summary-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .serial-entry-summary-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .serial-entry-summary-icon.total {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  }
+  
+  .serial-entry-summary-icon.items {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+  }
+  
+  .serial-entry-summary-icon.active {
+    background: linear-gradient(135deg, #059669, #10b981);
+  }
+  
+  .serial-entry-summary-icon.unique {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+  }
+  
+  .serial-entry-summary-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .serial-entry-summary-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .serial-entry-summary-number.total {
+    color: #7c3aed;
+  }
+  
+  .serial-entry-summary-number.items {
+    color: #2563eb;
+  }
+  
+  .serial-entry-summary-number.active {
+    color: #059669;
+  }
+  
+  .serial-entry-summary-number.unique {
+    color: #d97706;
+  }
+  
+  /* Table Styles - Following leave-management pattern */
+  .serial-entry-table-container {
+    overflow-x: auto;
+    margin: -1rem;
+    padding: 1rem;
+  }
+  
+  .serial-entry-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  
+  .serial-entry-table-header th {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  
+  .serial-entry-table-row {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-table-row:hover {
+    background-color: #f9fafb;
+  }
+  
+  .serial-entry-table-cell {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+  
+  .serial-entry-table-cell.entry-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #7c3aed;
+  }
+  
+  .serial-entry-table-cell.grn-ref {
+    font-family: 'Courier New', monospace;
+    color: #059669;
+  }
+  
+  .serial-entry-table-cell.mono {
+    font-family: 'Courier New', monospace;
+    color: #4b5563;
+  }
+  
+  .serial-entry-table-cell.name {
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .serial-entry-table-cell.vendor {
+    color: #4b5563;
+  }
+  
+  .serial-entry-table-cell.center {
+    text-align: center;
+  }
+  
+  .serial-entry-table-cell.location {
+    font-size: 0.8125rem;
+    color: #6b7280;
+  }
+  
+  .serial-entry-table-cell .unique-count {
+    color: #d97706;
+    font-weight: 600;
+  }
+  
+  .serial-entry-table-cell .active-count {
+    color: #059669;
+    font-weight: 600;
+  }
+  
+  /* Badge Styles */
+  .serial-entry-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .serial-entry-badge.type.new {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .serial-entry-badge.type.replacement {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .serial-entry-badge.type.refurbished {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+  
+  .serial-entry-badge.type.transfer {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+  }
+  
+  .serial-entry-badge.type.return {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  
+  /* Form Styles - Following leave-management pattern */
+  .serial-entry-form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .serial-entry-form-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #7c3aed;
+    display: inline-block;
+  }
+  
+  .serial-entry-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .serial-entry-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .serial-entry-form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .serial-entry-form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .serial-entry-form-input,
+  .serial-entry-form-select,
+  .serial-entry-form-textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .serial-entry-form-input:focus,
+  .serial-entry-form-select:focus,
+  .serial-entry-form-textarea:focus {
+    outline: none;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+  
+  .serial-entry-form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  /* Serial Input Group */
+  .serial-input-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .serial-input-group .serial-entry-form-input {
+    flex: 1;
+  }
+  
+  .serial-generate-btn {
+    padding: 0.5rem 0.75rem;
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .serial-generate-btn:hover {
+    background-color: #6d28d9;
+  }
+  
+  /* Checkbox Group */
+  .serial-entry-form-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .serial-entry-form-checkbox-group input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #7c3aed;
+  }
+  
+  /* Section Headers */
+  .serial-entry-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  
+  .serial-entry-section-header h4 {
+    margin: 0;
+    border: none;
+    padding: 0;
+    display: block;
+  }
+  
+  /* Items Container */
+  .serial-entry-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .serial-entry-item-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+  
+  .serial-entry-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-item-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .serial-entry-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Summary Section */
+  .serial-entry-summary-section {
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-summary-card {
+    background-color: #f3e8ff;
+    border: 1px solid #c4b5fd;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+  
+  .serial-entry-summary-card h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    border: none;
+    padding: 0;
+    display: block;
+  }
+  
+  .serial-entry-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: white;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .summary-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .summary-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  /* Button Styles - Following leave-management pattern */
+  .serial-entry-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .serial-entry-button.small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .serial-entry-button.primary {
+    background-color: #7c3aed;
+    color: white;
+  }
+  
+  .serial-entry-button.primary:hover {
+    background-color: #6d28d9;
+  }
+  
+  .serial-entry-button.success {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .serial-entry-button.success:hover {
+    background-color: #047857;
+  }
+  
+  .serial-entry-button.danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .serial-entry-button.danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .serial-entry-button.outline {
+    background-color: transparent;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .serial-entry-button.outline:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+  
+  /* Form Actions */
+  .serial-entry-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 2rem;
+  }
+  
+  /* Reports Section */
+  .serial-entry-reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .serial-entry-report-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .serial-entry-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .serial-entry-report-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .serial-entry-report-icon.purple {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+  }
+  
+  .serial-entry-report-icon.green {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .serial-entry-report-icon.blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+  
+  .serial-entry-report-icon.orange {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+  
+  .serial-entry-report-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.5rem;
+  }
+  
+  .serial-entry-report-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+  
+  /* Statistics Section */
+  .serial-entry-stats-section h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #7c3aed;
+    display: inline-block;
+  }
+  
+  .serial-entry-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .serial-entry-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .serial-entry-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .serial-entry-stat-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .serial-entry-main-container {
+      padding: 1rem;
+    }
+    
+    .serial-entry-tab-button {
+      font-size: 0.8125rem;
+      padding: 0.75rem 1rem;
+    }
+    
+    .serial-entry-form-grid,
+    .serial-entry-item-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .serial-entry-grid-4 {
+      grid-template-columns: 1fr;
+    }
+    
+    .serial-entry-table-container {
+      font-size: 0.8125rem;
+    }
+    
+    .serial-entry-form-actions {
+      flex-direction: column;
+    }
+    
+    .serial-entry-form-actions .serial-entry-button {
+      width: 100%;
+      justify-content: center;
+    }
+  
+    .serial-input-group {
+      flex-direction: column;
+    }
+  
+    .serial-generate-btn {
+      align-self: flex-start;
+    }
+  }
+  

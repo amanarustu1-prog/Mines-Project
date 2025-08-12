@@ -560,19 +560,19 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Material Request Entry',
-            href: '/inventory/procurement',
+            href: '/material-request-entry',
             icon: ShoppingCart,
             description: 'Purchase orders and requisitions'
           },
           {
             title: 'Request Approval',
-            href: '/inventory/suppliers',
+            href: '/request-approval',
             icon: UserCheck,
             description: 'Supplier management and relationships'
           },
           {
             title: 'Reject Requests(Approved)',
-            href: '/inventory/suppliers',
+            href: '/Reject-Approved-Requests',
             icon: UserCheck,
             description: 'Supplier management and relationships'
           },
@@ -585,27 +585,27 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Request for Quotation (RFQ)',
-            href: '/inventory/logistics',
+            href: '/Request-Quotation',
             icon: Truck,
             description: 'Sent to multiple vendors'
           },
           {
             title: 'Quotation Entry',
-            href: '/inventory/warehousing',
+            href: '/Quotation-Entry',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
           },
           {
             title: 'Quotation Comparison',
-            href: '/inventory/warehousing',
+            href: '/Quotation-Comparison',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
           },
           {
             title: 'Quotation Approve',
-            href: '/inventory/warehousing',
+            href: '/Quotation-Approve',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
@@ -617,7 +617,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Create Purchase Order',
-            href: '/inventory/logistics',
+            href: '/Create-Purchase-Order',
             icon: Truck,
             description: 'Sent to multiple vendors'
           },
@@ -651,20 +651,20 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'GRN Against PO',
-            href: '/inventory/logistics',
+            href: '/grn-against-po',
             icon: Truck,
             description: 'Sent to multiple vendors'
           },
           {
             title: 'Direct GRN',
-            href: '/inventory/warehousing',
+            href: '/a-direct-grn',
             icon: Warehouse,
             description: 'without PO – for urgent purchases',
 
           },
           {
             title: 'Material Inspection Entry',
-            href: '/inventory/warehousing',
+            href: '/material-inspection-entry',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
@@ -672,7 +672,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Serial Number/Unique Part Code Entry',
-            href: '/inventory/warehousing',
+            href: '/serial-number-unique-part-code-entry',
             icon: Warehouse,
             description: 'Serial Number/Unique Part Code Entry Section for Items with Warranty',
 
@@ -681,7 +681,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Stock Update Post-GRN',
-            href: '/inventory/warehousing',
+            href: '/stock-update-post-grn',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
@@ -695,27 +695,27 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Material Issue',
-            href: '/inventory/logistics',
+            href: '/material-issue',
             icon: Truck,
             description: 'Issue to Machine/Vehicle/Department'
           },
           {
             title: 'Store to Store Transfer',
-            href: '/inventory/warehousing',
+            href: '/store-to-store',
             icon: Warehouse,
             description: 'without PO – for urgent purchases',
 
           },
           {
             title: 'Inter-Department Transfer',
-            href: '/inventory/warehousing',
+            href: '/inter-department-transfer',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
           },
           {
             title: 'Purchase Bill Entry',
-            href: '/inventory/warehousing',
+            href: '/purchase-bill-entry',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
@@ -729,27 +729,27 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'RGP Entry',
-            href: '/inventory/logistics',
+            href: '/RGP-Entry',
             icon: Truck,
             description: 'Issue to Machine/Vehicle/Department'
           },
           {
             title: 'RGP Return',
-            href: '/inventory/warehousing',
+            href: '/RGP-Return',
             icon: Warehouse,
             description: 'without PO – for urgent purchases',
 
           },
           {
             title: 'NRGP Entry',
-            href: '/inventory/warehousing',
+            href: '/NRGP-Entry',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
           },
           {
             title: 'In-Entry Against NRGP',
-            href: '/inventory/warehousing',
+            href: '/In-EntryAgainst-NRGP',
             icon: Warehouse,
             description: 'Warehouse management and organization',
 
