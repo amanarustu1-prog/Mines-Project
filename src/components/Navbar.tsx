@@ -858,7 +858,7 @@ const navigationItems: NavItem[] = [
             description: 'Material transport and logistics'
           },
           {
-            title: 'Machine Service Entry',
+            title: 'Plant Service Entry',
             href: '/vehicle-service-type',
             icon: Truck,
             description: 'Material transport and logistics'
@@ -942,7 +942,21 @@ const navigationItems: NavItem[] = [
         title: 'Reports',
         items: [
           {
-            title: 'Daily/Monthly Maintenance Report',
+            title: 'Daily/Monthly Plant Maintenance Report',
+            href: '/mining/planning',
+            icon: MapPin,
+            description: 'Mine site planning and development',
+            badge: 'New'
+          },
+           {
+            title: 'Plant Grease Report',
+            href: '/mining/planning',
+            icon: MapPin,
+            description: 'Mine site planning and development',
+            badge: 'New'
+          },
+           {
+            title: 'Vehicle Service Report',
             href: '/mining/planning',
             icon: MapPin,
             description: 'Mine site planning and development',
