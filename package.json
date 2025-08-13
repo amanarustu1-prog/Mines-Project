@@ -9,6 +9,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@radix-ui/react-slot": "^1.1.0",
     "bootstrap": "^5.3.7",
     "class-variance-authority": "^0.7.1",
