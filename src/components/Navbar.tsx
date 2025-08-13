@@ -1840,6 +1840,14 @@ const navigationItems: NavItem[] = [
           { title: 'Emp Leave Type', href: '/hr/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
           { title: 'Emp Status', href: '/hr/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
           { title: 'Gender', href: '/hr/gender', icon: CheckCircle, description: 'Gender categories' },
+
+        ]
+      },
+
+      {
+        title: 'HR',
+        items: [
+
           { title: 'ID Proof', href: '/hr/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
           { title: 'Qualification', href: '/hr/qualification', icon: CheckCircle, description: 'Employee qualification details' },
           { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
@@ -1849,6 +1857,10 @@ const navigationItems: NavItem[] = [
           { title: 'District', href: '/hr/district', icon: CheckCircle, description: 'District details' },
         ]
       },
+
+
+
+
       {
         title: 'Inventory',
         items: [
@@ -1867,27 +1879,27 @@ const navigationItems: NavItem[] = [
       {
         title: 'Crusher and Mines',
         items: [
-          { title: 'lstLoadingcharge', href: '/crusher/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
-          { title: 'lstProduct', href: '/crusher/product', icon: FlaskConical, description: 'Product list' },
-          { title: 'lstTpAmount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
-          { title: 'lstVehicleType', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
-          { title: 'lstExplosiveType', href: '/crusher/explosive-type', icon: FlaskConical, description: 'Explosive types' },
+          { title: 'Loading charge', href: '/crusher/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
+          { title: 'Product', href: '/crusher/product', icon: FlaskConical, description: 'Product list' },
+          { title: 'Tp Amount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
+          { title: 'Vehicle Type', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
+          { title: 'Explosive Type', href: '/crusher/explosive-type', icon: FlaskConical, description: 'Explosive types' },
         ]
       },
       {
         title: 'Safety and Legal',
         items: [
-          { title: 'lstCaseStatus', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
-          { title: 'lstCaseType', href: '/safety/case-type', icon: FileText, description: 'Case types' },
-          { title: 'lstCourtLocation', href: '/safety/court-location', icon: FileText, description: 'Court locations' },
-          { title: 'lstInjuryType', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
-          { title: 'lstThana', href: '/safety/thana', icon: FileText, description: 'Police station list' },
+          { title: 'Case Status', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
+          { title: 'Case Type', href: '/safety/case-type', icon: FileText, description: 'Case types' },
+          { title: 'Court Location', href: '/safety/court-location', icon: FileText, description: 'Court locations' },
+          { title: 'Injury Type', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
+          { title: 'Thana', href: '/safety/thana', icon: FileText, description: 'Police station list' },
         ]
       },
       {
         title: 'Account',
         items: [
-          { title: 'lstFinancialYear', href: '/account/financial-year', icon: Target, description: 'Financial year list' },
+          { title: 'Financial Year', href: '/account/financial-year', icon: Target, description: 'Financial year list' },
         ]
       }
     ]
@@ -2766,7 +2778,7 @@ export function Navbar() {
                                               item.title === 'Workforce' && item.sections ? "grid-cols-5" :
                                                 item.title === 'Safety & Legal' && item.sections ? "grid-cols-4" :
                                                   item.title === 'Reports' && item.sections ? "grid-cols-5" :
-                                                    item.title === 'Master Tables' && item.sections ? "grid-cols-5" :
+                                                    item.title === 'Master Tables' && item.sections ? "grid-cols-6" :
                                                       item.title === 'Setting' && item.sections ? "grid-cols-5" :
                                                         item.title === 'Fuel' && item.sections ? "grid-cols-5" :
                                                           item.title === 'Accounts1' && item.sections ? "grid-cols-3" :
