@@ -286,7 +286,7 @@ const navigationItems: NavItem[] = [
             icon: Wrench,
             description: 'Material processing and refinement'
           },
-               
+
           {
             title: 'Pending Challan',
             href: '/pending-challan',
@@ -1831,110 +1831,65 @@ const navigationItems: NavItem[] = [
     icon: CheckCircle,
     sections: [
       {
-        title: 'General Settings',
+        title: 'HR',
         items: [
-          {
-            title: 'Company Profile',
-            href: '/quality/dashboard',
-            icon: CheckCircle,
-            description: 'Name, Logo, Address, Contact Info'
-          },
-          {
-            title: 'Shift Timing',
-            href: '/quality/trends',
-            icon: TrendingUp,
-            description: 'Historical quality data and trends'
-          },
+          { title: 'Blood Group', href: '/hr/blood-group', icon: CheckCircle, description: 'Manage employee blood groups' },
+          { title: 'Department', href: '/hr/department', icon: CheckCircle, description: 'Department information' },
+          { title: 'Designation', href: '/hr/designation', icon: CheckCircle, description: 'Employee designations' },
+          { title: 'Employe Leave Status', href: '/hr/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
+          { title: 'Emp Leave Type', href: '/hr/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
+          { title: 'Emp Status', href: '/hr/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
+          { title: 'Gender', href: '/hr/gender', icon: CheckCircle, description: 'Gender categories' },
+          { title: 'ID Proof', href: '/hr/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
+          { title: 'Qualification', href: '/hr/qualification', icon: CheckCircle, description: 'Employee qualification details' },
+          { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
+          { title: 'Religion', href: '/hr/religion', icon: CheckCircle, description: 'Religions list' },
+          { title: 'State', href: '/hr/state', icon: CheckCircle, description: 'State details' },
+          { title: 'Martial', href: '/hr/marital-status', icon: CheckCircle, description: 'Marital status' },
+          { title: 'District', href: '/hr/district', icon: CheckCircle, description: 'District details' },
         ]
       },
       {
-        title: 'User & Access Settings',
+        title: 'Inventory',
         items: [
-          {
-            title: 'User Management',
-            href: '/quality/testing',
-            icon: FlaskConical,
-            description: 'Quality testing procedures and results'
-          },
-          {
-            title: 'Roles & Permissions',
-            href: '/quality/lab-results',
-            icon: FileText,
-            description: 'Laboratory testing outcomes'
-          },
-          {
-            title: 'Password Policy',
-            href: '/quality/lab-results',
-            icon: FileText,
-            description: 'Laboratory testing outcomes'
-          },
-          {
-            title: 'Login History / Audit Log',
-            href: '/quality/lab-results',
-            icon: FileText,
-            description: 'Laboratory testing outcomes'
-          },
+          { title: 'Equipment Type', href: '/inventory/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
+          { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
+          { title: 'Material Group', href: '/inventory/material-group', icon: TrendingUp, description: 'Material grouping' },
+          { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
+          { title: 'Material Specification', href: '/inventory/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
+          { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
+          { title: 'Material Type', href: '/inventory/material-type', icon: TrendingUp, description: 'Material types' },
+          { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
+          { title: 'Fuel Type', href: '/inventory/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
+          { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
         ]
       },
       {
-        title: 'Weigh bridge',
+        title: 'Crusher and Mines',
         items: [
-          {
-            title: 'BAAT MAAP Certificate',
-            href: '/quality/standards',
-            icon: Target,
-            description: 'Quality standards and specifications',
-          },
-          {
-            title: 'Weight Setting',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
+          { title: 'lstLoadingcharge', href: '/crusher/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
+          { title: 'lstProduct', href: '/crusher/product', icon: FlaskConical, description: 'Product list' },
+          { title: 'lstTpAmount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
+          { title: 'lstVehicleType', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
+          { title: 'lstExplosiveType', href: '/crusher/explosive-type', icon: FlaskConical, description: 'Explosive types' },
         ]
       },
       {
-        title: 'CCTV',
+        title: 'Safety and Legal',
         items: [
-          {
-            title: 'CCTV IP',
-            href: '/quality/standards',
-            icon: Target,
-            description: 'Quality standards and specifications',
-          },
-          {
-            title: 'CCTV Urls',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
+          { title: 'lstCaseStatus', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
+          { title: 'lstCaseType', href: '/safety/case-type', icon: FileText, description: 'Case types' },
+          { title: 'lstCourtLocation', href: '/safety/court-location', icon: FileText, description: 'Court locations' },
+          { title: 'lstInjuryType', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
+          { title: 'lstThana', href: '/safety/thana', icon: FileText, description: 'Police station list' },
         ]
       },
-
       {
-        title: 'System Configuration',
+        title: 'Account',
         items: [
-          {
-            title: 'API Keys',
-            href: '/quality/standards',
-            icon: Target,
-            description: 'Third-Party Integrations',
-          },
-          {
-            title: 'SMTP / Email Settings',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
-          {
-            title: 'SMS Gateway Settings',
-            href: '/quality/certifications',
-            icon: Award,
-            description: 'Quality certifications and compliance'
-          },
+          { title: 'lstFinancialYear', href: '/account/financial-year', icon: Target, description: 'Financial year list' },
         ]
-      },
-
+      }
     ]
 
   },
@@ -2505,16 +2460,16 @@ export function Navbar() {
 
   const isActiveParent = (item: NavItem) => {
     if (item.href && isActiveLink(item.href)) return true;
-    
+
     // Check direct children
     const hasActiveChild = item.children?.some(child => isActiveLink(child.href));
     if (hasActiveChild) return true;
-    
+
     // Check items in sections
-    const hasActiveSectionItem = item.sections?.some(section => 
+    const hasActiveSectionItem = item.sections?.some(section =>
       section.items?.some(subItem => isActiveLink(subItem.href))
     );
-    
+
     return hasActiveSectionItem || false;
   };
 
