@@ -219,7 +219,7 @@ export default function Dashboard() {
       <Navbar />
 
       {/* Main Content Area */}
-      <main className="main-content">
+      <main className="main-content pt-20 lg:pt-20">
         <div className="p-3 sm:p-4 lg:p-6">
           <div className="container">
 

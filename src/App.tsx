@@ -1,6 +1,7 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { Navbar } from './components/Navbar'
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import Login from './pages/Login';
 
 // Import all pages
 import Dashboard from './pages/Dashboard'
@@ -106,12 +107,42 @@ import RGPEntry from './pages/Inventory/rgp-entry/RGPEntry'
 
 
 
-function App() {
+// Layout component for protected routes
+const ProtectedLayout = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+  }, [location]);
+
+  if (isAuthenticated === null) {
+    // Show loading state while checking authentication
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="main-content">
-        <Routes>
+        <Outlet />
+      </main>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route element={<ProtectedLayout />}>
           {/* Main Dashboard */}
           <Route path="/" element={<Dashboard />} />
 
@@ -252,10 +283,9 @@ function App() {
 
 
 
-        </Routes>
-      </main>
-    </div>
-  )
+      </Route>
+    </Routes>
+  );
 }
 
 export default App
