@@ -6,13 +6,20 @@ import Otp from './Otp';
 import api, { addUpdateDelete } from '@/utils/api';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { loginStart, loginSuccess, loginFailure, clearError } from '@/redux/reducers/authReducer';
+import { loginUserApi } from "@/redux/actions/authActions";
 
 interface LoginResponse {
     token: string;
-    userId?: number;
-    userName?: string;
     role?: string;
-    [key: string]: any; 
+    [key: string]: any;
+    userName?: string;
+    password: string;
+    grant_type: string;
+    refresh_token: string;
+    userID?: string;
+    email: string;
+    name: string;
+    companyID: string
 }
 
 const Login = () => {
@@ -32,203 +39,209 @@ const Login = () => {
     const location = useLocation();
     const from = (location.state as LoginResponse)?.from?.pathname || '/';
 
-    const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
-
-    const handleLogin = async (e: React.FormEvent) => {
+    
+    const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(clearError());
-
-        // Basic validation
-        if (!username.trim() || !password.trim()) {
-            dispatch(loginFailure('Please enter both username and password'));
-            return;
-        }
-
-        if (password.length < 6) {
-            dispatch(loginFailure('Password must be at least 6 characters long'));
-            return;
-        }
-
-        dispatch(loginStart());
-        try {
-            // Verify credentials
-            const userData = await verify_User();
-            if (!userData?.token) {
-                throw new Error('Invalid credentials');
-            }
-            
-            // Dispatch login success with user data
-            dispatch(loginSuccess({
-                user: {
-                    id: userData.userId || 0,
-                    name: userData.userName || '',
-                    email: username,
-                    role: userData.role || 'user'
-                },
-                token: userData.token
-            }));
-
-            // Generate and show OTP
-            const newOtp = generateOtp();
-            console.log(`OTP for ${username}: ${newOtp}`);
-            localStorage.setItem('otp', newOtp);
-            setCurrentOtp(newOtp);
-
-            // Show OTP modal
-            setShowOtpModal(true);
-
-            // Reset password field
-            setPassword('');
-
-            // Show success message
-            toastifySuccess('OTP sent to your registered email!');
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to login';
-            dispatch(loginFailure(errorMessage));
-            toastifyError(errorMessage);
-        }
+        dispatch(loginUserApi(username, password, branch));
     };
+    
+    // const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();>
 
-    useEffect(() => {
-        verify_User();
-    }, [username, password]);
+    // const handleLogin = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     dispatch(clearError());
 
-    const verify_User = async (): Promise<LoginResponse | undefined> => {
-        try {
-            console.log('Sending login request with:', {
-                username,
-                password: '***',
-                CompanyID: localStorage.getItem("CompanyID")
-            });
+    //     // Basic validation
+    //     if (!username.trim() || !password.trim()) {
+    //         dispatch(loginFailure('Please enter both username and password'));
+    //         return;
+    //     }
 
-            const response = await addUpdateDelete<{ data: any }>(
-                "api/Account/GetToken",
-                { username, password, CompanyID: localStorage.getItem("CompanyID") }
-            );
+    //     if (password.length < 6) {
+    //         dispatch(loginFailure('Password must be at least 6 characters long'));
+    //         return;
+    //     }
 
-            console.log('Raw API Response:', response);
-            console.log('Response status:', response.status);
+    //     dispatch(loginStart());
+    //     try {
+    //         // Verify credentials
+    //         const userData = await verify_User();
+    //         if (!userData?.token) {
+    //             throw new Error('Invalid credentials');
+    //         }
 
-            const { data } = response.data;
-            console.log('Response data:', data);
+    //         // Dispatch login success with user data
+    //         dispatch(loginSuccess({
+    //             user: {
+    //                 id: userData.userId || 0,
+    //                 name: userData.userName || '',
+    //                 email: username,
+    //                 role: userData.role || 'user'
+    //             },
+    //             token: userData.token
+    //         }));
 
-            const parsedData: LoginResponse = typeof data === "string" ? JSON.parse(data) : data;
-            console.log('Parsed data:', parsedData);
+    //         // Generate and show OTP
+    //         const newOtp = generateOtp();
+    //         console.log(`OTP for ${username}: ${newOtp}`);
+    //         localStorage.setItem('otp', newOtp);
+    //         setCurrentOtp(newOtp);
 
-            if (parsedData?.token) {
-                console.log('Token received, saving to localStorage');
-                localStorage.setItem("token", parsedData.token);
-                // Store user data in localStorage
-                if (parsedData.userId) localStorage.setItem("userId", parsedData.userId.toString());
-                if (parsedData.userName) localStorage.setItem("userName", parsedData.userName);
-                if (parsedData.role) localStorage.setItem("role", parsedData.role);
-            } else {
-                console.warn('No token found in response');
-                throw new Error('Authentication failed: No token received');
-            }
+    //         // Show OTP modal
+    //         setShowOtpModal(true);
 
-            return parsedData;
-        } catch (error) {
-            console.error("Error in verify_User:", error);
-            throw error; // Re-throw to be caught by the calling function
-        }
-    };
+    //         // Reset password field
+    //         setPassword('');
 
-    const handleLoginWithOtp = async (e: React.FormEvent) => {
-        e.preventDefault();
-        dispatch(clearError());
+    //         // Show success message
+    //         toastifySuccess('OTP sent to your registered email!');
+    //     } catch (err) {
+    //         const errorMessage = err instanceof Error ? err.message : 'Failed to login';
+    //         dispatch(loginFailure(errorMessage));
+    //         toastifyError(errorMessage);
+    //     }
+    // };
 
-        if (!username || !password) {
-            dispatch(loginFailure('Please enter username and password'));
-            return;
-        }
+    // useEffect(() => {
+    //     verify_User();
+    // }, [username, password]);
 
-        dispatch(loginStart());
-        try {
-            // First verify credentials
-            const userData = await verify_User();
-            if (!userData?.token) {
-                throw new Error('Invalid credentials');
-            }
-            
-            // Store user data in Redux
-            dispatch(loginSuccess({
-                user: {
-                    id: userData.userId || 0,
-                    name: userData.userName || '',
-                    email: username,
-                    role: userData.role || 'user'
-                },
-                token: userData.token
-            }));
+    // const verify_User = async (): Promise<LoginResponse | undefined> => {
+    //     try {
+    //         console.log('Sending login request with:', {
+    //             username,
+    //             password: '***',
+    //             CompanyID: localStorage.getItem("CompanyID")
+    //         });
 
-            const newOtp = generateOtp();
-            console.log(`OTP for ${username}: ${newOtp}`);
-            localStorage.setItem('otp', newOtp);
-            setCurrentOtp(newOtp);
-            setShowOtpModal(true);
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to send OTP';
-            dispatch(loginFailure(errorMessage));
-            toastifyError(errorMessage);
-        }
-    };
+    //         const response = await addUpdateDelete<{ data: any }>(
+    //             "api/Account/GetToken",
+    //             { username, password, CompanyID: localStorage.getItem("CompanyID") }
+    //         );
 
-    const handleOtpChange = (element: HTMLInputElement, index: number) => {
-        if (isNaN(Number(element.value))) return false;
+    //         console.log('Raw API Response:', response);
+    //         console.log('Response status:', response.status);
 
-        const newOtp = [...otpDigits];
-        newOtp[index] = element.value;
-        setOtpDigits(newOtp);
+    //         const { data } = response.data;
+    //         console.log('Response data:', data);
 
-        if (element.nextSibling && element.value !== '') {
-            (element.nextSibling as HTMLInputElement).focus();
-        }
-    };
+    //         const parsedData: LoginResponse = typeof data === "string" ? JSON.parse(data) : data;
+    //         console.log('Parsed data:', parsedData);
 
-    const handleOtpSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        dispatch(clearError());
+    //         if (parsedData?.token) {
+    //             console.log('Token received, saving to localStorage');
+    //             localStorage.setItem("token", parsedData.token);
+    //             // Store user data in localStorage
+    //             if (parsedData.userId) localStorage.setItem("userId", parsedData.userId.toString());
+    //             if (parsedData.userName) localStorage.setItem("userName", parsedData.userName);
+    //             if (parsedData.role) localStorage.setItem("role", parsedData.role);
+    //         } else {
+    //             console.warn('No token found in response');
+    //             throw new Error('Authentication failed: No token received');
+    //         }
 
-        const enteredOtp = otpDigits.join('');
-        if (enteredOtp.length !== 6) {
-            dispatch(loginFailure('Please enter a valid 6-digit OTP'));
-            return;
-        }
+    //         return parsedData;
+    //     } catch (error) {
+    //         console.error("Error in verify_User:", error);
+    //         throw error; // Re-throw to be caught by the calling function
+    //     }
+    // };
 
-        const storedOtp = localStorage.getItem('otp');
-        if (enteredOtp !== storedOtp) {
-            dispatch(loginFailure('Invalid OTP. Please try again.'));
-            return;
-        }
+    // const handleLoginWithOtp = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     dispatch(clearError());
 
-        try {
-            // OTP verified, complete login
-            const userData = await verify_User();
-            if (userData?.token) {
-                dispatch(loginSuccess({
-                    user: {
-                        id: userData.userId || 0,
-                        name: userData.userName || '',
-                        email: username,
-                        role: userData.role || 'user'
-                    },
-                    token: userData.token
-                }));
-                toastifySuccess('Login successful!');
-                navigate(from, { replace: true });
-            } else {
-                throw new Error('Failed to complete login');
-            }
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to complete login';
-            dispatch(loginFailure(errorMessage));
-            toastifyError(errorMessage);
-        } finally {
-            setShowOtpModal(false);
-            setOtpDigits(['', '', '', '', '', '']);
-        }
-    };
+    //     if (!username || !password) {
+    //         dispatch(loginFailure('Please enter username and password'));
+    //         return;
+    //     }
+
+    //     dispatch(loginStart());
+    //     try {
+    //         // First verify credentials
+    //         const userData = await verify_User();
+    //         if (!userData?.token) {
+    //             throw new Error('Invalid credentials');
+    //         }
+
+    //         // Store user data in Redux
+    //         dispatch(loginSuccess({
+    //             user: {
+    //                 id: userData.userId || 0,
+    //                 name: userData.userName || '',
+    //                 email: username,
+    //                 role: userData.role || 'user'
+    //             },
+    //             token: userData.token
+    //         }));
+
+    //         const newOtp = generateOtp();
+    //         console.log(`OTP for ${username}: ${newOtp}`);
+    //         localStorage.setItem('otp', newOtp);
+    //         setCurrentOtp(newOtp);
+    //         setShowOtpModal(true);
+    //     } catch (err) {
+    //         const errorMessage = err instanceof Error ? err.message : 'Failed to send OTP';
+    //         dispatch(loginFailure(errorMessage));
+    //         toastifyError(errorMessage);
+    //     }
+    // };
+
+    // const handleOtpChange = (element: HTMLInputElement, index: number) => {
+    //     if (isNaN(Number(element.value))) return false;
+
+    //     const newOtp = [...otpDigits];
+    //     newOtp[index] = element.value;
+    //     setOtpDigits(newOtp);
+
+    //     if (element.nextSibling && element.value !== '') {
+    //         (element.nextSibling as HTMLInputElement).focus();
+    //     }
+    // };
+
+    // const handleOtpSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     dispatch(clearError());
+
+    //     const enteredOtp = otpDigits.join('');
+    //     if (enteredOtp.length !== 6) {
+    //         dispatch(loginFailure('Please enter a valid 6-digit OTP'));
+    //         return;
+    //     }
+
+    //     const storedOtp = localStorage.getItem('otp');
+    //     if (enteredOtp !== storedOtp) {
+    //         dispatch(loginFailure('Invalid OTP. Please try again.'));
+    //         return;
+    //     }
+
+    //     try {
+    //         // OTP verified, complete login
+    //         const userData = await verify_User();
+    //         if (userData?.token) {
+    //             dispatch(loginSuccess({
+    //                 user: {
+    //                     id: userData.userId || 0,
+    //                     name: userData.userName || '',
+    //                     email: username,
+    //                     role: userData.role || 'user'
+    //                 },
+    //                 token: userData.token
+    //             }));
+    //             toastifySuccess('Login successful!');
+    //             navigate(from, { replace: true });
+    //         } else {
+    //             throw new Error('Failed to complete login');
+    //         }
+    //     } catch (err) {
+    //         const errorMessage = err instanceof Error ? err.message : 'Failed to complete login';
+    //         dispatch(loginFailure(errorMessage));
+    //         toastifyError(errorMessage);
+    //     } finally {
+    //         setShowOtpModal(false);
+    //         setOtpDigits(['', '', '', '', '', '']);
+    //     }
+    // };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -319,7 +332,7 @@ const Login = () => {
             )}
 
             {/* OTP Verification Modal */}
-            <Otp
+            {/* <Otp
                 isOpen={showOtpModal}
                 otp={currentOtp}
                 onClose={() => {
@@ -355,7 +368,7 @@ const Login = () => {
                     }
                 }}
                 email={username}
-            />
+            /> */}
         </div>
     );
 };
