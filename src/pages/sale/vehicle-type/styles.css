@@ -141,7 +141,7 @@
 }
 
 /* Grid layouts */
-.list-grid-3 {
+.list-grid-4 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
@@ -149,8 +149,8 @@
 }
 
 @media (min-width: 768px) {
-  .list-grid-3 {
-    grid-template-columns: repeat(3, 1fr);
+  .list-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
