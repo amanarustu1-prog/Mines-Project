@@ -12,6 +12,7 @@ import { Encrypted_Id_Name, get_OTP } from "../Common/Utility";
 import { fetchPostData } from "../hooks/Api";
 import axios from "@/interceptors/axios";
 import OTP from "./Otp";
+const BASE_URL = import.meta.env.VITE_DOMAIN_URL_KEY;
 
 interface LoginResponse {
   token: string;
@@ -37,6 +38,11 @@ const Login = () => {
   const [loginAttemptStatus, setLoginAttemptStatus] = useState(false);
   const [loginAttempt, setLoginAttempt] = useState("");
   const [agency, setAgency] = useState([]);
+
+  // Error
+  const[userErr, setUserErr] = useState("false");
+  const[passErr, setPassErr] = useState("false");
+  const[compErr, setCompErr] = useState("false");
 
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
@@ -85,7 +91,9 @@ const Login = () => {
 
     }
     e.preventDefault();
-    dispatch(loginUserApi(username, password, branch));
+    dispatch(loginUserApi(username, password, branch)).then(() => {
+      navigate("/");
+    })
   };
 
   return (
@@ -104,11 +112,7 @@ const Login = () => {
 
           {/* Card */}
           <div className="mt-6 w-full max-w-sm m-auto bg-white rounded-xl shadow p-6">
-            <form
-              onSubmit={handleLogin}
-              className="space-y-4"
-              autoComplete="off"
-            >
+            <form onSubmit={handleLogin} className="space-y-4" autoComplete="off" >
               {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">

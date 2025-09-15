@@ -10,11 +10,7 @@ export const loginUserApi = (username: string, password: string, companyID: stri
     const response = await axios.post("https://api.crushererp.com/api/Account/GetToken", {
       userName: username,
       password: password,
-      grant_type: "password", 
-      // refresh_token: "string",
-      // userID: "string",
-      // email: "string",
-      // name: "string",
+      grant_type: "password",
       companyID: companyID
     });
 
@@ -23,6 +19,8 @@ export const loginUserApi = (username: string, password: string, companyID: stri
     if (!data?.access_token) {
       throw new Error("Authentication failed: no token received");
     }
+    sessionStorage.setItem("accessToken", data.access_token); //short-lived
+    localStorage.setItem("refreshToken", data.refresh_token); //long-lived
 
     const user = {
       id: data.userID || 0,
@@ -31,6 +29,8 @@ export const loginUserApi = (username: string, password: string, companyID: stri
       role: data.role || "user"
     };
 
+    // if(data.access_token && )
+
     dispatch(loginSuccess({ user, token: data.access_token }));
   } catch (error: any) {
     dispatch(loginFailure(error.response?.data?.message || error.message || "Login failed"));
@@ -38,5 +38,7 @@ export const loginUserApi = (username: string, password: string, companyID: stri
 };
 
 export const logoutUser = () => (dispatch: AppDispatch) => {
+  sessionStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
   dispatch(logout());
 };
