@@ -136,9 +136,7 @@ export default function VehicleType() {
         isActive: true
     });
 
-    const tabs = [
-        { id: 'list-overview', label: 'List Overview', icon: List }
-    ];
+    const tabs = [{ id: 'list-overview', label: 'List Overview', icon: List }];
 
     const handleInputChange = (field: string, value: string | boolean) => {
         setNewItem(prev => ({
@@ -214,8 +212,6 @@ export default function VehicleType() {
                     <div className="list-space-y-4">
                         {/* Summary Cards */}
                         <div className="list-grid-3">
-
-
                             <div className="list-card mb-0">
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
@@ -269,45 +265,21 @@ export default function VehicleType() {
                                     </h4>
 
                                     <div className="list-compact-grid">
-                                        <input
-                                            type="text"
-                                            value={newItem.code}
-                                            onChange={(e) => handleInputChange('code', e.target.value)}
-                                            className="list-compact-input"
-                                            placeholder="Item Code (e.g., DEPT001)"
-                                            maxLength={20}
-                                        />
+                                        <input type="text" value={newItem.code} onChange={(e) => handleInputChange('code', e.target.value)} className="list-compact-input" placeholder="Item Code (e.g., DEPT001)" maxLength={20}/>
 
-                                        <input
-                                            type="text"
-                                            value={newItem.description}
-                                            onChange={(e) => handleInputChange('description', e.target.value)}
-                                            className="list-compact-input"
-                                            placeholder="Description"
-                                            maxLength={500}
-                                        />
+                                        <input type="text" value={newItem.description} onChange={(e) => handleInputChange('description', e.target.value)} className="list-compact-input" placeholder="Description" maxLength={500} />
 
-                                        <select
-                                            value={newItem.isActive ? 'active' : 'inactive'}
-                                            onChange={(e) => handleInputChange('isActive', e.target.value === 'active')}
-                                            className="list-compact-select"
-                                        >
+                                        <select value={newItem.isActive ? 'active' : 'inactive'} onChange={(e) => handleInputChange('isActive', e.target.value === 'active')} className="list-compact-select" >
                                             <option value="active">Active</option>
                                             <option value="inactive">Inactive</option>
                                         </select>
 
                                         <div className="list-compact-actions">
-                                            <button
-                                                onClick={handleSaveItem}
-                                                className="list-button primary small"
-                                            >
+                                            <button onClick={handleSaveItem} className="list-button primary small">
                                                 <Save className="list-icon-sm" />
                                                 Save
                                             </button>
-                                            <button
-                                                onClick={() => setNewItem({ code: '', description: '', isActive: true })}
-                                                className="list-button outline small"
-                                            >
+                                            <button onClick={() => setNewItem({ code: '', description: '', isActive: true })} className="list-button outline small" >
                                                 Clear
                                             </button>
                                         </div>
@@ -318,15 +290,14 @@ export default function VehicleType() {
 
                         {/* Filter and Search Bar */}
 
-
                         {/* Items Table */}
                         <div className="list-card">
+                            {/* Filter-Option */}
                             {/* <div className="list-card-header">
                                 <h3 className="list-card-title">
                                     <List className="list-icon-sm" />
                                     Items List ({filteredData.length} items)
                                 </h3>
-
 
                                 <div className="list-filter-bar">
                                     <div className="list-filter-section">
@@ -373,6 +344,8 @@ export default function VehicleType() {
                                 </div>
 
                             </div> */}
+
+                            {/* Table-Data */}
                             <div className="list-card-content" style={{ padding: 0 }}>
                                 <div className="list-table-container">
                                     <table className="list-table">
@@ -459,21 +432,21 @@ export default function VehicleType() {
 
                 {/* Tab Navigation */}
                 {/* <div className="list-tab-navigation">
-                                <nav className="list-tab-nav">
-                                    <div className="list-tab-list">
-                                        {tabs.map((tab) => (
-                                            <button
-                                                key={tab.id}
-                                                onClick={() => setActiveTab(tab.id)}
-                                                className={`list-tab-button ${activeTab === tab.id ? 'active' : 'inactive'}`}
-                                            >
-                                                <tab.icon className="list-icon-sm" />
-                                                {tab.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </nav>
-                            </div> */}
+                    <nav className="list-tab-nav">
+                        <div className="list-tab-list">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`list-tab-button ${activeTab === tab.id ? 'active' : 'inactive'}`}
+                                >
+                                    <tab.icon className="list-icon-sm" />
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
+                </div> */}
 
                 {/* Content Area */}
                 {renderTabContent()}

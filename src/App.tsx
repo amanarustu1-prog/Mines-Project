@@ -142,6 +142,7 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<Login />} />
       <Route element={<ProtectedLayout />}>
           {/* Main Dashboard */}
           <Route path="/" element={<Dashboard />} />
