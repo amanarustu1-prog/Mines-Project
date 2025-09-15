@@ -211,7 +211,23 @@ export default function VehicleType() {
                 return (
                     <div className="list-space-y-4">
                         {/* Summary Cards */}
-                        <div className="list-grid-3">
+                        <div className="list-grid-4">
+                            <div className="list-card mb-0">
+                                <div className="list-summary-card ">
+                                    <div className="list-header-info ">
+                                        <div className="list-header-icon">
+                                            <Car className="list-icon-sm" />
+                                        </div>
+                                        <div>
+                                            <h1 className="list-header-title">Vehicle Type</h1>
+                                            <p className="list-header-subtitle">Master data with codes and descriptions for vehicle types</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                             <div className="list-card mb-0">
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
@@ -264,26 +280,74 @@ export default function VehicleType() {
                                         Add New Item
                                     </h4>
 
-                                    <div className="list-compact-grid">
-                                        <input type="text" value={newItem.code} onChange={(e) => handleInputChange('code', e.target.value)} className="list-compact-input" placeholder="Item Code (e.g., DEPT001)" maxLength={20}/>
+                                    <div className="grid grid-cols-12 gap-4 items-center">
+                                        {/* Item Code */}
+                                        <div className="col-span-2">
+                                            <input
+                                                type="text"
+                                                value={newItem.code}
+                                                onChange={(e) => handleInputChange("code", e.target.value)}
+                                                className="list-compact-input w-full text-sm py-1 px-2 h-8"
+                                                placeholder="Item Code"
+                                                maxLength={20}
+                                            />
+                                        </div>
 
-                                        <input type="text" value={newItem.description} onChange={(e) => handleInputChange('description', e.target.value)} className="list-compact-input" placeholder="Description" maxLength={500} />
+                                        {/* Description */}
+                                        <div className="col-span-2">
+                                            <input
+                                                type="text"
+                                                value={newItem.description}
+                                                onChange={(e) => handleInputChange("description", e.target.value)}
+                                                className="list-compact-input w-full text-sm py-1 px-2 h-8"
+                                                placeholder="Description"
+                                                maxLength={300}
+                                            />
+                                        </div>
 
-                                        <select value={newItem.isActive ? 'active' : 'inactive'} onChange={(e) => handleInputChange('isActive', e.target.value === 'active')} className="list-compact-select" >
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
-                                        </select>
+                                        {/* Status */}
+                                        <div className="col-span-2">
+                                            <select 
+                                                value={newItem.isActive ? "active" : "inactive"}
+                                                onChange={(e) => handleInputChange("isActive", e.target.value === "active")}
+                                                className="list-compact-select w-full py-1 px-2 h-8 text-sm"
+                                            >
+                                                <option value="">Select Status</option>
+                                                <option value="active">Active</option>
+                                                <option value="inactive">Inactive</option>
+                                            </select>
+                                        </div>
 
-                                        <div className="list-compact-actions">
-                                            <button onClick={handleSaveItem} className="list-button primary small">
+                                        {/* Agency */}
+                                        <div className="col-span-4">
+                                            <select
+                                                className="list-compact-select w-full py-1 px-2 h-8 text-sm"
+                                            >
+                                                <option value="">Select Agency</option>
+                                                <option value="electronics">Electronics & Computers</option>
+                                                <option value="clothing">Clothing & Jewelry</option>
+                                                <option value="health">Health & Beauty</option>
+                                            </select>
+                                        </div>
+
+                                        {/* Buttons */}
+                                        <div className="col-span-2 flex gap-2">
+                                            <button
+                                                onClick={handleSaveItem}
+                                                className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8"
+                                            >
                                                 <Save className="list-icon-sm" />
                                                 Save
                                             </button>
-                                            <button onClick={() => setNewItem({ code: '', description: '', isActive: true })} className="list-button outline small" >
+                                            <button
+                                                onClick={() => setNewItem({ code: "", description: "", isActive: true })}
+                                                className="list-button outline small flex-1 h-8"
+                                            >
                                                 Clear
                                             </button>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -413,19 +477,7 @@ export default function VehicleType() {
     return (
         <div className="list-management-container ">
             {/* Header */}
-            <div className="list-header ">
-                <div className="list-header-content container">
-                    <div className="list-header-info">
-                        <div className="list-header-icon">
-                            <Car className="list-icon-sm" />
-                        </div>
-                        <div>
-                            <h1 className="list-header-title">Vehicle Type</h1>
-                            <p className="list-header-subtitle">Master data with codes and descriptions for vehicle types</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             {/* Main Container */}
             <div className="list-main-container container">
