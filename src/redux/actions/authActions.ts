@@ -10,17 +10,17 @@ export const loginUserApi = (username: string, password: string, companyID: stri
     const response = await axios.post("https://api.crushererp.com/api/Account/GetToken", {
       userName: username,
       password: password,
-      grant_type: "string", 
-      refresh_token: "string",
-      userID: "string",
-      email: "string",
-      name: "string",
+      grant_type: "password", 
+      // refresh_token: "string",
+      // userID: "string",
+      // email: "string",
+      // name: "string",
       companyID: companyID
     });
 
     const data = response.data;
 
-    if (!data?.token) {
+    if (!data?.access_token) {
       throw new Error("Authentication failed: no token received");
     }
 
@@ -31,7 +31,7 @@ export const loginUserApi = (username: string, password: string, companyID: stri
       role: data.role || "user"
     };
 
-    dispatch(loginSuccess({ user, token: data.token }));
+    dispatch(loginSuccess({ user, token: data.access_token }));
   } catch (error: any) {
     dispatch(loginFailure(error.response?.data?.message || error.message || "Login failed"));
   }

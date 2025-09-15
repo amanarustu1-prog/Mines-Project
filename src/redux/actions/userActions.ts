@@ -7,7 +7,6 @@ export const fetchUserData = () => async (dispatch: AppDispatch) => {
   try {
     dispatch(fetchUserStart());
 
-    // Fake API call with proper typing
     const response = await new Promise<Omit<User, 'role'>>((resolve) =>
       setTimeout(
         () => resolve({ 
