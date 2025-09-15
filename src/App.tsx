@@ -103,28 +103,81 @@ import RGPReturn from './pages/Inventory/rgp-return/RGPReturn'
 import NRGPEntry from './pages/Inventory/nrgp-entry/NRGPEntry'
 import InEntryAgainstNRGP from './pages/Inventory/in-entry-against-nrgp/InEntryAgainstNRGP'
 import RGPEntry from './pages/Inventory/rgp-entry/RGPEntry'
-
-
+import axios from 'axios';
 
 
 // Layout component for protected routes
+// const ProtectedLayout = () => {
+//   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+//   const location = useLocation();
+
+//   useEffect(() => {
+//     // Check if user is authenticated
+//     const token = localStorage.getItem('accessToken');
+//     setIsAuthenticated(!!token);
+//   }, [location]);
+
+//   if (isAuthenticated === null) {
+//     // Show loading state while checking authentication
+//     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+//   }
+
+//   if (!isAuthenticated) {
+//     // Redirect to login if not authenticated
+//     return <Navigate to="/login" state={{ from: location }} replace />;
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-background">
+//       <Navbar />
+//       <main className="main-content">
+//         <Outlet />
+//       </main>
+//     </div>
+//   );
+// };
+
 const ProtectedLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const location = useLocation();
 
   useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token);
+    const checkAuth = async () => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      if (accessToken) {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      if (refreshToken) {
+        try {
+          // refresh access token
+          const response = await axios.post("https://api.crushererp.com/api/Account/RefreshToken", {
+            grant_type: "refresh_token",
+            refresh_token: refreshToken
+          });
+
+          sessionStorage.setItem("accessToken", response.data.access_token);
+          setIsAuthenticated(true);
+          return;
+        } catch {
+          localStorage.removeItem("refreshToken");
+        }
+      }
+
+      setIsAuthenticated(false);
+    };
+
+    checkAuth();
   }, [location]);
 
   if (isAuthenticated === null) {
-    // Show loading state while checking authentication
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -138,10 +191,10 @@ const ProtectedLayout = () => {
   );
 };
 
+
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedLayout />}>
           {/* Main Dashboard */}
