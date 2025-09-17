@@ -77,7 +77,7 @@ import DepartmentMaster from './pages/Hr/Department-Master/DepartmentMaster'
 import IDProof from './pages/Hr/ID-Proof/IDProof'
 import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
-import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
+// import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 import Ledger from './pages/Accounts/ledger/Ledger'
 import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
@@ -102,7 +102,9 @@ import PurchaseBillEntry from './pages/Inventory/purchase-bill-entry/PurchaseBil
 import RGPReturn from './pages/Inventory/rgp-return/RGPReturn'
 import NRGPEntry from './pages/Inventory/nrgp-entry/NRGPEntry'
 import InEntryAgainstNRGP from './pages/Inventory/in-entry-against-nrgp/InEntryAgainstNRGP'
-import RGPEntry from './pages/Inventory/rgp-entry/RGPEntry'
+import RGPEntry from './pages/Inventory/rgp-entry/RGPEntry';
+import ListManagementRoute from './pages/ListManagement/ListManagement';
+import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 
 
@@ -254,6 +256,7 @@ function App() {
           {/* Fuel */}
           <Route path="/fuel-management" element={<FuelManagement />} />
           <Route path="/fuel-stock-vendor" element={<FuelVendor />} />
+          {/* <Route path="/fuel/fuel-type-master" element={<FuelType />} /> */}
 
 
           {/* Mining */}
@@ -302,7 +305,6 @@ function App() {
           <Route path="/inventory/material-group" element={<MaterialGroup />} />
           <Route path="/inventory/material-type" element={<MaterialType />} />
           <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
-          <Route path="/fuel/fuel-type-master" element={<FuelType />} />
 
           <Route path="/material-request-entry" element={<MaterialRequestEntry />} />
           <Route path="/request-approval" element={<RequestApproval />} />
@@ -335,10 +337,9 @@ function App() {
           {/* Accounts */}
           <Route path="/ledger-group" element={<Ledger />} />
 
-          
-
-
-
+          {/* List-Management */}
+          {/* <Route path=":section/:page" element={<ListManagementRoute/>} /> */}
+          <Route path="/hr/blood-group" element={<ListManagement1 />} />
       </Route>
     </Routes>
   );

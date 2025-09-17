@@ -21,6 +21,7 @@ export const loginUserApi = (username: string, password: string, companyID: stri
     }
     sessionStorage.setItem("accessToken", data.access_token); //short-lived
     localStorage.setItem("refreshToken", data.refresh_token); //long-lived
+    localStorage.setItem("employeeID", data.employeeID);
 
     const user = {
       id: data.userID || 0,
