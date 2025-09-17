@@ -49,6 +49,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground overflow-x-hidden;
   }
@@ -59,10 +60,11 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   /* Navbar specific utilities */
   .navbar-dropdown {
     @apply max-h-[80vh] overflow-y-auto;
@@ -72,94 +74,97 @@
     max-width: calc(100vw - 32px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
   }
-  
+
   .navbar-mobile-menu {
     @apply max-h-[calc(100vh-4rem)] overflow-y-auto;
   }
-  
+
   /* Mega menu specific styles */
   .mega-menu-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
   }
-  
+
   /* Responsive text utilities */
   .text-responsive-sm {
     @apply text-xs sm:text-sm;
   }
-  
+
   .text-responsive-base {
     @apply text-sm sm:text-base;
   }
-  
+
   /* Custom scrollbar for dropdown menus */
   .custom-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 #f1f5f9;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 2px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 2px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
-  
+
   /* Ensure dropdowns are above other content */
   .dropdown-content {
     @apply z-[60];
   }
-  
+
   /* Mobile menu backdrop */
   .mobile-menu-backdrop {
     @apply fixed inset-0 bg-black/20 backdrop-blur-sm z-40;
   }
-  
+
   /* Page layout utilities */
   .page-content {
-    @apply pt-24 min-h-screen; /* Increased padding for new navbar height */
+    @apply pt-24 min-h-screen;
+    /* Increased padding for new navbar height */
   }
-  
+
   .page-container {
     @apply p-3 sm:p-4 lg:p-6 xl:p-8;
   }
-  
+
   .content-wrapper {
     @apply max-w-7xl mx-auto w-full;
   }
-  
+
   /* Responsive grid utilities */
   .dashboard-grid {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6;
   }
-  
+
   .metric-grid {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4;
   }
-  
+
   /* Card utilities */
   .dashboard-card {
     @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200;
   }
-  
+
   .card-content {
     @apply p-4 sm:p-6;
   }
+
   /* Ensure content doesn't overlap with fixed navbar */
   .main-content {
-    @apply pt-16 lg:pt-16 min-h-screen; /* Accounts for two-tier navbar height */
+    @apply pt-16 lg:pt-16 min-h-screen;
+    /* Accounts for two-tier navbar height */
   }
 
   /* Responsive navbar utilities */
@@ -180,9 +185,10 @@
     @apply overflow-x-auto scrollbar-hide;
     -webkit-overflow-scrolling: touch;
   }
+
   /* abhi */
-  .container{
-    @apply max-w-7xl mx-auto space-y-6 lg:space-y-8 ;
+  .container {
+    @apply max-w-7xl mx-auto space-y-6 lg:space-y-8;
   }
 
   /* Better mobile responsiveness */
@@ -204,6 +210,13 @@
   .content-with-navbar {
     @apply pt-28 lg:pt-32 min-h-screen;
   }
+
+
+
+
+
+
+
 
   /* Inventory dropdown specific enhancements */
   .inventory-dropdown-grid {
@@ -255,9 +268,130 @@
 }
 
 @media (min-width: 1024px) {
-  .container > :not([hidden]) ~ :not([hidden]) {
+  .container> :not([hidden])~ :not([hidden]) {
     margin-top: 0;
     margin-bottom: 0;
   }
 }
 
+
+div[data-testid="table-header"],
+.rdt_TableHead {
+  position: sticky !important;
+  top: 0;
+  z-index: 10 !important;
+  background: #fff !important;
+}
+
+
+.rdt_Table,
+.datatable-wrapper {
+  position: relative !important;
+  z-index: 0 !important;
+  overflow: visible !important;
+}
+
+
+
+
+
+
+
+/* Resizable and Draggable Table Styles */
+/* .resizable-table-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: #001f3f;
+  color: white;
+  padding: 10px 0;
+  border-radius: 4px 4px 0 0;
+}
+
+.custom-header [data-rbd-draggable-context-id] {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px;
+  position: relative;
+  user-select: none;
+  background-color: #001f3f;
+  color: white;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: move;
+}
+
+.custom-header [data-rbd-draggable-context-id]:hover {
+  background-color: #003366;
+}
+
+.custom-header [data-rbd-draggable-context-id] .resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.custom-header [data-rbd-draggable-context-id] .resize-handle:hover {
+  background-color: #4a90e2;
+}
+
+
+.rdt_TableHead {
+  visibility: hidden;
+  height: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+}
+
+
+.rdt_Table {
+  margin-top: 40px;
+}
+.drag-handle {
+  margin-right: 8px;
+  cursor: move;
+  opacity: 0.6;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+}
+
+
+[data-rbd-drag-handle-context-id] {
+  cursor: grabbing;
+}
+[data-rbd-placeholder-context-id] {
+  background-color: rgba(74, 144, 226, 0.1) !important;
+  border: 1px dashed #4a90e2 !important;
+  opacity: 0.8;
+}
+
+.resizing {
+  background-color: rgba(74, 144, 226, 0.1);
+  transition: none !important;
+}
+
+@media (max-width: 768px) {
+  .resizable-table-container {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    width: calc(100% + 2rem);
+  }
+  
+  .custom-header {
+    border-radius: 0;
+  }
+} */

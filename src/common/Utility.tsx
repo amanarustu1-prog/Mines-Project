@@ -132,3 +132,28 @@ export const Rules = {
       ? 'Please enter a valid 6-digit pincode'
       : null,
 };
+
+
+export const customStyles = {
+    headCells: {
+        style: {
+            backgroundColor: '#3b82f6',
+            color: '#ffffff',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            justifyContent: 'center',
+            borderRight: '1px solid #ccc',
+        },
+    },
+    cells: {
+        style: {
+            justifyContent: 'center',
+            borderRight: '1px solid #eee',
+        },
+    },
+    table: {
+        style: {
+            border: '1px solid #ccc',
+        },
+    },
+};
