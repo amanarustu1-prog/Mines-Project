@@ -1,0 +1,16 @@
+.react-resizable {
+  position: relative;
+  width: 100%;
+}
+
+.react-resizable-handle:hover {
+  background: #e0e0e0;
+}
+
+.resizable-container {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
