@@ -118,14 +118,9 @@ const Login = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   Username
                 </label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
                   className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                  placeholder="Enter username"
-                  required
-                />
+                  placeholder="Enter username" required/>
               </div>
 
               {/* Password */}
@@ -139,10 +134,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                    placeholder="Enter password"
-                    onFocus={verify_User}
-                    required
-                  />
+                    placeholder="Enter password" onFocus={verify_User} required />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}

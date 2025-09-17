@@ -64,7 +64,6 @@ export const fetchPostData = async (url, postData) => {
                     const res = await axios.post(reUseUrl, reUseData);
                     const TextData = JSON.parse(res?.data?.data);
                     return TextData?.Table
-
                 }
 
             } else {
