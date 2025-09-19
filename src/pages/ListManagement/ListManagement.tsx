@@ -27,35 +27,27 @@ const ListManagement = () => {
                                         dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                     />
                                     :
-                                    pageEndPoint === "/safetyLegal/case-status" ?
-                                        // <AddUpList {...{ pageEndPoint }} col1="Case Status" col2="Master Tables with codes and descriptions for Case Status"
-                                        //     getUrl='CaseStatus/GetData_CaseStatus'
-                                        //     addUrl="CaseStatus/Insert_CaseStatus"
-                                        //     singleDataUrl="CaseStatus/GetSingleData_CaseStatus"
-                                        //     upUrl="CaseStatus/Update_CaseStatus"
-                                        //     delUrl="CaseStatus/Delete_CaseStatus"
-                                        //     dropDownUrl="CaseStatus/GetDataDropDown_CaseStatus"
-                                        // />
-                                        <AddUpList {...{ pageEndPoint }} col1="Fuel Type" col2="Master Tables with codes and descriptions for Fuel Types"
-                                            getUrl='BloodGroup/GetData_BloodGroup'
-                                            addUrl="BloodGroup/Insert_BloodGroup"
-                                            singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
-                                            upUrl="BloodGroup/Update_BloodGroup"
-                                            delUrl="BloodGroup/Delete_BloodGroup"
-                                            dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
+                                    pageEndPoint === "safetyLegal/case-status" ?
+                                        <AddUpList {...{ pageEndPoint }} col1="Case Status" col2="Master Tables with codes and descriptions for Case Status"
+                                            getUrl='CaseStatus/GetData_CaseStatus'
+                                            addUrl="CaseStatus/Insert_CaseStatus"
+                                            singleDataUrl="CaseStatus/GetSingleData_CaseStatus"
+                                            upUrl="CaseStatus/Update_CaseStatus"
+                                            delUrl="CaseStatus/Delete_CaseStatus"
+                                            dropDownUrl="CaseStatus/GetDataDropDown_CaseStatus"
                                         />
                                         :
                                         pageEndPoint === "safety/case-type" ?
                                             <AddUpList {...{ pageEndPoint }} col1="Fuel Type" col2="Master Tables with codes and descriptions for Fuel Types"
-                                                getUrl='BloodGroup/GetData_BloodGroup'
-                                                addUrl="BloodGroup/Insert_BloodGroup"
-                                                singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
-                                                upUrl="BloodGroup/Update_BloodGroup"
-                                                delUrl="BloodGroup/Delete_BloodGroup"
-                                                dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
+                                                getUrl='CaseType/GetData_CaseType'
+                                                addUrl="CaseType/Insert_CaseType"
+                                                singleDataUrl="CaseType/GetSingleData_CaseType"
+                                                upUrl="CaseType/Update_CaseType"
+                                                delUrl="CaseType/Delete_CaseType"
+                                                dropDownUrl="CaseType/GetDataDropDown_CaseType"
                                             />
                                             :
-                                            pageEndPoint === "/masterTable/current-location" ?
+                                            pageEndPoint === "masterTable/current-location" ?
                                                 <AddUpList {...{ pageEndPoint }} col1="Current Location" col2="Master Tables with codes and descriptions for Current Locations"
                                                     getUrl='BloodGroup/GetData_BloodGroup'
                                                     addUrl="BloodGroup/Insert_BloodGroup"
@@ -85,7 +77,7 @@ const ListManagement = () => {
                                                             dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                                         />
                                                         :
-                                                        pageEndPoint === "/masterTable/designation" ?
+                                                        pageEndPoint === "masterTable/designation" ?
                                                             <AddUpList {...{ pageEndPoint }} col1="Designation" col2="Master Tables with codes and descriptions for Designations"
                                                                 getUrl='BloodGroup/GetData_BloodGroup'
                                                                 addUrl="BloodGroup/Insert_BloodGroup"
@@ -95,7 +87,7 @@ const ListManagement = () => {
                                                                 dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                                             />
                                                             :
-                                                            pageEndPoint === "/masterTable/employee-status" ?
+                                                            pageEndPoint === "masterTable/employee-status" ?
                                                                 <AddUpList {...{ pageEndPoint }} col1="Employee Status" col2="Master Tables with codes and descriptions for Employee Status"
                                                                     getUrl='BloodGroup/GetData_BloodGroup'
                                                                     addUrl="BloodGroup/Insert_BloodGroup"
@@ -125,3 +117,39 @@ const ListManagement = () => {
 }
 
 export default ListManagement;
+
+// lstBloodGroup - /hr/blood-group
+// lstFuelType - fuel/fuel-type-master
+// lstMaterialGroup - inventory/material-group
+// lstDepartment - hr/department
+// lstCourtLocation - safety/court
+
+// Blood Group - Done
+// Case Status - Done 
+// Case Type - Done
+// Court Location - Done 
+// Company Unit -  Not Found
+// Department - Done
+// Designation - Done
+// EmpLeave Status - Done
+// EmpLeave Type
+// Employement Status
+// EmpStatus
+// EquipmentType
+// ExplosiveType
+// FuelType - Done
+// Gender
+// IDProof
+// InjuryType
+// Loadingcharge
+// Martial
+// MaterialGroup 
+// MaterialSpecification
+// Qualification
+// Relation
+// Religion
+// state
+// Thana
+// TpAmount
+// UnitType
+// VehicleType
