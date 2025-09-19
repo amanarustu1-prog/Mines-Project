@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
-import axios from 'axios';
+import axios from "../../interceptors/axios";
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 
 // Icon components (simplified SVG icons)

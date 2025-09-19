@@ -23,22 +23,22 @@ const ListManagement = () => {
                             {
                                 pageEndPoint === "hr/blood-group" ? 
                                 <AddUpList {...{pageEndPoint}} col1 = "BloodGroup" col2="Master Tables with codes and descriptions for Blood Types"
-                                getUrl = 'https://api.crushererp.com/api/BloodGroup/GetData_BloodGroup'
-                                addUrl = "https://api.crushererp.com/api/BloodGroup/Insert_BloodGroup"
-                                singleDataUrl="https://api.crushererp.com/api/BloodGroup/GetSingleData_BloodGroup"
-                                upUrl="https://api.crushererp.com/api/BloodGroup/Update_BloodGroup"
-                                delUrl="https://api.crushererp.com/api/BloodGroup/Delete_BloodGroup"
-                                dropDownUrl="https://api.crushererp.com/api/BloodGroup/GetDataDropDown_BloodGroup"
+                                getUrl = 'BloodGroup/GetData_BloodGroup'
+                                addUrl = "BloodGroup/Insert_BloodGroup"
+                                singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
+                                upUrl="BloodGroup/Update_BloodGroup"
+                                delUrl="BloodGroup/Delete_BloodGroup"
+                                dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                 /> 
                                 :
                                 pageEndPoint === "fuel/fuel-type-master" ? 
                                 <AddUpList {...{pageEndPoint}} col1 = "Fuel Type" col2="Master Tables with codes and descriptions for Fuel Types"
-                                getUrl = 'https://api.crushererp.com/api/BloodGroup/GetData_BloodGroup'
-                                addUrl = "https://api.crushererp.com/api/BloodGroup/Insert_BloodGroup"
-                                singleDataUrl="https://api.crushererp.com/api/BloodGroup/GetSingleData_BloodGroup"
-                                upUrl="https://api.crushererp.com/api/BloodGroup/Update_BloodGroup"
-                                delUrl="https://api.crushererp.com/api/BloodGroup/Delete_BloodGroup"
-                                dropDownUrl="https://api.crushererp.com/api/BloodGroup/GetDataDropDown_BloodGroup"
+                                getUrl = 'BloodGroup/GetData_BloodGroup'
+                                addUrl = "BloodGroup/Insert_BloodGroup"
+                                singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
+                                upUrl="BloodGroup/Update_BloodGroup"
+                                delUrl="BloodGroup/Delete_BloodGroup"
+                                dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                 /> : "none"
                             }
                         </div>

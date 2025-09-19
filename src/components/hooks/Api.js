@@ -80,3 +80,39 @@ export const fetchPostData = async (url, postData) => {
         return []
     }
 };
+
+
+
+// --------ADD Update Delete Data  With API Post Request
+
+export const AddDeleteUpadate = async (url, postData) => {
+    if (Object.keys(postData).length !== 0) {
+        const ipAddress = sessionStorage.getItem('IPAddress');
+        if (ipAddress) {
+            postData.IPAddress = ipAddress;
+        }
+        if (IsEncDec) {
+            const EncPostData = Aes256Encrypt(JSON.stringify(postData));
+            const DecPostData = { 'EDpostData': EncPostData }
+            const res = await axios.post(url, DecPostData);
+            if (res.code == "ERR_BAD_REQUEST") {
+                return res
+            } else {
+                const EncryptedData = res.data.data
+                const decryptedData = await Aes256Decrypt(EncryptedData);
+                return decryptedData;
+            }
+        } else {
+            const res = await axios.post(url, postData);
+            if (res.code == "ERR_BAD_REQUEST") {
+                return res
+            } else {
+                return res.data;
+            }
+        }
+    } else {
+        // console.log(`${url}-----${postData}`)
+        console.log("%c🚀 ~ AddDeleteUpadate: " + `${url}-----${postData}`, "padding: 6px; font-weight: bold; background-color: #2ecc71; color: black'");
+
+    }
+}

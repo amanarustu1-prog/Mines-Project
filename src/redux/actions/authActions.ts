@@ -1,13 +1,13 @@
 // src/redux/actions/authAction.ts
 import { AppDispatch } from "../store";
 import { loginStart, loginSuccess, loginFailure, logout } from "../reducers/authReducer";
-import axios from "axios";
+import axios from "../../interceptors/axios";
 
 export const loginUserApi = (username: string, password: string, companyID: string) => async (dispatch: AppDispatch) => {
   dispatch(loginStart());
 
   try {
-    const response = await axios.post("https://api.crushererp.com/api/Account/GetToken", {
+    const response = await axios.post("Account/GetToken", {
       userName: username,
       password: password,
       grant_type: "password",

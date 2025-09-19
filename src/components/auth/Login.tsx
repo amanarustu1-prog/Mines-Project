@@ -73,8 +73,7 @@ const Login = () => {
     e.preventDefault();
     const value = { name: username };
 
-    const res = await fetchPostData("https://api.crushererp.com/api/Users/GetData_Company", value);
-    // alert("Hello"+ res[0]);
+    const res = await fetchPostData("Users/GetData_Company", value);
 
     if (res?.length > 0) {
       setCompanies(res); 
