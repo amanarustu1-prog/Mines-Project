@@ -1340,7 +1340,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Department',
-            href: '/list-management',
+            href: '/hr/department',
             icon: Users,
             description: 'Employee records and management'
           },
@@ -1575,7 +1575,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Court Location',
-            href: '/quality/standards',
+            href: '/safety/court',
             icon: Target,
             description: 'Quality standards and specifications',
 
@@ -1602,7 +1602,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Case Status',
-            href: '/quality/certifications',
+            href: '/safetyLegal/case-status',
             icon: Award,
             description: 'Quality certifications and compliance'
           },
@@ -1839,7 +1839,6 @@ const navigationItems: NavItem[] = [
       },
     ]
   },
-
   {
     title: 'Master Tables',
     icon: CheckCircle,
@@ -1849,15 +1848,13 @@ const navigationItems: NavItem[] = [
         items: [
           { title: 'Blood Group', href: '/hr/blood-group', icon: CheckCircle, description: 'Manage employee blood groups' },
           { title: 'Department', href: '/hr/department', icon: CheckCircle, description: 'Department information' },
-          { title: 'Designation', href: '/hr/designation', icon: CheckCircle, description: 'Employee designations' },
-          { title: 'Employe Leave Status', href: '/hr/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
+          { title: 'Designation', href: '/masterTable/designation', icon: CheckCircle, description: 'Employee designations' },
+          { title: 'Employee Leave Status', href: '/hr/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
           { title: 'Emp Leave Type', href: '/hr/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
-          { title: 'Emp Status', href: '/hr/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
+          { title: 'Emp Status', href: '/masterTable/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
           { title: 'Gender', href: '/hr/gender', icon: CheckCircle, description: 'Gender categories' },
-
         ]
       },
-
       {
         title: 'HR',
         items: [
@@ -1871,10 +1868,6 @@ const navigationItems: NavItem[] = [
           { title: 'District', href: '/hr/district', icon: CheckCircle, description: 'District details' },
         ]
       },
-
-
-
-
       {
         title: 'Inventory',
         items: [
@@ -1905,7 +1898,7 @@ const navigationItems: NavItem[] = [
         items: [
           { title: 'Case Status', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
           { title: 'Case Type', href: '/safety/case-type', icon: FileText, description: 'Case types' },
-          { title: 'Court Location', href: '/safety/court-location', icon: FileText, description: 'Court locations' },
+          { title: 'Court Location', href: '/masterTable/current-location', icon: FileText, description: 'Court locations' },
           { title: 'Injury Type', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
           { title: 'Thana', href: '/safety/thana', icon: FileText, description: 'Police station list' },
         ]
@@ -1939,14 +1932,12 @@ const navigationItems: NavItem[] = [
             icon: TrendingUp,
             description: 'Historical quality data and trends'
           },
-
           {
             title: 'E-Invoice Detail',
             href: '/quality/trends',
             icon: TrendingUp,
             description: 'Historical quality data and trends'
           },
-
           {
             title: 'E-Way Bill Detail',
             href: '/quality/trends',

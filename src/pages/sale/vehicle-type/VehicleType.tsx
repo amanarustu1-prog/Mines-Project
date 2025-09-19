@@ -83,8 +83,6 @@ const data = [
     { id: 6, code: 'DEPT006', description: 'Quality Control', isActive: false, createdDate: '2025-01-20', lastModified: '2025-07-10' }
 ];
 
-
-
 // ---------- Main Component ----------
 export default function VehicleType() {
     const [activeTab] = useState('list-overview');
@@ -247,7 +245,6 @@ export default function VehicleType() {
                                 </div>
                             </div>
                         </div>
-
 
                         {/* Table */}
                         <ResizableContainer defaultHeight={0.6} maxHeight={800}>

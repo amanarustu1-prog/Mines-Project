@@ -4,6 +4,7 @@ import { Aes256Decrypt, Aes256Encrypt } from '../Common/Utility';
 const encDecStatus = "false";
 var IsEncDec = encDecStatus == 'true' || encDecStatus == true
 
+
 // Api.js
 export const fetchPostData = async (url, postData) => {
     // console.log(url+" "+JSON.stringify(postData));
@@ -80,7 +81,6 @@ export const fetchPostData = async (url, postData) => {
         return []
     }
 };
-
 
 
 // --------ADD Update Delete Data  With API Post Request
