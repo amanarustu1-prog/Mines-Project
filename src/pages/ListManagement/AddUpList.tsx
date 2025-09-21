@@ -69,7 +69,7 @@ interface ListItem {
     ID: number;
     BloodGroupCode: string;
     BloodGroup: string;
-    isActive: boolean;
+    IsActive: boolean;
     CreatedDate: string;
     UpdatedDate: string;
     CompanyID: number | string; 
@@ -93,8 +93,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 const payload = { companyId: localStorage.getItem("employeeID")};
                 const response = await axios.post(props.dropDownUrl, payload);
                 const parsedData = JSON.parse(response.data.data);
-                // console.log(parsedData);
-                // console.log(parsedData.Table);
 
                 if(response.data.success){
                     const data = parsedData.Table;
@@ -114,7 +112,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             const value = { IsActive: statusFilter, CompanyId: Number(localStorage.getItem("employeeID")) };
             const response = await axios.post(props.getUrl, value);
             const parsedData = JSON.parse(response.data.data);
-            // console.log(parsedData.Table);
+            console.log(parsedData.Table);
             setListData(parsedData.Table);
         }catch(err){
             throw err;
@@ -130,15 +128,15 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         setNewItem({
             code: item.CompanyId? String(item.CompanyId) : "",
             description: item.BloodGroup,
-            isActive: item.isActive,
+            isActive: item.IsActive,
         });
         setBloodGroupCode(item.BloodGroupCode || "");
-        setStatusFilter(item.isActive ? "1" : "0");
+        setStatusFilter(item.IsActive ? "1" : "0");
     }
 
     const filteredData = listData.filter((item) => {
-      if(statusFilter === "1") return item.isActive;
-      if(statusFilter === "0") return !item.isActive;
+      if(statusFilter === "1") return item.IsActive;
+      if(statusFilter === "0") return !item.IsActive;
          return true; 
     });
 
@@ -213,9 +211,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             CompanyId: newItem.code,
             BloodGroupCode: bloodGroupCode
         };
-        // alert(bloodGroupCode);
+        alert(payload.Description+ " "+payload.Createdbyid+ " "+payload.CompanyId+" "+payload.BloodGroupCode);
 
-        try {
+
+        try {console.log("Payload sent:", payload);
+
             const response = await axios.post(props.addUrl, payload);
             setListData(prev => [...prev, response.data]);
             setNewItem({ code: '', description: '', isActive: true });
@@ -234,7 +234,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 item.Id === id
                     ? {
                         ...item,
-                        isActive: !item.isActive,
+                        isActive: !item.IsActive,
                         lastModified: new Date().toISOString().split('T')[0]
                     }
                     : item
@@ -242,8 +242,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         );
     };
 
-    const activeCount = listData.filter(item => item.isActive).length;
-    const inactiveCount = listData.filter(item => !item.isActive).length;
+    const activeCount = listData.filter(item => item.IsActive).length;
+    const inactiveCount = listData.filter(item => !item.IsActive).length;
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -374,7 +374,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                         {/* Buttons */}
                                         <div className="col-span-2 flex gap-2">
-                                          <button onClick={() => (editItemId ? () => updatedItem(editItemId) : handleSaveItem())}
+                                          <button onClick={() => (editItemId ? updatedItem(editItemId) : handleSaveItem())}
                                             className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8">
                                               <Save className="list-icon-sm" />
                                               {editItemId ? "Update" : "Save"}
@@ -410,24 +410,24 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         </thead>
                                         <tbody>
                                             {listData.map((item) => (
-                                                <tr key={item.ID} className="list-table-row">
+                                                <tr key={item.Id} className="list-table-row">
                                                     <td className="list-table-cell">{item.CompanyID}</td>
                                                     <td className="list-table-cell">{item.BloodGroup}</td>
                                                     <td className="list-table-cell">
-                                                        <span className={`list-badge ${item.isActive ? 'active' : 'inactive'}`}>
-                                                            {item.isActive ? 'Active' : 'Inactive'}
+                                                        <span className={`list-badge ${item.IsActive ? 'active' : 'inactive'}`}>
+                                                            {item.IsActive ? 'Active' : 'Inactive'}
                                                         </span>
                                                     </td>
                                                     <td className="list-table-cell mono">{item.CreatedDate}</td>
                                                     <td className="list-table-cell mono">{item.UpdatedDate || "Null"}</td>
                                                     <td className="list-table-cell">
                                                         <div className="list-action-buttons">
-                                                            <button onClick={() => {if(!item.isActive){ deleteItem(item.ID)}else{
+                                                            <button onClick={() => {if(!item.IsActive){ deleteItem(item.Id)}else{
                                                                 toggleItemStatus(item.Id)
                                                              } }}
-                                                                className={`list-button ghost ${item.isActive ? 'danger' : 'success'}`}
-                                                                title={item.isActive ? 'Deactivate' : 'Activate'}>
-                                                                {item.isActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
+                                                                className={`list-button ghost ${item.IsActive ? 'danger' : 'success'}`}
+                                                                title={item.IsActive ? 'Deactivate' : 'Activate'}>
+                                                                {item.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
                                                             </button>
                                                             <button onClick={() => handleEdit(item)} className="list-button ghost primary" title="Edit">
                                                                 <Edit3 className="list-icon-sm" />
