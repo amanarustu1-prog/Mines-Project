@@ -46,6 +46,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { mockDashboardData } from '@/lib/data';
 import { formatNumber, formatPercentage, cn, formatClientSafeTime, formatClientSafeDateTime } from '@/lib/utils';
+import useNoBackNavigation from '@/useNoBackNavigation';
 
 // Comprehensive dashboard data
 const comprehensiveDashboardData = {
@@ -120,6 +121,7 @@ export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState<string>('--:--:-- --');
   const [currentDateTime, setCurrentDateTime] = useState<string>('--/--/---- --:-- --');
 
+  useNoBackNavigation();
   // Update time on client-side only
   useEffect(() => {
     const updateTime = () => {

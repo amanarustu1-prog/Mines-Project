@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import Login from './components/auth/Login';
+import ForgotPassword from './components/auth/ForgotPassword';
 
 // Import all pages
 import Dashboard from './pages/Dashboard'
@@ -107,7 +108,6 @@ import ListManagementRoute from './pages/ListManagement/ListManagement';
 import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 
-
 // Layout component for protected routes
 // const ProtectedLayout = () => {
 //   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -180,7 +180,7 @@ const ProtectedLayout = () => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return (
@@ -193,14 +193,14 @@ const ProtectedLayout = () => {
   );
 };
 
-
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
+      <Route path='/forgot-password' element={<ForgotPassword />}/>
       <Route element={<ProtectedLayout />}>
         {/* Main Dashboard */}
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard-page" element={<Dashboard />} />
 
         {/* HR Forms */}
         <Route path="/form" element={<Form />} />

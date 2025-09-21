@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
   Factory,
@@ -81,6 +81,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
+import { useAppDispatch } from '@/redux/store';
+import { logoutUser } from '@/redux/actions/authActions';
 
 interface NavItem {
   title: string;
@@ -2519,19 +2521,51 @@ export function Navbar() {
     setHoveredMoreItem(null);
   };
 
-  // Close menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        closeAllMenus();
-      }
-    };
+  const [userMenusOpen, setUserMenusOpen] = useState(false);
+  const toggleUserMenu = () => {
+    setUserMenuOpen((prev) => !prev);
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+
+  // Close menus when clicking outside
+  const dropdownRef1 = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+
+    // if click is outside both dropdown and button → close
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(target) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(target)
+    ) {
+      setUserMenuOpen(false);
+    }
+  };
+
+  document.addEventListener("click", handleClickOutside);
+  return () => {
+    document.removeEventListener("click", handleClickOutside);
+  };
+}, []);
+
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  // console.log("Logout clicked 🚀");
+
+  dispatch(logoutUser());
+
+  // console.log("Storage after logout:");
+
+  navigate("/");
+};
+
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
@@ -2540,7 +2574,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16  px-4 sm:px-6 lg:px-8 border-b border-gray-50">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-shrink-0 max-w-[320px]">
-            <Link to="/" className="flex items-center space-x-3 group">
+            <Link to="/dashboard-page" className="flex items-center space-x-3 group">
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
                   <Factory className="h-5 w-5 text-white" />
@@ -2600,7 +2634,8 @@ export function Navbar() {
             {/* User Menu */}
             <div className="relative">
               <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  ref={buttonRef}
+                  onClick={toggleUserMenu}
                 className="flex items-center space-x-2 p-1.5 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
               >
                 <div className="hidden lg:flex flex-col text-right">
@@ -2618,7 +2653,7 @@ export function Navbar() {
 
               {/* User Dropdown */}
               {userMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden">
+                <div ref={dropdownRef} className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden">
                   <div className="p-4 border-b border-gray-50">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
@@ -2663,7 +2698,7 @@ export function Navbar() {
                   </div>
 
                   <div className="border-t border-gray-50 p-2">
-                    <button className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200">
+                    <button className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200" onClick={handleLogout}>
                       <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
                         <LogOut className="h-4 w-4 text-red-500" />
                       </div>
