@@ -1899,7 +1899,7 @@ const navigationItems: NavItem[] = [
         title: 'Safety and Legal',
         items: [
           { title: 'Case Status', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
-          { title: 'Case Type', href: '/safety/case-type', icon: FileText, description: 'Case types' },
+          { title: 'Case Type', href: '/masterTable/case-type', icon: FileText, description: 'Case types' },
           { title: 'Court Location', href: '/masterTable/current-location', icon: FileText, description: 'Court locations' },
           { title: 'Injury Type', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
           { title: 'Thana', href: '/safety/thana', icon: FileText, description: 'Police station list' },

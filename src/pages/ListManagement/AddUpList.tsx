@@ -74,6 +74,7 @@ interface ListItem {
     UpdatedDate: string;
     CompanyID: number | string; 
     CompanyId: number | string; 
+    Description: string;
 }
 
 const AddUpList: React.FC<AddUpListProps> = (props) => {
@@ -81,7 +82,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
     // Sample list data
     const [listData, setListData] = useState<ListItem[]>([]);
-    const [statusFilter, setStatusFilter] = useState('1');
+    const [statusFilter, setStatusFilter] = useState<number | string>(1);
     const [bloodGroupOptions, setBloodGroupOptions] = useState<any[]>([]);
     const [bloodGroupCode, setBloodGroupCode] = useState('');
     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -93,7 +94,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 const payload = { companyId: localStorage.getItem("employeeID")};
                 const response = await axios.post(props.dropDownUrl, payload);
                 const parsedData = JSON.parse(response.data.data);
-
+                // console.log("Dropdown data:", parsedData[0][]);
                 if(response.data.success){
                     const data = parsedData.Table;
                     setBloodGroupOptions(Array.isArray(data)? data : []);
@@ -124,14 +125,15 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     }, [props.getUrl, statusFilter]);
 
     const handleEdit = (item : ListItem) => {
-        setEditItemId(item.Id);
+        alert(item[props.col4]);
+        setEditItemId(item[props.col4]);
         setNewItem({
             code: item.CompanyId? String(item.CompanyId) : "",
-            description: item.BloodGroup,
+            description: item.Description,
             isActive: item.IsActive,
         });
         setBloodGroupCode(item.BloodGroupCode || "");
-        setStatusFilter(item.IsActive ? "1" : "0");
+        setStatusFilter(item.IsActive ? 1 : 0);
     }
 
     const filteredData = listData.filter((item) => {
@@ -147,29 +149,56 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         isActive: true
     });
 
+    // const deleteItem = async (id: number) => {
+    //     alert(id);
+    //     try{
+    //        const response = await axios.post(props.delUrl, {[props.col4]: id, isActive: statusFilter});
+    //        console.log(response.data);
+    //        if(response.data.success){
+    //             await fetchData(); 
+    //             toastifySuccess("Item deleted successfully!");
+    //        }else{
+    //             toastifyError("Failed to delete item");
+    //        }
+    //     }catch(err){
+    //         console.error("Error deleting item:", err);
+    //         toastifyError("Error deleting item");
+    //     }
+    // }
+
     const deleteItem = async (id: number) => {
-        alert(id);
-        try{
-           const response = await axios.post(props.delUrl, {Id: id});
-           if(response.data.success){
-                await fetchData(); 
-                toastifySuccess("Item deleted successfully!");
-           }else{
-                toastifyError("Failed to delete item");
-           }
-        }catch(err){
-            console.error("Error deleting item:", err);
-            toastifyError("Error deleting item");
+    const item = listData.find(x => x[props.col4] === id);
+    if (!item) return;
+
+    const newStatus = item.IsActive ? 0 : 1; // flip active/inactive
+
+    try {
+        const response = await axios.post(props.delUrl, {
+            [props.col4]: id,
+            IsActive: newStatus, // send toggled status
+            CompanyId: Number(localStorage.getItem("employeeID"))
+        });
+
+        if (response.data.success) {
+            await fetchData();
+            toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully!`);
+        } else {
+            toastifyError("Failed to update item status");
         }
+    } catch (err) {
+        console.error("Error deleting item:", err);
+        toastifyError("Error updating status");
     }
+   };
+
 
     const updatedItem = async (id : number) => {
-        alert(id);
+        // alert(id);
         const payload = {
-            Id : id,
+            [props.col4] : id,
             Description: newItem.description,
-            BloodGroupCode: bloodGroupCode,
-            Updatedbyid: Number(localStorage.getItem("employeeID"))
+            [props.col3]: bloodGroupCode,
+            CompanyId: Number(localStorage.getItem("employeeID"))
         }
         try{
             const resp = await axios.post(props.upUrl, payload);
@@ -204,14 +233,14 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             toastifyError("Please fill in all required fields");
             return;
         }
+        // alert(props.col3);
 
         const payload = {
             Description: newItem.description,
-            Createdbyid: Number(localStorage.getItem("employeeID")),
-            CompanyId: newItem.code,
-            BloodGroupCode: bloodGroupCode
+            // Createdbyid: Number(localStorage.getItem("employeeID")),
+            CompanyId: Number(localStorage.getItem("employeeID")),
+            [props.col3]: bloodGroupCode
         };
-        alert(payload.Description+ " "+payload.Createdbyid+ " "+payload.CompanyId+" "+payload.BloodGroupCode);
 
 
         try {console.log("Payload sent:", payload);
@@ -356,7 +385,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             </select>
                                         </div>
 
-                                        {/* Agency */}
+                                        {/* Company */}
                                         <select
                                             value={bloodGroupCode}
                                             onChange={(e) => setBloodGroupCode(e.target.value)}
@@ -366,7 +395,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             {
                                                 bloodGroupOptions.map((opt) => (
                                                     <option key={opt.ID} value={opt.BloodGroup}>
-                                                        {opt. BloodGroup}
+                                                        {opt.BloodGroup}
                                                     </option>
                                                 ))
                                             }
@@ -411,8 +440,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         <tbody>
                                             {listData.map((item) => (
                                                 <tr key={item.Id} className="list-table-row">
-                                                    <td className="list-table-cell">{item.CompanyID}</td>
-                                                    <td className="list-table-cell">{item.BloodGroup}</td>
+                                                    <td className="list-table-cell">{item[props.col3]}</td>
+                                                    <td className="list-table-cell">{item.Description}</td>
                                                     <td className="list-table-cell">
                                                         <span className={`list-badge ${item.IsActive ? 'active' : 'inactive'}`}>
                                                             {item.IsActive ? 'Active' : 'Inactive'}
@@ -422,9 +451,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                     <td className="list-table-cell mono">{item.UpdatedDate || "Null"}</td>
                                                     <td className="list-table-cell">
                                                         <div className="list-action-buttons">
-                                                            <button onClick={() => {if(!item.IsActive){ deleteItem(item.Id)}else{
-                                                                toggleItemStatus(item.Id)
-                                                             } }}
+                                                            <button onClick={() => deleteItem(item[props.col4])}
                                                                 className={`list-button ghost ${item.IsActive ? 'danger' : 'success'}`}
                                                                 title={item.IsActive ? 'Deactivate' : 'Activate'}>
                                                                 {item.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
@@ -471,4 +498,3 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 }
 
 export default AddUpList;
-

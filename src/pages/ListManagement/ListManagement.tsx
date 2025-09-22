@@ -18,7 +18,7 @@ const ListManagement = () => {
                         <div className="card-body">
                             {
                                 pageEndPoint === "hr/blood-group" ?
-                                    <AddUpList {...{ pageEndPoint }} col1="BloodGroup" col2="Master Tables with codes and descriptions for Blood Types"
+                                    <AddUpList {...{ pageEndPoint }} col1="BloodGroup" col2="Master Tables with codes and descriptions for Blood Types" col3="BloodGroupCode" col4="Id" 
                                         getUrl='BloodGroup/GetData_BloodGroup'
                                         addUrl="BloodGroup/Insert_BloodGroup"
                                         singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
@@ -28,27 +28,27 @@ const ListManagement = () => {
                                     />
                                     :
                                     pageEndPoint === "safetyLegal/case-status" ?
-                                        <AddUpList {...{ pageEndPoint }} col1="Case Status" col2="Master Tables with codes and descriptions for Case Status"
-                                            getUrl='CaseStatus/GetData_CaseStatus'
+                                        <AddUpList {...{ pageEndPoint }} col1="Case Status" col2="Master Tables with codes and descriptions for Case Status" col3 = "CaseStatusCode" col4="CaseStatusID"
+                                            getUrl='CaseStatus/GetData_CaseStatus'                
                                             addUrl="CaseStatus/Insert_CaseStatus"
                                             singleDataUrl="CaseStatus/GetSingleData_CaseStatus"
                                             upUrl="CaseStatus/Update_CaseStatus"
                                             delUrl="CaseStatus/Delete_CaseStatus"
-                                            dropDownUrl="CaseStatus/GetDataDropDown_CaseStatus"
+                                            dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                         />
                                         :
-                                        pageEndPoint === "safety/case-type" ?
-                                            <AddUpList {...{ pageEndPoint }} col1="Fuel Type" col2="Master Tables with codes and descriptions for Fuel Types"
+                                        pageEndPoint === "masterTable/case-type" ?
+                                            <AddUpList {...{ pageEndPoint }} col1="Case Type" col2="Master Tables with codes and descriptions for Case Types" col3 = "" col4="CaseTypeID" 
                                                 getUrl='CaseType/GetData_CaseType'
                                                 addUrl="CaseType/Insert_CaseType"
                                                 singleDataUrl="CaseType/GetSingleData_CaseType"
                                                 upUrl="CaseType/Update_CaseType"
                                                 delUrl="CaseType/Delete_CaseType"
-                                                dropDownUrl="CaseType/GetDataDropDown_CaseType"
+                                                dropDownUrl="BloodGroup/GetDataDropDown_BloodGroup"
                                             />
                                             :
                                             pageEndPoint === "masterTable/current-location" ?
-                                                <AddUpList {...{ pageEndPoint }} col1="Current Location" col2="Master Tables with codes and descriptions for Current Locations"
+                                                <AddUpList {...{ pageEndPoint }} col1="Current Location" col2="Master Tables with codes and descriptions for Current Locations" col3 = "" col4=""
                                                     getUrl='BloodGroup/GetData_BloodGroup'
                                                     addUrl="BloodGroup/Insert_BloodGroup"
                                                     singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
@@ -58,7 +58,7 @@ const ListManagement = () => {
                                                 />
                                                 :
                                                 pageEndPoint === "inventory/material-group" ?
-                                                    <AddUpList {...{ pageEndPoint }} col1="Material Group" col2="Master Tables with codes and descriptions for Material Groups"
+                                                    <AddUpList {...{ pageEndPoint }} col1="Material Group" col2="Master Tables with codes and descriptions for Material Groups" col3 = "" col4=""
                                                         getUrl='BloodGroup/GetData_BloodGroup'
                                                         addUrl="BloodGroup/Insert_BloodGroup"
                                                         singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
@@ -68,7 +68,7 @@ const ListManagement = () => {
                                                     />
                                                     :
                                                     pageEndPoint === "hr/department" ?
-                                                        <AddUpList {...{ pageEndPoint }} col1="Departement" col2="Master Tables with codes and departements for Material Groups"
+                                                        <AddUpList {...{ pageEndPoint }} col1="Departement" col2="Master Tables with codes and departements for Material Groups" col3 = "" col4=""
                                                             getUrl='BloodGroup/GetData_BloodGroup'
                                                             addUrl="BloodGroup/Insert_BloodGroup"
                                                             singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
@@ -78,7 +78,7 @@ const ListManagement = () => {
                                                         />
                                                         :
                                                         pageEndPoint === "masterTable/designation" ?
-                                                            <AddUpList {...{ pageEndPoint }} col1="Designation" col2="Master Tables with codes and descriptions for Designations"
+                                                            <AddUpList {...{ pageEndPoint }} col1="Designation" col2="Master Tables with codes and descriptions for Designations" col3 = "" col4=""
                                                                 getUrl='BloodGroup/GetData_BloodGroup'
                                                                 addUrl="BloodGroup/Insert_BloodGroup"
                                                                 singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
@@ -88,7 +88,7 @@ const ListManagement = () => {
                                                             />
                                                             :
                                                             pageEndPoint === "masterTable/employee-status" ?
-                                                                <AddUpList {...{ pageEndPoint }} col1="Employee Status" col2="Master Tables with codes and descriptions for Employee Status"
+                                                                <AddUpList {...{ pageEndPoint }} col1="Employee Status" col2="Master Tables with codes and descriptions for Employee Status" col3 = "" col4=""
                                                                     getUrl='BloodGroup/GetData_BloodGroup'
                                                                     addUrl="BloodGroup/Insert_BloodGroup"
                                                                     singleDataUrl="BloodGroup/GetSingleData_BloodGroup"
@@ -98,7 +98,7 @@ const ListManagement = () => {
                                                                 />
                                                                 :
                                                                 pageEndPoint === "safety/court" ?
-                                                                    <AddUpList {...{ pageEndPoint }} col1="Court Location" col2="Master Tables with codes and descriptions for Court Locations"
+                                                                    <AddUpList {...{ pageEndPoint }} col1="Court Location" col2="Master Tables with codes and descriptions for Court Locations" col3 = "" col4=""
                                                                         getUrl='BloodGroup/GetData_BloodGroup'
                                                                         addUrl="BloodGroup/Insert_BloodGroup"
                                                                         singleDataUrl="BloodGroup/GetSingleData_BloodGroup"

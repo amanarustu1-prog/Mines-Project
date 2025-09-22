@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import Login from './components/auth/Login';
 import ForgotPassword from './components/auth/ForgotPassword';
+import { ToastContainer } from 'react-toastify';
 
 // Import all pages
 import Dashboard from './pages/Dashboard'
@@ -195,6 +196,7 @@ const ProtectedLayout = () => {
 
 function App() {
   return (
+    <>
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path='/forgot-password' element={<ForgotPassword />}/>
@@ -342,6 +344,8 @@ function App() {
         <Route path="/:section/:page" element={<ListManagement1 />} />
       </Route>
     </Routes>
+    <ToastContainer />
+    </>
   );
 }
 
