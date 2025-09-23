@@ -75,6 +75,7 @@ interface ListItem {
     CompanyID: number | string; 
     CompanyId: number | string; 
     Description: string;
+    [key: string]: any;
 }
 
 const AddUpList: React.FC<AddUpListProps> = (props) => {
@@ -125,11 +126,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     }, [props.getUrl, statusFilter]);
 
     const handleEdit = (item : ListItem) => {
-        alert(item[props.col4]);
+        // alert(item[props.col4]);
         setEditItemId(item[props.col4]);
         setNewItem({
             code: item.CompanyId? String(item.CompanyId) : "",
-            description: item.Description,
+            description: item[props.col5],
             isActive: item.IsActive,
         });
         setBloodGroupCode(item.BloodGroupCode || "");
@@ -170,13 +171,12 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const item = listData.find(x => x[props.col4] === id);
     if (!item) return;
 
-    const newStatus = item.IsActive ? 0 : 1; // flip active/inactive
+    const newStatus = item.IsActive ? 0 : 1; 
 
     try {
         const response = await axios.post(props.delUrl, {
             [props.col4]: id,
-            IsActive: newStatus, // send toggled status
-            CompanyId: Number(localStorage.getItem("employeeID"))
+            IsActive: newStatus, 
         });
 
         if (response.data.success) {
@@ -189,11 +189,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         console.error("Error deleting item:", err);
         toastifyError("Error updating status");
     }
-   };
+    };
 
 
     const updatedItem = async (id : number) => {
-        // alert(id);
+        alert(id);
         const payload = {
             [props.col4] : id,
             Description: newItem.description,
@@ -202,6 +202,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         }
         try{
             const resp = await axios.post(props.upUrl, payload);
+            console.log(resp);
             if(resp.data.success){
                 await fetchData();
                 toastifySuccess("Item updated successfully!");
@@ -346,7 +347,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         <Plus className="list-icon-sm " />
                                         Add New Item
                                     </h4>
-
+  
                                     <div className="grid grid-cols-12 gap-4 items-center">
                                         {/* Item Code */}
                                         <div className="col-span-2">
@@ -391,11 +392,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             onChange={(e) => setBloodGroupCode(e.target.value)}
                                             className="list-compact-select w-full py-1 px-2 h-8 text-sm"
                                         >
-                                            <option value="">Select Blood Group</option>
+                                            <option value="">Select {props.col1}</option>
                                             {
                                                 bloodGroupOptions.map((opt) => (
-                                                    <option key={opt.ID} value={opt.BloodGroup}>
-                                                        {opt.BloodGroup}
+                                                    <option key={opt.ID} value={opt[props.col5]}>
+                                                        {opt[props.col5]}
                                                     </option>
                                                 ))
                                             }
@@ -441,7 +442,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             {listData.map((item) => (
                                                 <tr key={item.Id} className="list-table-row">
                                                     <td className="list-table-cell">{item[props.col3]}</td>
-                                                    <td className="list-table-cell">{item.Description}</td>
+                                                    <td className="list-table-cell">{item[props.col5]}</td>
                                                     <td className="list-table-cell">
                                                         <span className={`list-badge ${item.IsActive ? 'active' : 'inactive'}`}>
                                                             {item.IsActive ? 'Active' : 'Inactive'}

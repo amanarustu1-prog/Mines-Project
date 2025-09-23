@@ -1851,7 +1851,7 @@ const navigationItems: NavItem[] = [
           { title: 'Blood Group', href: '/hr/blood-group', icon: CheckCircle, description: 'Manage employee blood groups' },
           { title: 'Department', href: '/hr/department', icon: CheckCircle, description: 'Department information' },
           { title: 'Designation', href: '/masterTable/designation', icon: CheckCircle, description: 'Employee designations' },
-          { title: 'Employee Leave Status', href: '/hr/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
+          { title: 'Employee Leave Status', href: '/masterTable/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
           { title: 'Emp Leave Type', href: '/hr/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
           { title: 'Emp Status', href: '/masterTable/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
           { title: 'Gender', href: '/hr/gender', icon: CheckCircle, description: 'Gender categories' },
