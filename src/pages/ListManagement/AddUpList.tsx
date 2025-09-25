@@ -437,7 +437,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {listData.map((item) => (
+                                            {filteredData.map((item) => (
                                                 <tr key={item.Id} className="list-table-row">
                                                     <td className="list-table-cell">{item[props.col3]}</td>
                                                     <td className="list-table-cell">{item[props.col5]}</td>
@@ -462,7 +462,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                     </td>
                                                 </tr>
                                             ))}
-                                            {listData.length === 0 && (
+                                            {filteredData.length === 0 && (
                                                 <tr>
                                                     <td colSpan={6} className="list-table-cell empty">
                                                         No items found matching your criteria
