@@ -983,13 +983,10 @@ const navigationItems: NavItem[] = [
 
     ]
   },
-
   {
     title: 'Fuel',
     icon: CheckCircle,
     sections: [
-
-
       {
         title: 'Master Setup',
         items: [
@@ -1604,7 +1601,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Case Status',
-            href: '/safetyLegal/case-status',
+            href: '/safetyLegal/case-status', //masterTable/case-status
             icon: Award,
             description: 'Quality certifications and compliance'
           },
@@ -1852,22 +1849,21 @@ const navigationItems: NavItem[] = [
           { title: 'Department', href: '/hr/department', icon: CheckCircle, description: 'Department information' },
           { title: 'Designation', href: '/masterTable/designation', icon: CheckCircle, description: 'Employee designations' },
           { title: 'Employee Leave Status', href: '/masterTable/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
-          { title: 'Emp Leave Type', href: '/hr/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
+          { title: 'Emp Leave Type', href: '/masterTable/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
           { title: 'Emp Status', href: '/masterTable/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
-          { title: 'Gender', href: '/hr/gender', icon: CheckCircle, description: 'Gender categories' },
+          { title: 'Gender', href: '/masterTable/gender', icon: CheckCircle, description: 'Gender categories' },
         ]
       },
       {
         title: 'HR',
         items: [
-
-          { title: 'ID Proof', href: '/hr/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
+          { title: 'ID Proof', href: '/masterTable/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
           { title: 'Qualification', href: '/hr/qualification', icon: CheckCircle, description: 'Employee qualification details' },
           { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
           { title: 'Religion', href: '/hr/religion', icon: CheckCircle, description: 'Religions list' },
           { title: 'State', href: '/hr/state', icon: CheckCircle, description: 'State details' },
           { title: 'Martial', href: '/hr/marital-status', icon: CheckCircle, description: 'Marital status' },
-          { title: 'District', href: '/hr/district', icon: CheckCircle, description: 'District details' },
+          { title: 'District', href: '/masterTable/district', icon: CheckCircle, description: 'District details' },
         ]
       },
       {
@@ -1883,12 +1879,13 @@ const navigationItems: NavItem[] = [
           { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
           { title: 'Fuel Type', href: '/inventory/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
           { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
+          { title: 'Company Unit', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Company Units' },
         ]
       },
       {
         title: 'Crusher and Mines',
         items: [
-          { title: 'Loading charge', href: '/crusher/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
+          { title: 'Loading charge', href: '/masterTable/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
           { title: 'Product', href: '/crusher/product', icon: FlaskConical, description: 'Product list' },
           { title: 'Tp Amount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
           { title: 'Vehicle Type', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
@@ -1898,11 +1895,11 @@ const navigationItems: NavItem[] = [
       {
         title: 'Safety and Legal',
         items: [
-          { title: 'Case Status', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
+          { title: 'Case Status', href: '/masterTable/case-status', icon: FileText, description: 'Case statuses' },
           { title: 'Case Type', href: '/masterTable/case-type', icon: FileText, description: 'Case types' },
-          { title: 'Court Location', href: '/masterTable/current-location', icon: FileText, description: 'Court locations' },
-          { title: 'Injury Type', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
-          { title: 'Thana', href: '/safety/thana', icon: FileText, description: 'Police station list' },
+          { title: 'Court Location', href: '/masterTable/court-location', icon: FileText, description: 'Court locations' },
+          { title: 'Injury Type', href: '/masterTable/injury-type', icon: FileText, description: 'Types of injuries' },
+          { title: 'Thana', href: '/masterTable/thana', icon: FileText, description: 'Police station list' },
         ]
       },
       {
@@ -1912,9 +1909,7 @@ const navigationItems: NavItem[] = [
         ]
       }
     ]
-
   },
-
   {
     title: 'Setting',
     icon: CheckCircle,
