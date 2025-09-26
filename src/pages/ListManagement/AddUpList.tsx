@@ -196,7 +196,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         // alert(id);
         const payload = {
             [props.col4]: id,
-            Description: newItem.description,
+            [props.col5]: newItem.description,
             [props.col3]: newItem.code,
             CompanyId: Number(localStorage.getItem("employeeID"))
         }
@@ -255,6 +255,22 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             toastifyError("Error saving item");
         }
     };
+
+    const formatDate = (dateString?: string): string => {
+        if (!dateString) return "Null"; 
+        const date = new Date(dateString);
+
+        return date.toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit", 
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            // second: "2-digit",
+            // hour12: true,   
+        });
+    };
+
 
     // const toggleItemStatus = (id: number) => {
     //     setListData(prev =>
@@ -437,8 +453,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredData.map((item) => (
-                                                <tr key={item[props.col4]} className="list-table-row">
+                                            {filteredData.map((item, Id) => (
+                                                <tr key={item[props.col4] || item.Id} className="list-table-row">
                                                     <td className="list-table-cell">{item[props.col3]}</td>
                                                     <td className="list-table-cell">{item[props.col5]}</td>
                                                     <td className="list-table-cell">
@@ -446,8 +462,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                             {item.IsActive ? 'Active' : 'Inactive'}
                                                         </span>
                                                     </td>
-                                                    <td className="list-table-cell mono">{item.CreatedDate}</td>
-                                                    <td className="list-table-cell mono">{item.UpdatedDate || "Null"}</td>
+                                                    <td className="list-table-cell mono">{formatDate(item.CreatedDate)}</td>
+                                                    <td className="list-table-cell mono">{formatDate(item.UpdatedDate || "Null")}</td>
                                                     <td className="list-table-cell">
                                                         <div className="list-action-buttons">
                                                             <button onClick={() => deleteItem(item[props.col4])}

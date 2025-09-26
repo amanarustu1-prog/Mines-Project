@@ -125,8 +125,8 @@ const ListManagement = () => {
                                                     pageEndPoint === "hr/department" ?
                                                         <AddUpList
                                                             {...{ pageEndPoint }}
-                                                            col1="Departement"
-                                                            col2="Master Tables with codes and departements for Material Groups"
+                                                            col1="Department"
+                                                            col2="Master Tables with codes and descriptions for Department"
                                                             col3="DepartmentCode"
                                                             col4="ID"
                                                             col5="Department"
@@ -265,22 +265,22 @@ const ListManagement = () => {
                                                                                         delUrl="IDProof/Delete_IDProof"
                                                                                         dropDownUrl="Users/GetData_Company"
                                                                                     />
-                                                                                    // :
-                                                                                    // pageEndPoint === "masterTable/district" ?
-                                                                                    //     <AddUpList
-                                                                                    //         {...{ pageEndPoint }}
-                                                                                    //         col1="District"
-                                                                                    //         col2="Master Tables with codes and descriptions for District."
-                                                                                    //         col3="Code"
-                                                                                    //         col4="ID"
-                                                                                    //         col5="Description"
-                                                                                    //         getUrl='District/GetData_District'
-                                                                                    //         addUrl="District/Insert_District"
-                                                                                    //         singleDataUrl="District/GetSingleData_District"
-                                                                                    //         upUrl="District/Update_District"
-                                                                                    //         delUrl="District/Delete_District"
-                                                                                    //         dropDownUrl="Users/GetData_Company"
-                                                                                    //     />
+                                                                                    :
+                                                                                    pageEndPoint === "masterTable/district" ?
+                                                                                        <AddUpList
+                                                                                            {...{ pageEndPoint }}
+                                                                                            col1="District"
+                                                                                            col2="Master Tables with codes and descriptions for District."
+                                                                                            col3="DistrictCode"
+                                                                                            col4="DistrictID"
+                                                                                            col5="DistrictName"
+                                                                                            getUrl='District/GetData_District'
+                                                                                            addUrl="District/Insert_District"
+                                                                                            singleDataUrl="District/GetSingleData_District"
+                                                                                            upUrl="District/Update_District"
+                                                                                            delUrl="District/Delete_District"
+                                                                                            dropDownUrl="Users/GetData_Company"
+                                                                                        />
                                                                                     :
                                                                                     pageEndPoint === "masterTable/loading-charge" ?
                                                                                         <AddUpList
@@ -343,6 +343,22 @@ const ListManagement = () => {
                                                                                                         singleDataUrl="FuelType/GetSingleData_FuelType"
                                                                                                         upUrl="FuelType/Update_FuelType"
                                                                                                         delUrl="FuelType/Delete_FuelType"
+                                                                                                        dropDownUrl="Users/GetData_Company"
+                                                                                                    />
+                                                                                                    :
+                                                                                                pageEndPoint === "masterTable/explosive-type" ?
+                                                                                                    <AddUpList
+                                                                                                        {...{ pageEndPoint }}
+                                                                                                        col1="Explosive Type"
+                                                                                                        col2="Master Tables with codes and descriptions for Explosive Type."
+                                                                                                        col3="ExplosiveTypeCode"
+                                                                                                        col4="ExplosiveTypeID"
+                                                                                                        col5="Description"
+                                                                                                        getUrl="ExplosiveType/GetData_ExplosiveType"
+                                                                                                        addUrl="ExplosiveType/Insert_ExplosiveType"
+                                                                                                        singleDataUrl="ExplosiveType/GetSingleData_ExplosiveType"
+                                                                                                        upUrl="ExplosiveType/Update_ExplosiveType"
+                                                                                                        delUrl="ExplosiveType/Delete_ExplosiveType"
                                                                                                         dropDownUrl="Users/GetData_Company"
                                                                                                     />
                                                                                                     :
