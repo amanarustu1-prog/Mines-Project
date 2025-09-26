@@ -1850,6 +1850,7 @@ const navigationItems: NavItem[] = [
           { title: 'Designation', href: '/masterTable/designation', icon: CheckCircle, description: 'Employee designations' },
           { title: 'Employee Leave Status', href: '/masterTable/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
           { title: 'Emp Leave Type', href: '/masterTable/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
+          { title: 'Employement Status', href: '/masterTable/employement-status', icon: CheckCircle, description: 'Employement Status' },
           { title: 'Emp Status', href: '/masterTable/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
           { title: 'Gender', href: '/masterTable/gender', icon: CheckCircle, description: 'Gender categories' },
         ]
@@ -1869,7 +1870,7 @@ const navigationItems: NavItem[] = [
       {
         title: 'Inventory',
         items: [
-          { title: 'Equipment Type', href: '/inventory/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
+          { title: 'Equipment Type', href: '/masterTable/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
           { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
           { title: 'Material Group', href: '/inventory/material-group', icon: TrendingUp, description: 'Material grouping' },
           { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
@@ -1877,9 +1878,9 @@ const navigationItems: NavItem[] = [
           { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
           { title: 'Material Type', href: '/inventory/material-type', icon: TrendingUp, description: 'Material types' },
           { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
-          { title: 'Fuel Type', href: '/inventory/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
+          { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
           { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
-          { title: 'Company Unit', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Company Units' },
+          { title: 'Company Unit', href: '/masterTable/company-units', icon: TrendingUp, description: 'Company Units' },
         ]
       },
       {

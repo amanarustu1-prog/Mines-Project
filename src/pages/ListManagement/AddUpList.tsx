@@ -98,12 +98,13 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 if (response.data.success) {
                     const data = parsedData.Table;
                     setBloodGroupOptions(Array.isArray(data) ? data : []);
-                    console.log("Hello " + bloodGroupOptions);
+                    // console.log("Hello " + bloodGroupOptions);
                 } else {
                     toastifyError("Failed to load Dropdown");
                 }
             } catch (err) {
-                console.error("Error fetching dropdown:", err);
+                // console.error("Error fetching dropdown:", err);                
+                toastifyError("Error fetching Dropdown");
             }
         }
         fetchDropDown();
@@ -114,7 +115,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             const value = { IsActive: statusFilter, CompanyId: Number(localStorage.getItem("employeeID")) };
             const response = await axios.post(props.getUrl, value);
             const parsedData = JSON.parse(response.data.data);
-            console.log(parsedData.Table);
+            // console.log(parsedData.Table);
             setListData(parsedData.Table);
         } catch (err) {
             throw err;
@@ -128,11 +129,10 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const handleEdit = (item: ListItem) => {
         setEditItemId(item[props.col4]);
         setNewItem({
-            code: item.Code,
+            code: item[props.col3],
             description: item[props.col5],
             isActive: item.IsActive,
         });
-        alert();
         setBloodGroupCode(item.BloodGroupCode || "");
         setStatusFilter(item.IsActive ? 1 : 0);
     }
@@ -186,14 +186,14 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 toastifyError("Failed to update item status");
             }
         } catch (err) {
-            console.error("Error deleting item:", err);
+            // console.error("Error deleting item:", err);
             toastifyError("Error updating status");
         }
     };
 
 
     const updatedItem = async (id: number) => {
-        alert(id);
+        // alert(id);
         const payload = {
             [props.col4]: id,
             Description: newItem.description,
@@ -202,7 +202,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         }
         try {
             const resp = await axios.post(props.upUrl, payload);
-            console.log(resp);
+            // console.log(resp);
             if (resp.data.success) {
                 await fetchData();
                 toastifySuccess("Item updated successfully!");
@@ -214,7 +214,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 toastifyError("Failed to update item");
             }
         } catch (err) {
-            console.error("Error updating item:", err);
+            // console.error("Error updating item:", err);
             toastifyError("Error updating item");
         }
     }
@@ -251,7 +251,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             fetchData();
             toastifySuccess("Item saved successfully!");
         } catch (error) {
-            console.error("Error saving item:", error);
+            // console.error("Error saving item:", error);
             toastifyError("Error saving item");
         }
     };
@@ -438,7 +438,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         </thead>
                                         <tbody>
                                             {filteredData.map((item) => (
-                                                <tr key={item.Id} className="list-table-row">
+                                                <tr key={item[props.col4]} className="list-table-row">
                                                     <td className="list-table-cell">{item[props.col3]}</td>
                                                     <td className="list-table-cell">{item[props.col5]}</td>
                                                     <td className="list-table-cell">
