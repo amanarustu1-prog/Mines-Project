@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
 import axios from "../../interceptors/axios";
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
+import { AddDeleteUpadate } from '@/components/hooks/Api';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -241,11 +242,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             [props.col3]: newItem.code
         };
 
-
         try {
-            // console.log("Payload sent:", payload);
-            const response = await axios.post(props.addUrl, payload);
-            setListData(prev => [...prev, response.data]);
+            // const response = await axios.post(props.addUrl, payload);
+            const response = await AddDeleteUpadate(props.addUrl, payload);
+            console.log(response);
+            setListData(prev => [...prev, response]);
             setNewItem({ code: '', description: '', isActive: true });
             setBloodGroupCode('');
             fetchData();
@@ -257,7 +258,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     };
 
     const formatDate = (dateString?: string): string => {
-        if (!dateString) return "Null"; 
+        if (!dateString) return ""; 
         const date = new Date(dateString);
 
         return date.toLocaleString("en-GB", {
@@ -270,7 +271,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             // hour12: true,   
         });
     };
-
 
     // const toggleItemStatus = (id: number) => {
     //     setListData(prev =>
@@ -463,7 +463,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                         </span>
                                                     </td>
                                                     <td className="list-table-cell mono">{formatDate(item.CreatedDate)}</td>
-                                                    <td className="list-table-cell mono">{formatDate(item.UpdatedDate || "Null")}</td>
+                                                    <td className="list-table-cell mono">{formatDate(item.UpdatedDate)}</td>
                                                     <td className="list-table-cell">
                                                         <div className="list-action-buttons">
                                                             <button onClick={() => deleteItem(item[props.col4])}
