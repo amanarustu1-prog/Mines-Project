@@ -423,6 +423,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
 
 
+    
+
+
+
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'list-overview':
