@@ -129,7 +129,7 @@ const ListManagement = () => {
                                                             col2="Master Tables with codes and descriptions for Department"
                                                             col3="DepartmentCode"
                                                             col4="ID"
-                                                            col5="Department"
+                                                            col5="Description"
                                                             getUrl='Department/GetData_Department'
                                                             addUrl="Department/Insert_Department"
                                                             singleDataUrl="Department/GetSingleData_Department"
@@ -145,7 +145,7 @@ const ListManagement = () => {
                                                                 col2="Master Tables with codes and descriptions for Designations"
                                                                 col3="DesignationCode"
                                                                 col4="ID"
-                                                                col5="Designation"
+                                                                col5="Description"
                                                                 getUrl='Designation/GetData_Designation'
                                                                 addUrl="Designation/Insert_Designation"
                                                                 singleDataUrl="Designation/GetSingleData_Designation"

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
-import axios from "../../interceptors/axios";
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
-import { AddDeleteUpadate } from '@/components/hooks/Api';
+import { AddDeleteUpadate, fetchPostData } from '@/components/hooks/Api';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -94,12 +93,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         const fetchDropDown = async () => {
             try {
                 const payload = { EmployeeID: '1' };
-                const response = await axios.post(props.dropDownUrl, payload);
-                const parsedData = JSON.parse(response.data.data);
-                if (response.data.success) {
-                    const data = parsedData.Table;
+                const response = await fetchPostData(props.dropDownUrl, payload);
+                // console.log(response);/
+                if (response) {
+                    const data = response;
                     setBloodGroupOptions(Array.isArray(data) ? data : []);
-                    // console.log("Hello " + bloodGroupOptions);
                 } else {
                     toastifyError("Failed to load Dropdown");
                 }
@@ -114,10 +112,9 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const fetchData = async () => {
         try {
             const value = { IsActive: statusFilter, CompanyId: Number(localStorage.getItem("employeeID")) };
-            const response = await axios.post(props.getUrl, value);
-            const parsedData = JSON.parse(response.data.data);
-            // console.log(parsedData.Table);
-            setListData(parsedData.Table);
+            const response = await fetchPostData(props.getUrl, value);
+            // console.log(response);
+            setListData(response);
         } catch (err) {
             throw err;
         }
@@ -175,12 +172,12 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         const newStatus = item.IsActive ? 0 : 1;
 
         try {
-            const response = await axios.post(props.delUrl, {
+            const response = await AddDeleteUpadate(props.delUrl, {
                 [props.col4]: id,
                 IsActive: newStatus,
             });
 
-            if (response.data.success) {
+            if (response.success) {
                 await fetchData();
                 toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully!`);
             } else {
@@ -192,7 +189,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         }
     };
 
-
     const updatedItem = async (id: number) => {
         // alert(id);
         const payload = {
@@ -202,9 +198,9 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             CompanyId: Number(localStorage.getItem("employeeID"))
         }
         try {
-            const resp = await axios.post(props.upUrl, payload);
+            const resp = await AddDeleteUpadate(props.upUrl, payload);
             // console.log(resp);
-            if (resp.data.success) {
+            if (resp.success) {
                 await fetchData();
                 toastifySuccess("Item updated successfully!");
 
@@ -243,9 +239,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         };
 
         try {
-            // const response = await axios.post(props.addUrl, payload);
             const response = await AddDeleteUpadate(props.addUrl, payload);
-            console.log(response);
+            // console.log(response);
             setListData(prev => [...prev, response]);
             setNewItem({ code: '', description: '', isActive: true });
             setBloodGroupCode('');
