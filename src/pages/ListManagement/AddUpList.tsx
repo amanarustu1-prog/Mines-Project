@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
 import axios from "../../interceptors/axios";
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import { AddDeleteUpadate } from '@/components/hooks/Api';
+import DataTable from 'react-data-table-component';
+import { customStyles, multiValue } from '@/common/Utility';
+import Select from "react-select";
+import ConfirmModal from '@/common/ConfirmModal';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -79,6 +83,19 @@ interface ListItem {
     [key: string]: any;
 }
 
+interface TableRow {
+    [key: string]: any; // for dynamic keys like props.col3, props.col4, props.col5
+    IsActive: boolean;
+    CreatedDate: string | Date;
+    UpdatedDate: string | Date;
+}
+
+interface ColumnsProps {
+    col3: string;
+    col4: string;
+    col5: string;
+}
+
 const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [activeTab, setActiveTab] = useState('list-overview');
 
@@ -88,6 +105,69 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [bloodGroupOptions, setBloodGroupOptions] = useState<any[]>([]);
     const [bloodGroupCode, setBloodGroupCode] = useState('');
     const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
+    const [showModal, setShowModal] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [inactiveCount, setInactiveCount] = useState(0);
+    const [activeCount, setActiveCount] = useState(0);
+
+
+
+
+
+
+
+    // Define columns
+    const columns = [
+
+        { name: 'Code', selector: (row: ListItem) => row[props.col3], sortable: true },
+        {
+            name: 'Description',
+            selector: (row: ListItem) => row[props.col5],
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            cell: (row: ListItem) => (
+                <span className={`list-badge ${row.IsActive ? 'active' : 'inactive'}`}>
+                    {row.IsActive ? 'Active' : 'Inactive'}
+                </span>
+            ),
+            sortable: true,
+        },
+        {
+            name: 'Created Date',
+            selector: (row: ListItem) => formatDate(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: ListItem) => formatDate(row.UpdatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: (row: ListItem) => (
+                <div className="list-action-buttons">
+                    <button
+                        onClick={() => {
+                            setSelectedId(row[props.col4]); // clicked item id
+                            setShowModal(true);             // show confirmation modal
+                        }}
+                        className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
+                        title={row.IsActive ? 'Deactivate' : 'Activate'}
+                    >
+                        {row.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
+                    </button>
+
+                    <button onClick={() => handleEdit(row)} className="list-button ghost primary" title="Edit">
+                        <Edit3 className="list-icon-sm" />
+                    </button>
+                </div>
+            ),
+        },
+    ];
 
     // Dropdown-data
     useEffect(() => {
@@ -138,11 +218,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         setStatusFilter(item.IsActive ? 1 : 0);
     }
 
-    const filteredData = listData.filter((item) => {
-        if (statusFilter === "1") return item.IsActive;
-        if (statusFilter === "0") return !item.IsActive;
-        return true;
-    });
+
 
     // New item form data
     const [newItem, setNewItem] = useState({
@@ -168,11 +244,12 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     //     }
     // }
 
+    // ✅ Delete/Activate function
     const deleteItem = async (id: number) => {
         const item = listData.find(x => x[props.col4] === id);
         if (!item) return;
 
-        const newStatus = item.IsActive ? 0 : 1;
+        const newStatus = item.IsActive ? 0 : 1; // 0=deactivate, 1=activate
 
         try {
             const response = await axios.post(props.delUrl, {
@@ -181,16 +258,21 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             });
 
             if (response.data.success) {
-                await fetchData();
+                setListData(prev =>
+                    prev.map(x =>
+                        x[props.col4] === id ? { ...x, IsActive: newStatus } : x
+                    )
+                );
                 toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully!`);
             } else {
                 toastifyError("Failed to update item status");
             }
         } catch (err) {
-            // console.error("Error deleting item:", err);
             toastifyError("Error updating status");
         }
     };
+
+
 
 
     const updatedItem = async (id: number) => {
@@ -258,12 +340,12 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     };
 
     const formatDate = (dateString?: string): string => {
-        if (!dateString) return ""; 
+        if (!dateString) return "";
         const date = new Date(dateString);
 
         return date.toLocaleString("en-GB", {
             day: "2-digit",
-            month: "2-digit", 
+            month: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
@@ -286,8 +368,60 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     //     );
     // };
 
-    const activeCount = listData.filter(item => item.IsActive).length;
-    const inactiveCount = listData.filter(item => !item.IsActive).length;
+
+
+    const options = bloodGroupOptions.map(opt => ({
+        value: opt.CompanyID,
+        label: opt.CompanyName
+    }));
+
+
+
+
+
+    // ✅ Filtered Data with universal search
+    const filteredData = useMemo(() => {
+        const searchLower = search.trim().toLowerCase();
+
+        return listData.filter(item => {
+            // 1. Status filter
+            if (filter === "active" && !item.IsActive) return false;
+            if (filter === "inactive" && item.IsActive) return false;
+
+            // 2. Search filter (check all values of the item)
+            if (searchLower) {
+                const values = Object.values(item)
+                    .filter(v => v != null) // null/undefined skip
+                    .map(v => v.toString().toLowerCase());
+
+                const matched = values.some(val => val.includes(searchLower));
+                if (!matched) return false;
+            }
+
+            return true;
+        });
+    }, [listData, filter, search]);
+
+
+    // ✅ Counts
+    // const activeCount = useMemo(
+    //     () => listData.filter(item => item.IsActive).length,
+    //     [listData]
+    // );
+
+    // const inactiveCount = useMemo(
+    //     () => listData.filter(item => !item.IsActive).length,
+    //     [listData]
+    // );
+
+
+    // active/inactive count
+    useEffect(() => {
+        setInactiveCount(listData.filter(x => !x.IsActive).length);
+        setActiveCount(listData.filter(x => x.IsActive).length);
+    }, [listData]);
+
+
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -296,7 +430,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                     <div className="list-space-y-4">
                         {/* Summary Cards */}
                         <div className="list-grid-4">
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0" >
                                 <div className="list-summary-card ">
                                     <div className="list-header-info ">
                                         <div className="list-header-icon">
@@ -310,7 +444,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0  cursor-pointer" onClick={() => setFilter("active")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon active">
@@ -324,7 +458,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -338,7 +472,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon total">
@@ -364,57 +498,49 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                     <div className="grid grid-cols-12 gap-4 items-center">
                                         {/* Item Code */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.code}
                                                 onChange={(e) => handleInputChange("code", e.target.value)}
-                                                className="list-compact-input w-full text-sm py-1 px-2 h-8"
+                                                className="list-compact-input w-full text-sm py-1 px-2 h-9"
                                                 placeholder="Item Code"
                                                 maxLength={20}
                                             />
                                         </div>
 
                                         {/* Description */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.description}
                                                 onChange={(e) => handleInputChange("description", e.target.value)}
-                                                className="list-compact-input w-full text-sm py-1 px-2 h-8"
+                                                className="list-compact-input w-full text-sm py-1 px-2 h-9"
                                                 placeholder="Description"
                                                 maxLength={300}
                                             />
                                         </div>
 
-                                        {/* Status */}
-                                        <div className="col-span-2">
-                                            <select
-                                                value={statusFilter}
-                                                onChange={(e) => setStatusFilter(e.target.value)}
-                                                className="list-compact-select w-full py-1 px-2 h-8 text-sm"
-                                            >
-                                                <option value="">Select Status</option>
-                                                <option value="1">Active</option>
-                                                <option value="0">Inactive</option>
-                                            </select>
+
+                                        <div className="col-span-4">
+                                            <Select
+                                                value={bloodGroupCode} // should be an array of selected options for isMulti
+                                                onChange={(selectedOptions) => setBloodGroupCode(selectedOptions)}
+                                                options={options} // array of { value, label } objects
+                                                isMulti
+                                                isClearable
+                                                closeMenuOnSelect={false}
+                                                hideSelectedOptions={true}
+                                                placeholder={`Select ${props.col1}`}
+                                                className="basic-multi-select"
+                                                styles={multiValue}
+                                            />
                                         </div>
 
-                                        {/* Company */}
-                                        <select
-                                            value={bloodGroupCode}
-                                            onChange={(e) => setBloodGroupCode(e.target.value)}
-                                            className="list-compact-select w-full py-1 px-2 h-8 text-sm"
-                                        >
-                                            <option value="">Select {props.col1}</option>
-                                            {
-                                                bloodGroupOptions.map((opt) => (
-                                                    <option key={opt.CompanyID} value={opt['CompanyID']}>
-                                                        {opt['CompanyName']}
-                                                    </option>
-                                                ))
-                                            }
-                                        </select>
+
+
+
+
 
                                         {/* Buttons */}
                                         <div className="col-span-2 flex gap-2">
@@ -437,58 +563,29 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                         {/* Filter and Search Bar */}
 
                         {/* Items Table */}
-                        <div className="list-card">
-                            {/* Table-Data */}
-                            <div className="list-card-content" style={{ padding: 0 }}>
-                                <div className="list-table-container">
-                                    <table className="list-table">
-                                        <thead className="list-table-header">
-                                            <tr>
-                                                <th>Code</th>
-                                                <th>Description</th>
-                                                <th>Status</th>
-                                                <th>Created Date</th>
-                                                <th>Last Modified</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredData.map((item, Id) => (
-                                                <tr key={item[props.col4] || item.Id} className="list-table-row">
-                                                    <td className="list-table-cell">{item[props.col3]}</td>
-                                                    <td className="list-table-cell">{item[props.col5]}</td>
-                                                    <td className="list-table-cell">
-                                                        <span className={`list-badge ${item.IsActive ? 'active' : 'inactive'}`}>
-                                                            {item.IsActive ? 'Active' : 'Inactive'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="list-table-cell mono">{formatDate(item.CreatedDate)}</td>
-                                                    <td className="list-table-cell mono">{formatDate(item.UpdatedDate)}</td>
-                                                    <td className="list-table-cell">
-                                                        <div className="list-action-buttons">
-                                                            <button onClick={() => deleteItem(item[props.col4])}
-                                                                className={`list-button ghost ${item.IsActive ? 'danger' : 'success'}`}
-                                                                title={item.IsActive ? 'Deactivate' : 'Activate'}>
-                                                                {item.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
-                                                            </button>
-                                                            <button onClick={() => handleEdit(item)} className="list-button ghost primary" title="Edit">
-                                                                <Edit3 className="list-icon-sm" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            {filteredData.length === 0 && (
-                                                <tr>
-                                                    <td colSpan={6} className="list-table-cell empty">
-                                                        No items found matching your criteria
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                        {/* Table */}
+                        <div className="list-card compact" style={{ height: '100%' }}>
+                            {/* Search Input */}
+                            <div className="flex justify-end">
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                                    placeholder="Search"
+                                    maxLength={300}
+                                />
                             </div>
+                            <DataTable
+                                columns={columns}
+                                data={filteredData}
+                                pagination
+                                highlightOnHover
+                                noDataComponent="No items found matching your criteria"
+                                fixedHeader
+                                fixedHeaderScrollHeight="300px"
+                                customStyles={customStyles}
+                            />
                         </div>
                     </div>
                 );
@@ -498,16 +595,31 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     };
 
     return (
-        <div className="list-management-container ">
-            {/* Header */}
 
-            {/* Main Container */}
-            <div className="list-main-container container">
+        <>
+            <div className="list-management-container ">
+                {/* Header */}
 
-                {/* Content Area */}
-                {renderTabContent()}
+                {/* Main Container */}
+                <div className="list-main-container container">
+
+                    {/* Content Area */}
+                    {renderTabContent()}
+                </div>
             </div>
-        </div>
+
+            <ConfirmModal
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleConfirm={() => {
+                    if (selectedId !== null) {
+                        deleteItem(selectedId);  // Confirm → delete/activate
+                    }
+                    setShowModal(false);        // Close modal
+                }}
+            />
+
+        </>
     );
 }
 

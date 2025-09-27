@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Select from "react-select";
 import "./styles.css";
-import ResizableContainer from "@/components/Common/ResizableContainer";
 import { customStyles } from "@/common/Utility";
 
 // ---------- Icon Components ----------
@@ -48,6 +47,12 @@ const Save = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const Edit3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+);
+
 // ---------- Options ----------
 const statusOptions = [
     { value: true, label: "Active" },
@@ -84,8 +89,10 @@ const columns = [
         name: "Actions",
         cell: (row: any) => (
             <div className="flex gap-2">
-                <button onClick={() => console.log("Edit", row)}>✏️</button>
-                <button onClick={() => console.log("Delete", row)}>🗑️</button>
+                <button className={`list-button ghost ${row.isActive ? 'danger' : 'success'}`} onClick={() => console.log("Edit", row)}> {row.isActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}</button>
+
+                <button className="list-button ghost primary" title="Edit" onClick={() => console.log("Delete", row)}> <Edit3 className="list-icon-sm" /></button>
+
             </div>
         ),
     }
@@ -106,10 +113,12 @@ const data = [
 export default function VehicleType() {
     const [activeTab] = useState('list-overview');
     const [newItem, setNewItem] = useState({ code: '', description: '', isActive: true });
+    const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
 
     const listData = data; // फिलहाल dummy
-    const activeCount = listData.length; // फिलहाल सबको active मान रहे हैं
-    const inactiveCount = 0;
+    // const activeCount = listData.length; // फिलहाल सबको active मान रहे हैं
+    // const inactiveCount = 0;
 
     const handleInputChange = (field: string, value: string | boolean) => {
         setNewItem(prev => ({ ...prev, [field]: value }));
@@ -122,6 +131,36 @@ export default function VehicleType() {
         }
         console.log("Saved Item:", newItem);
     };
+
+
+
+    const filteredData = useMemo(() => {
+        return data.filter(item => {
+            // 1. Card filter
+            if (filter === "active" && !item.isActive) return false;
+            if (filter === "inactive" && item.isActive) return false;
+
+            // 2. Search filter
+            if (search) {
+                const searchLower = search.toLowerCase();
+                if (!item.code.toLowerCase().includes(searchLower) &&
+                    !item.description.toLowerCase().includes(searchLower)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    }, [filter, search, data]);
+
+    // Counts
+    const activeCount = data.filter(item => item.isActive).length;
+    const inactiveCount = data.filter(item => !item.isActive).length;
+
+
+
+
+
 
     return (
         <div className="list-management-container">
@@ -147,7 +186,7 @@ export default function VehicleType() {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("active")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon active">
@@ -161,7 +200,7 @@ export default function VehicleType() {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -175,7 +214,7 @@ export default function VehicleType() {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon total">
@@ -200,7 +239,7 @@ export default function VehicleType() {
                                     </h4>
 
                                     <div className="grid grid-cols-12 gap-4 items-center">
-                                        <div className="col-span-2">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.code}
@@ -211,7 +250,7 @@ export default function VehicleType() {
                                             />
                                         </div>
 
-                                        <div className="col-span-2">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.description}
@@ -222,18 +261,7 @@ export default function VehicleType() {
                                             />
                                         </div>
 
-                                        <div className="col-span-2">
-                                            <Select
-                                                value={statusOptions.find(option => option.value === newItem.isActive)}
-                                                onChange={(selectedOption) =>
-                                                    handleInputChange("isActive", selectedOption?.value ?? false)
-                                                }
-                                                options={statusOptions}
-                                                isClearable
-                                                placeholder="Select Status"
-                                                className="w-full text-sm"
-                                            />
-                                        </div>
+
 
                                         <div className="col-span-4">
                                             <Select
@@ -266,11 +294,22 @@ export default function VehicleType() {
                         </div>
 
                         {/* Table */}
-                        <ResizableContainer defaultHeight={0.6} maxHeight={800}>
+                        <div className="list-card compact" style={{ height: '100%' }}>
+                            <div className="flex justify-end">
+                                {/* search Filter */}
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                                    placeholder="Search"
+                                    maxLength={300}
+                                />
+                            </div>
                             <div className="list-card" style={{ height: '100%' }}>
                                 <DataTable
                                     columns={columns}
-                                    data={data}
+                                    data={filteredData}
                                     pagination
                                     highlightOnHover
                                     fixedHeader
@@ -278,7 +317,8 @@ export default function VehicleType() {
                                     customStyles={customStyles}
                                 />
                             </div>
-                        </ResizableContainer>
+                        </div>
+
                     </div>
                 )}
             </div>
