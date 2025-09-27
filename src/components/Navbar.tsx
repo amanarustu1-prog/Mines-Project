@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
   Factory,
@@ -81,6 +81,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
+import { useAppDispatch } from '@/redux/store';
+import { logoutUser } from '@/redux/actions/authActions';
 
 interface NavItem {
   title: string;
@@ -981,13 +983,10 @@ const navigationItems: NavItem[] = [
 
     ]
   },
-
   {
     title: 'Fuel',
     icon: CheckCircle,
     sections: [
-
-
       {
         title: 'Master Setup',
         items: [
@@ -1602,7 +1601,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Case Status',
-            href: '/safetyLegal/case-status',
+            href: '/safetyLegal/case-status', //masterTable/case-status
             icon: Award,
             description: 'Quality certifications and compliance'
           },
@@ -1849,29 +1848,29 @@ const navigationItems: NavItem[] = [
           { title: 'Blood Group', href: '/hr/blood-group', icon: CheckCircle, description: 'Manage employee blood groups' },
           { title: 'Department', href: '/hr/department', icon: CheckCircle, description: 'Department information' },
           { title: 'Designation', href: '/masterTable/designation', icon: CheckCircle, description: 'Employee designations' },
-          { title: 'Employee Leave Status', href: '/hr/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
-          { title: 'Emp Leave Type', href: '/hr/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
+          { title: 'Employee Leave Status', href: '/masterTable/employee-leave-status', icon: CheckCircle, description: 'Leave status management' },
+          { title: 'Emp Leave Type', href: '/masterTable/employee-leave-type', icon: CheckCircle, description: 'Leave type settings' },
+          { title: 'Employement Status', href: '/masterTable/employement-status', icon: CheckCircle, description: 'Employement Status' },
           { title: 'Emp Status', href: '/masterTable/employee-status', icon: CheckCircle, description: 'Employee status tracking' },
-          { title: 'Gender', href: '/hr/gender', icon: CheckCircle, description: 'Gender categories' },
+          { title: 'Gender', href: '/masterTable/gender', icon: CheckCircle, description: 'Gender categories' },
         ]
       },
       {
         title: 'HR',
         items: [
-
-          { title: 'ID Proof', href: '/hr/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
+          { title: 'ID Proof', href: '/masterTable/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
           { title: 'Qualification', href: '/hr/qualification', icon: CheckCircle, description: 'Employee qualification details' },
           { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
           { title: 'Religion', href: '/hr/religion', icon: CheckCircle, description: 'Religions list' },
           { title: 'State', href: '/hr/state', icon: CheckCircle, description: 'State details' },
           { title: 'Martial', href: '/hr/marital-status', icon: CheckCircle, description: 'Marital status' },
-          { title: 'District', href: '/hr/district', icon: CheckCircle, description: 'District details' },
+          { title: 'District', href: '/masterTable/district', icon: CheckCircle, description: 'District details' },
         ]
       },
       {
         title: 'Inventory',
         items: [
-          { title: 'Equipment Type', href: '/inventory/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
+          { title: 'Equipment Type', href: '/masterTable/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
           { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
           { title: 'Material Group', href: '/inventory/material-group', icon: TrendingUp, description: 'Material grouping' },
           { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
@@ -1879,28 +1878,29 @@ const navigationItems: NavItem[] = [
           { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
           { title: 'Material Type', href: '/inventory/material-type', icon: TrendingUp, description: 'Material types' },
           { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
-          { title: 'Fuel Type', href: '/inventory/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
+          { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
           { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
+          { title: 'Company Unit', href: '/masterTable/company-units', icon: TrendingUp, description: 'Company Units' },
         ]
       },
       {
         title: 'Crusher and Mines',
         items: [
-          { title: 'Loading charge', href: '/crusher/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
+          { title: 'Loading charge', href: '/masterTable/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
           { title: 'Product', href: '/crusher/product', icon: FlaskConical, description: 'Product list' },
           { title: 'Tp Amount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
           { title: 'Vehicle Type', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
-          { title: 'Explosive Type', href: '/crusher/explosive-type', icon: FlaskConical, description: 'Explosive types' },
+          { title: 'Explosive Type', href: '/masterTable/explosive-type', icon: FlaskConical, description: 'Explosive types' },
         ]
       },
       {
         title: 'Safety and Legal',
         items: [
-          { title: 'Case Status', href: '/safety/case-status', icon: FileText, description: 'Case statuses' },
-          { title: 'Case Type', href: '/safety/case-type', icon: FileText, description: 'Case types' },
-          { title: 'Court Location', href: '/masterTable/current-location', icon: FileText, description: 'Court locations' },
-          { title: 'Injury Type', href: '/safety/injury-type', icon: FileText, description: 'Types of injuries' },
-          { title: 'Thana', href: '/safety/thana', icon: FileText, description: 'Police station list' },
+          { title: 'Case Status', href: '/masterTable/case-status', icon: FileText, description: 'Case statuses' },
+          { title: 'Case Type', href: '/masterTable/case-type', icon: FileText, description: 'Case types' },
+          { title: 'Court Location', href: '/masterTable/court-location', icon: FileText, description: 'Court locations' },
+          { title: 'Injury Type', href: '/masterTable/injury-type', icon: FileText, description: 'Types of injuries' },
+          { title: 'Thana', href: '/masterTable/thana', icon: FileText, description: 'Police station list' },
         ]
       },
       {
@@ -1910,9 +1910,7 @@ const navigationItems: NavItem[] = [
         ]
       }
     ]
-
   },
-
   {
     title: 'Setting',
     icon: CheckCircle,
@@ -2519,19 +2517,51 @@ export function Navbar() {
     setHoveredMoreItem(null);
   };
 
-  // Close menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        closeAllMenus();
-      }
-    };
+  const [userMenusOpen, setUserMenusOpen] = useState(false);
+  const toggleUserMenu = () => {
+    setUserMenuOpen((prev) => !prev);
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+
+  // Close menus when clicking outside
+  const dropdownRef1 = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+
+    // if click is outside both dropdown and button → close
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(target) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(target)
+    ) {
+      setUserMenuOpen(false);
+    }
+  };
+
+  document.addEventListener("click", handleClickOutside);
+  return () => {
+    document.removeEventListener("click", handleClickOutside);
+  };
+}, []);
+
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  // console.log("Logout clicked 🚀");
+
+  dispatch(logoutUser());
+
+  // console.log("Storage after logout:");
+
+  navigate("/");
+};
+
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
@@ -2540,7 +2570,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16  px-4 sm:px-6 lg:px-8 border-b border-gray-50">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-shrink-0 max-w-[320px]">
-            <Link to="/" className="flex items-center space-x-3 group">
+            <Link to="/dashboard-page" className="flex items-center space-x-3 group">
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
                   <Factory className="h-5 w-5 text-white" />
@@ -2600,7 +2630,8 @@ export function Navbar() {
             {/* User Menu */}
             <div className="relative">
               <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  ref={buttonRef}
+                  onClick={toggleUserMenu}
                 className="flex items-center space-x-2 p-1.5 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
               >
                 <div className="hidden lg:flex flex-col text-right">
@@ -2618,7 +2649,7 @@ export function Navbar() {
 
               {/* User Dropdown */}
               {userMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden">
+                <div ref={dropdownRef} className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-[60] overflow-hidden">
                   <div className="p-4 border-b border-gray-50">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
@@ -2663,7 +2694,7 @@ export function Navbar() {
                   </div>
 
                   <div className="border-t border-gray-50 p-2">
-                    <button className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200">
+                    <button className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200" onClick={handleLogout}>
                       <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
                         <LogOut className="h-4 w-4 text-red-500" />
                       </div>

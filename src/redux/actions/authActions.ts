@@ -7,6 +7,8 @@ export const loginUserApi = (username: string, password: string, companyID: stri
   dispatch(loginStart());
 
   try {
+
+    // const { Ip } = getState();
     const response = await axios.post("Account/GetToken", {
       userName: username,
       password: password,
@@ -42,4 +44,5 @@ export const logoutUser = () => (dispatch: AppDispatch) => {
   sessionStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   dispatch(logout());
+  // navigate("/");
 };

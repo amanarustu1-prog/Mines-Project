@@ -7,7 +7,6 @@ var IsEncDec = encDecStatus == 'true' || encDecStatus == true
 
 // Api.js
 export const fetchPostData = async (url, postData) => {
-    // console.log(url+" "+JSON.stringify(postData));
     var reUseUrl = url;
     var reUseData = postData;
     try {
@@ -17,7 +16,6 @@ export const fetchPostData = async (url, postData) => {
         }
 
         if (Object.keys(postData).length !== 0) {
-            // console.log(url+" "+JSON.stringify(postData));
             //--------------> New code with EncDec <------------ Don't Remove--------By AM
             if (IsEncDec) {
                 const EncPostData = await Aes256Encrypt(JSON.stringify(postData));
@@ -105,14 +103,12 @@ export const AddDeleteUpadate = async (url, postData) => {
         } else {
             const res = await axios.post(url, postData);
             if (res.code == "ERR_BAD_REQUEST") {
-                return res
+                return res;
             } else {
                 return res.data;
             }
         }
     } else {
-        // console.log(`${url}-----${postData}`)
         console.log("%c🚀 ~ AddDeleteUpadate: " + `${url}-----${postData}`, "padding: 6px; font-weight: bold; background-color: #2ecc71; color: black'");
-
     }
 }

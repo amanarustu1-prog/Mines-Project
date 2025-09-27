@@ -53,10 +53,7 @@ const ForgotPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-sm m-auto bg-white rounded-xl shadow p-6">
         <div>
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
-          >
+          <button onClick={() => navigate(-1)} className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4">
             <ArrowLeftIcon className="h-4 w-4 mr-1" />
             Back to Login
           </button>

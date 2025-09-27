@@ -29,8 +29,7 @@ api.interceptors.response.use(
       isRefreshing = true;
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        const response = await axios.post(
-          `${BASE_URL}/Account/RefreshToken`,
+        const response = await axios.post(`${BASE_URL}/Account/RefreshToken`,
           {
             refresh_token: refreshToken,
             grant_type: "refresh_token",
@@ -42,8 +41,7 @@ api.interceptors.response.use(
         localStorage.setItem("refreshToken", response.data.refresh_token);
 
         // Update default headers
-        api.defaults.headers.common["Authorization"] =
-          `Bearer ${response.data.access_token}`;
+        api.defaults.headers.common["Authorization"] = `Bearer ${response.data.access_token}`;
 
         // Retry failed request
         return api(error.config);
@@ -51,7 +49,7 @@ api.interceptors.response.use(
         // Clear tokens and redirect to login
         sessionStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+        window.location.href = "/";
       } finally {
         isRefreshing = false;
       }

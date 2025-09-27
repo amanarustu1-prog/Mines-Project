@@ -1,17 +1,17 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toastifySuccess, toastifyError } from "../../common/AlertMsg";
 import Otp from "./Otp";
 import api, { addUpdateDelete } from "@/utils/api";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { loginStart, loginSuccess, loginFailure, clearError, } from "@/redux/reducers/authReducer";
+import { loginStart, loginSuccess, loginFailure, clearError } from "@/redux/reducers/authReducer";
 import { loginUserApi } from "@/redux/actions/authActions";
 import { v4 as uuidv4 } from "uuid";
 import { Encrypted_Id_Name, get_OTP } from "../Common/Utility";
 import { fetchPostData } from "../hooks/Api";
 import axios from "@/interceptors/axios";
-import OTP from "./Otp";
+import { fetchIpAddress } from "@/redux/actions/Agency";
 const BASE_URL = import.meta.env.VITE_DOMAIN_URL_KEY;
 
 interface LoginResponse {
@@ -29,7 +29,7 @@ interface LoginResponse {
 }
 
 const Login = () => {
-  const [branch, setBranch] = useState("");
+  const [company, setCompany] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -40,15 +40,18 @@ const Login = () => {
   const [agency, setAgency] = useState([]);
 
   // Error
-  const[userErr, setUserErr] = useState("false");
-  const[passErr, setPassErr] = useState("false");
-  const[compErr, setCompErr] = useState("false");
+  const [userErr, setUserErr] = useState<string | boolean>(false);
+  const [passErr, setPassErr] = useState<string | boolean>(false);
+  const [compErr, setCompErr] = useState<string | boolean>(false);
+
+  const myRef = useRef<HTMLSelectElement>(null);
+  const userNameRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as LoginResponse)?.from?.pathname || "/";
+  const from = (location.state as LoginResponse)?.from?.pathname || "/dashboard-page";
 
   useEffect(() => {
     const uniqueID = uuidv4();
@@ -56,18 +59,20 @@ const Login = () => {
     if (small_uniq_ID) {
       setUniUserId(small_uniq_ID);
     }
-    // get IpAddress
-    // dispatch(fetchIpAddress());
+    dispatch(fetchIpAddress());
   }, []);
 
   const InsertAccessOrRefreshToken = () => {
-    sessionStorage.setItem(
-      "UniqueUserID",
-      Encrypted_Id_Name(uniUserId, "UForUniqueUserID")
-    );
+    sessionStorage.setItem("UniqueUserID", Encrypted_Id_Name(uniUserId, "UForUniqueUserID"));
   };
 
-  const [companies, setCompanies] = useState< { CompanyID: number; CompanyName: string }[]>([]);
+  const handleCopy = (e : any) => {
+    e.preventDefault();
+  }
+
+  const [companies, setCompanies] = useState<
+    { CompanyID: number; CompanyName: string }[]
+  >([]);
 
   const verify_User = async (e: any) => {
     e.preventDefault();
@@ -76,7 +81,7 @@ const Login = () => {
     const res = await fetchPostData("Users/GetData_Company", value);
 
     if (res?.length > 0) {
-      setCompanies(res); 
+      setCompanies(res);
       console.log("Companies:", res);
     } else {
       setCompanies([]);
@@ -85,14 +90,41 @@ const Login = () => {
   };
 
   const handleLogin = (e: React.FormEvent) => {
-
-    if(username === ""){
-
-    }
     e.preventDefault();
-    dispatch(loginUserApi(username, password, branch)).then(() => {
-      navigate("/");
-    })
+
+    if (company === "") {
+      setCompErr("Select Type Of Company !!");
+    } else {
+      setCompErr(false);
+    }
+    if (username === "") {
+      setUserErr("Please Enter Username");
+    } else {
+      setUserErr(false);
+    }
+    if (password === "") {
+      setPassErr("Please Enter Password");
+    } else {
+      setPassErr(false);
+    }
+    if (username === "") {
+      toastifyError("Please Enter Username");
+    }
+    if (password === "") {
+      toastifyError("Please Enter Password");
+    }
+    if (company === "") {
+      toastifyError("Select Company !!");
+    } 
+
+    if(company && username && password){
+      dispatch(loginUserApi(username, password, company)).then((res: any) => {
+        InsertAccessOrRefreshToken();
+        navigate("/dashboard-page");
+      }).catch(() => {
+        toastifyError("Invalid login credentials");
+      });
+    }
   };
 
   return (
@@ -111,16 +143,26 @@ const Login = () => {
 
           {/* Card */}
           <div className="mt-6 w-full max-w-sm m-auto bg-white rounded-xl shadow p-6">
-            <form onSubmit={handleLogin} className="space-y-4" autoComplete="off" >
+            <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
               {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Username
                 </label>
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
+                <input
+                  ref={userNameRef}
+                  type="text"
+                  onCut={handleCopy}
+                  onCopy={handleCopy}
+                  onPaste={handleCopy}
+                  autoComplete='off'
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                  placeholder="Enter username" required/>
+                  placeholder="Enter username"
+                />
               </div>
+              <p className="text-danger" style={{ fontSize: "13px", fontWeight: "400", marginTop: "0px", }}>{userErr}</p>
 
               {/* Password */}
               <div>
@@ -130,15 +172,17 @@ const Login = () => {
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
+                    onCut={handleCopy}
+                    onCopy={handleCopy}
+                    onPaste={handleCopy}
+                    autoComplete='off'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                    placeholder="Enter password" onFocus={verify_User} required />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
-                  >
+                    placeholder="Enter password"
+                    onFocus={verify_User}
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
                     {showPassword ? (
                       <EyeSlashIcon className="h-5 w-5" />
                     ) : (
@@ -147,6 +191,7 @@ const Login = () => {
                   </button>
                 </div>
               </div>
+              <p className="text-danger"style={{ fontSize: "13px", fontWeight: "400", marginTop: "0px",}}>{passErr}</p>
 
               {/* Select Company */}
               <div>
@@ -154,10 +199,10 @@ const Login = () => {
                   Select Company
                 </label>
                 <select
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
+                  ref={myRef}
+                  value={company}
+                  onChange={(e) => { setCompany(e.target.value); userNameRef.current?.focus(); }}
                   className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                  required
                 >
                   <option value="">-- Select Company --</option>
                   {companies.map((c) => (
@@ -167,6 +212,7 @@ const Login = () => {
                   ))}
                 </select>
               </div>
+              <p className="text-danger" style={{ fontSize: "13px", fontWeight: "400", marginTop: "0px", }}>{compErr}</p>
 
               {/* Forgot password */}
               <div className="flex justify-end items-center">

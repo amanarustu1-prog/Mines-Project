@@ -67,11 +67,30 @@ const agencyOptions = [
 const columns = [
     { name: "Code", selector: (row: any) => row.code, sortable: true },
     { name: "Description", selector: (row: any) => row.description, sortable: true },
-    { name: "Status", selector: (row: any) => row.isActive, sortable: true },
+    {
+        name: "Status",
+        sortable: true,
+        cell: (row: any) => (
+            <span
+                className={row.isActive ? "text-green-600 font-medium" : "text-red-600 font-medium"}
+            >
+                {row.isActive ? "Active" : "Inactive"}
+            </span>
+        ),
+    },
     { name: "Created Date", selector: (row: any) => row.createdDate, sortable: true },
     { name: "Last Modified", selector: (row: any) => row.lastModified, sortable: true },
-    { name: "Actions", selector: (row: any) => row.actions },
-    
+    {
+        name: "Actions",
+        cell: (row: any) => (
+            <div className="flex gap-2">
+                <button onClick={() => console.log("Edit", row)}>✏️</button>
+                <button onClick={() => console.log("Delete", row)}>🗑️</button>
+            </div>
+        ),
+    }
+
+
 ];
 
 const data = [
