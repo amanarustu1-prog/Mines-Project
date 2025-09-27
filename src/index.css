@@ -395,3 +395,18 @@ div[data-testid="table-header"],
     border-radius: 0;
   }
 } */
+
+
+
+
+
+.basic-single-select .select__value-container {
+  max-height: 36px;   /* 👈 यहाँ अपनी required height set करें */
+  overflow-y: auto;    /* 👈 scroll enable */
+}
+
+/* React Select global style */
+.select__value-container {
+  max-height: 36px;   /* अपनी required height */
+  overflow-y: auto;   /* scroll enable */
+}

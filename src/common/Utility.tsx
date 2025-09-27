@@ -134,10 +134,12 @@ export const Rules = {
 };
 
 
+
+
 export const customStyles = {
     headCells: {
         style: {
-            backgroundColor: '#3b82f6',
+            backgroundColor: '#60a5fa',
             color: '#ffffff',
             fontWeight: 'bold',
             fontSize: '14px',
@@ -157,3 +159,15 @@ export const customStyles = {
         },
     },
 };
+
+
+ export const multiValue = {
+  valueContainer: (provided, state) => ({
+    ...provided,
+    maxHeight: '36px',    // अपनी required height
+    overflowY: 'auto',    // scroll enable
+  }),
+  // अगर चाहो तो menu, multiValue, placeholder आदि customize कर सकते हो
+};
+
+
