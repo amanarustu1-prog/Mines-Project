@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
-import { AddDeleteUpadate, fetchPostData } from '@/components/hooks/Api';
+import { AddDeleteUpadate } from '@/components/hooks/Api';
+import DataTable from 'react-data-table-component';
+import { customStyles, multiValue } from '@/common/Utility';
+import ConfirmModal from '@/common/ConfirmModal';
+import Select from "react-select";
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -85,8 +89,66 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [listData, setListData] = useState<ListItem[]>([]);
     const [statusFilter, setStatusFilter] = useState<number | string>(1);
     const [bloodGroupOptions, setBloodGroupOptions] = useState<any[]>([]);
-    const [bloodGroupCode, setBloodGroupCode] = useState('');
+    const [bloodGroupCode, setBloodGroupCode] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
+    const [showModal, setShowModal] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [inactiveCount, setInactiveCount] = useState(0);
+    const [activeCount, setActiveCount] = useState(0);
+    const [statusSortOrder, setStatusSortOrder] = useState<"none" | "activeFirst" | "inactiveFirst">("none");
+
+
+    //Define columns
+    const columns = [
+        { name: 'Code', selector: (row: ListItem) => row[props.col3], sortable: true },
+        {
+            name: 'Description',
+            selector: (row: ListItem) => row[props.col5],
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            cell: (row: ListItem) => (
+                <span className={`list-badge ${row.IsActive ? 'active' : 'inactive'}`}>
+                    {row.IsActive ? 'Active' : 'Inactive'}
+                </span>
+            ),
+            sortable: true,
+        },
+        {
+            name: 'Created Date',
+            selector: (row: ListItem) => formatDate(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: ListItem) => formatDate(row.UpdatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: (row: ListItem) => (
+                <div className="list-action-buttons">
+                    <button
+                        onClick={() => {
+                            setSelectedId(row[props.col4]); // clicked item id
+                            setShowModal(true);             // show confirmation modal
+                        }}
+                        className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
+                        title={row.IsActive ? 'Deactivate' : 'Activate'}
+                    >
+                        {row.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
+                    </button>
+
+                    <button onClick={() => handleEdit(row)} className="list-button ghost primary" title="Edit">
+                        <Edit3 className="list-icon-sm" />
+                    </button>
+                </div>
+            ),
+        },
+    ];
 
     // Dropdown-data
     useEffect(() => {
@@ -108,21 +170,58 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         }
         fetchDropDown();
     }, [props.dropDownUrl]);
+    
 
-    const fetchData = async () => {
-        try {
-            const value = { IsActive: statusFilter, CompanyId: Number(localStorage.getItem("employeeID")) };
-            const response = await fetchPostData(props.getUrl, value);
-            // console.log(response);
-            setListData(response);
-        } catch (err) {
-            throw err;
-        }
+    const fetchCounts = async () => {
+  try {
+    const [activeResp, inactiveResp] = await Promise.all([
+      axios.post(props.getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("employeeID")) }),
+      axios.post(props.getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("employeeID")) }),
+    ]);
+
+    setActiveCount(JSON.parse(activeResp.data.data).Table?.length || 0);
+    setInactiveCount(JSON.parse(inactiveResp.data.data).Table?.length || 0);
+  } catch (err) {
+    toastifyError("Error fetching counts");
+  }
+};
+
+    const options = bloodGroupOptions.map(opt => ({
+        value: opt.CompanyID,
+        label: opt.CompanyName
+    }));
+
+const fetchData = async () => {
+  try {
+    if (filter === "all") {
+      const [activeResp, inactiveResp] = await Promise.all([
+        axios.post(props.getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("employeeID")) }),
+        axios.post(props.getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("employeeID")) }),
+      ]);
+
+      const activeData = JSON.parse(activeResp.data.data).Table || [];
+      const inactiveData = JSON.parse(inactiveResp.data.data).Table || [];
+
+      setListData([...activeData, ...inactiveData]);
+    } else {
+      const value = {
+        IsActive: filter === "active" ? 1 : 0,
+        CompanyId: Number(localStorage.getItem("employeeID")),
+      };
+      const response = await axios.post(props.getUrl, value);
+      const parsedData = JSON.parse(response.data.data).Table || [];
+      setListData(parsedData);
     }
+  } catch (err) {
+    toastifyError("Error fetching data");
+  }
+};
+
 
     useEffect(() => {
         fetchData();
-    }, [props.getUrl, statusFilter]);
+        fetchCounts();
+    }, [props.getUrl, filter]);
 
     const handleEdit = (item: ListItem) => {
         setEditItemId(item[props.col4]);
@@ -135,11 +234,27 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         setStatusFilter(item.IsActive ? 1 : 0);
     }
 
-    const filteredData = listData.filter((item) => {
-        if (statusFilter === "1") return item.IsActive;
-        if (statusFilter === "0") return !item.IsActive;
-        return true;
-    });
+    const filteredData = useMemo(() => {
+        const searchLower = search.trim().toLowerCase();
+
+        return listData.filter(item => {
+            // 1. Status filter
+            if (filter === "active" && !item.IsActive) return false;
+            if (filter === "inactive" && item.IsActive) return false;
+
+            // 2. Search filter (check all values of the item)
+            if (searchLower) {
+                const values = Object.values(item)
+                    .filter(v => v != null) // null/undefined skip
+                    .map(v => v.toString().toLowerCase());
+
+                const matched = values.some(val => val.includes(searchLower));
+                if (!matched) return false;
+            }
+
+            return true;
+        });
+    }, [listData, filter, search]);
 
     // New item form data
     const [newItem, setNewItem] = useState({
@@ -147,23 +262,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         description: '',
         isActive: true
     });
-
-    // const deleteItem = async (id: number) => {
-    //     alert(id);
-    //     try{
-    //        const response = await axios.post(props.delUrl, {[props.col4]: id, isActive: statusFilter});
-    //        console.log(response.data);
-    //        if(response.data.success){
-    //             await fetchData(); 
-    //             toastifySuccess("Item deleted successfully!");
-    //        }else{
-    //             toastifyError("Failed to delete item");
-    //        }
-    //     }catch(err){
-    //         console.error("Error deleting item:", err);
-    //         toastifyError("Error deleting item");
-    //     }
-    // }
 
     const deleteItem = async (id: number) => {
         const item = listData.find(x => x[props.col4] === id);
@@ -227,14 +325,15 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
     // Insert-Data
     const handleSaveItem = async () => {
-        if (!newItem.code.trim() || !newItem.description.trim() || !bloodGroupCode) {
+        if (!newItem.code.trim() || !newItem.description.trim() || bloodGroupCode.length === 0) {
             toastifyError("Please fill in all required fields");
             return;
         }
 
+
         const payload = {
             [props.col5]: newItem.description,
-            CompanyId: 1,
+            CompanyId: bloodGroupCode.map(opt => opt.value),
             [props.col3]: newItem.code
         };
 
@@ -281,8 +380,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     //     );
     // };
 
-    const activeCount = listData.filter(item => item.IsActive).length;
-    const inactiveCount = listData.filter(item => !item.IsActive).length;
+    // const activeCount = listData.filter(item => item.IsActive).length;
+    // const inactiveCount = listData.filter(item => !item.IsActive).length;
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -305,7 +404,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0" onClick={() => setFilter("active")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon active">
@@ -319,7 +418,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0" onClick={() => setFilter("inactive")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -333,7 +432,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0">
+                            <div className="list-card mb-0"  onClick={() => setFilter("all")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon total">
@@ -359,7 +458,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                     <div className="grid grid-cols-12 gap-4 items-center">
                                         {/* Item Code */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.code}
@@ -371,7 +470,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         </div>
 
                                         {/* Description */}
-                                        <div className="col-span-2">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.description}
@@ -383,7 +482,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         </div>
 
                                         {/* Status */}
-                                        <div className="col-span-2">
+                                        {/* <div className="col-span-2">
                                             <select
                                                 value={statusFilter}
                                                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -393,23 +492,25 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                 <option value="1">Active</option>
                                                 <option value="0">Inactive</option>
                                             </select>
-                                        </div>
+                                        </div> */}
 
                                         {/* Company */}
-                                        <select
-                                            value={bloodGroupCode}
-                                            onChange={(e) => setBloodGroupCode(e.target.value)}
-                                            className="list-compact-select w-full py-1 px-2 h-8 text-sm"
-                                        >
-                                            <option value="">Select {props.col1}</option>
-                                            {
-                                                bloodGroupOptions.map((opt) => (
-                                                    <option key={opt.CompanyID} value={opt['CompanyID']}>
-                                                        {opt['CompanyName']}
-                                                    </option>
-                                                ))
-                                            }
-                                        </select>
+                                        <div className="col-span-4">
+
+<Select
+    value={bloodGroupCode} // now it's array of {value,label}
+    onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
+    options={options}
+    isMulti
+    isClearable
+    closeMenuOnSelect={false}
+    hideSelectedOptions={true}
+    placeholder={`Select ${props.col1}`}
+    className="basic-multi-select"
+    styles={multiValue}
+/>
+</div>
+
 
                                         {/* Buttons */}
                                         <div className="col-span-2 flex gap-2">
@@ -432,8 +533,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                         {/* Filter and Search Bar */}
 
                         {/* Items Table */}
-                        <div className="list-card">
-                            {/* Table-Data */}
+                        {/* <div className="list-card">
                             <div className="list-card-content" style={{ padding: 0 }}>
                                 <div className="list-table-container">
                                     <table className="list-table">
@@ -484,6 +584,23 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                     </table>
                                 </div>
                             </div>
+                        </div> */}
+                        <div className="compact" style={{ height: '100%' }}>
+                            <div className="flex justify-end">
+                                <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                                    className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                                    placeholder="Search" maxLength={300} />
+                            </div>
+                            <DataTable
+                                columns={columns}
+                                data={filteredData}
+                                pagination
+                                highlightOnHover
+                                noDataComponent="No items found matching your criteria"
+                                fixedHeader
+                                fixedHeaderScrollHeight="300px"
+                                customStyles={customStyles}
+                            />
                         </div>
                     </div>
                 );
@@ -493,7 +610,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     };
 
     return (
-        <div className="list-management-container ">
+        <>
+          <div className="list-management-container ">
             {/* Header */}
 
             {/* Main Container */}
@@ -502,7 +620,17 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 {/* Content Area */}
                 {renderTabContent()}
             </div>
-        </div>
+          </div>
+
+          <ConfirmModal show={showModal}
+            handleClose={() => setShowModal(false)}
+            handleConfirm={() => {
+              if (selectedId !== null) {
+                deleteItem(selectedId);  
+              }
+              setShowModal(false);        
+          }}/>
+        </>
     );
 }
 
