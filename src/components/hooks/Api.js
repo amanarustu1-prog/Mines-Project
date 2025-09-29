@@ -4,8 +4,82 @@ import { Aes256Decrypt, Aes256Encrypt } from '../Common/Utility';
 const encDecStatus = "false";
 var IsEncDec = encDecStatus == 'true' || encDecStatus == true
 
+//---------Get-Data
+export const fetch_Post_Data = async (url, postData) => {
+    let Data
+    let Permision
+    var reUseUrl = url;
+    var reUseData = postData;
+    try {
+        if (Object.keys(postData).length !== 0) {
+            const ipAddress = sessionStorage.getItem('IPAddress');
+            if (ipAddress) {
+                postData.IPAddress = ipAddress;
+            }
+            //--------------> New code with EncDec <------------ Don't Remove--------By DK
 
-// Api.js
+            if (IsEncDec) {
+                const EncPostData = Aes256Encrypt(JSON.stringify(postData));
+                const DecPostData = { 'EDpostData': EncPostData }
+                const res = await axios.post(url, DecPostData);
+                const decr = res.data.data;
+                const decryptedData = await Aes256Decrypt(decr);
+                const TextData = JSON.parse(decryptedData)
+                Permision = TextData.Table1
+                Data = TextData.Table
+                return { Data, Permision }
+            } else {
+                const res = await axios.post(url, postData);
+                const decr = res.data.data
+                const TextData = JSON.parse(decr)
+                Permision = TextData.Table1
+                Data = TextData.Table
+                return { Data, Permision }
+            }
+        } else {
+            console.log("%c🚀 ~ fetch_Post_Data: " + `${url}-----${postData}`, "padding: 6px; font-weight: bold; background-color: #2ecc71; color: black'");
+
+        }
+    } catch (error) {
+        if (error.response.status === 401) {
+            if (Object.keys(reUseData).length !== 0) {
+
+                const ipAddress = sessionStorage.getItem('IPAddress');
+                if (ipAddress) {
+                    reUseData.IPAddress = ipAddress;
+                }
+
+                if (IsEncDec) {
+                    const EncPostData = Aes256Encrypt(JSON.stringify(reUseData));
+                    const DecPostData = { 'EDpostData': EncPostData }
+                    const res = await axios.post(reUseUrl, DecPostData);
+                    const decr = res.data.data
+                    const decryptedData = await Aes256Decrypt(decr);
+                    const TextData = JSON.parse(decryptedData)
+                    Permision = TextData.Table1
+                    Data = TextData.Table
+                    return { Data, Permision }
+                } else {
+                    const res = await axios.post(reUseUrl, reUseData);
+                    const decr = res.data.data
+                    const TextData = JSON.parse(decr)
+                    Permision = TextData.Table1
+                    Data = TextData.Table
+                    return { Data, Permision }
+                }
+            } else {
+                console.log("%c🚀 ~ fetch_Post_Data: " + `${url}-----${postData}`, "padding: 6px; font-weight: bold; background-color: #2ecc71; color: black'");
+
+            }
+        }
+        if (error.response) {
+            console.log("%c🚀 ~ fetch_Post_Data: " + `${error.response?.request?.responseURL} -- ${error.response?.data?.Message}`, "padding: 6px; font-weight: bold; background-color: #2ecc71; color: black'");
+
+        }
+    }
+};
+
+// --------Insert-Data
 export const fetchPostData = async (url, postData) => {
     var reUseUrl = url;
     var reUseData = postData;
@@ -81,8 +155,7 @@ export const fetchPostData = async (url, postData) => {
 };
 
 
-// --------ADD Update Delete Data  With API Post Request
-
+// --------ADD Update,Delete Data  With API Post Request
 export const AddDeleteUpadate = async (url, postData) => {
     if (Object.keys(postData).length !== 0) {
         const ipAddress = sessionStorage.getItem('IPAddress');

@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
-import { AddDeleteUpadate } from '@/components/hooks/Api';
 import DataTable from 'react-data-table-component';
 import { customStyles, multiValue } from '@/common/Utility';
 import ConfirmModal from '@/common/ConfirmModal';
 import Select from "react-select";
+import { fetchPostData, AddDeleteUpadate, fetch_Post_Data } from '@/components/hooks/Api';
+import ReorderableHeader from '@/components/Common/ReorderableHeader';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -92,17 +94,21 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [bloodGroupCode, setBloodGroupCode] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
     const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
+    const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [inactiveCount, setInactiveCount] = useState(0);
     const [activeCount, setActiveCount] = useState(0);
-    const [statusSortOrder, setStatusSortOrder] = useState<"none" | "activeFirst" | "inactiveFirst">("none");
+    const [statusSortAsc, setStatusSortAsc] = useState(true); //For sorting Active/Inactive
 
 
     //Define columns
     const columns = [
-        { name: 'Code', selector: (row: ListItem) => row[props.col3], sortable: true },
+        {
+            name: 'Code',
+            selector: (row: ListItem) => row[props.col3],
+            sortable: true,
+        },
         {
             name: 'Description',
             selector: (row: ListItem) => row[props.col5],
@@ -116,6 +122,16 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 </span>
             ),
             sortable: true,
+            sortFunction: (rowA: ListItem, rowB: ListItem) => {
+                if (statusSortAsc) {
+                    return (rowA.IsActive === rowB.IsActive) ? 0 : rowA.IsActive ? -1 : 1;
+                } else {
+                    return (rowA.IsActive === rowB.IsActive) ? 0 : rowA.IsActive ? 1 : -1;
+                }
+            },
+            onSort: () => {
+                setStatusSortAsc((prev) => !prev);
+            }
         },
         {
             name: 'Created Date',
@@ -150,6 +166,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         },
     ];
 
+    const resizeableColumns = useResizableColumns(columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
+
     // Dropdown-data
     useEffect(() => {
         const fetchDropDown = async () => {
@@ -170,53 +191,53 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         }
         fetchDropDown();
     }, [props.dropDownUrl]);
-    
 
     const fetchCounts = async () => {
-  try {
-    const [activeResp, inactiveResp] = await Promise.all([
-      axios.post(props.getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("employeeID")) }),
-      axios.post(props.getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("employeeID")) }),
-    ]);
+        try {
+            const [activeResp, inactiveResp] = await Promise.all([
+                fetch_Post_Data(props.getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("employeeID")) }),
+                fetch_Post_Data(props.getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("employeeID")) }),
+            ]);
 
-    setActiveCount(JSON.parse(activeResp.data.data).Table?.length || 0);
-    setInactiveCount(JSON.parse(inactiveResp.data.data).Table?.length || 0);
-  } catch (err) {
-    toastifyError("Error fetching counts");
-  }
-};
+            setActiveCount(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
+            setInactiveCount(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
+        } catch (err) {
+            toastifyError("Error fetching counts");
+        }
+    };
 
     const options = bloodGroupOptions.map(opt => ({
         value: opt.CompanyID,
         label: opt.CompanyName
     }));
 
-const fetchData = async () => {
-  try {
-    if (filter === "all") {
-      const [activeResp, inactiveResp] = await Promise.all([
-        axios.post(props.getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("employeeID")) }),
-        axios.post(props.getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("employeeID")) }),
-      ]);
+    const fetchData = async () => {
+        try {
+            if (filter === "all") {
+                const activeResp = await fetch_Post_Data(props.getUrl, { IsActive: "", CompanyId: Number(localStorage.getItem("employeeID")) });
+                fetchCounts();
+                const activeData = activeResp?.Data || [];
+                // const inactiveData = inactiveResp?.Data || [];
 
-      const activeData = JSON.parse(activeResp.data.data).Table || [];
-      const inactiveData = JSON.parse(inactiveResp.data.data).Table || [];
-
-      setListData([...activeData, ...inactiveData]);
-    } else {
-      const value = {
-        IsActive: filter === "active" ? 1 : 0,
-        CompanyId: Number(localStorage.getItem("employeeID")),
-      };
-      const response = await axios.post(props.getUrl, value);
-      const parsedData = JSON.parse(response.data.data).Table || [];
-      setListData(parsedData);
-    }
-  } catch (err) {
-    toastifyError("Error fetching data");
-  }
-};
-
+                setListData([
+                    ...(Array.isArray(activeData) ? activeData : []),
+                    // ...(Array.isArray(inactiveData) ? inactiveData : [])
+                ])
+            } else {
+                const value = {
+                    IsActive: filter === "active" ? 1 : 0,
+                    CompanyId: Number(localStorage.getItem("employeeID")),
+                };
+                fetchCounts();
+                const response = await fetch_Post_Data(props.getUrl, value);
+                // console.log(response?.Data);
+                const parsedData = response?.Data;
+                setListData(Array.isArray(parsedData) ? parsedData : []);
+            }
+        } catch (err) {
+            toastifyError("Error fetching data");
+        }
+    };
 
     useEffect(() => {
         fetchData();
@@ -230,7 +251,7 @@ const fetchData = async () => {
             description: item[props.col5],
             isActive: item.IsActive,
         });
-        setBloodGroupCode(item.BloodGroupCode || "");
+        setBloodGroupCode(item.BloodGroupCode ? [{ value: item.BloodGroupCode, label: item.BloodGroupCode }] : []);
         setStatusFilter(item.IsActive ? 1 : 0);
     }
 
@@ -238,20 +259,14 @@ const fetchData = async () => {
         const searchLower = search.trim().toLowerCase();
 
         return listData.filter(item => {
-            // 1. Status filter
             if (filter === "active" && !item.IsActive) return false;
             if (filter === "inactive" && item.IsActive) return false;
 
-            // 2. Search filter (check all values of the item)
             if (searchLower) {
-                const values = Object.values(item)
-                    .filter(v => v != null) // null/undefined skip
-                    .map(v => v.toString().toLowerCase());
-
+                const values = Object.values(item).filter(v => v != null).map(v => v.toString().toLowerCase());
                 const matched = values.some(val => val.includes(searchLower));
                 if (!matched) return false;
             }
-
             return true;
         });
     }, [listData, filter, search]);
@@ -293,7 +308,7 @@ const fetchData = async () => {
             [props.col4]: id,
             [props.col5]: newItem.description,
             [props.col3]: newItem.code,
-            CompanyId: Number(localStorage.getItem("employeeID"))
+            CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
         }
         try {
             const resp = await AddDeleteUpadate(props.upUrl, payload);
@@ -304,7 +319,7 @@ const fetchData = async () => {
 
                 setEditItemId(null);
                 setNewItem({ code: "", description: "", isActive: true });
-                setBloodGroupCode("");
+                setBloodGroupCode([]);
             } else {
                 toastifyError("Failed to update item");
             }
@@ -330,10 +345,9 @@ const fetchData = async () => {
             return;
         }
 
-
         const payload = {
             [props.col5]: newItem.description,
-            CompanyId: bloodGroupCode.map(opt => opt.value),
+            CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
             [props.col3]: newItem.code
         };
 
@@ -342,8 +356,9 @@ const fetchData = async () => {
             // console.log(response);
             setListData(prev => [...prev, response]);
             setNewItem({ code: '', description: '', isActive: true });
-            setBloodGroupCode('');
+            setBloodGroupCode([]);
             fetchData();
+            fetchCounts();
             toastifySuccess("Item saved successfully!");
         } catch (error) {
             // console.error("Error saving item:", error);
@@ -352,36 +367,22 @@ const fetchData = async () => {
     };
 
     const formatDate = (dateString?: string): string => {
-        if (!dateString) return ""; 
+        if (!dateString) return "";
         const date = new Date(dateString);
 
-        return date.toLocaleString("en-GB", {
+        const formattedDate = date.toLocaleString("en-GB", {
             day: "2-digit",
-            month: "2-digit", 
+            month: "2-digit",
             year: "numeric",
+        });
+
+        const formattedTime = date.toLocaleTimeString("en-GB", {
             hour: "2-digit",
             minute: "2-digit",
-            // second: "2-digit",
-            // hour12: true,   
-        });
+        })
+
+        return `${formattedDate} ${formattedTime}`;
     };
-
-    // const toggleItemStatus = (id: number) => {
-    //     setListData(prev =>
-    //         prev.map(item =>
-    //             item.Id === id
-    //                 ? {
-    //                     ...item,
-    //                     isActive: !item.IsActive,
-    //                     lastModified: new Date().toISOString().split('T')[0]
-    //                 }
-    //                 : item
-    //         )
-    //     );
-    // };
-
-    // const activeCount = listData.filter(item => item.IsActive).length;
-    // const inactiveCount = listData.filter(item => !item.IsActive).length;
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -404,7 +405,7 @@ const fetchData = async () => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0" onClick={() => setFilter("active")}>
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("active")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon active">
@@ -418,7 +419,7 @@ const fetchData = async () => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0" onClick={() => setFilter("inactive")}>
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -432,7 +433,7 @@ const fetchData = async () => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0"  onClick={() => setFilter("all")}>
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon total">
@@ -440,7 +441,7 @@ const fetchData = async () => {
                                         </div>
                                         <div>
                                             <p className="list-summary-text">Total Items</p>
-                                            <p className="list-summary-number total">{listData.length}</p>
+                                            <p className="list-summary-number total">{activeCount + inactiveCount}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -481,36 +482,21 @@ const fetchData = async () => {
                                             />
                                         </div>
 
-                                        {/* Status */}
-                                        {/* <div className="col-span-2">
-                                            <select
-                                                value={statusFilter}
-                                                onChange={(e) => setStatusFilter(e.target.value)}
-                                                className="list-compact-select w-full py-1 px-2 h-8 text-sm"
-                                            >
-                                                <option value="">Select Status</option>
-                                                <option value="1">Active</option>
-                                                <option value="0">Inactive</option>
-                                            </select>
-                                        </div> */}
-
                                         {/* Company */}
                                         <div className="col-span-4">
-
-<Select
-    value={bloodGroupCode} // now it's array of {value,label}
-    onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
-    options={options}
-    isMulti
-    isClearable
-    closeMenuOnSelect={false}
-    hideSelectedOptions={true}
-    placeholder={`Select ${props.col1}`}
-    className="basic-multi-select"
-    styles={multiValue}
-/>
-</div>
-
+                                            <Select
+                                                value={bloodGroupCode} // now it's array of {value,label}
+                                                onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
+                                                options={options}
+                                                isMulti
+                                                isClearable
+                                                closeMenuOnSelect={false}
+                                                hideSelectedOptions={true}
+                                                placeholder={`Select ${props.col1}`}
+                                                className="basic-multi-select"
+                                                styles={multiValue}
+                                            />
+                                        </div>
 
                                         {/* Buttons */}
                                         <div className="col-span-2 flex gap-2">
@@ -531,60 +517,6 @@ const fetchData = async () => {
                         </div>
 
                         {/* Filter and Search Bar */}
-
-                        {/* Items Table */}
-                        {/* <div className="list-card">
-                            <div className="list-card-content" style={{ padding: 0 }}>
-                                <div className="list-table-container">
-                                    <table className="list-table">
-                                        <thead className="list-table-header">
-                                            <tr>
-                                                <th>Code</th>
-                                                <th>Description</th>
-                                                <th>Status</th>
-                                                <th>Created Date</th>
-                                                <th>Last Modified</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredData.map((item, Id) => (
-                                                <tr key={item[props.col4] || item.Id} className="list-table-row">
-                                                    <td className="list-table-cell">{item[props.col3]}</td>
-                                                    <td className="list-table-cell">{item[props.col5]}</td>
-                                                    <td className="list-table-cell">
-                                                        <span className={`list-badge ${item.IsActive ? 'active' : 'inactive'}`}>
-                                                            {item.IsActive ? 'Active' : 'Inactive'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="list-table-cell mono">{formatDate(item.CreatedDate)}</td>
-                                                    <td className="list-table-cell mono">{formatDate(item.UpdatedDate)}</td>
-                                                    <td className="list-table-cell">
-                                                        <div className="list-action-buttons">
-                                                            <button onClick={() => deleteItem(item[props.col4])}
-                                                                className={`list-button ghost ${item.IsActive ? 'danger' : 'success'}`}
-                                                                title={item.IsActive ? 'Deactivate' : 'Activate'}>
-                                                                {item.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
-                                                            </button>
-                                                            <button onClick={() => handleEdit(item)} className="list-button ghost primary" title="Edit">
-                                                                <Edit3 className="list-icon-sm" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            {filteredData.length === 0 && (
-                                                <tr>
-                                                    <td colSpan={6} className="list-table-cell empty">
-                                                        No items found matching your criteria
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div> */}
                         <div className="compact" style={{ height: '100%' }}>
                             <div className="flex justify-end">
                                 <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
@@ -592,14 +524,18 @@ const fetchData = async () => {
                                     placeholder="Search" maxLength={300} />
                             </div>
                             <DataTable
-                                columns={columns}
+                                columns={resizeableColumns}
                                 data={filteredData}
+                                // dense //To-Reduce-Space
                                 pagination
                                 highlightOnHover
                                 noDataComponent="No items found matching your criteria"
+                                defaultSortFieldId="status"
                                 fixedHeader
                                 fixedHeaderScrollHeight="300px"
                                 customStyles={customStyles}
+                                responsive
+                                persistTableHead
                             />
                         </div>
                     </div>
@@ -611,25 +547,25 @@ const fetchData = async () => {
 
     return (
         <>
-          <div className="list-management-container ">
-            {/* Header */}
+            <div className="list-management-container ">
+                {/* Header */}
 
-            {/* Main Container */}
-            <div className="list-main-container container">
+                {/* Main Container */}
+                <div className="list-main-container container">
 
-                {/* Content Area */}
-                {renderTabContent()}
+                    {/* Content Area */}
+                    {renderTabContent()}
+                </div>
             </div>
-          </div>
 
-          <ConfirmModal show={showModal}
-            handleClose={() => setShowModal(false)}
-            handleConfirm={() => {
-              if (selectedId !== null) {
-                deleteItem(selectedId);  
-              }
-              setShowModal(false);        
-          }}/>
+            <ConfirmModal show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleConfirm={() => {
+                    if (selectedId !== null) {
+                        deleteItem(selectedId);
+                    }
+                    setShowModal(false);
+                }} />
         </>
     );
 }
