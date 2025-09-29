@@ -8,6 +8,7 @@ import Select from "react-select";
 import { fetchPostData, AddDeleteUpadate, fetch_Post_Data } from '@/components/hooks/Api';
 import ReorderableHeader from '@/components/Common/ReorderableHeader';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
+import SelectBox from '@/common/SelectBox';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -100,6 +101,9 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [inactiveCount, setInactiveCount] = useState(0);
     const [activeCount, setActiveCount] = useState(0);
     const [statusSortAsc, setStatusSortAsc] = useState(true); //For sorting Active/Inactive
+    const [multiSelected, setMultiSelected] = useState({
+        optionSelected: null
+    })
 
 
     //Define columns
@@ -384,6 +388,24 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         return `${formattedDate} ${formattedTime}`;
     };
 
+    const CompanyChange = (multiSelected: any) => {
+        setMultiSelected({ optionSelected: multiSelected });
+        const id: any[] = [];
+        const name: any[] = []
+        if (multiSelected) {
+            multiSelected.map((item: any, i: any) => {
+                id.push(item.value);
+                name.push(item.label)
+            })
+            setNewItem({
+                ...newItem,
+                CompanyID: id.toString(),
+                CompanyName: name.toString()
+            });
+
+        }
+    }
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'list-overview':
@@ -484,7 +506,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                         {/* Company */}
                                         <div className="col-span-4">
-                                            <Select
+                                            {/* <Select
                                                 value={bloodGroupCode} // now it's array of {value,label}
                                                 onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
                                                 options={options}
@@ -495,6 +517,15 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                 placeholder={`Select ${props.col1}`}
                                                 className="basic-multi-select"
                                                 styles={multiValue}
+                                            /> */}
+                                            <SelectBox
+                                                options={bloodGroupOptions}
+                                                isMulti
+                                                closeMenuOnSelect={false}
+                                                hideSelectedOptions={true}
+                                                onChange={CompanyChange}
+                                                allowSelectAll={true}
+                                                value={multiSelected.optionSelected}
                                             />
                                         </div>
 
