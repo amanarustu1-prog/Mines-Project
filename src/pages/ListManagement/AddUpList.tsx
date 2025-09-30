@@ -9,6 +9,8 @@ import { fetchPostData, AddDeleteUpadate, fetch_Post_Data } from '@/components/h
 import ReorderableHeader from '@/components/Common/ReorderableHeader';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import SelectBox from '@/common/SelectBox';
+import { Comman_changeArrayFormat } from '@/common/ChangeArrayFormat';
+import { Space_Not_Allow } from '@/common/validation';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -101,10 +103,36 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [inactiveCount, setInactiveCount] = useState(0);
     const [activeCount, setActiveCount] = useState(0);
     const [statusSortAsc, setStatusSortAsc] = useState(true); //For sorting Active/Inactive
-    const [multiSelected, setMultiSelected] = useState({
-        optionSelected: null
+    const [multiSelected, setMultiSelected] = useState({ optionSelected: null });
+    const [errors, setErrors] = useState({
+        'CodeError': '',
+        'DescriptionError': '',
     })
 
+    useEffect(() => {
+      get_NIBRS_Drp_Data('1')
+    }, [])
+
+    const get_NIBRS_Drp_Data = () => {
+        const val = { EmployeeID: '1' }
+        fetchPostData(props.dropDownUrl, val).then((res) => {
+            if (res) {
+                setBloodGroupOptions(Comman_changeArrayFormat(res, 'CompanyID', 'CompanyName'));
+            } else {
+                setBloodGroupOptions([]);
+            }
+        })
+    }
+
+    const check_Validation_Error = (e:any) => {
+        e.preventDefault()
+        if (Space_Not_Allow(newItem.code)) {
+            setErrors(prevValues => { return { ...prevValues, ['CodeError']: Space_Not_Allow(newItem.code) } })
+        }
+        if (Space_Not_Allow(newItem.description)) {
+            setErrors(prevValues => { return { ...prevValues, ['DescriptionError']: Space_Not_Allow(newItem.description) } })
+        }
+    }
 
     //Define columns
     const columns = [
@@ -406,6 +434,18 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         }
     }
 
+    useEffect(() => {
+        resetForm();
+    }, [activeTab, props.getUrl])
+
+    const resetForm = () => {
+      setNewItem({ code: "", description: "", isActive: true });
+      setBloodGroupCode([]);
+      setMultiSelected({ optionSelected: null });
+      setEditItemId(null);
+    };
+
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'list-overview':
@@ -481,32 +521,38 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                     <div className="grid grid-cols-12 gap-4 items-center">
                                         {/* Item Code */}
-                                        <div className="col-span-3">
+                                        <div className="col-span-2">
                                             <input
                                                 type="text"
                                                 value={newItem.code}
                                                 onChange={(e) => handleInputChange("code", e.target.value)}
-                                                className="list-compact-input w-full text-sm py-1 px-2 h-8"
+                                                className="requiredColor list-compact-input w-full text-sm py-1 px-2 h-9"
                                                 placeholder="Item Code"
                                                 maxLength={20}
                                             />
+                                            {errors.CodeError !== 'true' ? (
+                                                <p style={{ color: 'red', fontSize: '11px', margin: '0px', padding: '0px' }}>{errors.CodeError}</p>
+                                            ) : null}
                                         </div>
 
                                         {/* Description */}
-                                        <div className="col-span-3">
+                                        <div className="col-span-4">
                                             <input
                                                 type="text"
                                                 value={newItem.description}
                                                 onChange={(e) => handleInputChange("description", e.target.value)}
-                                                className="list-compact-input w-full text-sm py-1 px-2 h-8"
+                                                className="requiredColor list-compact-input w-full text-sm py-1 px-2 h-9"
                                                 placeholder="Description"
                                                 maxLength={300}
                                             />
+                                            {errors.DescriptionError !== 'true' ? (
+                                                <p style={{ color: 'red', fontSize: '11px', margin: '0px', padding: '0px' }}>{errors.DescriptionError}</p>
+                                            ) : null}
                                         </div>
 
                                         {/* Company */}
                                         <div className="col-span-4">
-                                            {/* <Select
+                                            <Select
                                                 value={bloodGroupCode} // now it's array of {value,label}
                                                 onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
                                                 options={options}
@@ -517,8 +563,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                 placeholder={`Select ${props.col1}`}
                                                 className="basic-multi-select"
                                                 styles={multiValue}
-                                            /> */}
-                                            <SelectBox
+                                            />
+                                            {/* <SelectBox
                                                 options={bloodGroupOptions}
                                                 isMulti
                                                 closeMenuOnSelect={false}
@@ -526,10 +572,24 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                 onChange={CompanyChange}
                                                 allowSelectAll={true}
                                                 value={multiSelected.optionSelected}
-                                            />
+                                            /> */}
                                         </div>
 
                                         {/* Buttons */}
+                                        {/* <div className="col-span-2 flex gap-2">
+                                            {
+                                                editItemId ?
+                                                    <button type="button" className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8" onClick={check_Validation_Error}>Update</button>
+                                                    :
+                                                    <button type="button" className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8" onClick={check_Validation_Error}>Save</button>
+                                            }
+                                            <button onClick={() => {
+                                                setNewItem({ code: "", description: "", isActive: true }); setMultiSelected({ optionSelected: ' ' });
+                                            }}
+                                                className="list-button outline small flex-1 h-8">
+                                                Clear
+                                            </button>
+                                        </div> */}
                                         <div className="col-span-2 flex gap-2">
                                             <button onClick={() => (editItemId ? updatedItem(editItemId) : handleSaveItem())}
                                                 className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8">

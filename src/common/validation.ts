@@ -80,6 +80,20 @@ export const MunicipalityCodeValidator = (code: string | null): string =>
   /^\d{4}$/.test(code) ? 'true' :
   'Please enter a valid Municipality code';
 
+
+
+export const Space_Not_Allow = (field) => {
+    if (!field || field === null || field.trim() === '') {
+        return 'Required *';
+    }
+    else if (/^\s|\s$/.test(field)) {
+        return 'Space Not Allow';
+    }
+    else {
+        return 'true';
+    }
+};
+
 // Email Validation
 export const EmailField = (email?: string | null): string =>
   !email?.trim() ? 'Required *' :
