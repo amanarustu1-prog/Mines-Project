@@ -119,6 +119,14 @@ export const MaxPasswordAge = (value: number | null, config: PasswordConfig[]): 
   return value > 0 && value <= maxAge ? 'true' : `Max Valid for ${maxAge} days`;
 };
 
+export const RequiredFieldIncident = (field) => {
+    if (!field || field?.length === 0 || (typeof field === 'string' && field.trim() === "") || field === '' || field === null || field === undefined || field === 0 || field === "Invalid date") {
+        return 'Required *';
+    } else {
+        return 'true'
+    }
+};
+
 // Export all validations
 export const Validations = {
   ORIValidator,
