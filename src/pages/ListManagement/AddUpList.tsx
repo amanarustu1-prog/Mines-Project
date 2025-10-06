@@ -12,6 +12,7 @@ import SelectBox from '@/common/SelectBox';
 import { Space_Not_Allow } from '@/common/validation';
 import * as XLSX from 'xlsx';
 import { getShowingDateText } from '@/common/DateFormat';
+import { Console } from 'console';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -356,17 +357,19 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 parsedData = resp?.data;
             }
 
-            const message = parsedData?.Table?.[0]?.message;
-            // console.log("Update message:", message);
+            const message = parsedData?.Table?.[0]?.Message;
+            console.log("Update message:", message);
 
-            if (message === "Already Update") {
-                toastifyError("Code is already present");
+            // console.log("Already Exists "+ col3 );
+            if (message === "Already Exists "+ col3 ) {
+                toastifyError("Code is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
-
-            if(message === " Description Already update") {
+            // console.log("Already Exists "+ col5 );
+            if(message === "Already Exists "+ col5 ) {
                 toastifyError("Description is already Present");
+                setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
 
@@ -415,16 +418,17 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 parsedData = response?.data;
             }
 
-            const message = parsedData?.Table?.[0]?.message;
+            const message = parsedData?.Table?.[0]?.Message;
 
-            if (message === "Already Insert") {
+            if (message === "Already Exists "+ col3) {
                 toastifyError("Code is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
 
-            if (message === "Description Already Insert") {
+            if (message === "Already Exists "+ col5) {
                 toastifyError("Description is already Present");
+                setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
 
@@ -443,7 +447,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             toastifyError(error?.response?.data?.message || "Error saving item");
         }
     };
-
 
     //Get Data after Update
     useEffect(() => {

@@ -367,18 +367,34 @@ const ListManagement = () => {
                                                                                                                     {...{ pageEndPoint }}
                                                                                                                     col1="Martial"
                                                                                                                     col2="Master Tables with codes and descriptions for Marital Status."
-                                                                                                                    col3="ExplosiveTypeCode"
-                                                                                                                    col4="ExplosiveTypeID"
+                                                                                                                    col3="MartialCode"
+                                                                                                                    col4="id"
                                                                                                                     col5="Description"
-                                                                                                                    getUrl="ExplosiveType/GetData_ExplosiveType"
-                                                                                                                    addUrl="ExplosiveType/Insert_ExplosiveType"
-                                                                                                                    singleDataUrl="ExplosiveType/GetSingleData_ExplosiveType"
-                                                                                                                    upUrl="ExplosiveType/Update_ExplosiveType"
-                                                                                                                    delUrl="ExplosiveType/Delete_ExplosiveType"
+                                                                                                                    getUrl="Martial/GetData_Martial"
+                                                                                                                    addUrl="Martial/Insert_Martial"
+                                                                                                                    singleDataUrl="Martial/GetSingleData_Martial"
+                                                                                                                    upUrl="Martial/Update_Martial"
+                                                                                                                    delUrl="Martial/Delete_Martial"
                                                                                                                     dropDownUrl="Users/GetData_Company"
                                                                                                                 />
                                                                                                                 :
-                                                                                                                "null"
+                                                                                                                pageEndPoint === "masterTable/material-group" ?
+                                                                                                                    <AddUpList
+                                                                                                                        {...{ pageEndPoint }}
+                                                                                                                        col1="Material-Group"
+                                                                                                                        col2="Master Tables with codes and descriptions for Material-Group Code."
+                                                                                                                        col3="MaterialGroupCode"
+                                                                                                                        col4="MaterialGroupID"
+                                                                                                                        col5="Description"
+                                                                                                                        getUrl="MaterialGroup/GetData_MaterialGroup"
+                                                                                                                        addUrl="MaterialGroup/Insert_MaterialGroup"
+                                                                                                                        singleDataUrl="MaterialGroup/GetSingleData_MaterialGroup"
+                                                                                                                        upUrl="MaterialGroup/Update_MaterialGroup"
+                                                                                                                        delUrl="MaterialGroup/Delete_MaterialGroup"
+                                                                                                                        dropDownUrl="Users/GetData_Company"
+                                                                                                                    />
+                                                                                                                    :
+                                                                                                                    "null"
                             }
                         </div>
                     </div>
