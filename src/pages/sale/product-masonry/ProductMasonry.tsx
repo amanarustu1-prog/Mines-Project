@@ -156,7 +156,7 @@ export default function ProductMasonry() {
     DMGProduct: false,
     GSTRate: 0,
     ProductCode: '',
-    IsActive: true,
+    // IsActive: true,
     Remarks: ''
   });
 
@@ -168,11 +168,11 @@ export default function ProductMasonry() {
       setLoading(true);
       const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
       const response = await fetch_Post_Data("GetData_Product", {
-        IsActive: isActive,
-        CompanyId: getCompanyId()
+        IsActive: 1,
+        CompanyId: Number(localStorage.getItem("companyID"))
       });
 
-      console.log('API Response:', response);
+      // console.log('API Response:', response);
 
       if (response?.Data && Array.isArray(response.Data)) {
         setProducts(response.Data);
@@ -223,10 +223,10 @@ export default function ProductMasonry() {
           }
         ];
         setProducts(sampleData);
-        console.log('Using sample data:', sampleData);
+        // console.log('Using sample data:', sampleData);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      // console.error('Error fetching products:', error);
       toastifyError('Error fetching products');
     } finally {
       setLoading(false);
@@ -238,9 +238,9 @@ export default function ProductMasonry() {
       const response = await fetch_Post_Data("GetDataDropDown_Product", {
         CompanyId: getCompanyId()
       });
-      console.log(response, "response")
+      // console.log(response, "response")
 
-      console.log('Dropdown API Response:', response);
+      // console.log('Dropdown API Response:', response);
 
       if (response?.Data) {
         // Assuming the response contains product groups, unit types, and product names
@@ -264,10 +264,10 @@ export default function ProductMasonry() {
         setProductGroups(sampleGroups);
         setUnitTypes(sampleUnitTypes);
         setProductNames(MASONRY_PRODUCTS);
-        console.log('Using sample dropdown data');
+        // console.log('Using sample dropdown data');
       }
     } catch (error) {
-      console.error('Error fetching dropdown data:', error);
+      // console.error('Error fetching dropdown data:', error);
       // Fallback to predefined data
       setProductNames(MASONRY_PRODUCTS);
     }
@@ -286,7 +286,7 @@ export default function ProductMasonry() {
         return true;
       }
     } catch (error) {
-      console.error('Error inserting product:', error);
+      // console.error('Error inserting product:', error);
       toastifyError('Error adding product');
       return false;
     }
@@ -308,7 +308,7 @@ export default function ProductMasonry() {
         return true;
       }
     } catch (error) {
-      console.error('Error updating product:', error);
+      // console.error('Error updating product:', error);
       toastifyError('Error updating product');
       return false;
     }
@@ -327,7 +327,7 @@ export default function ProductMasonry() {
         return true;
       }
     } catch (error) {
-      console.error('Error deleting product:', error);
+      // console.error('Error deleting product:', error);
       toastifyError('Error deleting product');
       return false;
     }
@@ -343,7 +343,7 @@ export default function ProductMasonry() {
         return response.Data[0];
       }
     } catch (error) {
-      console.error('Error fetching single product:', error);
+      // console.error('Error fetching single product:', error);
       toastifyError('Error fetching product details');
     }
     return null;
@@ -370,8 +370,8 @@ export default function ProductMasonry() {
 
   // Debug effect to log data changes
   useEffect(() => {
-    console.log('Products updated:', products);
-    console.log('Filtered products:', filteredProducts);
+    // console.log('Products updated:', products);
+    // console.log('Filtered products:', filteredProducts);
   }, [products, filteredProducts]);
 
   // Table columns configuration

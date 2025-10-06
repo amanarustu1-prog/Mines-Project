@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
 import { customStyles } from '@/common/Utility';
+import { fetchPostData } from '@/components/hooks/Api';
 
 // Icon components
 interface MaintenanceType {
@@ -14,7 +15,7 @@ interface MaintenanceType {
   MaintenanceTypeCode: string;
   Frequency: string;
   CompanyId: number | string;
-  IsActive?: boolean;
+  // IsActive?: boolean;
   CreatedDate?: string;
   LastUpdated?: string;
 }
@@ -107,97 +108,29 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     MaintenanceTypes: '',
     MaintenanceTypeCode: '',
     Frequency: '',
-    IsActive: true,
-    CompanyId: companyId || ''
+    // IsActive: true,
+    // CompanyId: companyId || ''
   });
 
   const api = (path: string) => (baseUrl ? `${baseUrl}${path}` : path);
-
-  // API Functions
-  const getCompanyId = () => Number(companyId) || 0;
 
   const fetchMaintenanceTypes = async () => {
     try {
       setLoading(true);
       const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
 
-      const response = await axios.post('/GetData_MaintenanceType', {
-        IsActive: isActive,
-        CompanyId: getCompanyId()
+      const response = await axios.post('MaintenanceType/GetData_MaintenanceType', {
+        // IsActive: 1,
+        CompanyId: localStorage.getItem('companyID')
       });
 
       const data = response.data?.data ? JSON.parse(response.data.data) : [];
 
       if (data?.Table && Array.isArray(data.Table)) {
         setMaintenanceTypes(data.Table);
-      } else {
-        // Always show fallback data for better UX
-        const fallbackData = [
-          {
-            MaintenanceTypeID: 1,
-            Description: 'Engine Oil Change',
-            MaintenanceTypes: 'Preventive',
-            MaintenanceTypeCode: 'ENG-001',
-            Frequency: 'Monthly',
-            CompanyId: getCompanyId(),
-            IsActive: true,
-            CreatedDate: '2025-01-01',
-            LastUpdated: '2025-01-20'
-          },
-          {
-            MaintenanceTypeID: 2,
-            Description: 'Brake Inspection',
-            MaintenanceTypes: 'Safety',
-            MaintenanceTypeCode: 'BRK-001',
-            Frequency: 'Quarterly',
-            CompanyId: getCompanyId(),
-            IsActive: true,
-            CreatedDate: '2025-01-01',
-            LastUpdated: '2025-01-18'
-          },
-          {
-            MaintenanceTypeID: 3,
-            Description: 'Tire Rotation',
-            MaintenanceTypes: 'Preventive',
-            MaintenanceTypeCode: 'TIR-001',
-            Frequency: '6 Months',
-            CompanyId: getCompanyId(),
-            IsActive: true,
-            CreatedDate: '2025-01-01',
-            LastUpdated: '2025-01-15'
-          }
-        ];
-        setMaintenanceTypes(fallbackData);
       }
     } catch (error: any) {
       toastifyError(`Error fetching maintenance types: ${error.message}`);
-
-      // Always show fallback data even on error
-      const fallbackData = [
-        {
-          MaintenanceTypeID: 1,
-          Description: 'Engine Oil Change',
-          MaintenanceTypes: 'Preventive',
-          MaintenanceTypeCode: 'ENG-001',
-          Frequency: 'Monthly',
-          CompanyId: getCompanyId(),
-          IsActive: true,
-          CreatedDate: '2025-01-01',
-          LastUpdated: '2025-01-20'
-        },
-        {
-          MaintenanceTypeID: 2,
-          Description: 'Brake Inspection',
-          MaintenanceTypes: 'Safety',
-          MaintenanceTypeCode: 'BRK-001',
-          Frequency: 'Quarterly',
-          CompanyId: getCompanyId(),
-          IsActive: true,
-          CreatedDate: '2025-01-01',
-          LastUpdated: '2025-01-18'
-        }
-      ];
-      setMaintenanceTypes(fallbackData);
     } finally {
       setLoading(false);
     }
@@ -205,12 +138,12 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
   const insertMaintenanceType = async (data: any) => {
     try {
-      const response = await fetchPostData('Insert_MaintenanceType', {
+      console.log('Inserting maintenance type with data:', data); 
+      const response = await fetchPostData('MaintenanceType/Insert_MaintenanceType', {
         ...data,
-        CompanyId: getCompanyId(),
-        IsActive: data.IsActive ?? true,
-        IPAddress: sessionStorage.getItem('IPAddress') || ''
+        CompanyId: localStorage.getItem('companyID'),
       });
+      console.log('Insert response:', response);
 
       if (response) {
         toastifySuccess('Maintenance type added successfully');
@@ -220,8 +153,6 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         throw new Error('Invalid response from server');
       }
     } catch (error: any) {
-      console.error('Error inserting maintenance type:', error);
-
       toastifyError(`Error adding maintenance type: ${error.response?.data?.message || error.message}`);
       return false;
     }
@@ -229,11 +160,11 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
   const updateMaintenanceType = async (data: any, id: number) => {
     try {
-      const response = await fetchPostData('Update_MaintenanceType', {
+      const response = await fetchPostData('MaintenanceType/Update_MaintenanceType', {
         ...data,
         MaintenanceTypeID: id,
-        CompanyId: getCompanyId(),
-        IPAddress: sessionStorage.getItem('IPAddress') || ''
+        CompanyId: localStorage.getItem('companyID'),
+        // IPAddress: sessionStorage.getItem('IPAddress') || ''
       });
 
       if (response) {
@@ -242,7 +173,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         return true;
       }
     } catch (error: any) {
-      console.error('Error updating maintenance type:', error);
+      // console.error('Error updating maintenance type:', error);
       toastifyError('Error updating maintenance type');
       return false;
     }
@@ -252,7 +183,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     try {
       const response = await fetchPostData('Delete_MaintenanceType', {
         MaintenanceTypeID: id,
-        IsActive: false,
+        // IsActive: false,
         IPAddress: sessionStorage.getItem('IPAddress') || ''
       });
 
@@ -262,7 +193,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         return true;
       }
     } catch (error: any) {
-      console.error('Error deleting maintenance type:', error);
+      // console.error('Error deleting maintenance type:', error);
       toastifyError('Error deleting maintenance type');
       return false;
     }
@@ -284,29 +215,27 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
   // useEffect hooks
   useEffect(() => {
-    console.log('Component mounted or filterStatus changed:', filterStatus);
+    // console.log('Component mounted or filterStatus changed:', filterStatus);
     fetchMaintenanceTypes();
   }, [filterStatus]);
 
   // Initial load effect - only run if no data
   useEffect(() => {
-    console.log('Initial mount check, current data length:', maintenanceTypes.length);
+    // console.log('Initial mount check, current data length:', maintenanceTypes.length);
     if (maintenanceTypes.length === 0) {
-      console.log('No data found, fetching...');
+      // console.log('No data found, fetching...');
       fetchMaintenanceTypes();
     }
-  }, []); // Run only on mount
+  }, []);
 
   // Debug effect to log data changes
   useEffect(() => {
-    console.log('Maintenance types updated:', maintenanceTypes);
-    console.log('Filtered maintenance types:', filteredMaintenanceTypes);
+    // console.log('Maintenance types updated:', maintenanceTypes);
+    // console.log('Filtered maintenance types:', filteredMaintenanceTypes);
   }, [maintenanceTypes, filteredMaintenanceTypes]);
 
   // Handle save
   const handleSaveMaintenanceType = async () => {
-    console.log('Saving maintenance type:', maintenanceTypeForm);
-    console.log('Editing mode:', editingMaintenanceType);
 
     if (!maintenanceTypeForm.Description || !maintenanceTypeForm.MaintenanceTypes) {
       toastifyError('Please fill in all required fields');
@@ -314,8 +243,6 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
 
     if (editingMaintenanceType) {
-      // Update existing product
-      console.log('Updating existing maintenance type:', editingMaintenanceType.MaintenanceTypeID);
       const success = await updateMaintenanceType(maintenanceTypeForm, editingMaintenanceType.MaintenanceTypeID!);
       if (success) {
         setEditingMaintenanceType(null);
@@ -323,8 +250,6 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         resetForm();
       }
     } else {
-      // Create new product
-      console.log('Creating new maintenance type');
       const success = await insertMaintenanceType(maintenanceTypeForm);
       if (success) {
         setShowMaintenanceTypeModal(false);
@@ -341,8 +266,8 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       MaintenanceTypes: type.MaintenanceTypes,
       MaintenanceTypeCode: type.MaintenanceTypeCode,
       Frequency: type.Frequency,
-      IsActive: type.IsActive ?? true,
-      CompanyId: type.CompanyId
+      // IsActive: type.IsActive ?? true,
+      // CompanyId: type.CompanyId
     });
     setShowMaintenanceTypeModal(true);
   };
@@ -484,7 +409,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
           <div className="maintenance-type-header-actions">
             <button
               onClick={() => {
-                console.log('Add Maintenance Type button clicked');
+                // console.log('Add Maintenance Type button clicked');
                 setEditingMaintenanceType(null);
                 resetForm();
                 setShowMaintenanceTypeModal(true);
