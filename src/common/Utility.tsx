@@ -4,7 +4,7 @@
 export const ValidationUtils = {
   // Check if a string is empty
   isEmpty: (value: string): boolean => {
-    return !value || value.trim() === '';
+    return !value || value.trim() === "";
   },
 
   // Validate email format
@@ -25,7 +25,6 @@ export const ValidationUtils = {
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
     console.log(panRegex.test(pan));
     return panRegex.test(pan);
-  
   },
 
   // Validate Pincode (6 digits)
@@ -36,12 +35,16 @@ export const ValidationUtils = {
 
   // Validate GSTIN (15 characters, alphanumeric)
   isGSTIN: (gstin: string): boolean => {
-    const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    const gstinRegex =
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
     return gstinRegex.test(gstin);
   },
 
   // Validate required fields
-  validateRequired(fields: Record<string, any>): { isValid: boolean; errors: string[] } {
+  validateRequired(fields: Record<string, any>): {
+    isValid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     Object.entries(fields).forEach(([fieldName, value]) => {
@@ -105,69 +108,59 @@ export const createValidator = (rules: Record<string, Function>) => {
 // Common Validation Rules
 // ==========================
 export const Rules = {
-  required:
-    (fieldName: string) =>
-    (value: any) =>
-      !value || (typeof value === 'string' && value.trim() === '')
-        ? `${fieldName}`
-        : null,
+  required: (fieldName: string) => (value: any) =>
+    !value || (typeof value === "string" && value.trim() === "")
+      ? `${fieldName}`
+      : null,
 
   email: (value: string) =>
     value && !ValidationUtils.isEmail(value)
-      ? 'Please enter a valid email address'
+      ? "Please enter a valid email address"
       : null,
 
   phone: (value: string) =>
     value && !ValidationUtils.isPhone(value)
-      ? 'Please enter a valid 10-digit phone number'
+      ? "Please enter a valid 10-digit phone number"
       : null,
 
   pan: (value: string) =>
     value && !ValidationUtils.isPan(value)
-      ? 'Please enter a valid PAN number (e.g., ABCDE1234F)'
+      ? "Please enter a valid PAN number (e.g., ABCDE1234F)"
       : null,
 
   pincode: (value: string) =>
     value && !ValidationUtils.isPincode(value)
-      ? 'Please enter a valid 6-digit pincode'
+      ? "Please enter a valid 6-digit pincode"
       : null,
 };
 
-
-
-
 export const customStyles = {
-    headCells: {
-        style: {
-            backgroundColor: '#60a5fa',
-            color: '#ffffff',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            justifyContent: 'center',
-            borderRight: '1px solid #ccc',
-        },
+  headCells: {
+    style: {
+      backgroundColor: "#3b82f6",
+      color: "#ffffff",
+      fontWeight: "bold",
+      fontSize: "14px",
+      justifyContent: "center",
+      borderRight: "1px solid #ccc",
     },
-    cells: {
-        style: {
-            justifyContent: 'center',
-            borderRight: '1px solid #eee',
-        },
+  },
+  cells: {
+    style: {
+      justifyContent: "center",
+      borderRight: "1px solid #eee",
     },
-    table: {
-        style: {
-            border: '1px solid #ccc',
-        },
+  },
+  table: {
+    style: {
+      border: "1px solid #ccc",
     },
+  },
 };
 
-
- export const multiValue = {
-  valueContainer: (provided, state) => ({
+export const multiValue = {
+  valueContainer: (provided: any, state: any) => ({
     ...provided,
-    maxHeight: '36px',    // अपनी required height
-    overflowY: 'auto',    // scroll enable
+    maxHeight: "36px",
   }),
-  // अगर चाहो तो menu, multiValue, placeholder आदि customize कर सकते हो
 };
-
-

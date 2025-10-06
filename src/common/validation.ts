@@ -80,6 +80,20 @@ export const MunicipalityCodeValidator = (code: string | null): string =>
   /^\d{4}$/.test(code) ? 'true' :
   'Please enter a valid Municipality code';
 
+
+
+export const Space_Not_Allow = (field) => {
+    if (!field || field === null || field.trim() === '') {
+        return 'Required *';
+    }
+    else if (/^\s|\s$/.test(field)) {
+        return 'Space Not Allow';
+    }
+    else {
+        return 'true';
+    }
+};
+
 // Email Validation
 export const EmailField = (email?: string | null): string =>
   !email?.trim() ? 'Required *' :
@@ -103,6 +117,14 @@ export const MaxPasswordAge = (value: number | null, config: PasswordConfig[]): 
   if (value === null || value === undefined) return 'Required *';
   const maxAge = config[0]?.MaxPasswordAge ?? 90;
   return value > 0 && value <= maxAge ? 'true' : `Max Valid for ${maxAge} days`;
+};
+
+export const RequiredFieldIncident = (field) => {
+    if (!field || field?.length === 0 || (typeof field === 'string' && field.trim() === "") || field === '' || field === null || field === undefined || field === 0 || field === "Invalid date") {
+        return 'Required *';
+    } else {
+        return 'true'
+    }
 };
 
 // Export all validations

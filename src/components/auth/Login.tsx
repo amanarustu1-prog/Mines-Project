@@ -71,8 +71,7 @@ const Login = () => {
   }
 
   const [companies, setCompanies] = useState<
-    { CompanyID: number; CompanyName: string }[]
-  >([]);
+    { CompanyID: number; CompanyName: string }[]>([]);
 
   const verify_User = async (e: any) => {
     e.preventDefault();
@@ -201,7 +200,9 @@ const Login = () => {
                 <select
                   ref={myRef}
                   value={company}
-                  onChange={(e) => { setCompany(e.target.value); userNameRef.current?.focus(); }}
+                  onChange={(e) => { setCompany(e.target.value); userNameRef.current?.focus();
+                  // alert(e.target.value); 
+                }}
                   className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
                 >
                   <option value="">-- Select Company --</option>

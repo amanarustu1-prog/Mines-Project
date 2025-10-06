@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+// import React, { useEffect, useMemo, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
-import axios from "../../interceptors/axios";
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import { AddDeleteUpadate } from '@/components/hooks/Api';
 import DataTable from 'react-data-table-component';
@@ -98,12 +98,13 @@ interface ColumnsProps {
 
 const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [activeTab, setActiveTab] = useState('list-overview');
+    const { col1, col2, col3, col4, col5, getUrl, addUrl, singleDataUrl, upUrl, delUrl } = props;
 
     // Sample list data
     const [listData, setListData] = useState<ListItem[]>([]);
     const [statusFilter, setStatusFilter] = useState<number | string>(1);
     const [bloodGroupOptions, setBloodGroupOptions] = useState<any[]>([]);
-    const [bloodGroupCode, setBloodGroupCode] = useState('');
+    const [bloodGroupCode, setBloodGroupCode] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
@@ -174,12 +175,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         const fetchDropDown = async () => {
             try {
                 const payload = { EmployeeID: '1' };
-                const response = await axios.post(props.dropDownUrl, payload);
-                const parsedData = JSON.parse(response.data.data);
-                if (response.data.success) {
-                    const data = parsedData.Table;
+                const response = await fetchPostData(props.dropDownUrl, payload);
+                // console.log(response);
+                if (response) {
+                    const data = response;
                     setBloodGroupOptions(Array.isArray(data) ? data : []);
-                    // console.log("Hello " + bloodGroupOptions);
                 } else {
                     toastifyError("Failed to load Dropdown");
                 }
@@ -191,30 +191,66 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         fetchDropDown();
     }, [props.dropDownUrl]);
 
+    const fetchCounts = async () => {
+        try {
+            const [activeResp, inactiveResp] = await Promise.all([
+                fetch_Post_Data(getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+                fetch_Post_Data(getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+            ]);
+
+            setActiveCount(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
+            setInactiveCount(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
+        } catch (err) {
+            toastifyError("Error fetching counts");
+        }
+    };
+
+    const options = bloodGroupOptions.map(opt => ({
+        value: opt.CompanyID,
+        label: opt.CompanyName
+    }));
+
     const fetchData = async () => {
         try {
-            const value = { IsActive: statusFilter, CompanyId: Number(localStorage.getItem("employeeID")) };
-            const response = await axios.post(props.getUrl, value);
-            const parsedData = JSON.parse(response.data.data);
-            // console.log(parsedData.Table);
-            setListData(parsedData.Table);
+            if (filter === "all") {
+                const activeResp = await fetch_Post_Data(getUrl, { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
+                fetchCounts();
+                const activeData = activeResp?.Data || [];
+                // const inactiveData = inactiveResp?.Data || [];
+
+                setListData([
+                    ...(Array.isArray(activeData) ? activeData : []),
+                    // ...(Array.isArray(inactiveData) ? inactiveData : [])
+                ])
+            } else {
+                const value = {
+                    IsActive: filter === "active" ? 1 : 0,
+                    CompanyId: Number(localStorage.getItem("companyID")),
+                };
+                fetchCounts();
+                const response = await fetch_Post_Data(getUrl, value);
+                // console.log(response?.Data);
+                const parsedData = response?.Data;
+                setListData(Array.isArray(parsedData) ? parsedData : []);
+            }
         } catch (err) {
-            throw err;
+            toastifyError("Error fetching data");
         }
-    }
+    };
 
     useEffect(() => {
         fetchData();
-    }, [props.getUrl, statusFilter]);
+        fetchCounts();
+    }, [getUrl, filter]);
 
     const handleEdit = (item: ListItem) => {
-        setEditItemId(item[props.col4]);
+        setEditItemId(item[col4]);
         setNewItem({
-            code: item[props.col3],
-            description: item[props.col5],
+            code: item[col3],
+            description: item[col5],
             isActive: item.IsActive,
         });
-        setBloodGroupCode(item.BloodGroupCode || "");
+        // setBloodGroupCode(item.BloodGroupCode ? [{ value: item.BloodGroupCode, label: item.BloodGroupCode }] : []);
         setStatusFilter(item.IsActive ? 1 : 0);
     }
 
@@ -246,14 +282,14 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
     // ✅ Delete/Activate function
     const deleteItem = async (id: number) => {
-        const item = listData.find(x => x[props.col4] === id);
+        const item = listData.find(x => x[col4] === id);
         if (!item) return;
 
         const newStatus = item.IsActive ? 0 : 1; // 0=deactivate, 1=activate
 
         try {
-            const response = await axios.post(props.delUrl, {
-                [props.col4]: id,
+            const response = await AddDeleteUpadate(delUrl, {
+                [col4]: id,
                 IsActive: newStatus,
             });
 
@@ -276,31 +312,51 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
 
     const updatedItem = async (id: number) => {
-        // alert(id);
         const payload = {
-            [props.col4]: id,
-            [props.col5]: newItem.description,
-            [props.col3]: newItem.code,
-            CompanyId: Number(localStorage.getItem("employeeID"))
-        }
+            [col4]: id,
+            [col5]: newItem.description,
+            [col3]: newItem.code,
+            CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
+        };
+
         try {
-            const resp = await axios.post(props.upUrl, payload);
-            // console.log(resp);
-            if (resp.data.success) {
+            const resp = await AddDeleteUpadate(upUrl, payload);
+
+            let parsedData = null;
+            try {
+                parsedData = typeof resp?.data === "string" ? JSON.parse(resp.data) : resp.data;
+            } catch (err) {
+                parsedData = resp?.data;
+            }
+
+            const message = parsedData?.Table?.[0]?.message;
+            // console.log("Update message:", message);
+
+            if (message === "Already Update") {
+                toastifyError("Code is already present");
+                setErrors({ CodeError: '', DescriptionError: '' });
+                return;
+            }
+
+            if(message === " Description Already update") {
+                toastifyError("Description is already Present");
+                return;
+            }
+
+            if (resp?.success) {
                 await fetchData();
                 toastifySuccess("Item updated successfully!");
-
                 setEditItemId(null);
                 setNewItem({ code: "", description: "", isActive: true });
-                setBloodGroupCode("");
+                setErrors({ CodeError: '', DescriptionError: '' });
+                setBloodGroupCode([]);
             } else {
                 toastifyError("Failed to update item");
             }
-        } catch (err) {
-            // console.error("Error updating item:", err);
-            toastifyError("Error updating item");
+        } catch (error: any) {
+            toastifyError(error?.response?.data?.message || "Error updating item");
         }
-    }
+    };
 
     const tabs = [{ id: 'list-overview', label: 'List Overview', icon: List }];
 
@@ -313,31 +369,54 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
     // Insert-Data
     const handleSaveItem = async () => {
-        if (!newItem.code.trim() || !newItem.description.trim() || !bloodGroupCode) {
-            toastifyError("Please fill in all required fields");
-            return;
-        }
+        check_Validation_Error();
 
         const payload = {
-            [props.col5]: newItem.description,
-            CompanyId: 1,
-            [props.col3]: newItem.code
+            [col5]: newItem.description,
+            CompanyId: bloodGroupCode.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            [col3]: newItem.code
         };
 
         try {
-            // const response = await axios.post(props.addUrl, payload);
-            const response = await AddDeleteUpadate(props.addUrl, payload);
-            console.log(response);
-            setListData(prev => [...prev, response]);
-            setNewItem({ code: '', description: '', isActive: true });
-            setBloodGroupCode('');
-            fetchData();
-            toastifySuccess("Item saved successfully!");
-        } catch (error) {
-            // console.error("Error saving item:", error);
-            toastifyError("Error saving item");
+            const response = await AddDeleteUpadate(addUrl, payload);
+
+            // Parse nested data (because backend returns stringified JSON);
+            let parsedData = null;
+            try {
+                parsedData = typeof response?.data === "string" ? JSON.parse(response.data) : response.data;
+            } catch (err) {
+                parsedData = response?.data;
+            }
+
+            const message = parsedData?.Table?.[0]?.message;
+
+            if (message === "Already Insert") {
+                toastifyError("Code is already Present");
+                setErrors({ CodeError: '', DescriptionError: '' });
+                return;
+            }
+
+            if (message === "Description Already Insert") {
+                toastifyError("Description is already Present");
+                return;
+            }
+
+            if (response?.success) {
+                toastifySuccess("Item saved successfully!");
+                setListData(prev => [...prev, response]);
+                setNewItem({ code: '', description: '', isActive: true });
+                setBloodGroupCode([]);
+                fetchData();
+                fetchCounts();
+                setErrors({ CodeError: '', DescriptionError: '' });
+            } else {
+                toastifyError("Failed to save item");
+            }
+        } catch (error: any) {
+            toastifyError(error?.response?.data?.message || "Error saving item");
         }
     };
+
 
     const formatDate = (dateString?: string): string => {
         if (!dateString) return "";
@@ -385,7 +464,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
         return listData.filter(item => {
             // 1. Status filter
-            if (filter === "active" && !item.IsActive) return false;
+            // if (filter === "active" && !item.IsActive) return false;
             if (filter === "inactive" && item.IsActive) return false;
 
             // 2. Search filter (check all values of the item)
@@ -442,8 +521,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                             <Car className="list-icon-sm" />
                                         </div>
                                         <div>
-                                            <h1 className="list-header-title">{props.col1}</h1>
-                                            <p className="list-header-subtitle">{props.col2}</p>
+                                            <h1 className="list-header-title">{col1}</h1>
+                                            <p className="list-header-subtitle">{col2}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -464,6 +543,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                             </div>
 
                             <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -478,6 +558,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                             </div>
 
                             <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon total">
@@ -485,7 +566,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                         </div>
                                         <div>
                                             <p className="list-summary-text">Total Items</p>
-                                            <p className="list-summary-number total">{listData.length}</p>
+                                            <p className="list-summary-number total">{activeCount + inactiveCount}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -504,6 +585,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                     <div className="grid grid-cols-12 gap-4 items-center">
                                         {/* Item Code */}
                                         <div className="col-span-3">
+                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.code}
@@ -512,9 +594,13 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                 placeholder="Item Code"
                                                 maxLength={20}
                                             />
+                                            {errors.CodeError !== 'true' ? (
+                                                <p style={{ color: 'red', fontSize: '11px', margin: '0px', padding: '0px' }}>{errors.CodeError}</p>
+                                            ) : null}
                                         </div>
 
                                         {/* Description */}
+                                        <div className="col-span-3">
                                         <div className="col-span-3">
                                             <input
                                                 type="text"
@@ -548,7 +634,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
 
                                         {/* Buttons */}
-                                        <div className="col-span-2 flex gap-2">
+                                        {/* <div className="col-span-2 flex gap-2">
                                             <button onClick={() => (editItemId ? updatedItem(editItemId) : handleSaveItem())}
                                                 className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8">
                                                 <Save className="list-icon-sm" />
@@ -557,6 +643,17 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                             <button onClick={() => setNewItem({ code: "", description: "", isActive: true })}
                                                 className="list-button outline small flex-1 h-8">
+                                                Clear
+                                            </button>
+                                        </div> */}
+                                        <div className="col-span-2 flex gap-2">
+                                            {
+                                                editItemId ?
+                                                    <button type="button" className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8" onClick={check_Validation_Error}>Update</button>
+                                                    :
+                                                    <button type="button" className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8" onClick={check_Validation_Error}>Save</button>
+                                            }
+                                            <button onClick={resetForm} className="list-button outline small flex-1 h-8">
                                                 Clear
                                             </button>
                                         </div>
@@ -607,6 +704,8 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                 {/* Main Container */}
                 <div className="list-main-container container">
+                {/* Main Container */}
+                <div className="list-main-container container">
 
                     {/* Content Area */}
                     {renderTabContent()}
@@ -629,3 +728,5 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 }
 
 export default AddUpList;
+
+
