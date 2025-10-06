@@ -108,6 +108,8 @@ import RGPEntry from './pages/Inventory/rgp-entry/RGPEntry';
 import ListManagementRoute from './pages/ListManagement/ListManagement';
 import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
+import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
+
 
 // Layout component for protected routes
 // const ProtectedLayout = () => {
@@ -286,6 +288,7 @@ function App() {
         <Route path="/loading-charge" element={<LoadingCharge />} />
         <Route path="/sundry-debtors" element={<SundryDebtors />} />
         <Route path="/product-masonry" element={<ProductMasonry />} />
+        <Route path="/inventory/maintenance-type" element={<MaintenanceType />} />
         <Route path="/tp-charges" element={<TPCharges />} />
         <Route path="/create-challan" element={<CreateChallan />} />
         <Route path="/pending-challan" element={<PendingChallan />} />

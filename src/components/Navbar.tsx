@@ -1887,7 +1887,7 @@ const navigationItems: NavItem[] = [
         title: 'Crusher and Mines',
         items: [
           { title: 'Loading charge', href: '/masterTable/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
-          { title: 'Product', href: '/crusher/product', icon: FlaskConical, description: 'Product list' },
+          { title: 'Product', href: '/product-masonry', icon: FlaskConical, description: 'Product list' },
           { title: 'Tp Amount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
           { title: 'Vehicle Type', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
           { title: 'Explosive Type', href: '/masterTable/explosive-type', icon: FlaskConical, description: 'Explosive types' },
