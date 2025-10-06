@@ -1872,7 +1872,7 @@ const navigationItems: NavItem[] = [
         items: [
           { title: 'Equipment Type', href: '/masterTable/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
           { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
-          { title: 'Material Group', href: '/inventory/material-group', icon: TrendingUp, description: 'Material grouping' },
+          { title: 'Material Group', href: '/masterTable/material-group', icon: TrendingUp, description: 'Material grouping' },
           { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
           { title: 'Material Specification', href: '/inventory/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
           { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
