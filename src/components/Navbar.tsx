@@ -1863,7 +1863,7 @@ const navigationItems: NavItem[] = [
           { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
           { title: 'Religion', href: '/hr/religion', icon: CheckCircle, description: 'Religions list' },
           { title: 'State', href: '/hr/state', icon: CheckCircle, description: 'State details' },
-          { title: 'Martial', href: '/hr/marital-status', icon: CheckCircle, description: 'Marital status' },
+          { title: 'Martial', href: '/masterTable/marital-status', icon: CheckCircle, description: 'Marital status' },
           { title: 'District', href: '/masterTable/district', icon: CheckCircle, description: 'District details' },
         ]
       },
