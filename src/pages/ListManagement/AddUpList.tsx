@@ -1,12 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
-// import React, { useEffect, useMemo, useState } from 'react';
 import { AddUpListProps } from './AddUpListProps';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
-import { AddDeleteUpadate } from '@/components/hooks/Api';
 import DataTable from 'react-data-table-component';
 import { customStyles, multiValue } from '@/common/Utility';
-import Select from "react-select";
 import ConfirmModal from '@/common/ConfirmModal';
+import Select from "react-select";
+import { fetchPostData, AddDeleteUpadate, fetch_Post_Data } from '@/components/hooks/Api';
+import ReorderableHeader from '@/components/Common/ReorderableHeader';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
+import SelectBox from '@/common/SelectBox';
+import { Space_Not_Allow } from '@/common/validation';
+import * as XLSX from 'xlsx';
+import { getShowingDateText } from '@/common/DateFormat';
 
 // Icon components (simplified SVG icons)
 const Car = ({ className }: { className?: string }) => (
@@ -83,19 +88,6 @@ interface ListItem {
     [key: string]: any;
 }
 
-interface TableRow {
-    [key: string]: any; // for dynamic keys like props.col3, props.col4, props.col5
-    IsActive: boolean;
-    CreatedDate: string | Date;
-    UpdatedDate: string | Date;
-}
-
-interface ColumnsProps {
-    col3: string;
-    col4: string;
-    col5: string;
-}
-
 const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [activeTab, setActiveTab] = useState('list-overview');
     const { col1, col2, col3, col4, col5, getUrl, addUrl, singleDataUrl, upUrl, delUrl } = props;
@@ -107,25 +99,26 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     const [bloodGroupCode, setBloodGroupCode] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
     const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
+    const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [inactiveCount, setInactiveCount] = useState(0);
     const [activeCount, setActiveCount] = useState(0);
+    const [statusSortAsc, setStatusSortAsc] = useState(true); //For sorting Active/Inactive
+    const [multiSelected, setMultiSelected] = useState({ optionSelected: null });
+    const [updateStatus, setUpdateStatus] = useState(0);
+    const [editval, setEditval] = useState([]);
 
-
-
-
-
-
-
-    // Define columns
+    //Define columns
     const columns = [
-
-        { name: 'Code', selector: (row: ListItem) => row[props.col3], sortable: true },
+        {
+            name: 'Code',
+            selector: (row: ListItem) => row[col3],
+            sortable: true,
+        },
         {
             name: 'Description',
-            selector: (row: ListItem) => row[props.col5],
+            selector: (row: ListItem) => row[col5],
             sortable: true,
         },
         {
@@ -136,15 +129,25 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 </span>
             ),
             sortable: true,
+            sortFunction: (rowA: ListItem, rowB: ListItem) => {
+                if (statusSortAsc) {
+                    return (rowA.IsActive === rowB.IsActive) ? 0 : rowA.IsActive ? -1 : 1;
+                } else {
+                    return (rowA.IsActive === rowB.IsActive) ? 0 : rowA.IsActive ? 1 : -1;
+                }
+            },
+            onSort: () => {
+                setStatusSortAsc((prev) => !prev);
+            }
         },
         {
             name: 'Created Date',
-            selector: (row: ListItem) => formatDate(row.CreatedDate),
+            selector: (row: ListItem) => getShowingDateText(row.CreatedDate),
             sortable: true,
         },
         {
             name: 'Last Modified',
-            selector: (row: ListItem) => formatDate(row.UpdatedDate),
+            selector: (row: ListItem) => getShowingDateText(row.UpdatedDate),
             sortable: true,
         },
         {
@@ -153,7 +156,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 <div className="list-action-buttons">
                     <button
                         onClick={() => {
-                            setSelectedId(row[props.col4]); // clicked item id
+                            setSelectedId(row[col4]); // clicked item id
                             setShowModal(true);             // show confirmation modal
                         }}
                         className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
@@ -162,13 +165,18 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                         {row.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
                     </button>
 
-                    <button onClick={() => handleEdit(row)} className="list-button ghost primary" title="Edit">
+                    <button onClick={() => setEditItemId(row[col4])} className="list-button ghost primary" title="Edit">
                         <Edit3 className="list-icon-sm" />
                     </button>
                 </div>
             ),
         },
     ];
+
+    const resizeableColumns = useResizableColumns(columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
 
     // Dropdown-data
     useEffect(() => {
@@ -254,7 +262,21 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         setStatusFilter(item.IsActive ? 1 : 0);
     }
 
+    const filteredData = useMemo(() => {
+        const searchLower = search.trim().toLowerCase();
 
+        return listData.filter(item => {
+            if (filter === "active" && !item.IsActive) return false;
+            if (filter === "inactive" && item.IsActive) return false;
+
+            if (searchLower) {
+                const values = Object.values(item).filter(v => v != null).map(v => v.toString().toLowerCase());
+                const matched = values.some(val => val.includes(searchLower));
+                if (!matched) return false;
+            }
+            return true;
+        });
+    }, [listData, filter, search]);
 
     // New item form data
     const [newItem, setNewItem] = useState({
@@ -263,29 +285,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
         isActive: true
     });
 
-    // const deleteItem = async (id: number) => {
-    //     alert(id);
-    //     try{
-    //        const response = await axios.post(props.delUrl, {[props.col4]: id, isActive: statusFilter});
-    //        console.log(response.data);
-    //        if(response.data.success){
-    //             await fetchData(); 
-    //             toastifySuccess("Item deleted successfully!");
-    //        }else{
-    //             toastifyError("Failed to delete item");
-    //        }
-    //     }catch(err){
-    //         console.error("Error deleting item:", err);
-    //         toastifyError("Error deleting item");
-    //     }
-    // }
-
-    // ✅ Delete/Activate function
     const deleteItem = async (id: number) => {
         const item = listData.find(x => x[col4] === id);
         if (!item) return;
 
-        const newStatus = item.IsActive ? 0 : 1; // 0=deactivate, 1=activate
+        const newStatus = item.IsActive ? 0 : 1;
 
         try {
             const response = await AddDeleteUpadate(delUrl, {
@@ -293,23 +297,46 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 IsActive: newStatus,
             });
 
-            if (response.data.success) {
-                setListData(prev =>
-                    prev.map(x =>
-                        x[props.col4] === id ? { ...x, IsActive: newStatus } : x
-                    )
-                );
+            if (response.success) {
+                await fetchData();
                 toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully!`);
             } else {
                 toastifyError("Failed to update item status");
             }
         } catch (err) {
+            // console.error("Error deleting item:", err);
             toastifyError("Error updating status");
         }
     };
 
+    // const updatedItem = async (id: number) => {
+    //     // if (!check_Validation_Error()) return;
+    //     // alert(id);
+    //     const payload = {
+    //         [col4]: id,
+    //         [col5]: newItem.description,
+    //         [col3]: newItem.code,
+    //         CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
+    //     }
+    //     try {
+    //         const resp = await AddDeleteUpadate(upUrl, payload);
+    //         // console.log(resp);
+    //         if (resp.success) {
+    //             await fetchData();
+    //             toastifySuccess("Item updated successfully!");
 
-
+    //             setEditItemId(null);
+    //             setNewItem({ code: "", description: "", isActive: true });
+    //             setErrors({ CodeError: '', DescriptionError: '' });
+    //             setBloodGroupCode([]);
+    //         } else {
+    //             toastifyError("Failed to update item");
+    //         }
+    //     } catch (err) {
+    //         // console.error("Error updating item:", err);
+    //         toastifyError("Error updating item");
+    //     }
+    // }
 
     const updatedItem = async (id: number) => {
         const payload = {
@@ -418,94 +445,135 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     };
 
 
-    const formatDate = (dateString?: string): string => {
-        if (!dateString) return "";
-        const date = new Date(dateString);
+    //Get Data after Update
+    useEffect(() => {
+        if (editItemId) {
+            GetSingleData()
+        }
+    }, [editItemId, updateStatus])
 
-        return date.toLocaleString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            // second: "2-digit",
-            // hour12: true,   
-        });
+    const GetSingleData = async () => {
+        try {
+            const val = { [col4]: editItemId };
+            const res = await fetchPostData(singleDataUrl, val);
+
+            if (res && Array.isArray(res) && res.length > 0) {
+                const record = res[0];
+                // console.log("Record to Edit:", record);
+
+                setNewItem({
+                    code: record[col3] || "",
+                    description: record[col5] || "",
+                    isActive: record.IsActive ?? true,
+                });
+                // console.log("Record to Edit:", record);
+                // console.log("BloodGroupCode:", bloodGroupOptions);
+
+                const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
+
+                if (companyIdField && bloodGroupOptions.length > 0) {
+                    const companyIds = String(companyIdField).split(",").map(id => id.trim());
+                    // console.log("Company IDs:", companyIds);
+                    // Match with bloodGroupOptions
+                    const matchedOptions = bloodGroupOptions
+                        .filter(opt => companyIds.includes(String(opt.CompanyID)))
+                        .map(opt => ({
+                            value: opt.CompanyID,
+                            label: opt.CompanyName,
+                        }));
+
+                    setBloodGroupCode(matchedOptions);
+                } else {
+                    setBloodGroupCode([]);
+                }
+            } else {
+                setNewItem({ code: "", description: "", isActive: true });
+                setBloodGroupCode([]);
+            }
+        } catch (err) {
+            toastifyError("Error fetching single data");
+        }
     };
 
-    // const toggleItemStatus = (id: number) => {
-    //     setListData(prev =>
-    //         prev.map(item =>
-    //             item.Id === id
-    //                 ? {
-    //                     ...item,
-    //                     isActive: !item.IsActive,
-    //                     lastModified: new Date().toISOString().split('T')[0]
-    //                 }
-    //                 : item
-    //         )
-    //     );
-    // };
+    const CompanyChange = (multiSelected: any) => {
+        setMultiSelected({ optionSelected: multiSelected });
+        const id: any[] = [];
+        const name: any[] = []
+        if (multiSelected) {
+            multiSelected.map((item: any, i: any) => {
+                id.push(item.value);
+                name.push(item.label)
+            })
+            setNewItem({
+                ...newItem,
+                CompanyID: id.toString(),
+                CompanyName: name.toString()
+            });
 
+        }
+    }
 
+    //Check-Validation-Error 
+    const [errors, setErrors] = useState({
+        'CodeError': '',
+        'DescriptionError': '',
+    })
 
-    const options = bloodGroupOptions.map(opt => ({
-        value: opt.CompanyID,
-        label: opt.CompanyName
-    }));
+    const check_Validation_Error = () => {
+        // e.preventDefault();
+        // console.log(newItem);
+        if (Space_Not_Allow(newItem.code)) {
+            setErrors(prevValues => { return { ...prevValues, ['CodeError']: Space_Not_Allow(newItem.code) } });
+        }
+        if (Space_Not_Allow(newItem.description)) {
+            setErrors(prevValues => { return { ...prevValues, ['DescriptionError']: Space_Not_Allow(newItem.description) } });
+        }
+    }
 
+    const { DescriptionError, CodeError } = errors
 
-
-
-
-    // ✅ Filtered Data with universal search
-    const filteredData = useMemo(() => {
-        const searchLower = search.trim().toLowerCase();
-
-        return listData.filter(item => {
-            // 1. Status filter
-            // if (filter === "active" && !item.IsActive) return false;
-            if (filter === "inactive" && item.IsActive) return false;
-
-            // 2. Search filter (check all values of the item)
-            if (searchLower) {
-                const values = Object.values(item)
-                    .filter(v => v != null) // null/undefined skip
-                    .map(v => v.toString().toLowerCase());
-
-                const matched = values.some(val => val.includes(searchLower));
-                if (!matched) return false;
-            }
-
-            return true;
-        });
-    }, [listData, filter, search]);
-
-
-    // ✅ Counts
-    // const activeCount = useMemo(
-    //     () => listData.filter(item => item.IsActive).length,
-    //     [listData]
-    // );
-
-    // const inactiveCount = useMemo(
-    //     () => listData.filter(item => !item.IsActive).length,
-    //     [listData]
-    // );
-
-
-    // active/inactive count
     useEffect(() => {
-        setInactiveCount(listData.filter(x => !x.IsActive).length);
-        setActiveCount(listData.filter(x => x.IsActive).length);
-    }, [listData]);
+        // console.log(DescriptionError, CodeError);
+        if (DescriptionError === 'true' && CodeError === 'true') {
+            if (editItemId) { updatedItem(editItemId) }
+            else { handleSaveItem() }
+        }
+    }, [DescriptionError, CodeError,])
 
+    //Reset-Form    
+    useEffect(() => {
+        resetForm();
+    }, [activeTab, getUrl]);
 
+    const resetForm = () => {
+        setNewItem({ code: "", description: "", isActive: true });
+        setBloodGroupCode([]);
+        setMultiSelected({ optionSelected: null });
+        setEditItemId(null);
+        setFilter("active");
+    };
 
-    
-
-
-
+    //Export-data
+    const exportToExcel = () => {
+        const filteredDataNew = filteredData?.map(item => ({
+            'Code Number': item[col3],
+            'Description': item[col5],
+            'Status': item.IsActive ? 'Active' : 'Inactive',
+            'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
+            'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
+        }));
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredDataNew);
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -514,7 +582,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                     <div className="list-space-y-4">
                         {/* Summary Cards */}
                         <div className="list-grid-4">
-                            <div className="list-card mb-0" >
+                            <div className="list-card mb-0">
                                 <div className="list-summary-card ">
                                     <div className="list-header-info ">
                                         <div className="list-header-icon">
@@ -528,7 +596,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0  cursor-pointer" onClick={() => setFilter("active")}>
+                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("active")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon active">
@@ -543,7 +611,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                             </div>
 
                             <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
-                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
                                         <div className="list-summary-icon inactive">
@@ -557,7 +624,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                 </div>
                             </div>
 
-                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
                             <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
                                 <div className="list-summary-card">
                                     <div className="list-summary-content">
@@ -585,12 +651,11 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                     <div className="grid grid-cols-12 gap-4 items-center">
                                         {/* Item Code */}
                                         <div className="col-span-3">
-                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.code}
                                                 onChange={(e) => handleInputChange("code", e.target.value)}
-                                                className="list-compact-input w-full text-sm py-1 px-2 h-9"
+                                                className="requiredColor list-compact-input w-full text-sm py-1 px-2 h-9"
                                                 placeholder="Item Code"
                                                 maxLength={20}
                                             />
@@ -601,37 +666,51 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                                         {/* Description */}
                                         <div className="col-span-3">
-                                        <div className="col-span-3">
                                             <input
                                                 type="text"
                                                 value={newItem.description}
                                                 onChange={(e) => handleInputChange("description", e.target.value)}
-                                                className="list-compact-input w-full text-sm py-1 px-2 h-9"
+                                                className="requiredColor list-compact-input w-full text-sm py-1 px-2 h-9"
                                                 placeholder="Description"
                                                 maxLength={300}
                                             />
+                                            {errors.DescriptionError !== 'true' ? (
+                                                <p style={{ color: 'red', fontSize: '11px', margin: '0px', padding: '0px' }}>{errors.DescriptionError}</p>
+                                            ) : null}
                                         </div>
 
-
+                                        {/* Company */}
                                         <div className="col-span-4">
                                             <Select
-                                                value={bloodGroupCode} // should be an array of selected options for isMulti
-                                                onChange={(selectedOptions) => setBloodGroupCode(selectedOptions)}
-                                                options={options} // array of { value, label } objects
+                                                value={bloodGroupCode}
+                                                onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
+                                                options={options}
                                                 isMulti
                                                 isClearable
                                                 closeMenuOnSelect={false}
                                                 hideSelectedOptions={true}
-                                                placeholder={`Select ${props.col1}`}
+                                                placeholder="Select Company"
                                                 className="basic-multi-select"
-                                                styles={multiValue}
+                                                styles={{
+                                                    ...multiValue,
+                                                    valueContainer: (provided) => ({
+                                                        ...provided,
+                                                        maxHeight: "80px",
+                                                        overflowY: "auto",
+                                                        flexWrap: "wrap",
+                                                    }),
+                                                }}
                                             />
+                                            {/* <SelectBox
+                                                options={options}
+                                                isMulti
+                                                closeMenuOnSelect={false}
+                                                hideSelectedOptions={true}
+                                                onChange={CompanyChange}
+                                                allowSelectAll={true}
+                                                value={multiSelected.optionSelected}
+                                            /> */}
                                         </div>
-
-
-
-
-
 
                                         {/* Buttons */}
                                         {/* <div className="col-span-2 flex gap-2">
@@ -663,30 +742,27 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                         </div>
 
                         {/* Filter and Search Bar */}
-
-                        {/* Items Table */}
-                        {/* Table */}
-                        <div className="list-card compact" style={{ height: '100%' }}>
-                            {/* Search Input */}
-                            <div className="flex justify-end">
-                                <input
-                                    type="text"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                        <div className="compact" style={{ height: '100%' }}>
+                            <div className="flex justify-between align-items-center  mb-2">
+                                <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 flex items-center gap-1">
+                                    <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
+                                <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
                                     className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
-                                    placeholder="Search"
-                                    maxLength={300}
-                                />
+                                    placeholder="Search..." maxLength={300} />
                             </div>
                             <DataTable
-                                columns={columns}
+                                columns={resizeableColumns}
                                 data={filteredData}
+                                // dense //To-Reduce-Space
                                 pagination
                                 highlightOnHover
                                 noDataComponent="No items found matching your criteria"
+                                defaultSortFieldId="status"
                                 fixedHeader
                                 fixedHeaderScrollHeight="300px"
                                 customStyles={customStyles}
+                                responsive
+                                persistTableHead
                             />
                         </div>
                     </div>
@@ -697,13 +773,10 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     };
 
     return (
-
         <>
             <div className="list-management-container ">
                 {/* Header */}
 
-                {/* Main Container */}
-                <div className="list-main-container container">
                 {/* Main Container */}
                 <div className="list-main-container container">
 
@@ -712,17 +785,14 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                 </div>
             </div>
 
-            <ConfirmModal
-                show={showModal}
+            <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
                     if (selectedId !== null) {
-                        deleteItem(selectedId);  // Confirm → delete/activate
+                        deleteItem(selectedId);
                     }
-                    setShowModal(false);        // Close modal
-                }}
-            />
-
+                    setShowModal(false);
+                }} />
         </>
     );
 }
