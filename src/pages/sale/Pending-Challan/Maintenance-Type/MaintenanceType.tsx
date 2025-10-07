@@ -4,19 +4,22 @@ import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
-import { customStyles } from '@/common/Utility';
+import { customStyles, multiValue } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
+import { getShowingDateText } from '@/common/DateFormat';
+import * as XLSX from 'xlsx';
 
 // Icon components
 interface MaintenanceType {
   MaintenanceTypeID?: number;
   Description: string;
-  MaintenanceTypes: string;
+  MaintenanceType: string;
   MaintenanceTypeCode: string;
   Frequency: string;
   CompanyId: number | string;
-  // IsActive?: boolean;
+  IsActive?: boolean;
   CreatedDate?: string;
+  UpdatedDate?: string;
   LastUpdated?: string;
 }
 
@@ -95,12 +98,17 @@ const statusOptions = [
 ];
 
 const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('maintenanceTypes');
   const [showMaintenanceTypeModal, setShowMaintenanceTypeModal] = useState(false);
   const [editingMaintenanceType, setEditingMaintenanceType] = useState<MaintenanceType | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(false);
+  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+  const [dropdown, setDropdown] = useState<any[]>([]);
+  const [editItemId, setEditItemId] = useState<number | null>(null);
+  const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
+  const [search, setSearch] = useState("");
 
   const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
   const [maintenanceTypeForm, setMaintenanceTypeForm] = useState({
@@ -114,6 +122,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
   const api = (path: string) => (baseUrl ? `${baseUrl}${path}` : path);
 
+  //Get-Data
   const fetchMaintenanceTypes = async () => {
     try {
       setLoading(true);
@@ -136,14 +145,15 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
   };
 
+  //Insert-Data
   const insertMaintenanceType = async (data: any) => {
     try {
-      console.log('Inserting maintenance type with data:', data); 
+      // console.log('Inserting maintenance type with data:', data);
       const response = await fetchPostData('MaintenanceType/Insert_MaintenanceType', {
         ...data,
-        CompanyId: localStorage.getItem('companyID'),
+        CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
       });
-      console.log('Insert response:', response);
+      // console.log('Insert response:', response);
 
       if (response) {
         toastifySuccess('Maintenance type added successfully');
@@ -158,13 +168,13 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
   };
 
+  //Update-Data
   const updateMaintenanceType = async (data: any, id: number) => {
     try {
       const response = await fetchPostData('MaintenanceType/Update_MaintenanceType', {
         ...data,
         MaintenanceTypeID: id,
-        CompanyId: localStorage.getItem('companyID'),
-        // IPAddress: sessionStorage.getItem('IPAddress') || ''
+        CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
       });
 
       if (response) {
@@ -179,12 +189,13 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
   };
 
+  //Delete-Data
   const deleteMaintenanceType = async (id: number) => {
     try {
-      const response = await fetchPostData('Delete_MaintenanceType', {
+      const response = await fetchPostData('MaintenanceType/Delete_MaintenanceType', {
         MaintenanceTypeID: id,
-        // IsActive: false,
-        IPAddress: sessionStorage.getItem('IPAddress') || ''
+        IsActive: 0,
+        // IPAddress: sessionStorage.getItem('IPAddress') || ''
       });
 
       if (response) {
@@ -199,11 +210,80 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
   };
 
+  //Get-Dropdown-Data
+  useEffect(() => {
+    const fetchDropDown = async () => {
+      try {
+        const payload = { EmployeeID: localStorage.getItem("employeeID") };
+        const response = await fetchPostData('Users/GetData_Company', payload);
+        // console.log(response);
+        if (response) {
+          const data = response;
+          setDropdownOptions(Array.isArray(data) ? data : []);
+        } else {
+          toastifyError("Failed to load Dropdown.")
+        }
+      } catch (error: any) {
+        toastifyError("Error fetching Dropdown");
+      }
+    }
+    fetchDropDown();
+  }, [])
+
+  const options = dropdownOptions.map(opt => ({
+    value: opt.CompanyID,
+    label: opt.CompanyName
+  }))
+
+  //Get-Single-Data
+  useEffect(() => {
+    if (editItemId) {
+      getSingleData();
+    }
+  }, [editItemId]);
+
+  const getSingleData = async () => {
+    try {
+      const val = { MaintenanceTypeID: editItemId };
+      const res = await fetchPostData('MaintenanceType/GetSingleData_MaintenanceType', val);
+      // console.log(res);
+      if (res && Array.isArray(res) && res.length > 0) {
+        const record = res[0];
+
+        setMaintenanceTypeForm({
+          Description: record.Description || '',
+          MaintenanceTypes: record.MaintenanceType || '',
+          MaintenanceTypeCode: record.MaintenanceTypeCode || '',
+          Frequency: record.Frequency,
+        });
+
+        const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
+
+        if (companyIdField && dropdownOptions.length > 0) {
+          const companyIds = String(companyIdField).split(",").map(id => id.trim());
+          const matchOptions = dropdownOptions.filter(opt => companyIds.includes(String(opt.CompanyID))).map(opt => ({
+            value: opt.CompanyID,
+            label: opt.CompanyName
+          }));
+
+          setDropdown(matchOptions);
+        } else {
+          setDropdown([]);
+        }
+      } else {
+        setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaintenanceTypeCode: '', Frequency: '' });
+        // setDropdown
+      }
+    } catch (err) {
+      toastifyError("Error fetching record data");
+    }
+  }
+
   // Filter functions
   const filteredMaintenanceTypes = maintenanceTypes.filter(type => {
     const matchesSearch = searchTerm === '' ||
       type.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      type.MaintenanceTypes.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      type.MaintenanceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (type.MaintenanceTypeCode && type.MaintenanceTypeCode.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesStatus = filterStatus === 'all' ||
@@ -215,37 +295,32 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
   // useEffect hooks
   useEffect(() => {
-    // console.log('Component mounted or filterStatus changed:', filterStatus);
     fetchMaintenanceTypes();
   }, [filterStatus]);
 
   // Initial load effect - only run if no data
   useEffect(() => {
-    // console.log('Initial mount check, current data length:', maintenanceTypes.length);
     if (maintenanceTypes.length === 0) {
-      // console.log('No data found, fetching...');
       fetchMaintenanceTypes();
     }
   }, []);
 
   // Debug effect to log data changes
   useEffect(() => {
-    // console.log('Maintenance types updated:', maintenanceTypes);
-    // console.log('Filtered maintenance types:', filteredMaintenanceTypes);
   }, [maintenanceTypes, filteredMaintenanceTypes]);
 
   // Handle save
   const handleSaveMaintenanceType = async () => {
-
     if (!maintenanceTypeForm.Description || !maintenanceTypeForm.MaintenanceTypes) {
       toastifyError('Please fill in all required fields');
       return;
     }
 
-    if (editingMaintenanceType) {
-      const success = await updateMaintenanceType(maintenanceTypeForm, editingMaintenanceType.MaintenanceTypeID!);
+    alert(editItemId);
+    if (editItemId) {
+      const success = await updateMaintenanceType(maintenanceTypeForm, editItemId);
       if (success) {
-        setEditingMaintenanceType(null);
+        setEditItemId(null);
         setShowMaintenanceTypeModal(false);
         resetForm();
       }
@@ -256,20 +331,6 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         resetForm();
       }
     }
-  };
-
-  // Handle edit
-  const handleEditMaintenanceType = (type: MaintenanceType) => {
-    setEditingMaintenanceType(type);
-    setMaintenanceTypeForm({
-      Description: type.Description,
-      MaintenanceTypes: type.MaintenanceTypes,
-      MaintenanceTypeCode: type.MaintenanceTypeCode,
-      Frequency: type.Frequency,
-      // IsActive: type.IsActive ?? true,
-      // CompanyId: type.CompanyId
-    });
-    setShowMaintenanceTypeModal(true);
   };
 
   // Handle delete
@@ -286,8 +347,8 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       MaintenanceTypes: '',
       MaintenanceTypeCode: '',
       Frequency: '',
-      IsActive: true,
-      CompanyId: companyId || ''
+      // IsActive: true,
+      // CompanyId: companyId || ''
     });
   };
 
@@ -313,7 +374,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     },
     {
       name: 'Type',
-      selector: (row: MaintenanceType) => row.MaintenanceTypes,
+      selector: (row: MaintenanceType) => row.MaintenanceType,
       sortable: true,
     },
     {
@@ -341,7 +402,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       cell: (row: MaintenanceType) => (
         <div className="maintenance-type-flex maintenance-type-gap-1">
           <button
-            onClick={() => handleEditMaintenanceType(row)}
+            onClick={() => setEditItemId(row.MaintenanceTypeID!)}
             className="maintenance-type-btn-icon"
             title="Edit"
           >
@@ -362,35 +423,29 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     },
   ];
 
-  // Overview table columns
-  const overviewColumns: any[] = [
-    {
-      name: 'Description',
-      selector: (row: MaintenanceType) => row.Description,
-      sortable: true,
-      cell: (row: MaintenanceType) => <span className="maintenance-type-font-medium">{row.Description}</span>
-    },
-    {
-      name: 'Type',
-      selector: (row: MaintenanceType) => row.MaintenanceTypes,
-      sortable: true,
-    },
-    {
-      name: 'Frequency',
-      selector: (row: MaintenanceType) => row.Frequency,
-      sortable: true,
-    },
-    {
-      name: 'Status',
-      selector: (row: MaintenanceType) => row.IsActive,
-      sortable: true,
-      cell: (row: MaintenanceType) => (
-        <span className={`maintenance-type-badge ${row.IsActive ? 'maintenance-type-badge-success' : 'maintenance-type-badge-error'}`}>
-          {row.IsActive ? 'Active' : 'Inactive'}
-        </span>
-      )
-    },
-  ];
+  //Download-Excel_File
+  const exportToExcel = () => {
+    const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
+      'Maintenance-Type Code': item.MaintenanceTypeCode,
+      'Description': item.Description,
+      'Maintenance Type': item.MaintenanceType,
+      'Frequency': item.Frequency,
+      'Status': item.IsActive ? 'Active' : 'Inactive',
+      'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
+      'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
+    }));
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(filteredDataNew);
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.xlsx';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="maintenance-type">
@@ -428,172 +483,81 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         {/* Tab Navigation */}
         <div className="maintenance-type-tabs">
           <div className="maintenance-type-tabs-container">
-            <nav className="maintenance-type-tabs-nav">
-              <div className="maintenance-type-tabs-list">
-                <button
-                  onClick={() => setActiveTab('overview')}
-                  className={`maintenance-type-tab ${activeTab === 'overview' ? 'active' : ''}`}
-                >
-                  <BarChart3 className="maintenance-type-tab-icon" />
-                  Overview
-                </button>
-                <button
-                  onClick={() => setActiveTab('maintenanceTypes')}
-                  className={`maintenance-type-tab ${activeTab === 'maintenanceTypes' ? 'active' : ''}`}
-                >
-                  <List className="maintenance-type-tab-icon" />
-                  Maintenance Types
-                </button>
+            <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-grid-box maintenance-type-md-grid-cols-4 maintenance-type-gap-6 py-3 px-2">
+              <div className="maintenance-type-card">
+                <div className="maintenance-type-card-content">
+                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-purple">
+                      <BarChart3 className="maintenance-type-icon" />
+                    </div>
+                    <div>
+                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Frequency Types</p>
+                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getMaintenanceTypesByFrequency()}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </nav>
+
+              <div className="maintenance-type-card">
+                <div className="maintenance-type-card-content">
+                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-green">
+                      <Settings className="maintenance-type-icon" />
+                    </div>
+                    <div>
+                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Active Types</p>
+                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getActiveMaintenanceTypes()}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="maintenance-type-card">
+                <div className="maintenance-type-card-content">
+                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-yellow">
+                      <Calendar className="maintenance-type-icon" />
+                    </div>
+                    <div>
+                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Inactive Types</p>
+                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getInactiveMaintenanceTypes()}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="maintenance-type-card">
+                <div className="maintenance-type-card-content">
+                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-blue">
+                      <Wrench className="maintenance-type-icon" />
+                    </div>
+                    <div>
+                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Total Types</p>
+                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getTotalMaintenanceTypes()}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Tab Content */}
         <div className="maintenance-type-content">
-          {/* Overview Tab */}
-          {activeTab === 'overview' && (
-            <div className="maintenance-type-tab-content">
-              <div className="maintenance-type-section-header">
-                <div>
-                  <h2 className="maintenance-type-section-title">Overview</h2>
-                  <p className="maintenance-type-section-subtitle">
-                    Summary of maintenance types and key metrics
-                  </p>
-                </div>
-              </div>
-
-              {/* Statistics Cards */}
-              <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-md-grid-cols-4 maintenance-type-gap-6 maintenance-type-mb-6">
-                <div className="maintenance-type-card">
-                  <div className="maintenance-type-card-content">
-                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-blue">
-                        <Wrench className="maintenance-type-icon" />
-                      </div>
-                      <div>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Total Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getTotalMaintenanceTypes()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="maintenance-type-card">
-                  <div className="maintenance-type-card-content">
-                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-green">
-                        <Settings className="maintenance-type-icon" />
-                      </div>
-                      <div>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Active Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getActiveMaintenanceTypes()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="maintenance-type-card">
-                  <div className="maintenance-type-card-content">
-                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-yellow">
-                        <Calendar className="maintenance-type-icon" />
-                      </div>
-                      <div>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Inactive Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getInactiveMaintenanceTypes()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="maintenance-type-card">
-                  <div className="maintenance-type-card-content">
-                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-purple">
-                        <BarChart3 className="maintenance-type-icon" />
-                      </div>
-                      <div>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Frequency Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getMaintenanceTypesByFrequency()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Maintenance Types */}
-              <div className="maintenance-type-card">
-                <div className="maintenance-type-card-content">
-                  <DataTable
-                    columns={overviewColumns}
-                    data={maintenanceTypes.length > 0 ? maintenanceTypes.slice(0, 5) : []}
-                    pagination
-                    paginationPerPage={10}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
-                    highlightOnHover
-                    noDataComponent={
-                      <div className="maintenance-type-text-center maintenance-type-py-8">
-                        <p className="maintenance-type-text-gray-600">No maintenance types available</p>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-500 mt-2">
-                          Add your first maintenance type to get started
-                        </p>
-                      </div>
-                    }
-                    customStyles={customStyles}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Maintenance Types Tab */}
           {activeTab === 'maintenanceTypes' && (
             <div className="maintenance-type-tab-content">
-              <div className="maintenance-type-section-header">
-                <div>
-                  <h2 className="maintenance-type-section-title">Maintenance Types</h2>
-                  <p className="maintenance-type-section-subtitle">
-                    Manage all maintenance types and their schedules
-                  </p>
-                </div>
-              </div>
 
-              {/* Filters */}
               <div className="maintenance-type-filters">
-                <div className="maintenance-type-search-container">
-                  <Search className="maintenance-type-search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search maintenance types..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="maintenance-type-search-input"
-                  />
+                <div className="maintenance-type-search-container d-flex justify-between align-center">
+                  <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                    <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
+                  <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                    className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                    placeholder="Search..." maxLength={300} />
                 </div>
-                <Select
-                  value={statusOptions.find(option => option.value === filterStatus)}
-                  onChange={(selectedOption) => setFilterStatus(selectedOption?.value || 'all')}
-                  options={statusOptions}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      minHeight: '48px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      '&:hover': {
-                        borderColor: '#9ca3af',
-                      },
-                    }),
-                    placeholder: (provided) => ({
-                      ...provided,
-                      color: '#6b7280',
-                    }),
-                  }}
-                  className="react-select-container"
-                  classNamePrefix="react-select"
-                />
               </div>
 
               {/* Maintenance Types Table */}
@@ -657,7 +621,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                       type="text"
                       value={maintenanceTypeForm.Description}
                       onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
-                      className="maintenance-type-input"
+                      className="maintenance-type-input requiredColor"
                       placeholder="Maintenance description"
                       required
                     />
@@ -671,7 +635,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                       type="text"
                       value={maintenanceTypeForm.MaintenanceTypes}
                       onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypes: e.target.value })}
-                      className="maintenance-type-input"
+                      className="maintenance-type-input requiredColor"
                       placeholder="Maintenance type"
                       required
                     />
@@ -702,7 +666,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="maintenance-type-label">Status</label>
                   <div>
                     <label className="maintenance-type-label">
@@ -715,6 +679,28 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                       Active
                     </label>
                   </div>
+                </div> */}
+                <div className="col-span-4">
+                  <Select
+                    value={dropdown}
+                    onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
+                    options={options}
+                    isMulti
+                    isClearable
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={true}
+                    placeholder="Select Company"
+                    className="basic-multi-select"
+                    styles={{
+                      ...multiValue,
+                      valueContainer: (provided) => ({
+                        ...provided,
+                        maxHeight: "80px",
+                        overflowY: "auto",
+                        flexWrap: "wrap",
+                      }),
+                    }}
+                  />
                 </div>
               </div>
             </div>

@@ -158,7 +158,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                     <button
                         onClick={() => {
                             setSelectedId(row[col4]); // clicked item id
-                            setShowModal(true);             // show confirmation modal
+                            setShowModal(true);       // show confirmation modal
                         }}
                         className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
                         title={row.IsActive ? 'Deactivate' : 'Activate'}
@@ -183,7 +183,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     useEffect(() => {
         const fetchDropDown = async () => {
             try {
-                const payload = { EmployeeID: '1' };
+                const payload = { EmployeeID: localStorage.getItem("employeeID") };
                 const response = await fetchPostData(props.dropDownUrl, payload);
                 // console.log(response);
                 if (response) {
@@ -746,7 +746,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                         {/* Filter and Search Bar */}
                         <div className="compact" style={{ height: '100%' }}>
-                            <div className="flex justify-between align-items-center  mb-2">
+                            <div className="flex justify-between align-items-center  mb-2 d-flex justify-end">
                                 <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 flex items-center gap-1">
                                     <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
                                 <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
@@ -795,7 +795,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                         deleteItem(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 }

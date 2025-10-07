@@ -624,272 +624,130 @@ export default function ProductMasonry() {
 
       {/* Main Content */}
       <div className="product-masonry-main">
-        {/* Tab Navigation */}
-        <div className="product-masonry-tabs">
-          <div className="product-masonry-tabs-container">
-            <nav className="product-masonry-tabs-nav">
-              <div className="product-masonry-tabs-list">
-                <button
-                  onClick={() => setActiveTab('overview')}
-                  className={`product-masonry-tab ${activeTab === 'overview' ? 'active' : ''}`}
-                >
-                  <BarChart3 className="product-masonry-tab-icon" />
-                  Overview
-                </button>
-                <button
-                  onClick={() => setActiveTab('products')}
-                  className={`product-masonry-tab ${activeTab === 'products' ? 'active' : ''}`}
-                >
-                  <List className="product-masonry-tab-icon" />
-                  Product List
-                </button>
+        {/* Statistics Cards */}
+        <div className="product-masonry-grid product-masonry-grid-cols-1 product-masonry-md-grid-cols-4 product-masonry-gap-6 product-masonry-mb-6">
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-blue">
+                  <Cube className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Total Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getTotalProducts()}</p>
+                </div>
               </div>
-            </nav>
+            </div>
+          </div>
+
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-green">
+                  <Building className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Active Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getActiveProducts()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-yellow">
+                  <Calendar className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Inactive Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getInactiveProducts()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-purple">
+                  <BarChart3 className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Avg. Rate (₹/ton)</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">₹{getAverageRate()}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Tab Content */}
         <div className="product-masonry-content">
           {/* Overview Tab */}
-          {activeTab === 'overview' && (
-            <div className="product-masonry-tab-content">
-              <div className="product-masonry-section-header">
-                <div>
-                  <h2 className="product-masonry-section-title">Overview</h2>
-                  <p className="product-masonry-section-subtitle">
-                    Summary of masonry stone products and key metrics
-                  </p>
-                </div>
-              </div>
 
-              {/* Statistics Cards */}
-              <div className="product-masonry-grid product-masonry-grid-cols-1 product-masonry-md-grid-cols-4 product-masonry-gap-6 product-masonry-mb-6">
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-blue">
-                        <Cube className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Total Products</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">{getTotalProducts()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div className="product-masonry-tab-content">
 
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-green">
-                        <Building className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Active Products</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">{getActiveProducts()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-yellow">
-                        <Calendar className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Inactive Products</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">{getInactiveProducts()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-purple">
-                        <BarChart3 className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Avg. Rate (₹/ton)</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">₹{getAverageRate()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Products */}
-              <div className="product-masonry-card">
-                <div className="product-masonry-card-content">
-                  <DataTable
-                    columns={overviewColumns}
-                    data={products.slice(0, 5)}
-                    pagination={false}
-                    highlightOnHover
-                    // customStyles={{
-                    //   table: {
-                    //     style: {
-                    //       backgroundColor: 'transparent',
-                    //     },
-                    //   },
-                    //   headRow: {
-                    //     style: {
-                    //       backgroundColor: '#f9fafb',
-                    //       borderBottom: '1px solid #e5e7eb',
-                    //     },
-                    //   },
-                    //   headCells: {
-                    //     style: {
-                    //       color: '#374151',
-                    //       fontSize: '0.875rem',
-                    //       fontWeight: '600',
-                    //       padding: '0.75rem',
-                    //     },
-                    //   },
-                    //   cells: {
-                    //     style: {
-                    //       padding: '1rem 0.75rem',
-                    //       borderBottom: '1px solid #f3f4f6',
-                    //       fontSize: '0.875rem',
-                    //     },
-                    //   },
-                    //   rows: {
-                    //     style: {
-                    //       '&:hover': {
-                    //         backgroundColor: '#f9fafb',
-                    //       },
-                    //     },
-                    //   },
-                    // }}
-
-                    customStyles={customStyles}
-                  />
-                </div>
-              </div>
+            <div className="product-masonry-search-container  mb-2 d-flex justify-end ">
+              <input type="text" 
+                className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                placeholder="Search..." maxLength={300} />
             </div>
-          )}
 
-          {/* Products Tab */}
-          {activeTab === 'products' && (
-            <div className="product-masonry-tab-content">
-              <div className="product-masonry-section-header">
-                <div>
-                  <h2 className="product-masonry-section-title">Product List</h2>
-                  <p className="product-masonry-section-subtitle">
-                    Manage all masonry stone products and their rates
-                  </p>
-                </div>
-              </div>
+            {/* Recent Products */}
+            <div className="product-masonry-card">
+              <div className="product-masonry-card-content">
+                <DataTable
+                  columns={overviewColumns}
+                  data={products.slice(0, 5)}
+                  pagination={false}
+                  highlightOnHover
+                  // customStyles={{
+                  //   table: {
+                  //     style: {
+                  //       backgroundColor: 'transparent',
+                  //     },
+                  //   },
+                  //   headRow: {
+                  //     style: {
+                  //       backgroundColor: '#f9fafb',
+                  //       borderBottom: '1px solid #e5e7eb',
+                  //     },
+                  //   },
+                  //   headCells: {
+                  //     style: {
+                  //       color: '#374151',
+                  //       fontSize: '0.875rem',
+                  //       fontWeight: '600',
+                  //       padding: '0.75rem',
+                  //     },
+                  //   },
+                  //   cells: {
+                  //     style: {
+                  //       padding: '1rem 0.75rem',
+                  //       borderBottom: '1px solid #f3f4f6',
+                  //       fontSize: '0.875rem',
+                  //     },
+                  //   },
+                  //   rows: {
+                  //     style: {
+                  //       '&:hover': {
+                  //         backgroundColor: '#f9fafb',
+                  //       },
+                  //     },
+                  //   },
+                  // }}
 
-              {/* Filters */}
-              <div className="product-masonry-filters">
-                <div className="product-masonry-search-container">
-                  <Search className="product-masonry-search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="product-masonry-search-input"
-                  />
-                </div>
-                <Select
-                  value={statusOptions.find(option => option.value === filterStatus)}
-                  onChange={(selectedOption) => setFilterStatus(selectedOption?.value || 'all')}
-                  options={statusOptions}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      minHeight: '48px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      '&:hover': {
-                        borderColor: '#9ca3af',
-                      },
-                    }),
-                    placeholder: (provided) => ({
-                      ...provided,
-                      color: '#6b7280',
-                    }),
-                  }}
-                  className="react-select-container"
-                  classNamePrefix="react-select"
+                  customStyles={customStyles}
                 />
               </div>
-
-              {/* Products Table */}
-              <div className="product-masonry-card">
-                <div className="product-masonry-card-content">
-                  <DataTable
-                    columns={columns}
-                    data={filteredProducts}
-                    pagination
-                    paginationPerPage={10}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
-                    highlightOnHover
-                    responsive
-                    progressPending={loading}
-                    // subHeader
-
-                    noDataComponent={
-                      <div className="product-masonry-text-center product-masonry-py-8">
-                        <p className="product-masonry-text-gray-600">No products found</p>
-                      </div>
-                    }
-                    // customStyles={{
-                    //   table: {
-                    //     style: {
-                    //       backgroundColor: 'transparent',
-                    //     },
-                    //   },
-                    //   headRow: {
-                    //     style: {
-                    //       backgroundColor: '#f9fafb',
-                    //       borderBottom: '1px solid #e5e7eb',
-                    //     },
-                    //   },
-                    //   headCells: {
-                    //     style: {
-                    //       color: '#374151',
-                    //       fontSize: '0.875rem',
-                    //       fontWeight: '600',
-                    //       padding: '0.75rem',
-                    //     },
-                    //   },
-                    //   cells: {
-                    //     style: {
-                    //       padding: '1rem 0.75rem',
-                    //       borderBottom: '1px solid #f3f4f6',
-                    //       fontSize: '0.875rem',
-                    //     },
-                    //   },
-                    //   rows: {
-                    //     style: {
-                    //       '&:hover': {
-                    //         backgroundColor: '#f9fafb',
-                    //       },
-                    //     },
-                    //   },
-                    //   pagination: {
-                    //     style: {
-                    //       backgroundColor: 'transparent',
-                    //       borderTop: '1px solid #e5e7eb',
-                    //       padding: '1rem',
-                    //     },
-                    //   },
-                    // }}
-
-
-                    customStyles={customStyles}
-                  />
-                </div>
-              </div>
             </div>
-          )}
+          </div>
+
+
+
         </div>
       </div>
 
