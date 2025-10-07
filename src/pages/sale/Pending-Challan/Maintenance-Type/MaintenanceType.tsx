@@ -8,6 +8,7 @@ import { customStyles, multiValue } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
 import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
+import ConfirmModal from '@/common/ConfirmModal';
 
 // Icon components
 interface MaintenanceType {
@@ -90,6 +91,18 @@ const Settings = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const ToggleLeft = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+  </svg>
+);
+
+const ToggleRight = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
 // Status options
 const statusOptions = [
   { value: 'all', label: 'All Status' },
@@ -109,6 +122,8 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
   const [editItemId, setEditItemId] = useState<number | null>(null);
   const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
   const [search, setSearch] = useState("");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
   const [maintenanceTypeForm, setMaintenanceTypeForm] = useState({
@@ -267,6 +282,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
           }));
 
           setDropdown(matchOptions);
+          setShowMaintenanceTypeModal(true);
         } else {
           setDropdown([]);
         }
@@ -316,7 +332,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       return;
     }
 
-    alert(editItemId);
+    // alert(editItemId);
     if (editItemId) {
       const success = await updateMaintenanceType(maintenanceTypeForm, editItemId);
       if (success) {
@@ -330,13 +346,6 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         setShowMaintenanceTypeModal(false);
         resetForm();
       }
-    }
-  };
-
-  // Handle delete
-  const handleDeleteMaintenanceType = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this maintenance type?')) {
-      await deleteMaintenanceType(id);
     }
   };
 
@@ -402,19 +411,29 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       cell: (row: MaintenanceType) => (
         <div className="maintenance-type-flex maintenance-type-gap-1">
           <button
+            onClick={() => {
+              setSelectedId(row.MaintenanceTypeID!); // clicked item id
+              setShowModal(true);       // show confirmation modal
+            }}
+            className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
+            title={row.IsActive ? 'Deactivate' : 'Activate'}
+          >
+            {row.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
+          </button>
+          <button
             onClick={() => setEditItemId(row.MaintenanceTypeID!)}
             className="maintenance-type-btn-icon"
             title="Edit"
           >
             <Edit3 className="maintenance-type-icon-sm" />
           </button>
-          <button
+          {/* <button
             onClick={() => handleDeleteMaintenanceType(row.MaintenanceTypeID!)}
             className="maintenance-type-btn-icon maintenance-type-btn-icon-danger"
             title="Delete"
           >
             <Trash2 className="maintenance-type-icon-sm" />
-          </button>
+          </button> */}
         </div>
       ),
       ignoreRowClick: true,
@@ -448,225 +467,226 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
   }
 
   return (
-    <div className="maintenance-type">
-      {/* Header */}
-      <div className="maintenance-type-header">
-        <div className="maintenance-type-header-content">
-          <div className="maintenance-type-title-section">
-            <Wrench className="maintenance-type-header-icon" />
-            <div>
-              <h1 className="maintenance-type-title">Maintenance Types Management</h1>
-              <p className="maintenance-type-subtitle">
-                Manage maintenance types, schedules, and procedures
-              </p>
-            </div>
-          </div>
-          <div className="maintenance-type-header-actions">
-            <button
-              onClick={() => {
-                // console.log('Add Maintenance Type button clicked');
-                setEditingMaintenanceType(null);
-                resetForm();
-                setShowMaintenanceTypeModal(true);
-              }}
-              className="maintenance-type-btn maintenance-type-btn-primary"
-            >
-              <Plus className="maintenance-type-icon" />
-              Add Maintenance Type
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="maintenance-type-main">
-        {/* Tab Navigation */}
-        <div className="maintenance-type-tabs">
-          <div className="maintenance-type-tabs-container">
-            <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-grid-box maintenance-type-md-grid-cols-4 maintenance-type-gap-6 py-3 px-2">
-              <div className="maintenance-type-card">
-                <div className="maintenance-type-card-content">
-                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-purple">
-                      <BarChart3 className="maintenance-type-icon" />
-                    </div>
-                    <div>
-                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Frequency Types</p>
-                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getMaintenanceTypesByFrequency()}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="maintenance-type-card">
-                <div className="maintenance-type-card-content">
-                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-green">
-                      <Settings className="maintenance-type-icon" />
-                    </div>
-                    <div>
-                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Active Types</p>
-                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getActiveMaintenanceTypes()}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="maintenance-type-card">
-                <div className="maintenance-type-card-content">
-                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-yellow">
-                      <Calendar className="maintenance-type-icon" />
-                    </div>
-                    <div>
-                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Inactive Types</p>
-                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getInactiveMaintenanceTypes()}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="maintenance-type-card">
-                <div className="maintenance-type-card-content">
-                  <div className="maintenance-type-flex maintenance-type-items-center p-2">
-                    <div className="maintenance-type-stat-icon maintenance-type-stat-icon-blue">
-                      <Wrench className="maintenance-type-icon" />
-                    </div>
-                    <div>
-                      <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Total Types</p>
-                      <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getTotalMaintenanceTypes()}</p>
-                    </div>
-                  </div>
-                </div>
+    <>
+      <div className="maintenance-type">
+        {/* Header */}
+        <div className="maintenance-type-header">
+          <div className="maintenance-type-header-content">
+            <div className="maintenance-type-title-section">
+              <Wrench className="maintenance-type-header-icon" />
+              <div>
+                <h1 className="maintenance-type-title">Maintenance Types Management</h1>
+                <p className="maintenance-type-subtitle">
+                  Manage maintenance types, schedules, and procedures
+                </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Tab Content */}
-        <div className="maintenance-type-content">
-
-          {/* Maintenance Types Tab */}
-          {activeTab === 'maintenanceTypes' && (
-            <div className="maintenance-type-tab-content">
-
-              <div className="maintenance-type-filters">
-                <div className="maintenance-type-search-container d-flex justify-between align-center">
-                  <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
-                    <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
-                  <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-                    className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
-                    placeholder="Search..." maxLength={300} />
-                </div>
-              </div>
-
-              {/* Maintenance Types Table */}
-              <div className="maintenance-type-card">
-                <div className="maintenance-type-card-content">
-                  <DataTable
-                    columns={columns}
-                    data={filteredMaintenanceTypes}
-                    pagination
-                    paginationPerPage={10}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
-                    highlightOnHover
-                    responsive
-                    progressPending={loading}
-                    noDataComponent={
-                      <div className="maintenance-type-text-center maintenance-type-py-8">
-                        <p className="maintenance-type-text-gray-600">
-                          {searchTerm || filterStatus !== 'all'
-                            ? 'No maintenance types match your search/filter criteria'
-                            : 'No maintenance types found'}
-                        </p>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-500 mt-2">
-                          {searchTerm || filterStatus !== 'all'
-                            ? 'Try adjusting your search terms or filter settings'
-                            : 'Add your first maintenance type using the "Add Maintenance Type" button above'}
-                        </p>
-                      </div>
-                    }
-                    customStyles={customStyles}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Maintenance Type Modal */}
-      {showMaintenanceTypeModal && (
-        <div className="maintenance-type-modal-overlay" onClick={() => setShowMaintenanceTypeModal(false)}>
-          <div className="maintenance-type-modal maintenance-type-modal-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="maintenance-type-modal-header">
-              <h3 className="maintenance-type-modal-title">
-                {editingMaintenanceType ? 'Edit Maintenance Type' : 'Add New Maintenance Type'}
-              </h3>
+            <div className="maintenance-type-header-actions">
               <button
-                onClick={() => setShowMaintenanceTypeModal(false)}
-                className="maintenance-type-modal-close"
+                onClick={() => {
+                  // console.log('Add Maintenance Type button clicked');
+                  setEditingMaintenanceType(null);
+                  resetForm();
+                  setShowMaintenanceTypeModal(true);
+                }}
+                className="maintenance-type-btn maintenance-type-btn-primary"
               >
-                ×
+                <Plus className="maintenance-type-icon" />
+                Add Maintenance Type
               </button>
             </div>
-            <div className="maintenance-type-modal-content">
-              <div className="maintenance-type-space-y-4">
-                <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
-                  <div>
-                    <label className="maintenance-type-label">
-                      Description <span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={maintenanceTypeForm.Description}
-                      onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
-                      className="maintenance-type-input requiredColor"
-                      placeholder="Maintenance description"
-                      required
-                    />
-                  </div>
+          </div>
+        </div>
 
-                  <div>
-                    <label className="maintenance-type-label">
-                      Type <span style={{ color: 'red' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={maintenanceTypeForm.MaintenanceTypes}
-                      onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypes: e.target.value })}
-                      className="maintenance-type-input requiredColor"
-                      placeholder="Maintenance type"
-                      required
-                    />
+        {/* Main Content */}
+        <div className="maintenance-type-main">
+          {/* Tab Navigation */}
+          <div className="maintenance-type-tabs">
+            <div className="maintenance-type-tabs-container">
+              <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-grid-box maintenance-type-md-grid-cols-4 maintenance-type-gap-6 py-3 px-2">
+                <div className="maintenance-type-card">
+                  <div className="maintenance-type-card-content">
+                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-purple">
+                        <BarChart3 className="maintenance-type-icon" />
+                      </div>
+                      <div>
+                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Frequency Types</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getMaintenanceTypesByFrequency()}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
-                  <div>
-                    <label className="maintenance-type-label">Code</label>
-                    <input
-                      type="text"
-                      value={maintenanceTypeForm.MaintenanceTypeCode}
-                      onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypeCode: e.target.value })}
-                      className="maintenance-type-input"
-                      placeholder="Maintenance type code"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="maintenance-type-label">Frequency</label>
-                    <input
-                      type="text"
-                      value={maintenanceTypeForm.Frequency}
-                      onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Frequency: e.target.value })}
-                      className="maintenance-type-input"
-                      placeholder="Maintenance frequency"
-                    />
+                <div className="maintenance-type-card">
+                  <div className="maintenance-type-card-content">
+                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-green">
+                        <Settings className="maintenance-type-icon" />
+                      </div>
+                      <div>
+                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Active Types</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getActiveMaintenanceTypes()}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* <div>
+                <div className="maintenance-type-card">
+                  <div className="maintenance-type-card-content">
+                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-yellow">
+                        <Calendar className="maintenance-type-icon" />
+                      </div>
+                      <div>
+                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Inactive Types</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getInactiveMaintenanceTypes()}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="maintenance-type-card">
+                  <div className="maintenance-type-card-content">
+                    <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                      <div className="maintenance-type-stat-icon maintenance-type-stat-icon-blue">
+                        <Wrench className="maintenance-type-icon" />
+                      </div>
+                      <div>
+                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Total Types</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getTotalMaintenanceTypes()}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="maintenance-type-content">
+
+            {/* Maintenance Types Tab */}
+            {activeTab === 'maintenanceTypes' && (
+              <div className="maintenance-type-tab-content">
+
+                <div className="maintenance-type-filters">
+                  <div className="maintenance-type-search-container d-flex justify-between align-center">
+                    <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                      <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
+                    <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                      className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                      placeholder="Search..." maxLength={300} />
+                  </div>
+                </div>
+
+                {/* Maintenance Types Table */}
+                <div className="maintenance-type-card">
+                  <div className="maintenance-type-card-content">
+                    <DataTable
+                      columns={columns}
+                      data={filteredMaintenanceTypes}
+                      pagination
+                      paginationPerPage={10}
+                      paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                      highlightOnHover
+                      responsive
+                      progressPending={loading}
+                      noDataComponent={
+                        <div className="maintenance-type-text-center maintenance-type-py-8">
+                          <p className="maintenance-type-text-gray-600">
+                            {searchTerm || filterStatus !== 'all'
+                              ? 'No maintenance types match your search/filter criteria'
+                              : 'No maintenance types found'}
+                          </p>
+                          <p className="maintenance-type-text-sm maintenance-type-text-gray-500 mt-2">
+                            {searchTerm || filterStatus !== 'all'
+                              ? 'Try adjusting your search terms or filter settings'
+                              : 'Add your first maintenance type using the "Add Maintenance Type" button above'}
+                          </p>
+                        </div>
+                      }
+                      customStyles={customStyles}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Maintenance Type Modal */}
+        {showMaintenanceTypeModal && (
+          <div className="maintenance-type-modal-overlay" onClick={() => setShowMaintenanceTypeModal(false)}>
+            <div className="maintenance-type-modal maintenance-type-modal-lg" onClick={(e) => e.stopPropagation()}>
+              <div className="maintenance-type-modal-header">
+                <h3 className="maintenance-type-modal-title">
+                  {editingMaintenanceType ? 'Edit Maintenance Type' : 'Add New Maintenance Type'}
+                </h3>
+                <button
+                  onClick={() => setShowMaintenanceTypeModal(false)}
+                  className="maintenance-type-modal-close"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="maintenance-type-modal-content">
+                <div className="maintenance-type-space-y-4">
+                  <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
+                    <div>
+                      <label className="maintenance-type-label">
+                        Description <span style={{ color: 'red' }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={maintenanceTypeForm.Description}
+                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
+                        className="maintenance-type-input requiredColor"
+                        placeholder="Maintenance description"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="maintenance-type-label">
+                        Type <span style={{ color: 'red' }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={maintenanceTypeForm.MaintenanceTypes}
+                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypes: e.target.value })}
+                        className="maintenance-type-input requiredColor"
+                        placeholder="Maintenance type"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
+                    <div>
+                      <label className="maintenance-type-label">Code</label>
+                      <input
+                        type="text"
+                        value={maintenanceTypeForm.MaintenanceTypeCode}
+                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypeCode: e.target.value })}
+                        className="maintenance-type-input"
+                        placeholder="Maintenance type code"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="maintenance-type-label">Frequency</label>
+                      <input
+                        type="text"
+                        value={maintenanceTypeForm.Frequency}
+                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Frequency: e.target.value })}
+                        className="maintenance-type-input"
+                        placeholder="Maintenance frequency"
+                      />
+                    </div>
+                  </div>
+
+                  {/* <div>
                   <label className="maintenance-type-label">Status</label>
                   <div>
                     <label className="maintenance-type-label">
@@ -680,50 +700,53 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                     </label>
                   </div>
                 </div> */}
-                <div className="col-span-4">
-                  <Select
-                    value={dropdown}
-                    onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
-                    options={options}
-                    isMulti
-                    isClearable
-                    closeMenuOnSelect={false}
-                    hideSelectedOptions={true}
-                    placeholder="Select Company"
-                    className="basic-multi-select"
-                    styles={{
-                      ...multiValue,
-                      valueContainer: (provided) => ({
-                        ...provided,
-                        maxHeight: "80px",
-                        overflowY: "auto",
-                        flexWrap: "wrap",
-                      }),
-                    }}
-                  />
+                  <div className="col-span-4">
+                    <Select
+                      value={dropdown}
+                      onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
+                      options={options}
+                      isMulti
+                      isClearable
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={true}
+                      placeholder="Select Company"
+                      className="basic-multi-select"
+                      styles={{
+                        ...multiValue,
+                        valueContainer: (provided) => ({
+                          ...provided,
+                          maxHeight: "80px",
+                          overflowY: "auto",
+                          flexWrap: "wrap",
+                        }),
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="maintenance-type-modal-footer">
-              <button
-                onClick={() => setShowMaintenanceTypeModal(false)}
-                className="maintenance-type-btn maintenance-type-btn-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveMaintenanceType}
-                className="maintenance-type-btn maintenance-type-btn-primary"
-                disabled={!maintenanceTypeForm.Description || !maintenanceTypeForm.MaintenanceTypes || loading}
-              >
-                <Save className="maintenance-type-icon" />
-                {editingMaintenanceType ? 'Update Maintenance Type' : 'Add Maintenance Type'}
-              </button>
+              <div className="maintenance-type-modal-footer">
+                <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-btn maintenance-type-btn-secondary">
+                  Cancel
+                </button>
+                <button onClick={handleSaveMaintenanceType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.Description || !maintenanceTypeForm.MaintenanceTypes || loading} >
+                  <Save className="maintenance-type-icon" />
+                  {editingMaintenanceType ? 'Update Maintenance Type' : 'Add Maintenance Type'}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+
+      <ConfirmModal show={showModal}
+        handleClose={() => setShowModal(false)}
+        handleConfirm={() => {
+          if (selectedId !== null) {
+            deleteMaintenanceType(selectedId);
+          }
+          setShowModal(false);
+        }} />
+    </>
   );
 };
 
