@@ -121,6 +121,20 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             name: 'Description',
             selector: (row: ListItem) => row[col5],
             sortable: true,
+            cell: (row: ListItem) => (
+                <span
+                    title={row[col5]}
+                    style={{
+                        display: 'inline-block',
+                        maxWidth: '550px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                    }}
+                >
+                    {row[col5]}
+                </span>
+            ),
         },
         {
             name: 'Status',
@@ -361,13 +375,13 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             console.log("Update message:", message);
 
             // console.log("Already Exists "+ col3 );
-            if (message === "Already Exists "+ col3 ) {
+            if (message === "Already Exists " + col3) {
                 toastifyError("Code is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
             // console.log("Already Exists "+ col5 );
-            if(message === "Already Exists "+ col5 ) {
+            if (message === "Already Exists " + col5) {
                 toastifyError("Description is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
@@ -420,13 +434,13 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
             const message = parsedData?.Table?.[0]?.Message;
 
-            if (message === "Already Exists "+ col3) {
+            if (message === "Already Exists " + col3) {
                 toastifyError("Code is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
 
-            if (message === "Already Exists "+ col5) {
+            if (message === "Already Exists " + col5) {
                 toastifyError("Description is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
@@ -746,7 +760,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                         {/* Filter and Search Bar */}
                         <div className="compact" style={{ height: '100%' }}>
-                            <div className="flex justify-between align-items-center  mb-2 d-flex justify-end">
+                            <div className="flex justify-between align-items-center  mb-2 d-flex">
                                 <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 flex items-center gap-1">
                                     <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
                                 <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
@@ -795,7 +809,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                         deleteItem(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </>
     );
 }

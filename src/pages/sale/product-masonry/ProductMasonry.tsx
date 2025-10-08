@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { fetch_Post_Data, fetchPostData, AddDeleteUpadate } from '@/components/hooks/Api';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import { customStyles } from '@/common/Utility';
+import { getShowingDateText } from '@/common/DateFormat';
 
 // Icon components
 const Cube = ({ className }: { className?: string }) => (
@@ -34,18 +35,6 @@ const Save = ({ className }: { className?: string }) => (
 const Trash2 = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-  </svg>
-);
-
-const Search = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-  </svg>
-);
-
-const List = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
   </svg>
 );
 
@@ -86,6 +75,7 @@ interface Product {
   CompanyId: number;
   IsActive: boolean;
   CreatedDate: string;
+  UpdatedDate: string;
   LastUpdated: string;
   Remarks?: string;
 }
@@ -115,13 +105,6 @@ const MASONRY_PRODUCTS = [
   'Sub-base Material'
 ];
 
-// Static options for react-select
-const statusOptions = [
-  { value: 'all', label: 'All Status' },
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' }
-];
-
 const productStatusOptions = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' }
@@ -134,9 +117,6 @@ export default function ProductMasonry() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(false);
-
-
-
 
   // State for API data
   const [products, setProducts] = useState<Product[]>([]);
@@ -167,7 +147,7 @@ export default function ProductMasonry() {
     try {
       setLoading(true);
       const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
-      const response = await fetch_Post_Data("GetData_Product", {
+      const response = await fetch_Post_Data("Product/GetData_Product", {
         IsActive: 1,
         CompanyId: Number(localStorage.getItem("companyID"))
       });
@@ -235,7 +215,7 @@ export default function ProductMasonry() {
 
   const fetchDropdownData = async () => {
     try {
-      const response = await fetch_Post_Data("GetDataDropDown_Product", {
+      const response = await fetch_Post_Data("Users/GetData_Company", {
         CompanyId: getCompanyId()
       });
       // console.log(response, "response")
@@ -275,7 +255,7 @@ export default function ProductMasonry() {
 
   const insertProduct = async (productData: any) => {
     try {
-      const response = await fetchPostData('Insert_Product', {
+      const response = await fetchPostData('Product/Insert_Product', {
         ...productData,
         CompanyId: getCompanyId()
       });
@@ -294,7 +274,7 @@ export default function ProductMasonry() {
 
   const updateProduct = async (productData: any, productId: number) => {
     try {
-      const response = await fetchPostData('Update_Product', {
+      const response = await fetchPostData('Product/Update_Product', {
         ...productData,
         ProductID: productId,
         CompanyId: getCompanyId()
@@ -316,7 +296,7 @@ export default function ProductMasonry() {
 
   const deleteProduct = async (productId: number) => {
     try {
-      const response = await fetchPostData('Delete_Product', {
+      const response = await fetchPostData('Product/Delete_Product', {
         IsActive: false,
         ProductID: productId
       });
@@ -335,7 +315,7 @@ export default function ProductMasonry() {
 
   const getSingleProduct = async (productId: number) => {
     try {
-      const response = await fetch_Post_Data('GetSingleData_Product', {
+      const response = await fetch_Post_Data('Product/GetSingleData_Product', {
         ProductID: productId
       });
 
@@ -367,12 +347,6 @@ export default function ProductMasonry() {
     fetchProducts();
     fetchDropdownData();
   }, [filterStatus]);
-
-  // Debug effect to log data changes
-  useEffect(() => {
-    // console.log('Products updated:', products);
-    // console.log('Filtered products:', filteredProducts);
-  }, [products, filteredProducts]);
 
   // Table columns configuration
   const columns = [
@@ -426,6 +400,16 @@ export default function ProductMasonry() {
       )
     },
     {
+      name: 'Created Date',
+      selector: (row: Product) => getShowingDateText(row.CreatedDate),
+      sortable: true,
+    },
+    {
+      name: 'Last Modified',
+      selector: (row: Product) => getShowingDateText(row.UpdatedDate),
+      sortable: true,
+    },
+    {
       name: 'Actions',
       cell: (row: Product) => (
         <div className="product-masonry-flex product-masonry-gap-1">
@@ -448,43 +432,6 @@ export default function ProductMasonry() {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    },
-  ];
-
-  // Overview table columns
-  const overviewColumns = [
-    {
-      name: 'Product Name',
-      selector: (row: Product) => row.ProductName,
-      sortable: true,
-      cell: (row: Product) => <span className="product-masonry-font-medium">{row.ProductName}</span>
-    },
-    {
-      name: 'Rate (₹/unit)',
-      selector: (row: Product) => row.Rate,
-      sortable: true,
-      cell: (row: Product) => `₹${row.Rate.toLocaleString()}`
-    },
-    {
-      name: 'Unit Type',
-      selector: (row: Product) => row.UnitType,
-      sortable: true,
-    },
-    {
-      name: 'Status',
-      selector: (row: Product) => row.IsActive,
-      sortable: true,
-      cell: (row: Product) => (
-        <span className={`product-masonry-badge ${row.IsActive ? 'product-masonry-badge-success' : 'product-masonry-badge-error'}`}>
-          {row.IsActive ? 'Active' : 'Inactive'}
-        </span>
-      )
-    },
-    {
-      name: 'Last Updated',
-      selector: (row: Product) => row.LastUpdated,
-      sortable: true,
-      cell: (row: Product) => new Date(row.LastUpdated).toLocaleDateString()
     },
   ];
 
@@ -686,12 +633,9 @@ export default function ProductMasonry() {
         {/* Tab Content */}
         <div className="product-masonry-content">
           {/* Overview Tab */}
-
           <div className="product-masonry-tab-content">
-
-
             <div className="product-masonry-search-container  mb-2 d-flex justify-end ">
-              <input type="text" 
+              <input type="text"
                 className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
                 placeholder="Search..." maxLength={300} />
             </div>
@@ -700,53 +644,15 @@ export default function ProductMasonry() {
             <div className="product-masonry-card">
               <div className="product-masonry-card-content">
                 <DataTable
-                  columns={overviewColumns}
+                  columns={columns}
                   data={products.slice(0, 5)}
-                  pagination={false}
+                  pagination={true}
                   highlightOnHover
-                  // customStyles={{
-                  //   table: {
-                  //     style: {
-                  //       backgroundColor: 'transparent',
-                  //     },
-                  //   },
-                  //   headRow: {
-                  //     style: {
-                  //       backgroundColor: '#f9fafb',
-                  //       borderBottom: '1px solid #e5e7eb',
-                  //     },
-                  //   },
-                  //   headCells: {
-                  //     style: {
-                  //       color: '#374151',
-                  //       fontSize: '0.875rem',
-                  //       fontWeight: '600',
-                  //       padding: '0.75rem',
-                  //     },
-                  //   },
-                  //   cells: {
-                  //     style: {
-                  //       padding: '1rem 0.75rem',
-                  //       borderBottom: '1px solid #f3f4f6',
-                  //       fontSize: '0.875rem',
-                  //     },
-                  //   },
-                  //   rows: {
-                  //     style: {
-                  //       '&:hover': {
-                  //         backgroundColor: '#f9fafb',
-                  //       },
-                  //     },
-                  //   },
-                  // }}
-
                   customStyles={customStyles}
                 />
               </div>
             </div>
           </div>
-
-
 
         </div>
       </div>
@@ -796,6 +702,22 @@ export default function ProductMasonry() {
                       }}
                       className="react-select-container"
                       classNamePrefix="react-select"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="product-masonry-label">
+                      Product Name <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={productForm.Rate || ''}
+                      onChange={(selectedOption) => setProductForm({ ...productForm, ProductName: selectedOption?.value || '' })}
+                      className="product-masonry-input"
+                      placeholder="Product rate"
+                      min="0"
+                      step="0.01"
+                      required
                     />
                   </div>
 
@@ -994,7 +916,7 @@ export default function ProductMasonry() {
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="product-masonry-label">Remarks</label>
                   <textarea
                     value={productForm.Remarks}
@@ -1003,7 +925,7 @@ export default function ProductMasonry() {
                     rows={3}
                     placeholder="Any special notes or conditions"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="product-masonry-modal-footer">

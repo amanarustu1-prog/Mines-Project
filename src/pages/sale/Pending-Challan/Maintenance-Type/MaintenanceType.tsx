@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
 import { customStyles, multiValue } from '@/common/Utility';
-import { fetchPostData } from '@/components/hooks/Api';
+import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
@@ -55,24 +55,6 @@ const Save = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const Trash2 = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-  </svg>
-);
-
-const Search = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-  </svg>
-);
-
-const List = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-  </svg>
-);
-
 const BarChart3 = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 13l4-4L11 13l4-4 4 4M3 21h18" />
@@ -103,17 +85,9 @@ const ToggleRight = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Status options
-const statusOptions = [
-  { value: 'all', label: 'All Status' },
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' }
-];
-
 const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
   const [activeTab, setActiveTab] = useState('maintenanceTypes');
   const [showMaintenanceTypeModal, setShowMaintenanceTypeModal] = useState(false);
-  const [editingMaintenanceType, setEditingMaintenanceType] = useState<MaintenanceType | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(false);
@@ -124,6 +98,8 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [activeCounts, setActiveCounts] = useState(0);
+  const [inactiveCounts, setInactiveCounts] = useState(0);
 
   const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
   const [maintenanceTypeForm, setMaintenanceTypeForm] = useState({
@@ -163,16 +139,27 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
   //Insert-Data
   const insertMaintenanceType = async (data: any) => {
     try {
-      // console.log('Inserting maintenance type with data:', data);
       const response = await fetchPostData('MaintenanceType/Insert_MaintenanceType', {
         ...data,
         CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
       });
-      // console.log('Insert response:', response);
+
+      const message = response[0].Message;
+
+      if (message === "Already Exists MaintenanceTypeCode") {
+        toastifyError("Code is already Present");
+        return;
+      }
+
+      if (message === "Already Exists Description") {
+        toastifyError("Description is already Present");
+        return;
+      }
 
       if (response) {
         toastifySuccess('Maintenance type added successfully');
-        await fetchMaintenanceTypes();
+        await fetchData();  
+        await fetchCounts();
         return true;
       } else {
         throw new Error('Invalid response from server');
@@ -192,13 +179,29 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
       });
 
+      const message = response[0].Message;
+
+      if (message === "Already Exists MaintenanceTypeCode") {
+        toastifyError("Code is already Present");
+        return;
+      }
+
+      if (message === "Already Exists Description") {
+        toastifyError("Description is already Present");
+        return;
+      }
+      console.log(response);
+
       if (response) {
-        toastifySuccess('Maintenance type updated successfully');
+        toastifySuccess('Item updated successfully');
+        setEditItemId(null);
+        setDropdown([]);
+        setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaintenanceTypeCode: '', Frequency: '' });
         fetchMaintenanceTypes();
+        setShowMaintenanceTypeModal(false);
         return true;
       }
     } catch (error: any) {
-      // console.error('Error updating maintenance type:', error);
       toastifyError('Error updating maintenance type');
       return false;
     }
@@ -206,21 +209,25 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
   //Delete-Data
   const deleteMaintenanceType = async (id: number) => {
+    const item = maintenanceTypes.find(t => t.MaintenanceTypeID === id);
+    if (!item) return;
+
+    const newStatus = item.IsActive ? 0 : 1;
+
     try {
       const response = await fetchPostData('MaintenanceType/Delete_MaintenanceType', {
         MaintenanceTypeID: id,
-        IsActive: 0,
-        // IPAddress: sessionStorage.getItem('IPAddress') || ''
+        IsActive: newStatus,
       });
 
       if (response) {
-        toastifySuccess('Maintenance type deleted successfully');
-        fetchMaintenanceTypes();
+        toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully`);
+        await fetchData();
+        await fetchCounts();
         return true;
       }
     } catch (error: any) {
-      // console.error('Error deleting maintenance type:', error);
-      toastifyError('Error deleting maintenance type');
+      toastifyError('Error updating status');
       return false;
     }
   };
@@ -295,8 +302,55 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
   }
 
-  // Filter functions
+  const fetchData = async () => {
+    try {
+      if (filter === "all") {
+        const activeResp = await fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
+        fetchCounts();
+
+        const activeData = activeResp?.Data || [];
+
+        setMaintenanceTypes([
+          ...(Array.isArray(activeData) ? activeData : []),
+        ])
+      } else {
+        const value = {
+          IsActive: filter === "active" ? 1 : 0,
+          CompanyId: Number(localStorage.getItem("companyID")),
+        };
+        fetchCounts();
+
+        const response = await fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', value);
+        const parsedData = response?.Data;
+        setMaintenanceTypes(Array.isArray(parsedData) ? parsedData : []);
+      }
+    } catch (err) {
+      toastifyError("Error fetching data");
+    }
+  };
+
+  const fetchCounts = async () => {
+    try {
+      const [activeResp, inactiveResp] = await Promise.all([
+        fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+        fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+      ]);
+
+      setActiveCounts(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
+      setInactiveCounts(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
+    } catch (err) {
+      toastifyError("Error fetching counts");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    fetchCounts();
+  }, [filter]);
+
+  //Filter functions
   const filteredMaintenanceTypes = maintenanceTypes.filter(type => {
+    const searchLower = search.trim().toLowerCase();
     const matchesSearch = searchTerm === '' ||
       type.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       type.MaintenanceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -309,25 +363,13 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     return matchesSearch && matchesStatus;
   });
 
-  // useEffect hooks
-  useEffect(() => {
-    fetchMaintenanceTypes();
-  }, [filterStatus]);
-
-  // Initial load effect - only run if no data
-  useEffect(() => {
-    if (maintenanceTypes.length === 0) {
-      fetchMaintenanceTypes();
-    }
-  }, []);
-
-  // Debug effect to log data changes
+  //Debug effect to log data changes
   useEffect(() => {
   }, [maintenanceTypes, filteredMaintenanceTypes]);
 
-  // Handle save
+  //Handle save
   const handleSaveMaintenanceType = async () => {
-    if (!maintenanceTypeForm.Description || !maintenanceTypeForm.MaintenanceTypes) {
+    if (!maintenanceTypeForm.MaintenanceTypeCode || !maintenanceTypeForm.Description) {
       toastifyError('Please fill in all required fields');
       return;
     }
@@ -349,8 +391,9 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     }
   };
 
-  // Reset form
+  //Reset form
   const resetForm = () => {
+
     setMaintenanceTypeForm({
       Description: '',
       MaintenanceTypes: '',
@@ -359,12 +402,12 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       // IsActive: true,
       // CompanyId: companyId || ''
     });
+    setFilter("active");
+    setSearch("");
+    setDropdown([]);
   };
 
-  // Calculate statistics
-  const getTotalMaintenanceTypes = () => maintenanceTypes.length;
-  const getActiveMaintenanceTypes = () => maintenanceTypes.filter(t => t.IsActive).length;
-  const getInactiveMaintenanceTypes = () => maintenanceTypes.filter(t => !t.IsActive).length;
+  //Calculate statistics
   const getMaintenanceTypesByFrequency = () => {
     const frequencyCount = maintenanceTypes.reduce((acc, type) => {
       acc[type.Frequency] = (acc[type.Frequency] || 0) + 1;
@@ -376,19 +419,22 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
   // Table columns configuration
   const columns: any[] = [
     {
+      name: 'Code',
+      selector: (row: MaintenanceType) => row.MaintenanceTypeCode,
+      sortable: true,
+    },
+    {
       name: 'Description',
       selector: (row: MaintenanceType) => row.Description,
       sortable: true,
-      cell: (row: MaintenanceType) => <span className="maintenance-type-font-medium">{row.Description}</span>
+      cell: (row: MaintenanceType) => { 
+        const fullText = row.Description || '';
+        const trunCateText = fullText.length > 30 ? `${fullText.substring(0, 30)}...` : fullText;
+        return (<span title={row.Description}>{trunCateText}</span> )}, 
     },
     {
       name: 'Type',
       selector: (row: MaintenanceType) => row.MaintenanceType,
-      sortable: true,
-    },
-    {
-      name: 'Code',
-      selector: (row: MaintenanceType) => row.MaintenanceTypeCode,
       sortable: true,
     },
     {
@@ -407,24 +453,25 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       )
     },
     {
+      name: 'Created Date',
+      selector: (row: MaintenanceType) => getShowingDateText(row.CreatedDate),
+      sortable: true,
+    },
+    {
+      name: 'Last Modified',
+      selector: (row: MaintenanceType) => getShowingDateText(row.UpdatedDate),
+      sortable: true,
+    },
+    {
       name: 'Actions',
       cell: (row: MaintenanceType) => (
         <div className="maintenance-type-flex maintenance-type-gap-1">
-          <button
-            onClick={() => {
-              setSelectedId(row.MaintenanceTypeID!); // clicked item id
-              setShowModal(true);       // show confirmation modal
-            }}
-            className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
-            title={row.IsActive ? 'Deactivate' : 'Activate'}
-          >
-            {row.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
+          <button onClick={() => { setSelectedId(row.MaintenanceTypeID!); setShowModal(true); }}
+            className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`} title={row.IsActive ? 'Deactivate' : 'Activate'}>
+            {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
           </button>
-          <button
-            onClick={() => setEditItemId(row.MaintenanceTypeID!)}
-            className="maintenance-type-btn-icon"
-            title="Edit"
-          >
+
+          <button onClick={() => setEditItemId(row.MaintenanceTypeID!)} className="list-button ghost primary" title="Edit">
             <Edit3 className="maintenance-type-icon-sm" />
           </button>
           {/* <button
@@ -485,7 +532,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
               <button
                 onClick={() => {
                   // console.log('Add Maintenance Type button clicked');
-                  setEditingMaintenanceType(null);
+                  setEditItemId(null);
                   resetForm();
                   setShowMaintenanceTypeModal(true);
                 }}
@@ -518,21 +565,21 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                   </div>
                 </div>
 
-                <div className="maintenance-type-card">
+                <div className="maintenance-type-card cursor-pointer" onClick={() => setFilter("active")}>
                   <div className="maintenance-type-card-content">
                     <div className="maintenance-type-flex maintenance-type-items-center p-2">
                       <div className="maintenance-type-stat-icon maintenance-type-stat-icon-green">
                         <Settings className="maintenance-type-icon" />
                       </div>
                       <div>
-                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Active Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getActiveMaintenanceTypes()}</p>
+                        <p className="maintenance-type-text-sm maintenance-type-text-gray-600 ">Active Types</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{activeCounts}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="maintenance-type-card">
+                <div className="maintenance-type-card cursor-pointer" onClick={() => setFilter("inactive")}>
                   <div className="maintenance-type-card-content">
                     <div className="maintenance-type-flex maintenance-type-items-center p-2">
                       <div className="maintenance-type-stat-icon maintenance-type-stat-icon-yellow">
@@ -540,13 +587,13 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                       </div>
                       <div>
                         <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Inactive Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getInactiveMaintenanceTypes()}</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{inactiveCounts}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="maintenance-type-card">
+                <div className="maintenance-type-card cursor-pointer" onClick={() => setFilter("all")}>
                   <div className="maintenance-type-card-content">
                     <div className="maintenance-type-flex maintenance-type-items-center p-2">
                       <div className="maintenance-type-stat-icon maintenance-type-stat-icon-blue">
@@ -554,7 +601,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                       </div>
                       <div>
                         <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Total Types</p>
-                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{getTotalMaintenanceTypes()}</p>
+                        <p className="maintenance-type-text-2xl maintenance-type-font-bold">{activeCounts + inactiveCounts}</p>
                       </div>
                     </div>
                   </div>
@@ -574,7 +621,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                   <div className="maintenance-type-search-container d-flex justify-between align-center">
                     <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
                       <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
-                    <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                    <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                       className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
                       placeholder="Search..." maxLength={300} />
                   </div>
@@ -621,18 +668,27 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
             <div className="maintenance-type-modal maintenance-type-modal-lg" onClick={(e) => e.stopPropagation()}>
               <div className="maintenance-type-modal-header">
                 <h3 className="maintenance-type-modal-title">
-                  {editingMaintenanceType ? 'Edit Maintenance Type' : 'Add New Maintenance Type'}
+                  {editItemId ? 'Edit Maintenance Type' : 'Add New Maintenance Type'}
                 </h3>
-                <button
-                  onClick={() => setShowMaintenanceTypeModal(false)}
-                  className="maintenance-type-modal-close"
-                >
+                <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-modal-close">
                   ×
                 </button>
               </div>
               <div className="maintenance-type-modal-content">
                 <div className="maintenance-type-space-y-4">
                   <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
+                    <div>
+                      <label className="maintenance-type-label">
+                        Code<span style={{ color: 'red' }}>*</span></label>
+                      <input
+                        type="text"
+                        value={maintenanceTypeForm.MaintenanceTypeCode}
+                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypeCode: e.target.value })}
+                        className="maintenance-type-input requiredColor"
+                        placeholder="Maintenance code"
+                      />
+                    </div>
+
                     <div>
                       <label className="maintenance-type-label">
                         Description <span style={{ color: 'red' }}>*</span>
@@ -646,31 +702,18 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                         required
                       />
                     </div>
-
-                    <div>
-                      <label className="maintenance-type-label">
-                        Type <span style={{ color: 'red' }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={maintenanceTypeForm.MaintenanceTypes}
-                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypes: e.target.value })}
-                        className="maintenance-type-input requiredColor"
-                        placeholder="Maintenance type"
-                        required
-                      />
-                    </div>
                   </div>
 
                   <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
                     <div>
-                      <label className="maintenance-type-label">Code</label>
+                      <label className="maintenance-type-label">Type</label>
                       <input
                         type="text"
-                        value={maintenanceTypeForm.MaintenanceTypeCode}
-                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypeCode: e.target.value })}
+                        value={maintenanceTypeForm.MaintenanceTypes}
+                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaintenanceTypes: e.target.value })}
                         className="maintenance-type-input"
-                        placeholder="Maintenance type code"
+                        placeholder="Maintenance type"
+                        required
                       />
                     </div>
 
@@ -685,21 +728,6 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                       />
                     </div>
                   </div>
-
-                  {/* <div>
-                  <label className="maintenance-type-label">Status</label>
-                  <div>
-                    <label className="maintenance-type-label">
-                      <input
-                        type="checkbox"
-                        checked={maintenanceTypeForm.IsActive}
-                        onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, IsActive: e.target.checked })}
-                        className="mr-2"
-                      />
-                      Active
-                    </label>
-                  </div>
-                </div> */}
                   <div className="col-span-4">
                     <Select
                       value={dropdown}
@@ -728,9 +756,9 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                 <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-btn maintenance-type-btn-secondary">
                   Cancel
                 </button>
-                <button onClick={handleSaveMaintenanceType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.Description || !maintenanceTypeForm.MaintenanceTypes || loading} >
+                <button onClick={handleSaveMaintenanceType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.MaintenanceTypeCode || !maintenanceTypeForm.Description || loading} >
                   <Save className="maintenance-type-icon" />
-                  {editingMaintenanceType ? 'Update Maintenance Type' : 'Add Maintenance Type'}
+                  {editItemId ? 'Update Maintenance Type' : 'Add Maintenance Type'}
                 </button>
               </div>
             </div>
