@@ -136,7 +136,7 @@ export default function ProductMasonry() {
     DMGProduct: false,
     GSTRate: 0,
     ProductCode: '',
-    // IsActive: true,
+    IsActive: true,
     Remarks: ''
   });
 
@@ -645,10 +645,14 @@ export default function ProductMasonry() {
               <div className="product-masonry-card-content">
                 <DataTable
                   columns={columns}
-                  data={products.slice(0, 5)}
-                  pagination={true}
+                  data={products}
+                  pagination
                   highlightOnHover
                   customStyles={customStyles}
+                  paginationPerPage={10}
+                  paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                  responsive
+                  progressPending={loading}
                 />
               </div>
             </div>
@@ -675,7 +679,7 @@ export default function ProductMasonry() {
             <div className="product-masonry-modal-content">
               <div className="product-masonry-space-y-4">
                 <div className="product-masonry-form-grid product-masonry-form-grid-2">
-                  <div>
+                  {/* <div>
                     <label className="product-masonry-label">
                       Product Name <span style={{ color: 'red' }}>*</span>
                     </label>
@@ -703,20 +707,20 @@ export default function ProductMasonry() {
                       className="react-select-container"
                       classNamePrefix="react-select"
                     />
-                  </div>
+                  </div> */}
 
                   <div>
                     <label className="product-masonry-label">
                       Product Name <span style={{ color: 'red' }}>*</span>
                     </label>
                     <input
-                      type="number"
-                      value={productForm.Rate || ''}
-                      onChange={(selectedOption) => setProductForm({ ...productForm, ProductName: selectedOption?.value || '' })}
+                      type="text"
+                      value={productForm.ProductName || ''}
+                      onChange={(selectedOption) => setProductForm({ ...productForm, ProductName: '' })}
                       className="product-masonry-input"
                       placeholder="Product rate"
-                      min="0"
-                      step="0.01"
+                      // min="0"
+                      // step="0.01"
                       required
                     />
                   </div>

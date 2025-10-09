@@ -1859,10 +1859,10 @@ const navigationItems: NavItem[] = [
         title: 'HR',
         items: [
           { title: 'ID Proof', href: '/masterTable/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
-          { title: 'Qualification', href: '/hr/qualification', icon: CheckCircle, description: 'Employee qualification details' },
-          { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
-          { title: 'Religion', href: '/hr/religion', icon: CheckCircle, description: 'Religions list' },
-          { title: 'State', href: '/hr/state', icon: CheckCircle, description: 'State details' },
+          { title: 'Qualification', href: '/masterTable/qualification', icon: CheckCircle, description: 'Employee qualification details' },
+          { title: 'Relation', href: '/masterTable/relation', icon: CheckCircle, description: 'Relationship types' },
+          { title: 'Religion', href: '/masterTable/religion', icon: CheckCircle, description: 'Religions list' },
+          { title: 'State', href: '/masterTable/state', icon: CheckCircle, description: 'State details' },
           { title: 'Martial', href: '/masterTable/marital-status', icon: CheckCircle, description: 'Marital status' },
           { title: 'District', href: '/masterTable/district', icon: CheckCircle, description: 'District details' },
         ]
@@ -1876,7 +1876,7 @@ const navigationItems: NavItem[] = [
           { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
           { title: 'Material Specification', href: '/inventory/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
           { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
-          { title: 'Material Type', href: '/inventory/material-type', icon: TrendingUp, description: 'Material types' },
+          { title: 'Material Type', href: '/masterTable/material-type', icon: TrendingUp, description: 'Material types' },
           { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
           { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
           { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },

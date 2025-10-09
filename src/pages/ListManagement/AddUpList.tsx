@@ -306,6 +306,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
         const newStatus = item.IsActive ? 0 : 1;
 
+        console.log()
         try {
             const response = await AddDeleteUpadate(delUrl, {
                 [col4]: id,
@@ -323,35 +324,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             toastifyError("Error updating status");
         }
     };
-
-    // const updatedItem = async (id: number) => {
-    //     // if (!check_Validation_Error()) return;
-    //     // alert(id);
-    //     const payload = {
-    //         [col4]: id,
-    //         [col5]: newItem.description,
-    //         [col3]: newItem.code,
-    //         CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
-    //     }
-    //     try {
-    //         const resp = await AddDeleteUpadate(upUrl, payload);
-    //         // console.log(resp);
-    //         if (resp.success) {
-    //             await fetchData();
-    //             toastifySuccess("Item updated successfully!");
-
-    //             setEditItemId(null);
-    //             setNewItem({ code: "", description: "", isActive: true });
-    //             setErrors({ CodeError: '', DescriptionError: '' });
-    //             setBloodGroupCode([]);
-    //         } else {
-    //             toastifyError("Failed to update item");
-    //         }
-    //     } catch (err) {
-    //         // console.error("Error updating item:", err);
-    //         toastifyError("Error updating item");
-    //     }
-    // }
 
     const updatedItem = async (id: number) => {
         const payload = {
@@ -718,30 +690,9 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                     }),
                                                 }}
                                             />
-                                            {/* <SelectBox
-                                                options={options}
-                                                isMulti
-                                                closeMenuOnSelect={false}
-                                                hideSelectedOptions={true}
-                                                onChange={CompanyChange}
-                                                allowSelectAll={true}
-                                                value={multiSelected.optionSelected}
-                                            /> */}
                                         </div>
 
                                         {/* Buttons */}
-                                        {/* <div className="col-span-2 flex gap-2">
-                                            <button onClick={() => (editItemId ? updatedItem(editItemId) : handleSaveItem())}
-                                                className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8">
-                                                <Save className="list-icon-sm" />
-                                                {editItemId ? "Update" : "Save"}
-                                            </button>
-
-                                            <button onClick={() => setNewItem({ code: "", description: "", isActive: true })}
-                                                className="list-button outline small flex-1 h-8">
-                                                Clear
-                                            </button>
-                                        </div> */}
                                         <div className="col-span-2 flex gap-2">
                                             {
                                                 editItemId ?

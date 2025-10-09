@@ -1,6 +1,7 @@
 import React from 'react';
 import AddUpList from './AddUpList';
 import { useLocation, useParams } from 'react-router-dom';
+import MaterialType from '../Inventory/Material-Type/MaterialType';
 // import { useParams } from 'react-router-dom';
 // import ListManagementRoute from './ListManagementRoute';
 
@@ -266,135 +267,219 @@ const ListManagement = () => {
                                                                                         dropDownUrl="Users/GetData_Company"
                                                                                     />
                                                                                     :
-                                                                                    pageEndPoint === "masterTable/district" ?
+                                                                                    pageEndPoint === "masterTable/qualification" ?
                                                                                         <AddUpList
                                                                                             {...{ pageEndPoint }}
-                                                                                            col1="District"
-                                                                                            col2="Master Tables with codes and descriptions for District."
-                                                                                            col3="DistrictCode"
-                                                                                            col4="DistrictID"
-                                                                                            col5="DistrictName"
-                                                                                            getUrl='District/GetData_District'
-                                                                                            addUrl="District/Insert_District"
-                                                                                            singleDataUrl="District/GetSingleData_District"
-                                                                                            upUrl="District/Update_District"
-                                                                                            delUrl="District/Delete_District"
+                                                                                            col1="Qualification"
+                                                                                            col2="Master Tables with codes and descriptions for Qualification."
+                                                                                            col3="QualificationCode"
+                                                                                            col4="ID"
+                                                                                            col5="Description"
+                                                                                            getUrl='Qualification/GetData_Qualification'
+                                                                                            addUrl="Qualification/Insert_Qualification"
+                                                                                            singleDataUrl="Qualification/GetSingleData_Qualification"
+                                                                                            upUrl="Qualification/Update_Qualification"
+                                                                                            delUrl="Qualification/Delete_Qualification"
                                                                                             dropDownUrl="Users/GetData_Company"
                                                                                         />
                                                                                         :
-                                                                                        pageEndPoint === "masterTable/loading-charge" ?
+                                                                                        pageEndPoint === "masterTable/relation" ?
                                                                                             <AddUpList
                                                                                                 {...{ pageEndPoint }}
-                                                                                                col1="Loading Charge"
-                                                                                                col2="Master Tables with codes and descriptions for Loading Charge."
-                                                                                                col3="LoadingchargeCode"
-                                                                                                col4="LoadingchargeID"
+                                                                                                col1="Relation"
+                                                                                                col2="Master Tables with codes and descriptions for Relation."
+                                                                                                col3="RelationCode"
+                                                                                                col4="ID"
                                                                                                 col5="Description"
-                                                                                                getUrl="Loadingcharge/GetData_Loadingcharge"
-                                                                                                addUrl="Loadingcharge/Insert_Loadingcharge"
-                                                                                                singleDataUrl="Loadingcharge/GetSingleData_Loadingcharge"
-                                                                                                upUrl="Loadingcharge/Update_Loadingcharge"
-                                                                                                delUrl="Loadingcharge/Delete_Loadingcharge"
+                                                                                                getUrl='Relation/GetData_Relation'
+                                                                                                addUrl="Relation/Insert_Relation"
+                                                                                                singleDataUrl="Relation/GetSingleData_Relation"
+                                                                                                upUrl="Relation/Update_Relation"
+                                                                                                delUrl="Relation/Delete_Relation"
                                                                                                 dropDownUrl="Users/GetData_Company"
                                                                                             />
                                                                                             :
-                                                                                            pageEndPoint === "masterTable/equipment-type" ?
+                                                                                            pageEndPoint === "masterTable/religion" ?
                                                                                                 <AddUpList
                                                                                                     {...{ pageEndPoint }}
-                                                                                                    col1="Equipment Type"
-                                                                                                    col2="Master Tables with codes and descriptions for Equipment Type."
-                                                                                                    col3="EquipmentTypeCode"
-                                                                                                    col4="EquipmentTypeID"
+                                                                                                    col1="Religion"
+                                                                                                    col2="Master Tables with codes and descriptions for Religion."
+                                                                                                    col3="ReligionCode"
+                                                                                                    col4="id"
                                                                                                     col5="Description"
-                                                                                                    getUrl="EquipmentType/GetData_EquipmentType"
-                                                                                                    addUrl="EquipmentType/Insert_EquipmentType"
-                                                                                                    singleDataUrl="EquipmentType/GetSingleData_EquipmentType"
-                                                                                                    upUrl="EquipmentType/Update_EquipmentType"
-                                                                                                    delUrl="EquipmentType/Delete_EquipmentType"
+                                                                                                    getUrl='Religion/GetData_Religion'
+                                                                                                    addUrl="Religion/Insert_Religion"
+                                                                                                    singleDataUrl="Religion/GetSingleData_Religion"
+                                                                                                    upUrl="Religion/Update_Religion"
+                                                                                                    delUrl="Religion/Delete_Religion"
                                                                                                     dropDownUrl="Users/GetData_Company"
                                                                                                 />
                                                                                                 :
-                                                                                                pageEndPoint === "masterTable/company-units" ?
+                                                                                                pageEndPoint === "masterTable/state" ?
                                                                                                     <AddUpList
                                                                                                         {...{ pageEndPoint }}
-                                                                                                        col1="Company Units"
-                                                                                                        col2="Master Tables with codes and descriptions for Company Units."
-                                                                                                        col3="CompanyUnitCode"
-                                                                                                        col4="CompanyUnitID"
-                                                                                                        col5="Description"
-                                                                                                        getUrl="CompanyUnit/GetData_CompanyUnit"
-                                                                                                        addUrl="CompanyUnit/Insert_CompanyUnit"
-                                                                                                        singleDataUrl="CompanyUnit/GetSingleData_CompanyUnit"
-                                                                                                        upUrl="CompanyUnit/Update_CompanyUnit"
-                                                                                                        delUrl="CompanyUnit/Delete_CompanyUnit"
+                                                                                                        col1="State"
+                                                                                                        col2="Master Tables with codes and descriptions for Religion."
+                                                                                                        col3="Statecode"
+                                                                                                        col4="id"
+                                                                                                        col5="StateName"
+                                                                                                        getUrl='State/GetData_State'
+                                                                                                        addUrl="State/Insert_State"
+                                                                                                        singleDataUrl="State/GetSingleData_State"
+                                                                                                        upUrl="State/Update_State"
+                                                                                                        delUrl="State/Delete_State"
                                                                                                         dropDownUrl="Users/GetData_Company"
                                                                                                     />
+
+
+
                                                                                                     :
-                                                                                                    pageEndPoint === "masterTable/fuel-type" ?
+                                                                                                    pageEndPoint === "masterTable/district" ?
                                                                                                         <AddUpList
                                                                                                             {...{ pageEndPoint }}
-                                                                                                            col1="Fuel Type"
-                                                                                                            col2="Master Tables with codes and descriptions for Fuel Types."
-                                                                                                            col3="FuelTypeCode"
-                                                                                                            col4="FuelTypeID"
-                                                                                                            col5="Description"
-                                                                                                            getUrl="FuelType/GetData_FuelType"
-                                                                                                            addUrl="FuelType/Insert_FuelType"
-                                                                                                            singleDataUrl="FuelType/GetSingleData_FuelType"
-                                                                                                            upUrl="FuelType/Update_FuelType"
-                                                                                                            delUrl="FuelType/Delete_FuelType"
+                                                                                                            col1="District"
+                                                                                                            col2="Master Tables with codes and descriptions for District."
+                                                                                                            col3="DistrictCode"
+                                                                                                            col4="DistrictID"
+                                                                                                            col5="DistrictName"
+                                                                                                            getUrl='District/GetData_District'
+                                                                                                            addUrl="District/Insert_District"
+                                                                                                            singleDataUrl="District/GetSingleData_District"
+                                                                                                            upUrl="District/Update_District"
+                                                                                                            delUrl="District/Delete_District"
                                                                                                             dropDownUrl="Users/GetData_Company"
                                                                                                         />
                                                                                                         :
-                                                                                                        pageEndPoint === "masterTable/explosive-type" ?
+                                                                                                        pageEndPoint === "masterTable/loading-charge" ?
                                                                                                             <AddUpList
                                                                                                                 {...{ pageEndPoint }}
-                                                                                                                col1="Explosive Type"
-                                                                                                                col2="Master Tables with codes and descriptions for Explosive Type."
-                                                                                                                col3="ExplosiveTypeCode"
-                                                                                                                col4="ExplosiveTypeID"
+                                                                                                                col1="Loading Charge"
+                                                                                                                col2="Master Tables with codes and descriptions for Loading Charge."
+                                                                                                                col3="LoadingchargeCode"
+                                                                                                                col4="LoadingchargeID"
                                                                                                                 col5="Description"
-                                                                                                                getUrl="ExplosiveType/GetData_ExplosiveType"
-                                                                                                                addUrl="ExplosiveType/Insert_ExplosiveType"
-                                                                                                                singleDataUrl="ExplosiveType/GetSingleData_ExplosiveType"
-                                                                                                                upUrl="ExplosiveType/Update_ExplosiveType"
-                                                                                                                delUrl="ExplosiveType/Delete_ExplosiveType"
+                                                                                                                getUrl="Loadingcharge/GetData_Loadingcharge"
+                                                                                                                addUrl="Loadingcharge/Insert_Loadingcharge"
+                                                                                                                singleDataUrl="Loadingcharge/GetSingleData_Loadingcharge"
+                                                                                                                upUrl="Loadingcharge/Update_Loadingcharge"
+                                                                                                                delUrl="Loadingcharge/Delete_Loadingcharge"
                                                                                                                 dropDownUrl="Users/GetData_Company"
                                                                                                             />
                                                                                                             :
-                                                                                                            pageEndPoint === "masterTable/marital-status" ?
+                                                                                                            pageEndPoint === "masterTable/equipment-type" ?
                                                                                                                 <AddUpList
                                                                                                                     {...{ pageEndPoint }}
-                                                                                                                    col1="Martial"
-                                                                                                                    col2="Master Tables with codes and descriptions for Marital Status."
-                                                                                                                    col3="MartialCode"
-                                                                                                                    col4="id"
+                                                                                                                    col1="Equipment Type"
+                                                                                                                    col2="Master Tables with codes and descriptions for Equipment Type."
+                                                                                                                    col3="EquipmentTypeCode"
+                                                                                                                    col4="EquipmentTypeID"
                                                                                                                     col5="Description"
-                                                                                                                    getUrl="Martial/GetData_Martial"
-                                                                                                                    addUrl="Martial/Insert_Martial"
-                                                                                                                    singleDataUrl="Martial/GetSingleData_Martial"
-                                                                                                                    upUrl="Martial/Update_Martial"
-                                                                                                                    delUrl="Martial/Delete_Martial"
+                                                                                                                    getUrl="EquipmentType/GetData_EquipmentType"
+                                                                                                                    addUrl="EquipmentType/Insert_EquipmentType"
+                                                                                                                    singleDataUrl="EquipmentType/GetSingleData_EquipmentType"
+                                                                                                                    upUrl="EquipmentType/Update_EquipmentType"
+                                                                                                                    delUrl="EquipmentType/Delete_EquipmentType"
                                                                                                                     dropDownUrl="Users/GetData_Company"
                                                                                                                 />
                                                                                                                 :
-                                                                                                                pageEndPoint === "masterTable/material-group" ?
+                                                                                                                pageEndPoint === "masterTable/company-units" ?
                                                                                                                     <AddUpList
                                                                                                                         {...{ pageEndPoint }}
-                                                                                                                        col1="Material-Group"
-                                                                                                                        col2="Master Tables with codes and descriptions for Material-Group Code."
-                                                                                                                        col3="MaterialGroupCode"
-                                                                                                                        col4="MaterialGroupID"
+                                                                                                                        col1="Company Units"
+                                                                                                                        col2="Master Tables with codes and descriptions for Company Units."
+                                                                                                                        col3="CompanyUnitCode"
+                                                                                                                        col4="CompanyUnitID"
                                                                                                                         col5="Description"
-                                                                                                                        getUrl="MaterialGroup/GetData_MaterialGroup"
-                                                                                                                        addUrl="MaterialGroup/Insert_MaterialGroup"
-                                                                                                                        singleDataUrl="MaterialGroup/GetSingleData_MaterialGroup"
-                                                                                                                        upUrl="MaterialGroup/Update_MaterialGroup"
-                                                                                                                        delUrl="MaterialGroup/Delete_MaterialGroup"
+                                                                                                                        getUrl="CompanyUnit/GetData_CompanyUnit"
+                                                                                                                        addUrl="CompanyUnit/Insert_CompanyUnit"
+                                                                                                                        singleDataUrl="CompanyUnit/GetSingleData_CompanyUnit"
+                                                                                                                        upUrl="CompanyUnit/Update_CompanyUnit"
+                                                                                                                        delUrl="CompanyUnit/Delete_CompanyUnit"
                                                                                                                         dropDownUrl="Users/GetData_Company"
                                                                                                                     />
                                                                                                                     :
-                                                                                                                    "null"
+                                                                                                                    pageEndPoint === "masterTable/fuel-type" ?
+                                                                                                                        <AddUpList
+                                                                                                                            {...{ pageEndPoint }}
+                                                                                                                            col1="Fuel Type"
+                                                                                                                            col2="Master Tables with codes and descriptions for Fuel Types."
+                                                                                                                            col3="FuelTypeCode"
+                                                                                                                            col4="FuelTypeID"
+                                                                                                                            col5="Description"
+                                                                                                                            getUrl="FuelType/GetData_FuelType"
+                                                                                                                            addUrl="FuelType/Insert_FuelType"
+                                                                                                                            singleDataUrl="FuelType/GetSingleData_FuelType"
+                                                                                                                            upUrl="FuelType/Update_FuelType"
+                                                                                                                            delUrl="FuelType/Delete_FuelType"
+                                                                                                                            dropDownUrl="Users/GetData_Company"
+                                                                                                                        />
+                                                                                                                        :
+                                                                                                                        pageEndPoint === "masterTable/explosive-type" ?
+                                                                                                                            <AddUpList
+                                                                                                                                {...{ pageEndPoint }}
+                                                                                                                                col1="Explosive Type"
+                                                                                                                                col2="Master Tables with codes and descriptions for Explosive Type."
+                                                                                                                                col3="ExplosiveTypeCode"
+                                                                                                                                col4="ExplosiveTypeID"
+                                                                                                                                col5="Description"
+                                                                                                                                getUrl="ExplosiveType/GetData_ExplosiveType"
+                                                                                                                                addUrl="ExplosiveType/Insert_ExplosiveType"
+                                                                                                                                singleDataUrl="ExplosiveType/GetSingleData_ExplosiveType"
+                                                                                                                                upUrl="ExplosiveType/Update_ExplosiveType"
+                                                                                                                                delUrl="ExplosiveType/Delete_ExplosiveType"
+                                                                                                                                dropDownUrl="Users/GetData_Company"
+                                                                                                                            />
+                                                                                                                            :
+                                                                                                                            pageEndPoint === "masterTable/marital-status" ?
+                                                                                                                                <AddUpList
+                                                                                                                                    {...{ pageEndPoint }}
+                                                                                                                                    col1="Martial"
+                                                                                                                                    col2="Master Tables with codes and descriptions for Marital Status."
+                                                                                                                                    col3="MartialCode"
+                                                                                                                                    col4="id"
+                                                                                                                                    col5="Description"
+                                                                                                                                    getUrl="Martial/GetData_Martial"
+                                                                                                                                    addUrl="Martial/Insert_Martial"
+                                                                                                                                    singleDataUrl="Martial/GetSingleData_Martial"
+                                                                                                                                    upUrl="Martial/Update_Martial"
+                                                                                                                                    delUrl="Martial/Delete_Martial"
+                                                                                                                                    dropDownUrl="Users/GetData_Company"
+                                                                                                                                />
+                                                                                                                                :
+                                                                                                                                pageEndPoint === "masterTable/material-group" ?
+                                                                                                                                    <AddUpList
+                                                                                                                                        {...{ pageEndPoint }}
+                                                                                                                                        col1="Material-Group"
+                                                                                                                                        col2="Master Tables with codes and descriptions for Material-Group Code."
+                                                                                                                                        col3="MaterialGroupCode"
+                                                                                                                                        col4="MaterialGroupID"
+                                                                                                                                        col5="Description"
+                                                                                                                                        getUrl="MaterialGroup/GetData_MaterialGroup"
+                                                                                                                                        addUrl="MaterialGroup/Insert_MaterialGroup"
+                                                                                                                                        singleDataUrl="MaterialGroup/GetSingleData_MaterialGroup"
+                                                                                                                                        upUrl="MaterialGroup/Update_MaterialGroup"
+                                                                                                                                        delUrl="MaterialGroup/Delete_MaterialGroup"
+                                                                                                                                        dropDownUrl="Users/GetData_Company"
+                                                                                                                                    />
+                                                                                                                                    :
+                                                                                                                                    pageEndPoint === "masterTable/material-type" ?
+                                                                                                                                        <MaterialType
+                                                                                                                                            {...{ pageEndPoint }}
+                                                                                                                                            col1="Material Type"
+                                                                                                                                            col2="Master Tables with codes and descriptions for Material-Group Code."
+                                                                                                                                            col3="MaterialGroupCode"
+                                                                                                                                            col4="MaterialGroupID"
+                                                                                                                                            col5="Description"
+                                                                                                                                            getUrl="MaterialType/GetData_MaterialType"
+                                                                                                                                            addUrl="MaterialType/Insert_MaterialType"
+                                                                                                                                            singleDataUrl="MaterialType/GetSingleData_MaterialType"
+                                                                                                                                            upUrl="MaterialType/Update_MaterialType"
+                                                                                                                                            delUrl="MaterialType/Delete_MaterialType"
+                                                                                                                                            dropDownUrl="Users/GetData_Company"
+
+                                                                                                                                        />
+                                                                                                                                        :
+                                                                                                                                        "null"
                             }
                         </div>
                     </div>
