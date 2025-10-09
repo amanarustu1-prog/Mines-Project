@@ -1,26 +1,40 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { AddUpListProps } from '../../ListManagement/AddUpListProps';
-import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
+import React, { useState, useMemo, useEffect } from 'react';
+import './MaterialType.css';
 import DataTable from 'react-data-table-component';
+import Select from 'react-select';
+import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
+import axios from '@/interceptors/axios';
 import { customStyles, multiValue } from '@/common/Utility';
-import ConfirmModal from '@/common/ConfirmModal';
-import Select from "react-select";
-import { fetchPostData, AddDeleteUpadate, fetch_Post_Data } from '@/components/hooks/Api';
-import useResizableColumns from '@/components/customHooks/UseResizableColumns';
-import { Space_Not_Allow } from '@/common/validation';
-import * as XLSX from 'xlsx';
+import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { getShowingDateText } from '@/common/DateFormat';
+import * as XLSX from 'xlsx';
+import ConfirmModal from '@/common/ConfirmModal';
+import { setgroups } from 'process';
 
-// Icon components (simplified SVG icons)
-const Car = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h3m-1 4h6m4 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2.5M7 10H5a2 2 0 00-2 2v8a2 2 0 002 2h2m3 0h6m-6 0v-4m0 4v4m6-4v4m0 0h2a2 2 0 002-2v-8a2 2 0 00-2-2h-2.5" />
-    </svg>
-);
+// Icon components
+interface MaintenanceType {
+    MaintenanceTypeID?: number;
+    Description: string;
+    MaintenanceType: string;
+    MaintenanceTypeCode: string;
+    Frequency: string;
+    CompanyId: number | string;
+    IsActive?: boolean;
+    CreatedDate?: string;
+    UpdatedDate?: string;
+    LastUpdated?: string;
+}
 
-const List = ({ className }: { className?: string }) => (
+interface Props {
+    baseUrl?: string;
+    companyId?: number | string | null;
+}
+
+// Icon components
+const Wrench = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
 );
 
@@ -36,6 +50,24 @@ const Edit3 = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const Save = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+    </svg>
+);
+
+const Calendar = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
+    </svg>
+);
+
+const Settings = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+    </svg>
+);
+
 const ToggleLeft = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -48,175 +80,249 @@ const ToggleRight = ({ className }: { className?: string }) => (
     </svg>
 );
 
-interface ListItem {
-    Id: number;
-    ID: number;
-    BloodGroupCode: string;
-    BloodGroup: string;
-    IsActive: boolean;
-    CreatedDate: string;
-    UpdatedDate: string;
-    CompanyID: number | string;
-    CompanyId: number | string;
-    Description: string;
-    [key: string]: any;
-}
-
-const MaterialType: React.FC<AddUpListProps> = (props) => {
-    const [activeTab, setActiveTab] = useState('list-overview');
-    const { col1, col2, col3, col4, col5, getUrl, addUrl, singleDataUrl, upUrl, delUrl } = props;
-
-    // Sample list data
-    const [listData, setListData] = useState<ListItem[]>([]);
-    const [statusFilter, setStatusFilter] = useState<number | string>(1);
-    const [bloodGroupOptions, setBloodGroupOptions] = useState<any[]>([]);
-    const [bloodGroupCode, setBloodGroupCode] = useState<any[]>([]);
+const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
+    const [activeTab, setActiveTab] = useState('maintenanceTypes');
+    const [showMaintenanceTypeModal, setShowMaintenanceTypeModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [loading, setLoading] = useState(false);
+    const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+    const [dropdown, setDropdown] = useState<any[]>([]);
+    const [group, setGroup] = useState<any[]>([]);
+    const [groupOptions, setGroupOptions] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
-    const [search, setSearch] = useState("");
     const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
-    const [showModal, setShowModal] = useState(false);
+    const [search, setSearch] = useState("");
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [inactiveCount, setInactiveCount] = useState(0);
-    const [activeCount, setActiveCount] = useState(0);
-    const [statusSortAsc, setStatusSortAsc] = useState(true); //For sorting Active/Inactive
-    const [multiSelected, setMultiSelected] = useState({ optionSelected: null });
-    const [updateStatus, setUpdateStatus] = useState(0);
-    const [editval, setEditval] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [activeCounts, setActiveCounts] = useState(0);
+    const [inactiveCounts, setInactiveCounts] = useState(0);
 
-    //Define columns
-    const columns = [
-        {
-            name: 'Code',
-            selector: (row: ListItem) => row[col3],
-            sortable: true,
-        },
-        {
-            name: 'Description',
-            selector: (row: ListItem) => row[col5],
-            sortable: true,
-            cell: (row: ListItem) => (
-                <span
-                    title={row[col5]}
-                    style={{
-                        display: 'inline-block',
-                        maxWidth: '550px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                    }}
-                >
-                    {row[col5]}
-                </span>
-            ),
-        },
-        {
-            name: 'Status',
-            cell: (row: ListItem) => (
-                <span className={`list-badge ${row.IsActive ? 'active' : 'inactive'}`}>
-                    {row.IsActive ? 'Active' : 'Inactive'}
-                </span>
-            ),
-            sortable: true,
-            sortFunction: (rowA: ListItem, rowB: ListItem) => {
-                if (statusSortAsc) {
-                    return (rowA.IsActive === rowB.IsActive) ? 0 : rowA.IsActive ? -1 : 1;
-                } else {
-                    return (rowA.IsActive === rowB.IsActive) ? 0 : rowA.IsActive ? 1 : -1;
-                }
-            },
-            onSort: () => {
-                setStatusSortAsc((prev) => !prev);
+    const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
+    const [maintenanceTypeForm, setMaintenanceTypeForm] = useState({
+        Description: '',
+        MaterialGroupID: '',
+        MaterialTypeCode: '',
+    });
+
+    const api = (path: string) => (baseUrl ? `${baseUrl}${path}` : path);
+
+    //Get-Data
+    // const fetchMaintenanceTypes = async () => {
+    //     try {
+    //         setLoading(true);
+
+    //         const response = await axios.post('MaterialType/GetData_MaterialType', {
+    //             // IsActive: 1,
+    //             CompanyId: localStorage.getItem('companyID')
+    //         });
+
+    //         const data = JSON.parse(response.data.data)?.Table || [];
+    //         console.log(data);
+    //         setMaintenanceTypes(data);
+
+    //         if (data?.Table && Array.isArray(data.Table)) {
+    //             setMaintenanceTypes(data.Table);
+    //         }
+    //     } catch (error: any) {
+    //         toastifyError(`Error fetching material types: ${error.message}`);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    //Insert-Data
+    const insertMaintenanceType = async (data: any) => {
+        try {
+            const response = await fetchPostData('MaterialType/GetData_MaterialType', {
+                ...data,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            });
+
+            const message = response[0].Message;
+
+            if (message === "Already Exists MaintenanceTypeCode") {
+                toastifyError("Code is already Present");
+                return;
             }
-        },
-        {
-            name: 'Created Date',
-            selector: (row: ListItem) => getShowingDateText(row.CreatedDate),
-            sortable: true,
-        },
-        {
-            name: 'Last Modified',
-            selector: (row: ListItem) => getShowingDateText(row.UpdatedDate),
-            sortable: true,
-        },
-        {
-            name: 'Actions',
-            cell: (row: ListItem) => (
-                <div className="list-action-buttons">
-                    <button
-                        onClick={() => {
-                            setSelectedId(row[col4]); // clicked item id
-                            setShowModal(true);       // show confirmation modal
-                        }}
-                        className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
-                        title={row.IsActive ? 'Deactivate' : 'Activate'}
-                    >
-                        {row.IsActive ? <ToggleLeft className="list-icon-sm" /> : <ToggleRight className="list-icon-sm" />}
-                    </button>
 
-                    <button onClick={() => setEditItemId(row[col4])} className="list-button ghost primary" title="Edit">
-                        <Edit3 className="list-icon-sm" />
-                    </button>
-                </div>
-            ),
-        },
-    ];
+            if (message === "Already Exists Description") {
+                toastifyError("Description is already Present");
+                return;
+            }
 
-    const resizeableColumns = useResizableColumns(columns).map(col => ({
-        ...col,
-        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
-    }));
+            if (response) {
+                toastifySuccess('Maintenance type added successfully');
+                await fetchData();
+                await fetchCounts();
+                return true;
+            } else {
+                throw new Error('Invalid response from server');
+            }
+        } catch (error: any) {
+            toastifyError(`Error adding maintenance type: ${error.response?.data?.message || error.message}`);
+            return false;
+        }
+    };
 
-    // Dropdown-data
+    //Update-Data
+    const updateMaintenanceType = async (data: any, id: number) => {
+        try {
+            const response = await fetchPostData('MaterialType/Update_MaterialType', {
+                ...data,
+                MaintenanceTypeID: id,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            });
+
+            const message = response[0].Message;
+
+            if (message === "Already Exists MaintenanceTypeCode") {
+                toastifyError("Code is already Present");
+                return;
+            }
+
+            if (message === "Already Exists Description") {
+                toastifyError("Description is already Present");
+                return;
+            }
+            console.log(response);
+
+            if (response) {
+                toastifySuccess('Item updated successfully');
+                setEditItemId(null);
+                setDropdown([]);
+                setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaintenanceTypeCode: '', Frequency: '' });
+                fetchMaterialTypes();
+                setShowMaintenanceTypeModal(false);
+                return true;
+            }
+        } catch (error: any) {
+            toastifyError('Error updating maintenance type');
+            return false;
+        }
+    };
+
+    //Delete-Data
+    const deleteMaintenanceType = async (id: number) => {
+        const item = maintenanceTypes.find(t => t.MaintenanceTypeID === id);
+        if (!item) return;
+
+        const newStatus = item.IsActive ? 0 : 1;
+
+        try {
+            const response = await fetchPostData('MaterialType/Delete_MaterialType', {
+                MaintenanceTypeID: id,
+                IsActive: newStatus,
+            });
+
+            if (response) {
+                toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully`);
+                await fetchData();
+                await fetchCounts();
+                return true;
+            }
+        } catch (error: any) {
+            toastifyError('Error updating status');
+            return false;
+        }
+    };
+
+    //Get-Dropdown-Data
     useEffect(() => {
         const fetchDropDown = async () => {
             try {
                 const payload = { EmployeeID: localStorage.getItem("employeeID") };
-                const response = await fetchPostData(props.dropDownUrl, payload);
+                const response = await fetchPostData('Users/GetData_Company', payload);
                 // console.log(response);
                 if (response) {
                     const data = response;
-                    setBloodGroupOptions(Array.isArray(data) ? data : []);
+                    setDropdownOptions(Array.isArray(data) ? data : []);
                 } else {
-                    toastifyError("Failed to load Dropdown");
+                    toastifyError("Failed to load Dropdown.")
                 }
-            } catch (err) {
-                // console.error("Error fetching dropdown:", err);                
+            } catch (error: any) {
                 toastifyError("Error fetching Dropdown");
             }
         }
         fetchDropDown();
-    }, [props.dropDownUrl]);
+    }, []);
 
-    const fetchCounts = async () => {
-        try {
-            const [activeResp, inactiveResp] = await Promise.all([
-                fetch_Post_Data(getUrl, { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
-                fetch_Post_Data(getUrl, { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
-            ]);
-
-            setActiveCount(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
-            setInactiveCount(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
-        } catch (err) {
-            toastifyError("Error fetching counts");
-        }
-    };
-
-    const options = bloodGroupOptions.map(opt => ({
+    const options = dropdownOptions.map(opt => ({
         value: opt.CompanyID,
         label: opt.CompanyName
     }));
 
+    //Get-Group-Options
+    useEffect(() => {
+        const fetchGroupOptions = async () => {
+            const payload = { CompanyId: localStorage.getItem("companyID") };
+            const response = await fetchPostData('MaterialGroup/GetDataDropDown_MaterialGroup', payload);
+            // console.log(response);
+            if (response) {
+                const data = response;
+                setGroupOptions(Array.isArray(data) ? data : []);
+            } else {
+                toastifyError("Failed to load Dropdown.");
+            }
+        }
+        fetchGroupOptions();
+    }, []);
+
+    //Get-Single-Data
+    useEffect(() => {
+        if (editItemId) {
+            getSingleData();
+        }
+    }, [editItemId]);
+
+    const getSingleData = async () => {
+        try {
+            const val = { MaintenanceTypeID: editItemId };
+            const res = await fetchPostData('MaterialType/GetSingleData_MaterialType', val);
+            // console.log(res);
+            if (res && Array.isArray(res) && res.length > 0) {
+                const record = res[0];
+
+                setMaintenanceTypeForm({
+                    Description: record.Description || '',
+                    MaintenanceTypes: record.MaintenanceType || '',
+                    MaintenanceTypeCode: record.MaintenanceTypeCode || '',
+                    Frequency: record.Frequency,
+                });
+
+                const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
+
+                if (companyIdField && dropdownOptions.length > 0) {
+                    const companyIds = String(companyIdField).split(",").map(id => id.trim());
+                    const matchOptions = dropdownOptions.filter(opt => companyIds.includes(String(opt.CompanyID))).map(opt => ({
+                        value: opt.CompanyID,
+                        label: opt.CompanyName
+                    }));
+
+                    setDropdown(matchOptions);
+                    setShowMaintenanceTypeModal(true);
+                } else {
+                    setDropdown([]);
+                }
+            } else {
+                setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaintenanceTypeCode: '', Frequency: '' });
+                // setDropdown
+            }
+        } catch (err) {
+            toastifyError("Error fetching record data");
+        }
+    }
+
     const fetchData = async () => {
         try {
             if (filter === "all") {
-                const activeResp = await fetch_Post_Data(getUrl, { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
+                const activeResp = await fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
                 fetchCounts();
-                const activeData = activeResp?.Data || [];
-                // const inactiveData = inactiveResp?.Data || [];
 
-                setListData([
+                const activeData = activeResp?.Data || [];
+
+                setMaintenanceTypes([
                     ...(Array.isArray(activeData) ? activeData : []),
-                    // ...(Array.isArray(inactiveData) ? inactiveData : [])
                 ])
             } else {
                 const value = {
@@ -224,284 +330,173 @@ const MaterialType: React.FC<AddUpListProps> = (props) => {
                     CompanyId: Number(localStorage.getItem("companyID")),
                 };
                 fetchCounts();
-                const response = await fetch_Post_Data(getUrl, value);
-                // console.log(response?.Data);
+
+                const response = await fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', value);
                 const parsedData = response?.Data;
-                setListData(Array.isArray(parsedData) ? parsedData : []);
+                setMaintenanceTypes(Array.isArray(parsedData) ? parsedData : []);
             }
         } catch (err) {
             toastifyError("Error fetching data");
         }
     };
 
+    const fetchCounts = async () => {
+        try {
+            const [activeResp, inactiveResp] = await Promise.all([
+                fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+                fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+            ]);
+
+            setActiveCounts(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
+            setInactiveCounts(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
+        } catch (err) {
+            toastifyError("Error fetching counts");
+        }
+    };
+
     useEffect(() => {
         fetchData();
         fetchCounts();
-    }, [getUrl, filter]);
+    }, [filter]);
 
-    const handleEdit = (item: ListItem) => {
-        setEditItemId(item[col4]);
-        setNewItem({
-            code: item[col3],
-            description: item[col5],
-            isActive: item.IsActive,
-        });
-        // setBloodGroupCode(item.BloodGroupCode ? [{ value: item.BloodGroupCode, label: item.BloodGroupCode }] : []);
-        setStatusFilter(item.IsActive ? 1 : 0);
-    }
-
-    const filteredData = useMemo(() => {
+    //Filter functions
+    const filteredMaintenanceTypes = maintenanceTypes.filter(type => {
         const searchLower = search.trim().toLowerCase();
+        const matchesSearch = searchTerm === '' ||
+            type.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            type.MaintenanceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (type.MaintenanceTypeCode && type.MaintenanceTypeCode.toLowerCase().includes(searchTerm.toLowerCase()));
 
-        return listData.filter(item => {
-            if (filter === "active" && !item.IsActive) return false;
-            if (filter === "inactive" && item.IsActive) return false;
+        const matchesStatus = filterStatus === 'all' ||
+            (filterStatus === 'active' && type.IsActive) ||
+            (filterStatus === 'inactive' && !type.IsActive);
 
-            if (searchLower) {
-                const values = Object.values(item).filter(v => v != null).map(v => v.toString().toLowerCase());
-                const matched = values.some(val => val.includes(searchLower));
-                if (!matched) return false;
-            }
-            return true;
-        });
-    }, [listData, filter, search]);
-
-    // New item form data
-    const [newItem, setNewItem] = useState({
-        code: '',
-        description: '',
-        isActive: true
+        return matchesSearch && matchesStatus;
     });
 
-    const deleteItem = async (id: number) => {
-        const item = listData.find(x => x[col4] === id);
-        if (!item) return;
-
-        const newStatus = item.IsActive ? 0 : 1;
-
-        console.log()
-        try {
-            const response = await AddDeleteUpadate(delUrl, {
-                [col4]: id,
-                IsActive: newStatus,
-            });
-
-            if (response.success) {
-                await fetchData();
-                toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully!`);
-            } else {
-                toastifyError("Failed to update item status");
-            }
-        } catch (err) {
-            // console.error("Error deleting item:", err);
-            toastifyError("Error updating status");
-        }
-    };
-
-    const updatedItem = async (id: number) => {
-        const payload = {
-            [col4]: id,
-            [col5]: newItem.description,
-            [col3]: newItem.code,
-            CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
-        };
-
-        try {
-            const resp = await AddDeleteUpadate(upUrl, payload);
-
-            let parsedData = null;
-            try {
-                parsedData = typeof resp?.data === "string" ? JSON.parse(resp.data) : resp.data;
-            } catch (err) {
-                parsedData = resp?.data;
-            }
-
-            const message = parsedData?.Table?.[0]?.Message;
-            console.log("Update message:", message);
-
-            // console.log("Already Exists "+ col3 );
-            if (message === "Already Exists " + col3) {
-                toastifyError("Code is already Present");
-                setErrors({ CodeError: '', DescriptionError: '' });
-                return;
-            }
-            // console.log("Already Exists "+ col5 );
-            if (message === "Already Exists " + col5) {
-                toastifyError("Description is already Present");
-                setErrors({ CodeError: '', DescriptionError: '' });
-                return;
-            }
-
-            if (resp?.success) {
-                await fetchData();
-                toastifySuccess("Item updated successfully!");
-                setEditItemId(null);
-                setNewItem({ code: "", description: "", isActive: true });
-                setErrors({ CodeError: '', DescriptionError: '' });
-                setBloodGroupCode([]);
-            } else {
-                toastifyError("Failed to update item");
-            }
-        } catch (error: any) {
-            toastifyError(error?.response?.data?.message || "Error updating item");
-        }
-    };
-
-    const tabs = [{ id: 'list-overview', label: 'List Overview', icon: List }];
-
-    const handleInputChange = (field: string, value: string | boolean) => {
-        setNewItem(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-
-    // Insert-Data
-    const handleSaveItem = async () => {
-        check_Validation_Error();
-
-        const payload = {
-            [col5]: newItem.description,
-            CompanyId: bloodGroupCode.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
-            [col3]: newItem.code
-        };
-
-        try {
-            const response = await AddDeleteUpadate(addUrl, payload);
-
-            // Parse nested data (because backend returns stringified JSON);
-            let parsedData = null;
-            try {
-                parsedData = typeof response?.data === "string" ? JSON.parse(response.data) : response.data;
-            } catch (err) {
-                parsedData = response?.data;
-            }
-
-            const message = parsedData?.Table?.[0]?.Message;
-
-            if (message === "Already Exists " + col3) {
-                toastifyError("Code is already Present");
-                setErrors({ CodeError: '', DescriptionError: '' });
-                return;
-            }
-
-            if (message === "Already Exists " + col5) {
-                toastifyError("Description is already Present");
-                setErrors({ CodeError: '', DescriptionError: '' });
-                return;
-            }
-
-            if (response?.success) {
-                toastifySuccess("Item saved successfully!");
-                setListData(prev => [...prev, response]);
-                setNewItem({ code: '', description: '', isActive: true });
-                setBloodGroupCode([]);
-                fetchData();
-                fetchCounts();
-                setErrors({ CodeError: '', DescriptionError: '' });
-            } else {
-                toastifyError("Failed to save item");
-            }
-        } catch (error: any) {
-            toastifyError(error?.response?.data?.message || "Error saving item");
-        }
-    };
-
-    //Get Data after Update
+    //Debug effect to log data changes
     useEffect(() => {
+    }, [maintenanceTypes, filteredMaintenanceTypes]);
+
+    //Handle save
+    const handleSaveMaintenanceType = async () => {
+        if (!maintenanceTypeForm.MaintenanceTypeCode || !maintenanceTypeForm.Description) {
+            toastifyError('Please fill in all required fields');
+            return;
+        }
+
+        // alert(editItemId);
         if (editItemId) {
-            GetSingleData()
-        }
-    }, [editItemId, updateStatus])
-
-    const GetSingleData = async () => {
-        try {
-            const val = { [col4]: editItemId };
-            const res = await fetchPostData(singleDataUrl, val);
-
-            if (res && Array.isArray(res) && res.length > 0) {
-                const record = res[0];
-                // console.log("Record to Edit:", record);
-
-                setNewItem({
-                    code: record[col3] || "",
-                    description: record[col5] || "",
-                    isActive: record.IsActive ?? true,
-                });
-                // console.log("Record to Edit:", record);
-                // console.log("BloodGroupCode:", bloodGroupOptions);
-
-                const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
-
-                if (companyIdField && bloodGroupOptions.length > 0) {
-                    const companyIds = String(companyIdField).split(",").map(id => id.trim());
-                    // console.log("Company IDs:", companyIds);
-                    // Match with bloodGroupOptions
-                    const matchedOptions = bloodGroupOptions
-                        .filter(opt => companyIds.includes(String(opt.CompanyID)))
-                        .map(opt => ({
-                            value: opt.CompanyID,
-                            label: opt.CompanyName,
-                        }));
-
-                    setBloodGroupCode(matchedOptions);
-                } else {
-                    setBloodGroupCode([]);
-                }
-            } else {
-                setNewItem({ code: "", description: "", isActive: true });
-                setBloodGroupCode([]);
+            const success = await updateMaintenanceType(maintenanceTypeForm, editItemId);
+            if (success) {
+                setEditItemId(null);
+                setShowMaintenanceTypeModal(false);
+                resetForm();
             }
-        } catch (err) {
-            toastifyError("Error fetching single data");
+        } else {
+            const success = await insertMaintenanceType(maintenanceTypeForm);
+            if (success) {
+                setShowMaintenanceTypeModal(false);
+                resetForm();
+            }
         }
     };
 
-    //Check-Validation-Error 
-    const [errors, setErrors] = useState({
-        'CodeError': '',
-        'DescriptionError': '',
-    })
-
-    const check_Validation_Error = () => {
-        // e.preventDefault();
-        // console.log(newItem);
-        if (Space_Not_Allow(newItem.code)) {
-            setErrors(prevValues => { return { ...prevValues, ['CodeError']: Space_Not_Allow(newItem.code) } });
-        }
-        if (Space_Not_Allow(newItem.description)) {
-            setErrors(prevValues => { return { ...prevValues, ['DescriptionError']: Space_Not_Allow(newItem.description) } });
-        }
-    }
-
-    const { DescriptionError, CodeError } = errors
-
-    useEffect(() => {
-        // console.log(DescriptionError, CodeError);
-        if (DescriptionError === 'true' && CodeError === 'true') {
-            if (editItemId) { updatedItem(editItemId) }
-            else { handleSaveItem() }
-        }
-    }, [DescriptionError, CodeError,])
-
-    //Reset-Form    
-    useEffect(() => {
-        resetForm();
-    }, [activeTab, getUrl]);
-
+    //Reset form
     const resetForm = () => {
-        setNewItem({ code: "", description: "", isActive: true });
-        setBloodGroupCode([]);
-        setMultiSelected({ optionSelected: null });
-        setEditItemId(null);
+
+        setMaintenanceTypeForm({
+            Description: '',
+            MaintenanceTypes: '',
+            MaintenanceTypeCode: '',
+            Frequency: '',
+        });
         setFilter("active");
+        setSearch("");
+        setDropdown([]);
     };
 
-    //Export-data
+    // Table columns configuration
+    const columns: any[] = [
+        {
+            name: 'Code',
+            selector: (row: MaintenanceType) => row.MaintenanceTypeCode,
+            sortable: true,
+        },
+        {
+            name: 'Description',
+            selector: (row: MaintenanceType) => row.Description,
+            sortable: true,
+            cell: (row: MaintenanceType) => {
+                const fullText = row.Description || '';
+                const trunCateText = fullText.length > 30 ? `${fullText.substring(0, 30)}...` : fullText;
+                return (<span title={row.Description}>{trunCateText}</span>)
+            },
+        },
+        {
+            name: 'Type',
+            selector: (row: MaintenanceType) => row.MaintenanceType,
+            sortable: true,
+        },
+        {
+            name: 'Frequency',
+            selector: (row: MaintenanceType) => row.Frequency,
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            selector: (row: MaintenanceType) => row.IsActive,
+            sortable: true,
+            cell: (row: MaintenanceType) => (
+                <span className={`maintenance-type-badge ${row.IsActive ? 'maintenance-type-badge-success' : 'maintenance-type-badge-error'}`}>
+                    {row.IsActive ? 'Active' : 'Inactive'}
+                </span>
+            )
+        },
+        {
+            name: 'Created Date',
+            selector: (row: MaintenanceType) => getShowingDateText(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: MaintenanceType) => getShowingDateText(row.UpdatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: (row: MaintenanceType) => (
+                <div className="maintenance-type-flex maintenance-type-gap-1">
+                    <button onClick={() => { setSelectedId(row.MaintenanceTypeID!); setShowModal(true); }}
+                        className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`} title={row.IsActive ? 'Deactivate' : 'Activate'}>
+                        {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
+                    </button>
+
+                    <button onClick={() => setEditItemId(row.MaintenanceTypeID!)} className="list-button ghost primary" title="Edit">
+                        <Edit3 className="maintenance-type-icon-sm" />
+                    </button>
+                    {/* <button
+            onClick={() => handleDeleteMaintenanceType(row.MaintenanceTypeID!)}
+            className="maintenance-type-btn-icon maintenance-type-btn-icon-danger"
+            title="Delete"
+          >
+            <Trash2 className="maintenance-type-icon-sm" />
+          </button> */}
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+    ];
+
+    //Download-Excel_File
     const exportToExcel = () => {
-        const filteredDataNew = filteredData?.map(item => ({
-            'Code Number': item[col3],
-            'Description': item[col5],
+        const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
+            'Maintenance-Type Code': item.MaintenanceTypeCode,
+            'Description': item.Description,
+            'Maintenance Type': item.MaintenanceType,
+            'Frequency': item.Frequency,
             'Status': item.IsActive ? 'Active' : 'Inactive',
             'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
             'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
@@ -517,117 +512,207 @@ const MaterialType: React.FC<AddUpListProps> = (props) => {
         a.download = 'data.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
-    };
+    }
 
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 'list-overview':
-                return (
-                    <div className="list-space-y-4">
-                        {/* Summary Cards */}
-                        <div className="list-grid-4">
-                            <div className="list-card mb-0">
-                                <div className="list-summary-card ">
-                                    <div className="list-header-info ">
-                                        <div className="list-header-icon">
-                                            <Car className="list-icon-sm" />
-                                        </div>
-                                        <div>
-                                            <h1 className="list-header-title">{col1}</h1>
-                                            <p className="list-header-subtitle">{col2}</p>
+    return (
+        <>
+            <div className="maintenance-type">
+                {/* Header */}
+                <div className="maintenance-type-header">
+                    <div className="maintenance-type-header-content">
+                        <div className="maintenance-type-title-section">
+                            <Wrench className="maintenance-type-header-icon" />
+                            <div>
+                                <h1 className="maintenance-type-title">Material Type</h1>
+                                <p className="maintenance-type-subtitle">
+                                    Manage Material types, schedules, and procedures
+                                </p>
+                            </div>
+                        </div>
+                        <div className="maintenance-type-header-actions">
+                            <button onClick={() => {
+                                setEditItemId(null);
+                                resetForm();
+                                setShowMaintenanceTypeModal(true);
+                            }} className="maintenance-type-btn maintenance-type-btn-primary">
+                                <Plus className="maintenance-type-icon" />
+                                Add Maintenance Type
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="maintenance-type-main">
+                    {/* Tab Navigation */}
+                    <div className="maintenance-type-tabs">
+                        <div className="maintenance-type-tabs-container">
+                            <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-grid-box maintenance-type-md-grid-cols-4 maintenance-type-gap-6 py-3 px-2">
+                                <div className="maintenance-type-card cursor-pointer" onClick={() => setFilter("active")}>
+                                    <div className="maintenance-type-card-content">
+                                        <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                                            <div className="maintenance-type-stat-icon maintenance-type-stat-icon-green">
+                                                <Settings className="maintenance-type-icon" />
+                                            </div>
+                                            <div>
+                                                <p className="maintenance-type-text-sm maintenance-type-text-gray-600 ">Active Types</p>
+                                                <p className="maintenance-type-text-2xl maintenance-type-font-bold">{activeCounts}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("active")}>
-                                <div className="list-summary-card">
-                                    <div className="list-summary-content">
-                                        <div className="list-summary-icon active">
-                                            <ToggleRight className="list-icon-lg" />
-                                        </div>
-                                        <div>
-                                            <p className="list-summary-text">Active Items</p>
-                                            <p className="list-summary-number active">{activeCount}</p>
+                                <div className="maintenance-type-card cursor-pointer" onClick={() => setFilter("inactive")}>
+                                    <div className="maintenance-type-card-content">
+                                        <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                                            <div className="maintenance-type-stat-icon maintenance-type-stat-icon-yellow">
+                                                <Calendar className="maintenance-type-icon" />
+                                            </div>
+                                            <div>
+                                                <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Inactive Types</p>
+                                                <p className="maintenance-type-text-2xl maintenance-type-font-bold">{inactiveCounts}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("inactive")}>
-                                <div className="list-summary-card">
-                                    <div className="list-summary-content">
-                                        <div className="list-summary-icon inactive">
-                                            <ToggleLeft className="list-icon-lg" />
-                                        </div>
-                                        <div>
-                                            <p className="list-summary-text">Inactive Items</p>
-                                            <p className="list-summary-number inactive">{inactiveCount}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="list-card mb-0 cursor-pointer" onClick={() => setFilter("all")}>
-                                <div className="list-summary-card">
-                                    <div className="list-summary-content">
-                                        <div className="list-summary-icon total">
-                                            <List className="list-icon-lg" />
-                                        </div>
-                                        <div>
-                                            <p className="list-summary-text">Total Items</p>
-                                            <p className="list-summary-number total">{activeCount + inactiveCount}</p>
+                                <div className="maintenance-type-card cursor-pointer" onClick={() => setFilter("all")}>
+                                    <div className="maintenance-type-card-content">
+                                        <div className="maintenance-type-flex maintenance-type-items-center p-2">
+                                            <div className="maintenance-type-stat-icon maintenance-type-stat-icon-blue">
+                                                <Wrench className="maintenance-type-icon" />
+                                            </div>
+                                            <div>
+                                                <p className="maintenance-type-text-sm maintenance-type-text-gray-600">Total Types</p>
+                                                <p className="maintenance-type-text-2xl maintenance-type-font-bold">{activeCounts + inactiveCounts}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Add New Item Form - Minimalist */}
-                        <div className="list-card compact">
-                            <div className="list-card-content">
-                                <div className="list-compact-form">
-                                    <h4 className="list-compact-title pt-2">
-                                        <Plus className="list-icon-sm " />
-                                        Add New Item
-                                    </h4>
+                    {/* Tab Content */}
+                    <div className="maintenance-type-content">
 
-                                    <div className="grid grid-cols-12 gap-4 items-center">
-                                        {/* Item Code */}
-                                        <div className="col-span-3">
+                        {/* Maintenance Types Tab */}
+                        {activeTab === 'maintenanceTypes' && (
+                            <div className="maintenance-type-tab-content">
+
+                                <div className="maintenance-type-filters">
+                                    <div className="maintenance-type-search-container d-flex justify-between align-center">
+                                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
+                                        <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                                            placeholder="Search..." maxLength={300} />
+                                    </div>
+                                </div>
+
+                                {/* Maintenance Types Table */}
+                                <div className="maintenance-type-card">
+                                    <div className="maintenance-type-card-content">
+                                        <DataTable
+                                            columns={columns}
+                                            data={filteredMaintenanceTypes}
+                                            pagination
+                                            paginationPerPage={10}
+                                            paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                                            highlightOnHover
+                                            responsive
+                                            progressPending={loading}
+                                            noDataComponent={
+                                                <div className="maintenance-type-text-center maintenance-type-py-8">
+                                                    <p className="maintenance-type-text-gray-600">
+                                                        {searchTerm || filterStatus !== 'all'
+                                                            ? 'No maintenance types match your search/filter criteria'
+                                                            : 'No maintenance types found'}
+                                                    </p>
+                                                    <p className="maintenance-type-text-sm maintenance-type-text-gray-500 mt-2">
+                                                        {searchTerm || filterStatus !== 'all'
+                                                            ? 'Try adjusting your search terms or filter settings'
+                                                            : 'Add your first maintenance type using the "Add Maintenance Type" button above'}
+                                                    </p>
+                                                </div>
+                                            }
+                                            customStyles={customStyles}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Maintenance Type Modal */}
+                {showMaintenanceTypeModal && (
+                    <div className="maintenance-type-modal-overlay" onClick={() => setShowMaintenanceTypeModal(false)}>
+                        <div className="maintenance-type-modal maintenance-type-modal-lg" onClick={(e) => e.stopPropagation()}>
+                            <div className="maintenance-type-modal-header">
+                                <h3 className="maintenance-type-modal-title">
+                                    {editItemId ? 'Edit Material Type' : 'Add New Material Type'}
+                                </h3>
+                                <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-modal-close">
+                                    ×
+                                </button>
+                            </div>
+                            <div className="maintenance-type-modal-content">
+                                <div className="maintenance-type-space-y-4">
+                                    <div className="maintenance-type-form-grid maintenance-type-form-grid-2">
+                                        <div>
+                                            <label className="maintenance-type-label">
+                                                Code<span style={{ color: 'red' }}>*</span></label>
                                             <input
                                                 type="text"
-                                                value={newItem.code}
-                                                onChange={(e) => handleInputChange("code", e.target.value)}
-                                                className="requiredColor list-compact-input w-full text-sm py-1 px-2 h-9"
-                                                placeholder="Item Code"
-                                                maxLength={20}
+                                                value={maintenanceTypeForm.MaterialTypeCode}
+                                                onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaterialTypeCode: e.target.value })}
+                                                className="maintenance-type-input requiredColor"
+                                                placeholder="Maintenance code"
                                             />
-                                            {errors.CodeError !== 'true' ? (
-                                                <p style={{ color: 'red', fontSize: '11px', margin: '0px', padding: '0px' }}>{errors.CodeError}</p>
-                                            ) : null}
                                         </div>
 
-                                        {/* Description */}
-                                        <div className="col-span-3">
+                                        <div>
+                                            <label className="maintenance-type-label">
+                                                Description <span style={{ color: 'red' }}>*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                value={newItem.description}
-                                                onChange={(e) => handleInputChange("description", e.target.value)}
-                                                className="requiredColor list-compact-input w-full text-sm py-1 px-2 h-9"
-                                                placeholder="Description"
-                                                maxLength={300}
+                                                value={maintenanceTypeForm.Description}
+                                                onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
+                                                className="maintenance-type-input requiredColor"
+                                                placeholder="Maintenance description"
+                                                required
                                             />
-                                            {errors.DescriptionError !== 'true' ? (
-                                                <p style={{ color: 'red', fontSize: '11px', margin: '0px', padding: '0px' }}>{errors.DescriptionError}</p>
-                                            ) : null}
                                         </div>
+                                    </div>
 
-                                        {/* Company */}
-                                        <div className="col-span-4">
+                                    <div className='maintenance-type-form-grid maintenance-type-form-grid-2'>
+                                        <div>
                                             <Select
-                                                value={bloodGroupCode}
-                                                onChange={(selectedOptions: any) => setBloodGroupCode(selectedOptions || [])}
+                                                value={groupOptions}
+                                                onChange={(selectedOptions: any) => setGroup(selectedOptions || [])}
+                                                options={options}
+                                                isClearable
+                                                closeMenuOnSelect={false}
+                                                hideSelectedOptions={true}
+                                                placeholder="Select Group"
+                                                className="basic-multi-select"
+                                                styles={{
+                                                    ...multiValue,
+                                                    valueContainer: (provided) => ({
+                                                        ...provided,
+                                                        maxHeight: "80px",
+                                                        overflowY: "auto",
+                                                        flexWrap: "wrap",
+                                                    }),
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Select
+                                                value={dropdown}
+                                                onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
                                                 options={options}
                                                 isMulti
                                                 isClearable
@@ -645,81 +730,35 @@ const MaterialType: React.FC<AddUpListProps> = (props) => {
                                                     }),
                                                 }}
                                             />
-                                        </div>
 
-                                        {/* Buttons */}
-                                        <div className="col-span-2 flex gap-2">
-                                            {
-                                                editItemId ?
-                                                    <button type="button" className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8" onClick={check_Validation_Error}>Update</button>
-                                                    :
-                                                    <button type="button" className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8" onClick={check_Validation_Error}>Save</button>
-                                            }
-                                            <button onClick={resetForm} className="list-button outline small flex-1 h-8">
-                                                Clear
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Filter and Search Bar */}
-                        <div className="compact" style={{ height: '100%' }}>
-                            <div className="flex justify-between align-items-center  mb-2 d-flex">
-                                <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 flex items-center gap-1">
-                                    <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
-                                <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-                                    className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
-                                    placeholder="Search..." maxLength={300} />
+                            <div className="maintenance-type-modal-footer">
+                                <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-btn maintenance-type-btn-secondary">
+                                    Cancel
+                                </button>
+                                <button onClick={handleSaveMaintenanceType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.MaterialTypeCode || !maintenanceTypeForm.Description || loading} >
+                                    <Save className="maintenance-type-icon" />
+                                    {editItemId ? 'Update Material Type' : 'Add Material Type'}
+                                </button>
                             </div>
-                            <DataTable
-                                columns={resizeableColumns}
-                                data={filteredData}
-                                // dense //To-Reduce-Space
-                                pagination
-                                highlightOnHover
-                                noDataComponent="No items found matching your criteria"
-                                defaultSortFieldId="status"
-                                fixedHeader
-                                fixedHeaderScrollHeight="300px"
-                                customStyles={customStyles}
-                                responsive
-                                persistTableHead
-                            />
                         </div>
                     </div>
-                );
-            default:
-                return null;
-        }
-    };
-
-    return (
-        <>
-            <div className="list-management-container ">
-                {/* Header */}
-
-                {/* Main Container */}
-                <div className="list-main-container container">
-
-                    {/* Content Area */}
-                    {renderTabContent()}
-                </div>
+                )}
             </div>
 
             <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
                     if (selectedId !== null) {
-                        deleteItem(selectedId);
+                        deleteMaintenanceType(selectedId);
                     }
                     setShowModal(false);
                 }} />
         </>
     );
-}
+};
 
 export default MaterialType;
-
-

@@ -307,7 +307,7 @@ function App() {
 
         {/* Inventory */}
         {/* <Route path="/inventory/material-group" element={<MaterialGroup />} /> */}
-        <Route path="/inventory/material-type" element={<MaterialType />} />
+        <Route path="/masterTable/material-type" element={<MaterialType />} />
         <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
 
         <Route path="/material-request-entry" element={<MaterialRequestEntry />} />

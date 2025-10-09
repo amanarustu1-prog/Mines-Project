@@ -1874,10 +1874,10 @@ const navigationItems: NavItem[] = [
           { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
           { title: 'Material Group', href: '/masterTable/material-group', icon: TrendingUp, description: 'Material grouping' },
           { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
-          { title: 'Material Specification', href: '/inventory/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
+          { title: 'Material Specification', href: '/masterTable/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
           { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
           { title: 'Material Type', href: '/masterTable/material-type', icon: TrendingUp, description: 'Material types' },
-          { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
+          { title: 'Unit Type', href: '/masterTable/unit-type', icon: TrendingUp, description: 'Unit measurements' },
           { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
           { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
           { title: 'Company Unit', href: '/masterTable/company-units', icon: TrendingUp, description: 'Company Units' },
@@ -1888,7 +1888,7 @@ const navigationItems: NavItem[] = [
         items: [
           { title: 'Loading charge', href: '/masterTable/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
           { title: 'Product', href: '/product-masonry', icon: FlaskConical, description: 'Product list' },
-          { title: 'Tp Amount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
+          { title: 'Tp Amount', href: '/masterTable/tp-amount', icon: FlaskConical, description: 'TP amount details' },
           { title: 'Vehicle Type', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
           { title: 'Explosive Type', href: '/masterTable/explosive-type', icon: FlaskConical, description: 'Explosive types' },
         ]
