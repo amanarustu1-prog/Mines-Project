@@ -381,6 +381,22 @@ const ListManagement = () => {
                                                                                                                         dropDownUrl="Users/GetData_Company"
                                                                                                                     />
                                                                                                                     :
+                                                                                                                pageEndPoint === "masterTable/vehicle-type" ?
+                                                                                                                    <AddUpList
+                                                                                                                        {...{ pageEndPoint }}
+                                                                                                                        col1="Vehicle-Type"
+                                                                                                                        col2="Master Tables with codes and descriptions for Vehicle Type."
+                                                                                                                        col3="VehicleTypeCode"
+                                                                                                                        col4="VehicleTypeID"
+                                                                                                                        col5="Description"
+                                                                                                                        getUrl="VehicleType/GetData_VehicleType"
+                                                                                                                        addUrl="VehicleType/Insert_VehicleType"
+                                                                                                                        singleDataUrl="VehicleType/GetSingleData_VehicleType"
+                                                                                                                        upUrl="VehicleType/Update_VehicleType"
+                                                                                                                        delUrl="VehicleType/Delete_VehicleType"
+                                                                                                                        dropDownUrl="Users/GetData_Company"
+                                                                                                                    />
+                                                                                                                    :
                                                                                                                     pageEndPoint === "masterTable/explosive-type" ?
                                                                                                                         <AddUpList
                                                                                                                             {...{ pageEndPoint }}

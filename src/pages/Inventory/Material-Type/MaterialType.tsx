@@ -10,13 +10,14 @@ import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
 import { setgroups } from 'process';
+import { Group } from 'lucide-react';
 
 // Icon components
 interface MaintenanceType {
     MaintenanceTypeID?: number;
     Description: string;
     MaintenanceType: string;
-    MaintenanceTypeCode: string;
+    MaterialTypeCode: string;
     Frequency: string;
     CompanyId: number | string;
     IsActive?: boolean;
@@ -105,124 +106,105 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         MaterialTypeCode: '',
     });
 
-    const api = (path: string) => (baseUrl ? `${baseUrl}${path}` : path);
-
-    //Get-Data
-    // const fetchMaintenanceTypes = async () => {
-    //     try {
-    //         setLoading(true);
-
-    //         const response = await axios.post('MaterialType/GetData_MaterialType', {
-    //             // IsActive: 1,
-    //             CompanyId: localStorage.getItem('companyID')
-    //         });
-
-    //         const data = JSON.parse(response.data.data)?.Table || [];
-    //         console.log(data);
-    //         setMaintenanceTypes(data);
-
-    //         if (data?.Table && Array.isArray(data.Table)) {
-    //             setMaintenanceTypes(data.Table);
-    //         }
-    //     } catch (error: any) {
-    //         toastifyError(`Error fetching material types: ${error.message}`);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    //Insert-Data
-    const insertMaintenanceType = async (data: any) => {
+    const fetchMaterialTypes = async () => {
         try {
-            const response = await fetchPostData('MaterialType/GetData_MaterialType', {
-                ...data,
-                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
-            });
+            setLoading(true);
+            const payload = {
+                IsActive: filter === "active" ? 1 : filter === "inactive" ? 0 : "",
+                CompanyId: Number(localStorage.getItem("companyID")),
+            };
 
-            const message = response[0].Message;
+            const response = await fetchPostData("MaterialType/GetData_MaterialType", payload);
+            // console.log("API Response:", response);
+            const parsed = JSON.parse(response?.data?.data || "{}");
+            const data = parsed?.Table || [];
+            // console.log("Fetched Material Types:", data);
 
-            if (message === "Already Exists MaintenanceTypeCode") {
-                toastifyError("Code is already Present");
-                return;
-            }
-
-            if (message === "Already Exists Description") {
-                toastifyError("Description is already Present");
-                return;
-            }
-
-            if (response) {
-                toastifySuccess('Maintenance type added successfully');
-                await fetchData();
-                await fetchCounts();
-                return true;
-            } else {
-                throw new Error('Invalid response from server');
-            }
+            setMaintenanceTypes(response);
         } catch (error: any) {
-            toastifyError(`Error adding maintenance type: ${error.response?.data?.message || error.message}`);
+            toastifyError("Error fetching material types");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const insertMaterialType = async (formData: any) => {
+        try {
+            const payload = {
+                MaterialGroupID: formData.MaterialGroupID || "",
+                Description: formData.Description,
+                MaterialTypeCode: formData.MaterialTypeCode,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            };
+            // console.log("Insert Payload:", payload);
+
+            const response = await fetchPostData("MaterialType/Insert_MaterialType", payload);
+            // console.log("Insert Response:", response);
+            const data = JSON.parse(response?.data?.data || "{}")?.Table?.[0];
+
+            if (data?.message === "Already Insert") {
+                toastifyError("Material Type already exists");
+                return false;
+            }
+
+            toastifySuccess("Material Type added successfully");
+            await fetchMaterialTypes();
+            return true;
+        } catch (error: any) {
+            toastifyError(`Error adding material type: ${error.message}`);
             return false;
         }
     };
 
-    //Update-Data
-    const updateMaintenanceType = async (data: any, id: number) => {
+    const updateMaterialType = async (formData: any, id: number) => {
         try {
-            const response = await fetchPostData('MaterialType/Update_MaterialType', {
-                ...data,
-                MaintenanceTypeID: id,
+            const payload = {
+                MaterialTypeID: id,
+                MaterialGroupID: formData.MaterialGroupID || "",
+                Description: formData.Description,
+                MaterialTypeCode: formData.MaterialTypeCode,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
-            });
+                UpdatedById: localStorage.getItem("employeeID"),
+            };
 
-            const message = response[0].Message;
+            const response = await fetchPostData("MaterialType/Update_MaterialType", payload);
+            const data = JSON.parse(response?.data?.data || "{}")?.Table?.[0];
 
-            if (message === "Already Exists MaintenanceTypeCode") {
-                toastifyError("Code is already Present");
-                return;
+            if (data?.message === "Already Exists") {
+                toastifyError("Material Type already exists");
+                return false;
             }
 
-            if (message === "Already Exists Description") {
-                toastifyError("Description is already Present");
-                return;
-            }
-            console.log(response);
-
-            if (response) {
-                toastifySuccess('Item updated successfully');
-                setEditItemId(null);
-                setDropdown([]);
-                setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaintenanceTypeCode: '', Frequency: '' });
-                fetchMaterialTypes();
-                setShowMaintenanceTypeModal(false);
-                return true;
-            }
+            toastifySuccess("Material Type updated successfully");
+            await fetchMaterialTypes();
+            return true;
         } catch (error: any) {
-            toastifyError('Error updating maintenance type');
+            toastifyError(`Error updating material type: ${error.message}`);
             return false;
         }
     };
 
-    //Delete-Data
-    const deleteMaintenanceType = async (id: number) => {
-        const item = maintenanceTypes.find(t => t.MaintenanceTypeID === id);
-        if (!item) return;
-
-        const newStatus = item.IsActive ? 0 : 1;
-
+    const deleteMaterialType = async (id: number) => {
         try {
-            const response = await fetchPostData('MaterialType/Delete_MaterialType', {
-                MaintenanceTypeID: id,
-                IsActive: newStatus,
-            });
+            const record = maintenanceTypes.find(x => x.MaintenanceTypeID === id);
+            if (!record) return;
 
-            if (response) {
-                toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully`);
-                await fetchData();
-                await fetchCounts();
+            const payload = {
+                MaterialTypeID: id,
+                IsActive: record.IsActive ? 0 : 1,
+                UpdatedById: localStorage.getItem("employeeID"),
+            };
+
+            const response = await fetchPostData("MaterialType/Delete_MaterialType", payload);
+            const data = JSON.parse(response?.data?.data || "{}")?.Table?.[0];
+
+            if (data?.message) {
+                toastifySuccess(`Material Type ${record.IsActive ? "deactivated" : "activated"} successfully`);
+                await fetchMaterialTypes();
                 return true;
             }
         } catch (error: any) {
-            toastifyError('Error updating status');
+            toastifyError(`Error deleting material type: ${error.message}`);
             return false;
         }
     };
@@ -255,16 +237,21 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     //Get-Group-Options
     useEffect(() => {
         const fetchGroupOptions = async () => {
-            const payload = { CompanyId: localStorage.getItem("companyID") };
-            const response = await fetchPostData('MaterialGroup/GetDataDropDown_MaterialGroup', payload);
-            // console.log(response);
-            if (response) {
-                const data = response;
-                setGroupOptions(Array.isArray(data) ? data : []);
-            } else {
-                toastifyError("Failed to load Dropdown.");
+            try {
+                const payload = { CompanyId: localStorage.getItem("companyID") };
+                const response = await fetchPostData('MaterialGroup/GetDataDropDown_MaterialGroup', payload);
+                // console.log(response);
+
+                const formatted = response.map((item: any) => ({
+                    value: item.MaterialGroupID,
+                    label: item.Description,
+                }));
+
+                setGroupOptions(formatted);
+            } catch (error) {
+                toastifyError("Error fetching Material Groups");
             }
-        }
+        };
         fetchGroupOptions();
     }, []);
 
@@ -286,7 +273,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 setMaintenanceTypeForm({
                     Description: record.Description || '',
                     MaintenanceTypes: record.MaintenanceType || '',
-                    MaintenanceTypeCode: record.MaintenanceTypeCode || '',
+                    MaterialTypeCode: record.MaterialTypeCode || '',
                     Frequency: record.Frequency,
                 });
 
@@ -305,7 +292,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                     setDropdown([]);
                 }
             } else {
-                setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaintenanceTypeCode: '', Frequency: '' });
+                setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaterialTypeCode: '', Frequency: '' });
                 // setDropdown
             }
         } catch (err) {
@@ -313,38 +300,38 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         }
     }
 
-    const fetchData = async () => {
-        try {
-            if (filter === "all") {
-                const activeResp = await fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
-                fetchCounts();
+    // const fetchData = async () => {
+    //     try {
+    //         if (filter === "all") {
+    //             const activeResp = await fetch_Post_Data('MaterialType/Insert_MaterialType', { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
+    //             fetchCounts();
 
-                const activeData = activeResp?.Data || [];
+    //             const activeData = activeResp?.Data || [];
 
-                setMaintenanceTypes([
-                    ...(Array.isArray(activeData) ? activeData : []),
-                ])
-            } else {
-                const value = {
-                    IsActive: filter === "active" ? 1 : 0,
-                    CompanyId: Number(localStorage.getItem("companyID")),
-                };
-                fetchCounts();
+    //             setMaintenanceTypes([
+    //                 ...(Array.isArray(activeData) ? activeData : []),
+    //             ])
+    //         } else {
+    //             const value = {
+    //                 IsActive: filter === "active" ? 1 : 0,
+    //                 CompanyId: Number(localStorage.getItem("companyID")),
+    //             };
+    //             fetchCounts();
 
-                const response = await fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', value);
-                const parsedData = response?.Data;
-                setMaintenanceTypes(Array.isArray(parsedData) ? parsedData : []);
-            }
-        } catch (err) {
-            toastifyError("Error fetching data");
-        }
-    };
+    //             const response = await fetch_Post_Data('MaterialType/Insert_MaterialType', value);
+    //             const parsedData = response?.Data;
+    //             setMaintenanceTypes(Array.isArray(parsedData) ? parsedData : []);
+    //         }
+    //     } catch (err) {
+    //         toastifyError("Error fetching data");
+    //     }
+    // };
 
     const fetchCounts = async () => {
         try {
             const [activeResp, inactiveResp] = await Promise.all([
-                fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
-                fetch_Post_Data('MaintenanceType/GetData_MaintenanceType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+                fetch_Post_Data('MaterialType/GetData_MaterialType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+                fetch_Post_Data('MaterialType/GetData_MaterialType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
             ]);
 
             setActiveCounts(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
@@ -355,7 +342,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     };
 
     useEffect(() => {
-        fetchData();
+        fetchMaterialTypes();
         fetchCounts();
     }, [filter]);
 
@@ -365,7 +352,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         const matchesSearch = searchTerm === '' ||
             type.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
             type.MaintenanceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (type.MaintenanceTypeCode && type.MaintenanceTypeCode.toLowerCase().includes(searchTerm.toLowerCase()));
+            (type.MaterialTypeCode && type.MaterialTypeCode.toLowerCase().includes(searchTerm.toLowerCase()));
 
         const matchesStatus = filterStatus === 'all' ||
             (filterStatus === 'active' && type.IsActive) ||
@@ -378,28 +365,23 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     useEffect(() => {
     }, [maintenanceTypes, filteredMaintenanceTypes]);
 
-    //Handle save
-    const handleSaveMaintenanceType = async () => {
-        if (!maintenanceTypeForm.MaintenanceTypeCode || !maintenanceTypeForm.Description) {
+    // On save
+    const handleSaveMaterialType = async () => {
+        if (!maintenanceTypeForm.MaterialTypeCode || !maintenanceTypeForm.Description) {
             toastifyError('Please fill in all required fields');
             return;
         }
 
-        // alert(editItemId);
         if (editItemId) {
-            const success = await updateMaintenanceType(maintenanceTypeForm, editItemId);
-            if (success) {
-                setEditItemId(null);
-                setShowMaintenanceTypeModal(false);
-                resetForm();
-            }
+            await updateMaterialType(maintenanceTypeForm, editItemId);
+            setShowMaintenanceTypeModal(false);
+            setEditItemId(null);
         } else {
-            const success = await insertMaintenanceType(maintenanceTypeForm);
-            if (success) {
-                setShowMaintenanceTypeModal(false);
-                resetForm();
-            }
+            await insertMaterialType(maintenanceTypeForm);
+            setShowMaintenanceTypeModal(false);
         }
+
+        resetForm();
     };
 
     //Reset form
@@ -408,7 +390,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         setMaintenanceTypeForm({
             Description: '',
             MaintenanceTypes: '',
-            MaintenanceTypeCode: '',
+            MaterialTypeCode: '',
             Frequency: '',
         });
         setFilter("active");
@@ -420,7 +402,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const columns: any[] = [
         {
             name: 'Code',
-            selector: (row: MaintenanceType) => row.MaintenanceTypeCode,
+            selector: (row: MaintenanceType) => row.MaterialTypeCode,
             sortable: true,
         },
         {
@@ -493,7 +475,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
-            'Maintenance-Type Code': item.MaintenanceTypeCode,
+            'Maintenance-Type Code': item.MaterialTypeCode,
             'Description': item.Description,
             'Maintenance Type': item.MaintenanceType,
             'Frequency': item.Frequency,
@@ -690,25 +672,22 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                     <div className='maintenance-type-form-grid maintenance-type-form-grid-2'>
                                         <div>
                                             <Select
-                                                value={groupOptions}
-                                                onChange={(selectedOptions: any) => setGroup(selectedOptions || [])}
-                                                options={options}
+                                                value={groupOptions.find(opt => opt.value === maintenanceTypeForm.MaterialGroupID) || null}
+                                                onChange={(selectedOption: any) =>
+                                                    setMaintenanceTypeForm({
+                                                        ...maintenanceTypeForm,
+                                                        MaterialGroupID: selectedOption ? selectedOption.value : "",
+                                                    })
+                                                }
+                                                options={groupOptions}
                                                 isClearable
-                                                closeMenuOnSelect={false}
-                                                hideSelectedOptions={true}
-                                                placeholder="Select Group"
-                                                className="basic-multi-select"
-                                                styles={{
-                                                    ...multiValue,
-                                                    valueContainer: (provided) => ({
-                                                        ...provided,
-                                                        maxHeight: "80px",
-                                                        overflowY: "auto",
-                                                        flexWrap: "wrap",
-                                                    }),
-                                                }}
+                                                placeholder="Select Material Group"
+                                                className="basic-single-select"
+                                                styles={multiValue}
                                             />
+
                                         </div>
+
                                         <div>
                                             <Select
                                                 value={dropdown}
@@ -739,7 +718,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-btn maintenance-type-btn-secondary">
                                     Cancel
                                 </button>
-                                <button onClick={handleSaveMaintenanceType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.MaterialTypeCode || !maintenanceTypeForm.Description || loading} >
+                                <button onClick={handleSaveMaterialType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.MaterialTypeCode || !maintenanceTypeForm.Description || loading} >
                                     <Save className="maintenance-type-icon" />
                                     {editItemId ? 'Update Material Type' : 'Add Material Type'}
                                 </button>
@@ -753,7 +732,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
                     if (selectedId !== null) {
-                        deleteMaintenanceType(selectedId);
+                        deleteMaterialType(selectedId);
                     }
                     setShowModal(false);
                 }} />
@@ -762,3 +741,8 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 };
 
 export default MaterialType;
+
+// Still in this in DataTable nothing shows in UI.
+// Also in GroupOptions nothing dropdown shows in UI.
+// In that MaterialGroups will come {"success":true,"data":"{\"Table\":[{\"MaterialGroupID\":3,\"Description\":\"Material-Group-Code\"},{\"MaterialGroupID\":6,\"Description\":\"Material-Groups\"},{\"MaterialGroupID\":5,\"Description\":\"Material-Items\"}]}","Message":"Successfully","Code":200}
+// Description will shown as dropdown & on selecting that MaterialGroupID will come in Insert & Update API.
