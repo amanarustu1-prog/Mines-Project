@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import './MaterialType.css';
+import './MaterialSubType.css';
 import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
@@ -81,7 +81,7 @@ const ToggleRight = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
+const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const [activeTab, setActiveTab] = useState('maintenanceTypes');
     const [showMaintenanceTypeModal, setShowMaintenanceTypeModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -114,7 +114,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
 
-            const response = await fetchPostData("MaterialType/GetData_MaterialType", payload);
+            const response = await fetchPostData("MaterialSubType/GetData_MaterialSubType", payload);
             // console.log("API Response:", response);
             const parsed = JSON.parse(response?.data?.data || "{}");
             const data = parsed?.Table || [];
@@ -139,7 +139,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             };
             // console.log("Insert Payload:", payload);
 
-            const response = await fetchPostData("MaterialType/Insert_MaterialType", payload);
+            const response = await fetchPostData("MaterialSubType/Insert_MaterialSubType", payload);
             // console.log("Insert Response:", response);
             const message = response[0].Message;
 
@@ -178,7 +178,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 MaterialTypeCode: formData.MaterialTypeCode,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
             };
-            const response = await fetchPostData("MaterialType/Update_MaterialType", payload);
+            const response = await fetchPostData("MaterialSubType/Update_MaterialSubType", payload);
 
             const message = response[0].Message;
             if (message === "Already Exists MaterialTypeCode") {
@@ -218,7 +218,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 IsActive: newStatus,
             };
 
-            const response = await fetchPostData("MaterialType/Delete_MaterialType", payload);
+            const response = await fetchPostData("MaterialSubType/Delete_MaterialSubType", payload);
             console.log("Delete Response:", response);
             if (response) {
                 toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully`);
@@ -262,7 +262,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         const fetchGroupOptions = async () => {
             try {
                 const payload = { CompanyId: localStorage.getItem("companyID") };
-                const response = await fetchPostData('MaterialGroup/GetDataDropDown_MaterialGroup', payload);
+                const response = await fetchPostData('MaterialType/GetDataDropDown_MaterialType', payload);
                 console.log(response);
 
                 const formatted = response.map((item: any) => ({
@@ -288,7 +288,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const getSingleData = async () => {
         try {
             const val = { MaterialTypeID: editItemId };
-            const res = await fetchPostData('MaterialType/GetSingleData_MaterialType', val);
+            const res = await fetchPostData('MaterialSubType/GetSingleData_MaterialSubType', val);
             // console.log(res);
             if (res && Array.isArray(res) && res.length > 0) {
                 const record = res[0];
@@ -353,8 +353,8 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const fetchCounts = async () => {
         try {
             const [activeResp, inactiveResp] = await Promise.all([
-                fetch_Post_Data('MaterialType/GetData_MaterialType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
-                fetch_Post_Data('MaterialType/GetData_MaterialType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+                fetch_Post_Data('MaterialSubType/GetData_MaterialSubType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+                fetch_Post_Data('MaterialSubType/GetData_MaterialSubType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
             ]);
 
             setActiveCounts(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
@@ -525,9 +525,9 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                         <div className="maintenance-type-title-section">
                             <Wrench className="maintenance-type-header-icon" />
                             <div>
-                                <h1 className="maintenance-type-title">Material Type</h1>
+                                <h1 className="maintenance-type-title">Material Sub-Type</h1>
                                 <p className="maintenance-type-subtitle">
-                                    Manage Material types, schedules, and procedures
+                                    Manage Material types, schedules, and procedures.
                                 </p>
                             </div>
                         </div>
@@ -760,9 +760,4 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     );
 };
 
-export default MaterialType;
-
-
-
-// iN THIS WHY AFTER update our MaintenanceTypeModal is get closed "Code is already Present" or "Already Exists Description" our MaintenanceTypeModal get closed.
-// Io not want our MaintenanceTypeModal get closed unteil sfter updstinhwhole form
+export default MaterialSubType;

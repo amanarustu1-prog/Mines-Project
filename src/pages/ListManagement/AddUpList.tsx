@@ -121,6 +121,20 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             name: 'Description',
             selector: (row: ListItem) => row[col5],
             sortable: true,
+            cell: (row: ListItem) => (
+                <span
+                    title={row[col5]}
+                    style={{
+                        display: 'inline-block',
+                        maxWidth: '550px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                    }}
+                >
+                    {row[col5]}
+                </span>
+            ),
         },
         {
             name: 'Status',
@@ -158,7 +172,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                     <button
                         onClick={() => {
                             setSelectedId(row[col4]); // clicked item id
-                            setShowModal(true);             // show confirmation modal
+                            setShowModal(true);       // show confirmation modal
                         }}
                         className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`}
                         title={row.IsActive ? 'Deactivate' : 'Activate'}
@@ -183,7 +197,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
     useEffect(() => {
         const fetchDropDown = async () => {
             try {
-                const payload = { EmployeeID: '1' };
+                const payload = { EmployeeID: localStorage.getItem("employeeID") };
                 const response = await fetchPostData(props.dropDownUrl, payload);
                 // console.log(response);
                 if (response) {
@@ -292,6 +306,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
         const newStatus = item.IsActive ? 0 : 1;
 
+        console.log()
         try {
             const response = await AddDeleteUpadate(delUrl, {
                 [col4]: id,
@@ -309,35 +324,6 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             toastifyError("Error updating status");
         }
     };
-
-    // const updatedItem = async (id: number) => {
-    //     // if (!check_Validation_Error()) return;
-    //     // alert(id);
-    //     const payload = {
-    //         [col4]: id,
-    //         [col5]: newItem.description,
-    //         [col3]: newItem.code,
-    //         CompanyId: bloodGroupCode.map(opt => opt.value).toString(),
-    //     }
-    //     try {
-    //         const resp = await AddDeleteUpadate(upUrl, payload);
-    //         // console.log(resp);
-    //         if (resp.success) {
-    //             await fetchData();
-    //             toastifySuccess("Item updated successfully!");
-
-    //             setEditItemId(null);
-    //             setNewItem({ code: "", description: "", isActive: true });
-    //             setErrors({ CodeError: '', DescriptionError: '' });
-    //             setBloodGroupCode([]);
-    //         } else {
-    //             toastifyError("Failed to update item");
-    //         }
-    //     } catch (err) {
-    //         // console.error("Error updating item:", err);
-    //         toastifyError("Error updating item");
-    //     }
-    // }
 
     const updatedItem = async (id: number) => {
         const payload = {
@@ -361,13 +347,13 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
             console.log("Update message:", message);
 
             // console.log("Already Exists "+ col3 );
-            if (message === "Already Exists "+ col3 ) {
+            if (message === "Already Exists " + col3) {
                 toastifyError("Code is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
             // console.log("Already Exists "+ col5 );
-            if(message === "Already Exists "+ col5 ) {
+            if (message === "Already Exists " + col5) {
                 toastifyError("Description is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
@@ -420,13 +406,13 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
             const message = parsedData?.Table?.[0]?.Message;
 
-            if (message === "Already Exists "+ col3) {
+            if (message === "Already Exists " + col3) {
                 toastifyError("Code is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
             }
 
-            if (message === "Already Exists "+ col5) {
+            if (message === "Already Exists " + col5) {
                 toastifyError("Description is already Present");
                 setErrors({ CodeError: '', DescriptionError: '' });
                 return;
@@ -704,30 +690,9 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
                                                     }),
                                                 }}
                                             />
-                                            {/* <SelectBox
-                                                options={options}
-                                                isMulti
-                                                closeMenuOnSelect={false}
-                                                hideSelectedOptions={true}
-                                                onChange={CompanyChange}
-                                                allowSelectAll={true}
-                                                value={multiSelected.optionSelected}
-                                            /> */}
                                         </div>
 
                                         {/* Buttons */}
-                                        {/* <div className="col-span-2 flex gap-2">
-                                            <button onClick={() => (editItemId ? updatedItem(editItemId) : handleSaveItem())}
-                                                className="list-button primary small flex-1 flex items-center justify-center gap-1 h-8">
-                                                <Save className="list-icon-sm" />
-                                                {editItemId ? "Update" : "Save"}
-                                            </button>
-
-                                            <button onClick={() => setNewItem({ code: "", description: "", isActive: true })}
-                                                className="list-button outline small flex-1 h-8">
-                                                Clear
-                                            </button>
-                                        </div> */}
                                         <div className="col-span-2 flex gap-2">
                                             {
                                                 editItemId ?
@@ -746,7 +711,7 @@ const AddUpList: React.FC<AddUpListProps> = (props) => {
 
                         {/* Filter and Search Bar */}
                         <div className="compact" style={{ height: '100%' }}>
-                            <div className="flex justify-between align-items-center  mb-2">
+                            <div className="flex justify-between align-items-center  mb-2 d-flex">
                                 <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 flex items-center gap-1">
                                     <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
                                 <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
