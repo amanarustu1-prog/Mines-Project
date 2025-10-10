@@ -1875,7 +1875,7 @@ const navigationItems: NavItem[] = [
           { title: 'Material Group', href: '/masterTable/material-group', icon: TrendingUp, description: 'Material grouping' },
           { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
           { title: 'Material Specification', href: '/masterTable/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
-          { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
+          { title: 'Material SubType', href: '/masterTable/material-sub-type', icon: TrendingUp, description: 'Material subtypes' },
           { title: 'Material Type', href: '/masterTable/material-type', icon: TrendingUp, description: 'Material types' },
           { title: 'Unit Type', href: '/masterTable/unit-type', icon: TrendingUp, description: 'Unit measurements' },
           { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },

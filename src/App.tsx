@@ -73,7 +73,8 @@ import ProductMasonry from './pages/sale/product-masonry/ProductMasonry'
 import TPCharges from './pages/sale/TP-Charge/TPCharges'
 import CreateChallan from './pages/sale/Create-challan/CreateChallan'
 // import MaterialGroup from './pages/Inventory/Material-Group/MaterialGroup'
-import MaterialType from './pages/Inventory/Material-Type/MaterialType'
+import MaterialType from './pages/Inventory/Material-Type/MaterialType';
+import MaterialSubType from './pages/Inventory/Material-Sub-Type/MaterialSubType';
 import UnitofMeasurement from './pages/Inventory/Unit-Measurement/UnitofMeasurement'
 import DepartmentMaster from './pages/Hr/Department-Master/DepartmentMaster'
 import IDProof from './pages/Hr/ID-Proof/IDProof'
@@ -307,6 +308,7 @@ function App() {
 
         {/* Inventory */}
         {/* <Route path="/inventory/material-group" element={<MaterialGroup />} /> */}
+        <Route path="/masterTable/material-sub-type" element={<MaterialSubType />} />
         <Route path="/masterTable/material-type" element={<MaterialType />} />
         <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
 
