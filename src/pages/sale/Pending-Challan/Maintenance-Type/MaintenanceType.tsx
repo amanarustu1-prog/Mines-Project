@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
 import { customStyles } from '@/common/Utility';
+import { fetchPostData } from '@/components/hooks/Api';
 
 // Icon components
 interface MaintenanceType {
