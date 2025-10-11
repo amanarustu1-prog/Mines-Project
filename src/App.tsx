@@ -110,12 +110,7 @@ import ListManagementRoute from './pages/ListManagement/ListManagement';
 import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
-<<<<<<< HEAD
-import MaterialName from './pages/Inventory/Material-Name/MaterialName';
-
-=======
 import MaterialName from './pages/Inventory/Material-Name/Material-Name';
->>>>>>> 6f1e1f3b53fd8713b806609e027d0f4d58d3a75d
 
 // Layout component for protected routes
 // const ProtectedLayout = () => {

@@ -4,16 +4,12 @@ import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
-<<<<<<< HEAD
-import { customStyles } from '@/common/Utility';
-import { fetchPostData } from '@/components/hooks/Api';
-=======
+
 import { customStyles, multiValue } from '@/common/Utility';
 import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
->>>>>>> 6f1e1f3b53fd8713b806609e027d0f4d58d3a75d
 
 // Icon components
 interface MaintenanceType {
