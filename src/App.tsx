@@ -110,7 +110,7 @@ import ListManagementRoute from './pages/ListManagement/ListManagement';
 import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
-
+import MaterialName from './pages/Inventory/Material-Name/Material-Name';
 
 // Layout component for protected routes
 // const ProtectedLayout = () => {
@@ -269,6 +269,7 @@ function App() {
         <Route path="/entry-explosive" element={<EntryExplosive />} />
         <Route path="/blast-entry" element={<BlastEntry />} />
         <Route path="/drilling-entry" element={<DrillingEntry />} />
+        <Route path="/masterTable/material-name" element={<MaterialName />} />
 
         {/* vehicle */}
         <Route path="/daily-check-list" element={<DailyCheckList />} />
@@ -280,7 +281,7 @@ function App() {
         <Route path="/vehicle-job-details" element={<VehicleJobDetails />} />
         <Route path="/vehicle-master-details" element={<VehicleMasterDetails />} />
         <Route path="/vehicle-renewal-details" element={<VehicleRenewalDetails />} />
-        <Route path="/vehicle-service-type" element={<VehicleServiceType />} />
+        <Route path="/masterTable/material-type" element={<VehicleServiceType />} />
         <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
         <Route path="/daily-running" element={<DailyRunning />} />
 

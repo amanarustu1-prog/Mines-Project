@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import './VehicleServiceType.css';
+import DataTable from 'react-data-table-component';
+import Select from 'react-select';
+import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
+import axios from '@/interceptors/axios';
+import { customStyles } from '@/common/Utility';
+import { fetchPostData } from '@/components/hooks/Api';
+import { CloudCog } from 'lucide-react';
 
 // Icon components
 const Settings = ({ className }: { className?: string }) => (
@@ -39,6 +46,12 @@ const Download = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const Search = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+);
+
 const List = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -51,134 +64,409 @@ const Wrench = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const BarChart3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 13l4-4L11 13l4-4 4 4M3 21h18" />
+    </svg>
+);
+
+const Calendar = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
+    </svg>
+);
+
 // Types
-interface ServiceType {
-    id: string;
-    name: string;
-    description: string;
-    status: 'active' | 'inactive';
+interface VehicleServiceType {
+    VehicleServiceTypeID?: number;
+    ServiceTypeName: string;
+    MaintenanceTypeID: number;
+    KMInterval: number;
+    Days: number;
+    VehicleServiceTypeCode: string;
+    CompanyId: number | string;
+    IsActive?: boolean;
+    CreatedDate?: string;
+    LastUpdated?: string;
 }
 
-interface ServiceGroup {
-    id: string;
-    name: string;
-    code: string;
-    description: string;
+interface MaintenanceType {
+    MaintenanceTypeID: number;
+    Description: string;
+    MaintenanceTypes: string;
+    MaintenanceTypeCode: string;
+    Frequency: string;
+    IsActive: boolean;
 }
 
-interface ServiceProcess {
-    id: string;
-    sno: number;
-    serviceType: string;
-    groupName: string;
-    processName: string;
-    description?: string;
-    status: 'active' | 'inactive';
-    createdDate: string;
+interface Props {
+    baseUrl?: string;
+    companyId?: number | string | null;
 }
 
-export default function VehicleServiceType() {
-    const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([
-        {
-            id: 'service-1',
-            name: 'Engine Service',
-            description: 'Complete engine maintenance and servicing',
-            status: 'active'
-        },
-        {
-            id: 'service-2',
-            name: 'Brake Service',
-            description: 'Brake system inspection and maintenance',
-            status: 'active'
-        },
-        {
-            id: 'service-3',
-            name: 'Transmission Service',
-            description: 'Transmission system servicing',
-            status: 'active'
-        }
-    ]);
+// Status options
+const statusOptions = [
+    { value: 'all', label: 'All Status' },
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' }
+];
 
-    const [serviceGroups] = useState<ServiceGroup[]>([
-        {
-            id: 'group-1',
-            name: 'Preventive Maintenance',
-            code: 'PM',
-            description: 'Regular preventive maintenance services'
-        },
-        {
-            id: 'group-2',
-            name: 'Diagnostic',
-            code: 'DG',
-            description: 'Diagnostic and troubleshooting services'
-        },
-        {
-            id: 'group-3',
-            name: 'Repair',
-            code: 'RP',
-            description: 'Repair and replacement services'
-        }
-    ]);
+const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
+    const [activeTab, setActiveTab] = useState('overview');
+    const [showVehicleServiceTypeModal, setShowVehicleServiceTypeModal] = useState(false);
+    const [editingVehicleServiceType, setEditingVehicleServiceType] = useState<VehicleServiceType | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [loading, setLoading] = useState(false);
 
-    const [serviceProcesses, setServiceProcesses] = useState<ServiceProcess[]>([
-        {
-            id: 'process-1',
-            sno: 2243,
-            serviceType: 'Engine Service',
-            groupName: 'DG',
-            processName: 'TEST-1',
-            description: 'Engine diagnostic test process',
-            status: 'active',
-            createdDate: '2025-07-18'
-        }
-    ]);
-
-    const [newServiceType, setNewServiceType] = useState({
-        name: '',
-        description: '',
-        status: 'active' as 'active' | 'inactive'
+    const [vehicleServiceTypes, setVehicleServiceTypes] = useState<VehicleServiceType[]>([]);
+    const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
+    const [vehicleServiceTypeForm, setVehicleServiceTypeForm] = useState({
+        ServiceTypeName: '',
+        MaintenanceTypeID: 0,
+        KMInterval: 0,
+        Days: 0,
+        VehicleServiceTypeCode: '',
+        IsActive: true,
+        CompanyId: companyId || ''
     });
 
-    const [newServiceProcess, setNewServiceProcess] = useState({
-        serviceType: '',
-        groupName: '',
-        processName: '',
-        description: ''
+    const api = (path: string) => (baseUrl ? `${baseUrl}${path}` : path);
+
+    // API Functions
+    const getCompanyId = () => Number(companyId) || 0;
+
+    const fetchMaintenanceTypes = async () => {
+        try {
+            const response = await fetchPostData('api/VehicleServiceType/GetDataDropDown_MaintenanceType', {
+                CompanyId: getCompanyId()
+            });
+
+           
+
+            if (response && Array.isArray(response)) {
+               
+                setMaintenanceTypes(response);
+            
+            } 
+        } catch (error: any) {
+            console.error('Error fetching maintenance types:', error);
+            console.error('Error details:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
+            toastifyError('Error fetching maintenance types');
+        }
+    };
+
+    const fetchVehicleServiceTypes = async () => {
+        try {
+            setLoading(true);
+            const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
+
+            const response = await fetchPostData('api/VehicleServiceType/GetData_VehicleServiceType', {
+                CompanyId: getCompanyId(),
+                IsActive: isActive
+            });
+        
+
+            if (response && Array.isArray(response)) {
+                setVehicleServiceTypes(response);
+            }
+        } catch (error: any) {
+            toastifyError(`Error fetching vehicle service types: ${error.message}`);
+
+            // Always show fallback data even on error
+            const fallbackData = [
+                {
+                    VehicleServiceTypeID: 1,
+                    ServiceTypeName: 'Engine Oil Change',
+                    MaintenanceTypeID: 1,
+                    KMInterval: 5000,
+                    Days: 90,
+                    VehicleServiceTypeCode: 'ENG-001',
+                    CompanyId: getCompanyId(),
+                    IsActive: true,
+                    CreatedDate: '2025-01-01',
+                    LastUpdated: '2025-01-20'
+                }
+            ];
+            setVehicleServiceTypes(fallbackData);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const insertVehicleServiceType = async (data: any) => {
+        try {
+            const response = await fetchPostData('api/VehicleServiceType/Insert_VehicleServiceType', {
+                CompanyId: getCompanyId(),
+                ServiceTypeName: data.ServiceTypeName,
+                MaintenanceTypeID: data.MaintenanceTypeID,
+                KMInterval: data.KMInterval,
+                Days: data.Days,
+                VehicleServiceTypeCode: data.VehicleServiceTypeCode,
+             
+            });
+
+            if (response) {
+                toastifySuccess('Vehicle service type added successfully');
+               
+                setVehicleServiceTypes(prev => [
+                    {
+                        ...data,
+                        VehicleServiceTypeID: response[0]?.VehicleServiceTypeID || Math.random(),
+                        IsActive: true
+                    },
+                    ...prev
+                ]);
+                await fetchVehicleServiceTypes(); 
+                return true;
+            } else {
+                throw new Error('Invalid response from server');
+            }
+        } catch (error: any) {
+            console.error('Error inserting vehicle service type:', error);
+            toastifyError(`Error adding vehicle service type: ${error.response?.data?.message || error.message}`);
+            return false;
+        }
+    };
+
+    const updateVehicleServiceType = async (data: any, id: number) => {
+        try {
+            const response = await fetchPostData('api/VehicleServiceType/Update_VehicleServiceType', {
+                CompanyId: getCompanyId(),
+                ServiceTypeName: data.ServiceTypeName,
+                MaintenanceTypeID: data.MaintenanceTypeID,
+                KMInterval: data.KMInterval,
+                Days: data.Days,
+                VehicleServiceTypeCode: data.VehicleServiceTypeCode,
+                VehicleServiceTypeID: id,
+             
+            });
+
+            if (response) {
+                toastifySuccess('Vehicle service type updated successfully');
+                fetchVehicleServiceTypes();
+                return true;
+            }
+        } catch (error: any) {
+            console.error('Error updating vehicle service type:', error);
+            toastifyError('Error updating vehicle service type');
+            return false;
+        }
+    };
+
+    const deleteVehicleServiceType = async (id: number) => {
+        try {
+            const response = await fetchPostData('api/VehicleServiceType/Delete_VehicleServiceType', {
+                VehicleServiceTypeID: id,
+                IsActive: false,
+             
+            });
+
+            if (response) {
+                toastifySuccess('Vehicle service type deleted successfully');
+                fetchVehicleServiceTypes();
+                return true;
+            }
+        } catch (error: any) {
+            console.error('Error deleting vehicle service type:', error);
+            toastifyError('Error deleting vehicle service type');
+            return false;
+        }
+    };
+
+    const getSingleVehicleServiceType = async (id: number) => {
+        try {
+            const response = await fetchPostData('api/VehicleServiceType/GetSingleData_VehicleServiceType', {
+                VehicleServiceTypeID: id
+            });
+
+            if (response && response.length > 0) {
+                return response[0];
+            }
+            return null;
+        } catch (error: any) {
+            console.error('Error fetching single vehicle service type:', error);
+            toastifyError('Error fetching vehicle service type details');
+            return null;
+        }
+    };
+
+    // Filter functions
+    const filteredVehicleServiceTypes = vehicleServiceTypes.filter(type => {
+        const matchesSearch = searchTerm === '' ||
+            type.ServiceTypeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            type.VehicleServiceTypeCode.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesStatus = filterStatus === 'all' ||
+            (filterStatus === 'active' && type.IsActive) ||
+            (filterStatus === 'inactive' && !type.IsActive);
+
+        return matchesSearch && matchesStatus;
     });
 
-    const handleAddServiceType = () => {
-        if (newServiceType.name.trim()) {
-            const serviceType: ServiceType = {
-                id: `service-${Date.now()}`,
-                name: newServiceType.name,
-                description: newServiceType.description,
-                status: newServiceType.status
-            };
-            setServiceTypes([...serviceTypes, serviceType]);
-            setNewServiceType({ name: '', description: '', status: 'active' });
+    // useEffect hooks
+    useEffect(() => {
+        console.log('Component mounted or filterStatus changed:', filterStatus);
+        fetchVehicleServiceTypes();
+    }, [filterStatus]);
+
+    // Initial load effect - only run if no data
+    useEffect(() => {
+        console.log('Initial mount check, current data length:', vehicleServiceTypes.length);
+        if (vehicleServiceTypes.length === 0) {
+            console.log('No data found, fetching...');
+            fetchVehicleServiceTypes();
+        }
+        fetchMaintenanceTypes();
+    }, []); // Run only on mount
+
+    // Debug effect to log data changes
+    useEffect(() => {
+        console.log('Vehicle service types updated:', vehicleServiceTypes);
+        console.log('Filtered vehicle service types:', filteredVehicleServiceTypes);
+    }, [vehicleServiceTypes, filteredVehicleServiceTypes]);
+
+    // Handle save
+    const handleSaveVehicleServiceType = async () => {
+        console.log('Saving vehicle service type:', vehicleServiceTypeForm);
+        console.log('Editing mode:', editingVehicleServiceType);
+
+        if (!vehicleServiceTypeForm.ServiceTypeName || !vehicleServiceTypeForm.MaintenanceTypeID) {
+            toastifyError('Please fill in all required fields');
+            return;
+        }
+
+        if (editingVehicleServiceType) {
+            // Update existing vehicle service type
+            console.log('Updating existing vehicle service type:', editingVehicleServiceType.VehicleServiceTypeID);
+            const success = await updateVehicleServiceType(vehicleServiceTypeForm, editingVehicleServiceType.VehicleServiceTypeID!);
+            if (success) {
+                setEditingVehicleServiceType(null);
+                setShowVehicleServiceTypeModal(false);
+                resetForm();
+            }
+        } else {
+            // Create new vehicle service type
+            console.log('Creating new vehicle service type');
+            const success = await insertVehicleServiceType(vehicleServiceTypeForm);
+            if (success) {
+                setShowVehicleServiceTypeModal(false);
+                resetForm();
+            }
         }
     };
 
-    const handleSaveProcess = () => {
-        if (newServiceProcess.serviceType && newServiceProcess.groupName && newServiceProcess.processName) {
-            const process: ServiceProcess = {
-                id: `process-${Date.now()}`,
-                sno: Math.floor(Math.random() * 9000) + 1000,
-                serviceType: newServiceProcess.serviceType,
-                groupName: newServiceProcess.groupName,
-                processName: newServiceProcess.processName,
-                description: newServiceProcess.description,
-                status: 'active',
-                createdDate: new Date().toISOString().split('T')[0]
-            };
-            setServiceProcesses([...serviceProcesses, process]);
-            setNewServiceProcess({ serviceType: '', groupName: '', processName: '', description: '' });
+    // Handle edit
+    const handleEditVehicleServiceType = async (type: VehicleServiceType) => {
+        try {
+            setLoading(true);
+            const singleData = await getSingleVehicleServiceType(type.VehicleServiceTypeID!);
+
+            if (singleData) {
+                setEditingVehicleServiceType(singleData);
+                setVehicleServiceTypeForm({
+                    ServiceTypeName: singleData.ServiceTypeName,
+                    MaintenanceTypeID: singleData.MaintenanceTypeID,
+                    KMInterval: singleData.KMInterval,
+                    Days: singleData.Days,
+                    VehicleServiceTypeCode: singleData.VehicleServiceTypeCode,
+                    IsActive: singleData.IsActive ?? true,
+                    CompanyId: singleData.CompanyId
+                });
+            } else {
+                // Fallback to existing data if API fails
+                setEditingVehicleServiceType(type);
+                setVehicleServiceTypeForm({
+                    ServiceTypeName: type.ServiceTypeName,
+                    MaintenanceTypeID: type.MaintenanceTypeID,
+                    KMInterval: type.KMInterval,
+                    Days: type.Days,
+                    VehicleServiceTypeCode: type.VehicleServiceTypeCode,
+                    IsActive: type.IsActive ?? true,
+                    CompanyId: type.CompanyId
+                });
+            }
+            setShowVehicleServiceTypeModal(true);
+        } catch (error) {
+            console.error('Error loading vehicle service type for edit:', error);
+            toastifyError('Error loading vehicle service type details');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleDeleteProcess = (id: string) => {
-        setServiceProcesses(serviceProcesses.filter(process => process.id !== id));
+    // Handle delete
+    const handleDeleteVehicleServiceType = async (id: number) => {
+        if (window.confirm('Are you sure you want to delete this vehicle service type?')) {
+            await deleteVehicleServiceType(id);
+        }
     };
+
+    // Reset form
+    const resetForm = () => {
+        setVehicleServiceTypeForm({
+            ServiceTypeName: '',
+            MaintenanceTypeID: 0,
+            KMInterval: 0,
+            Days: 0,
+            VehicleServiceTypeCode: '',
+            IsActive: true,
+            CompanyId: getCompanyId()
+        });
+    };
+
+    // Calculate statistics
+    const getTotalVehicleServiceTypes = () => vehicleServiceTypes.length;
+    const getActiveVehicleServiceTypes = () => vehicleServiceTypes.filter(t => t.IsActive).length;
+    const getInactiveVehicleServiceTypes = () => vehicleServiceTypes.filter(t => !t.IsActive).length;
+    const getVehicleServiceTypesByInterval = () => {
+        const intervalCount = vehicleServiceTypes.reduce((acc, type) => {
+            const interval = `${type.KMInterval} KM`;
+            acc[interval] = (acc[interval] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+        return Object.keys(intervalCount).length;
+    };
+
+
+  
+
+
+    const overviewColumns: any[] = [
+        {
+            name: 'Service Type Name',
+            selector: (row: VehicleServiceType) => row.ServiceTypeName,
+            sortable: true,
+            cell: (row: VehicleServiceType) => <span className="vehicle-service-type-font-medium">{row.ServiceTypeName}</span>
+        },
+        {
+            name: 'Maintenance Type',
+            selector: (row: VehicleServiceType) => {
+                const maintenanceType = maintenanceTypes.find(mt => mt.MaintenanceTypeID === row.MaintenanceTypeID);
+                return maintenanceType ? maintenanceType.Description : 'Unknown';
+            },
+            sortable: true,
+        },
+        {
+            name: 'KM Interval',
+            selector: (row: VehicleServiceType) => row.KMInterval,
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            selector: (row: VehicleServiceType) => row.IsActive,
+            sortable: true,
+            cell: (row: VehicleServiceType) => (
+                <span className={`vehicle-service-type-badge ${row.IsActive ? 'vehicle-service-type-badge-success' : 'vehicle-service-type-badge-error'}`}>
+                    {row.IsActive ? 'Active' : 'Inactive'}
+                </span>
+            )
+        },
+    ];
 
     return (
         <div className="vehicle-service-type">
@@ -186,18 +474,26 @@ export default function VehicleServiceType() {
             <div className="vehicle-service-type-header">
                 <div className="vehicle-service-type-header-content">
                     <div className="vehicle-service-type-title-section">
-                        <Settings className="vehicle-service-type-header-icon" />
+                        <Wrench className="vehicle-service-type-header-icon" />
                         <div>
-                            <h1 className="vehicle-service-type-title">Vehicle Service Type</h1>
+                            <h1 className="vehicle-service-type-title">Vehicle Service Type Management</h1>
                             <p className="vehicle-service-type-subtitle">
-                                Manage vehicle service types and service process master details
+                                Manage vehicle service types, maintenance schedules, and service intervals
                             </p>
                         </div>
                     </div>
                     <div className="vehicle-service-type-header-actions">
-                        <button className="vehicle-service-type-btn vehicle-service-type-btn-secondary">
-                            <Download className="vehicle-service-type-icon" />
-                            Export
+                        <button
+                            onClick={() => {
+                                console.log('Add Vehicle Service Type button clicked');
+                                setEditingVehicleServiceType(null);
+                                resetForm();
+                                setShowVehicleServiceTypeModal(true);
+                            }}
+                            className="vehicle-service-type-btn vehicle-service-type-btn-primary"
+                        >
+                            <Plus className="vehicle-service-type-icon" />
+                            Add Vehicle Service Type
                         </button>
                     </div>
                 </div>
@@ -205,203 +501,235 @@ export default function VehicleServiceType() {
 
             {/* Main Content */}
             <div className="vehicle-service-type-main">
-                <div className="vehicle-service-type-content">
-                    <div className="vehicle-service-type-tab-content">
-                        {/* Service Type Entry Section */}
-                        <div className="vehicle-service-type-section-header">
-                            <div>
-                                <h2 className="vehicle-service-type-section-title">
-                                    Vehicle Service Type and Service Process Master Details Entry Section
-                                </h2>
-                                <p className="vehicle-service-type-section-subtitle">
-                                    Enter service type and configure service processes
-                                </p>
-                            </div>
-                        </div>
 
-                        {/* Service Type Form */}
+                <div className="vehicle-service-type-tab-content">
+                    <div className="vehicle-service-type-section-header">
+
+                    </div>
+
+                    {/* Statistics Cards */}
+                    <div className="vehicle-service-type-grid vehicle-service-type-grid-cols-1 vehicle-service-type-md-grid-cols-4 vehicle-service-type-gap-6 vehicle-service-type-mb-6">
                         <div className="vehicle-service-type-card">
-                            <div className="vehicle-service-type-card-header">
-                                <h3 className="vehicle-service-type-card-title">Enter Service Type</h3>
-                            </div>
-                            <div className="vehicle-service-type-card-content">
-                                <div className="vehicle-service-type-form-grid">
-                                    <div className="vehicle-service-type-form-group">
-                                        <label className="vehicle-service-type-form-label">Service Type Name</label>
-                                        <input
-                                            type="text"
-                                            className="vehicle-service-type-form-input"
-                                            value={newServiceType.name}
-                                            onChange={(e) => setNewServiceType({ ...newServiceType, name: e.target.value })}
-                                            placeholder="Enter service type name"
-                                        />
-                                    </div>
-                                    <div className="vehicle-service-type-form-group">
-                                        <label className="vehicle-service-type-form-label">Status</label>
-                                        <select
-                                            className="vehicle-service-type-form-select"
-                                            value={newServiceType.status}
-                                            onChange={(e) => setNewServiceType({ ...newServiceType, status: e.target.value as 'active' | 'inactive' })}
-                                        >
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
-                                        </select>
-                                    </div>
-                                    <div className="vehicle-service-type-form-group vehicle-service-type-form-group-full">
-                                        <label className="vehicle-service-type-form-label">Description</label>
-                                        <textarea
-                                            className="vehicle-service-type-form-textarea"
-                                            value={newServiceType.description}
-                                            onChange={(e) => setNewServiceType({ ...newServiceType, description: e.target.value })}
-                                            placeholder="Enter service type description"
-                                            rows={3}
-                                        />
-                                    </div>
+
+                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-blue">
+                                    <Wrench className="vehicle-service-type-icon" />
                                 </div>
-                                <div className="vehicle-service-type-form-actions">
-                                    <button
-                                        className="vehicle-service-type-btn vehicle-service-type-btn-primary"
-                                        onClick={handleAddServiceType}
-                                    >
-                                        <Plus className="vehicle-service-type-icon" />
-                                        Add Service Type
-                                    </button>
+                                <div>
+                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Total Types</p>
+                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getTotalVehicleServiceTypes()}</p>
                                 </div>
                             </div>
+
                         </div>
 
-                        {/* Service Process Form */}
-                        <div className="vehicle-service-type-card vehicle-service-type-mt-4">
-                            <div className="vehicle-service-type-card-header">
-                                <h3 className="vehicle-service-type-card-title">Service Process Configuration</h3>
-                            </div>
-                            <div className="vehicle-service-type-card-content">
-                                <div className="vehicle-service-type-form-grid">
-                                    <div className="vehicle-service-type-form-group">
-                                        <label className="vehicle-service-type-form-label">Select Service Type</label>
-                                        <select
-                                            className="vehicle-service-type-form-select"
-                                            value={newServiceProcess.serviceType}
-                                            onChange={(e) => setNewServiceProcess({ ...newServiceProcess, serviceType: e.target.value })}
-                                        >
-                                            <option value="">Select Service Type</option>
-                                            {serviceTypes.map(type => (
-                                                <option key={type.id} value={type.name}>
-                                                    {type.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="vehicle-service-type-form-group">
-                                        <label className="vehicle-service-type-form-label">Select Group</label>
-                                        <select
-                                            className="vehicle-service-type-form-select"
-                                            value={newServiceProcess.groupName}
-                                            onChange={(e) => setNewServiceProcess({ ...newServiceProcess, groupName: e.target.value })}
-                                        >
-                                            <option value="">Select Group</option>
-                                            {serviceGroups.map(group => (
-                                                <option key={group.id} value={group.code}>
-                                                    {group.code} - {group.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="vehicle-service-type-form-group">
-                                        <label className="vehicle-service-type-form-label">Enter Process Name</label>
-                                        <input
-                                            type="text"
-                                            className="vehicle-service-type-form-input"
-                                            value={newServiceProcess.processName}
-                                            onChange={(e) => setNewServiceProcess({ ...newServiceProcess, processName: e.target.value })}
-                                            placeholder="Enter process name"
-                                        />
-                                    </div>
-                                    <div className="vehicle-service-type-form-group vehicle-service-type-form-group-full">
-                                        <label className="vehicle-service-type-form-label">Description</label>
-                                        <textarea
-                                            className="vehicle-service-type-form-textarea"
-                                            value={newServiceProcess.description}
-                                            onChange={(e) => setNewServiceProcess({ ...newServiceProcess, description: e.target.value })}
-                                            placeholder="Enter process description"
-                                            rows={3}
-                                        />
-                                    </div>
+                        <div className="vehicle-service-type-card">
+
+                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-green">
+                                    <Settings className="vehicle-service-type-icon" />
                                 </div>
-                                <div className="vehicle-service-type-form-actions">
-                                    <button
-                                        className="vehicle-service-type-btn vehicle-service-type-btn-primary"
-                                        onClick={handleSaveProcess}
-                                    >
-                                        <Save className="vehicle-service-type-icon" />
-                                        Save Process & Service
-                                    </button>
+                                <div>
+                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Active Types</p>
+                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getActiveVehicleServiceTypes()}</p>
                                 </div>
                             </div>
+
                         </div>
 
-                        {/* Service Process List */}
-                        <div className="vehicle-service-type-card vehicle-service-type-mt-4">
-                            <div className="vehicle-service-type-card-header">
-                                <h3 className="vehicle-service-type-card-title">Service Process List</h3>
-                            </div>
-                            <div className="vehicle-service-type-card-content">
-                                <div className="vehicle-service-type-table-container">
-                                    <table className="vehicle-service-type-table">
-                                        <thead>
-                                            <tr>
-                                                <th>S.No</th>
-                                                <th>Service Type</th>
-                                                <th>Group Name</th>
-                                                <th>Process Name</th>
-                                                <th>Description</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {serviceProcesses.map((process) => (
-                                                <tr key={process.id}>
-                                                    <td>{process.sno}</td>
-                                                    <td>{process.serviceType}</td>
-                                                    <td>{process.groupName}</td>
-                                                    <td>{process.processName}</td>
-                                                    <td>{process.description || '-'}</td>
-                                                    <td>
-                                                        <span className={`vehicle-service-type-badge ${process.status === 'active'
-                                                            ? 'vehicle-service-type-badge-success'
-                                                            : 'vehicle-service-type-badge-error'
-                                                            }`}>
-                                                            {process.status}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div className="vehicle-service-type-flex vehicle-service-type-gap-2">
-                                                            <button
-                                                                className="vehicle-service-type-btn vehicle-service-type-btn-secondary"
-                                                                style={{ padding: '0.5rem' }}
-                                                            >
-                                                                <Edit3 className="vehicle-service-type-icon-sm" />
-                                                            </button>
-                                                            <button
-                                                                className="vehicle-service-type-btn vehicle-service-type-btn-secondary"
-                                                                style={{ padding: '0.5rem', color: '#dc2626' }}
-                                                                onClick={() => handleDeleteProcess(process.id)}
-                                                            >
-                                                                <Trash2 className="vehicle-service-type-icon-sm" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                        <div className="vehicle-service-type-card">
+
+                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-yellow">
+                                    <Calendar className="vehicle-service-type-icon" />
+                                </div>
+                                <div>
+                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Inactive Types</p>
+                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getInactiveVehicleServiceTypes()}</p>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div className="vehicle-service-type-card">
+
+                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-purple">
+                                    <BarChart3 className="vehicle-service-type-icon" />
+                                </div>
+                                <div>
+                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Interval Types</p>
+                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getVehicleServiceTypesByInterval()}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Recent Vehicle Service Types */}
+                    <div className="vehicle-service-type-card">
+                        <div className="vehicle-service-type-card-content">
+                            <DataTable
+                                columns={overviewColumns}
+                                data={vehicleServiceTypes}
+                                pagination
+                                paginationPerPage={10}
+                                paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                                highlightOnHover
+                                customStyles={customStyles}
+                            />
                         </div>
                     </div>
                 </div>
+
+
+
             </div>
+
+            {/* Vehicle Service Type Modal */}
+            {showVehicleServiceTypeModal && (
+                <div className="vehicle-service-type-modal-overlay" onClick={() => setShowVehicleServiceTypeModal(false)}>
+                    <div className="vehicle-service-type-modal vehicle-service-type-modal-lg" onClick={(e) => e.stopPropagation()}>
+                        <div className="vehicle-service-type-modal-header">
+                            <h3 className="vehicle-service-type-modal-title">
+                                {editingVehicleServiceType ? 'Edit Vehicle Service Type' : 'Add New Vehicle Service Type'}
+                            </h3>
+                            <button
+                                onClick={() => setShowVehicleServiceTypeModal(false)}
+                                className="vehicle-service-type-modal-close"
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="vehicle-service-type-modal-content">
+                            <div className="vehicle-service-type-space-y-4">
+                                <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
+                                    <div>
+                                        <label className="vehicle-service-type-label">
+                                            Service Type Name <span style={{ color: 'red' }}>*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={vehicleServiceTypeForm.ServiceTypeName}
+                                            onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, ServiceTypeName: e.target.value })}
+                                            className="vehicle-service-type-input"
+                                            placeholder="Service type name"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="vehicle-service-type-label">
+                                            Maintenance Type <span style={{ color: 'red' }}>*</span>
+                                        </label>
+                                        <Select
+                                            value={maintenanceTypes.find(type => type.MaintenanceTypeID === vehicleServiceTypeForm.MaintenanceTypeID)}
+                                            onChange={(selectedOption) => setVehicleServiceTypeForm({
+                                                ...vehicleServiceTypeForm,
+                                                MaintenanceTypeID: selectedOption ? selectedOption.MaintenanceTypeID : 0
+                                            })}
+                                            options={maintenanceTypes.map(type => ({
+                                                value: type.MaintenanceTypeID,
+                                                label: `${type.Description} - ${type.MaintenanceTypeCode}`,
+                                                ...type
+                                            }))}
+                                            placeholder="Select Maintenance Type"
+                                            styles={{
+                                                control: (provided) => ({
+                                                    ...provided,
+                                                    minHeight: '48px',
+                                                    border: '1px solid #d1d5db',
+                                                    borderRadius: '0.5rem',
+                                                    fontSize: '0.875rem',
+                                                    '&:hover': {
+                                                        borderColor: '#9ca3af',
+                                                    },
+                                                }),
+                                                placeholder: (provided) => ({
+                                                    ...provided,
+                                                    color: '#6b7280',
+                                                }),
+                                            }}
+                                            className="react-select-container"
+                                            classNamePrefix="react-select"
+                                            isSearchable={true}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
+                                    <div>
+                                        <label className="vehicle-service-type-label">KM Interval</label>
+                                        <input
+                                            type="number"
+                                            value={vehicleServiceTypeForm.KMInterval}
+                                            onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, KMInterval: Number(e.target.value) })}
+                                            className="vehicle-service-type-input"
+                                            placeholder="KM interval"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="vehicle-service-type-label">Days</label>
+                                        <input
+                                            type="number"
+                                            value={vehicleServiceTypeForm.Days}
+                                            onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, Days: Number(e.target.value) })}
+                                            className="vehicle-service-type-input"
+                                            placeholder="Days"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="vehicle-service-type-label">Service Type Code</label>
+                                    <input
+                                        type="text"
+                                        value={vehicleServiceTypeForm.VehicleServiceTypeCode}
+                                        onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, VehicleServiceTypeCode: e.target.value })}
+                                        className="vehicle-service-type-input"
+                                        placeholder="Service type code"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="vehicle-service-type-label">Status</label>
+                                    <div>
+                                        <label className="vehicle-service-type-label">
+                                            <input
+                                                type="checkbox"
+                                                checked={vehicleServiceTypeForm.IsActive}
+                                                onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, IsActive: e.target.checked })}
+                                                className="mr-2"
+                                            />
+                                            Active
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="vehicle-service-type-modal-footer">
+                            <button
+                                onClick={() => setShowVehicleServiceTypeModal(false)}
+                                className="vehicle-service-type-btn vehicle-service-type-btn-secondary"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveVehicleServiceType}
+                                className="vehicle-service-type-btn vehicle-service-type-btn-primary"
+                                disabled={!vehicleServiceTypeForm.ServiceTypeName || !vehicleServiceTypeForm.MaintenanceTypeID || loading}
+                            >
+                                <Save className="vehicle-service-type-icon" />
+                                {editingVehicleServiceType ? 'Update Vehicle Service Type' : 'Add Vehicle Service Type'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
-}
+};
+
+export default VehicleServiceType;
