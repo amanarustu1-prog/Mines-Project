@@ -9,6 +9,7 @@ import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components
 interface MaintenanceType {
@@ -158,7 +159,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
       if (response) {
         toastifySuccess('Maintenance type added successfully');
-        await fetchData();  
+        await fetchData();
         await fetchCounts();
         return true;
       } else {
@@ -427,10 +428,11 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       name: 'Description',
       selector: (row: MaintenanceType) => row.Description,
       sortable: true,
-      cell: (row: MaintenanceType) => { 
+      cell: (row: MaintenanceType) => {
         const fullText = row.Description || '';
         const trunCateText = fullText.length > 30 ? `${fullText.substring(0, 30)}...` : fullText;
-        return (<span title={row.Description}>{trunCateText}</span> )}, 
+        return (<span title={row.Description}>{trunCateText}</span>)
+      },
     },
     {
       name: 'Type',
@@ -488,6 +490,11 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
       button: true,
     },
   ];
+
+  const resizeableColumns = useResizableColumns(columns).map(col => ({
+    ...col,
+    minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+  }));
 
   //Download-Excel_File
   const exportToExcel = () => {
@@ -631,7 +638,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                 <div className="maintenance-type-card">
                   <div className="maintenance-type-card-content">
                     <DataTable
-                      columns={columns}
+                      columns={resizeableColumns}
                       data={filteredMaintenanceTypes}
                       pagination
                       paginationPerPage={10}
