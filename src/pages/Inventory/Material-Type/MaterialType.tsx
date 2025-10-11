@@ -279,11 +279,12 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     }, []);
 
     //Get-Single-Data
-    useEffect(() => {
-        if (editItemId) {
-            getSingleData();
-        }
-    }, [editItemId]);
+useEffect(() => {
+    if (editItemId && dropdownOptions.length > 0) {
+        getSingleData();
+    }
+}, [editItemId, dropdownOptions]);
+
 
     const getSingleData = async () => {
         try {
@@ -294,11 +295,13 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 const record = res[0];
 
                 setMaintenanceTypeForm({
-                    Description: record.Description || '',
-                    MaintenanceTypes: record.MaintenanceType || '',
-                    MaterialTypeCode: record.MaterialTypeCode || '',
-                    Frequency: record.Frequency,
-                });
+    Description: record.Description || '',
+    MaintenanceTypes: record.MaintenanceType || '',
+    MaterialTypeCode: record.MaterialTypeCode || '',
+    Frequency: record.Frequency || '',
+    MaterialGroupID: record.MaterialGroupID || '',
+});
+
 
                 const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
 
@@ -761,8 +764,3 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 };
 
 export default MaterialType;
-
-
-
-// iN THIS WHY AFTER update our MaintenanceTypeModal is get closed "Code is already Present" or "Already Exists Description" our MaintenanceTypeModal get closed.
-// Io not want our MaintenanceTypeModal get closed unteil sfter updstinhwhole form
