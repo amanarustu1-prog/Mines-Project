@@ -11,13 +11,14 @@ import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
 import { setgroups } from 'process';
 import { Group } from 'lucide-react';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components
 interface MaintenanceType {
-    MaterialTypeID?: number;
+    MaterialSubTypeID?: number;
     Description: string;
     MaintenanceType: string;
-    MaterialTypeCode: string;
+    MaterialSubTypeCode: string;
     Frequency: string;
     CompanyId: number | string;
     IsActive?: boolean;
@@ -102,8 +103,8 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
     const [maintenanceTypeForm, setMaintenanceTypeForm] = useState({
         Description: '',
-        MaterialGroupID: '',
-        MaterialTypeCode: '',
+        MaterialTypeID: '',
+        MaterialSubTypeCode: '',
     });
 
     const fetchMaterialTypes = async () => {
@@ -115,10 +116,6 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
             };
 
             const response = await fetchPostData("MaterialSubType/GetData_MaterialSubType", payload);
-            // console.log("API Response:", response);
-            const parsed = JSON.parse(response?.data?.data || "{}");
-            const data = parsed?.Table || [];
-            // console.log("Fetched Material Types:", data);
 
             setMaintenanceTypes(response);
         } catch (error: any) {
@@ -131,19 +128,15 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     const insertMaterialType = async (formData: any) => {
         try {
             const payload = {
-                // MaterialGroupID: formData.MaterialGroupID || "",
-                // Description: formData.Description,
-                // MaterialTypeCode: formData.MaterialTypeCode,
                 ...maintenanceTypeForm,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+                MaterialTypeID: maintenanceTypeForm.MaterialTypeID || "", 
             };
-            // console.log("Insert Payload:", payload);
 
             const response = await fetchPostData("MaterialSubType/Insert_MaterialSubType", payload);
-            // console.log("Insert Response:", response);
             const message = response[0].Message;
 
-            if (message === "Already Exists MaterialTypeCode") {
+            if (message === "Already Exists MaterialSubTypeCode") {
                 toastifyError("Code is already Present");
                 return;
             }
@@ -172,16 +165,16 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     const updateMaterialType = async (formData: any, id: number) => {
         try {
             const payload = {
-                MaterialTypeID: id,
-                MaterialGroupID: formData.MaterialGroupID || "",
+                MaterialSubTypeID: id,
                 Description: formData.Description,
-                MaterialTypeCode: formData.MaterialTypeCode,
+                MaterialTypeID: formData.MaterialTypeID || "",
+                MaterialSubTypeCode: formData.MaterialSubTypeCode,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
             };
             const response = await fetchPostData("MaterialSubType/Update_MaterialSubType", payload);
 
             const message = response[0].Message;
-            if (message === "Already Exists MaterialTypeCode") {
+            if (message === "Already Exists MaterialSubTypeCode") {
                 toastifyError("Code is already Present");
                 return;
             }
@@ -190,12 +183,12 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                 toastifyError("Description is already Present");
                 return;
             }
-            console.log("Update Response:", response);
+            // console.log("Update Response:", response);
             if (response) {
                 toastifySuccess('Item updated successfully');
                 setEditItemId(null);
                 setDropdown([]);
-                setMaintenanceTypeForm({ Description: '', MaterialGroupID: '', MaterialTypeCode: '' });
+                setMaintenanceTypeForm({ Description: '', MaterialTypeID: '', MaterialSubTypeCode: '' });
                 setShowMaintenanceTypeModal(false);
                 await fetchMaterialTypes();
                 return true;
@@ -208,18 +201,18 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
     const deleteMaterialType = async (id: number) => {
         try {
-            const item = maintenanceTypes.find(x => x.MaterialTypeID === id);
+            const item = maintenanceTypes.find(x => x.MaterialSubTypeID === id);
             if (!item) return;
 
             const newStatus = item.IsActive ? 0 : 1;
 
             const payload = {
-                MaterialTypeID: id,
+                MaterialSubTypeID: id,
                 IsActive: newStatus,
             };
 
             const response = await fetchPostData("MaterialSubType/Delete_MaterialSubType", payload);
-            console.log("Delete Response:", response);
+            // console.log("Delete Response:", response);
             if (response) {
                 toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully`);
                 await fetchMaterialTypes();
@@ -263,16 +256,16 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
             try {
                 const payload = { CompanyId: localStorage.getItem("companyID") };
                 const response = await fetchPostData('MaterialType/GetDataDropDown_MaterialType', payload);
-                console.log(response);
+                // console.log(response);
 
                 const formatted = response.map((item: any) => ({
-                    value: item.MaterialGroupID,
+                    value: item.MaterialTypeID,
                     label: item.Description,
                 }));
 
                 setGroupOptions(formatted);
             } catch (error) {
-                toastifyError("Error fetching Material Groups");
+                toastifyError("Error fetching Material Type");
             }
         };
         fetchGroupOptions();
@@ -287,7 +280,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
     const getSingleData = async () => {
         try {
-            const val = { MaterialTypeID: editItemId };
+            const val = { MaterialSubTypeID: editItemId };
             const res = await fetchPostData('MaterialSubType/GetSingleData_MaterialSubType', val);
             // console.log(res);
             if (res && Array.isArray(res) && res.length > 0) {
@@ -295,9 +288,8 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
                 setMaintenanceTypeForm({
                     Description: record.Description || '',
-                    MaintenanceTypes: record.MaintenanceType || '',
-                    MaterialTypeCode: record.MaterialTypeCode || '',
-                    Frequency: record.Frequency,
+                    MaterialTypeID: record.MaterialTypeID || '',
+                    MaterialSubTypeCode: record.MaterialSubTypeCode || '',
                 });
 
                 const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
@@ -315,7 +307,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                     setDropdown([]);
                 }
             } else {
-                setMaintenanceTypeForm({ Description: '', MaintenanceTypes: '', MaterialTypeCode: '', Frequency: '' });
+                setMaintenanceTypeForm({ Description: '', MaterialTypeID: '', MaterialSubTypeCode: '' });
                 // setDropdown
             }
         } catch (err) {
@@ -375,7 +367,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         const matchesSearch = searchTerm === '' ||
             (type?.Description?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
             (type?.MaintenanceType?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (type.MaterialTypeCode && type.MaterialTypeCode.toLowerCase().includes(searchTerm.toLowerCase()));
+            (type.MaterialSubTypeCode && type.MaterialSubTypeCode.toLowerCase().includes(searchTerm.toLowerCase()));
 
         const matchesStatus = filterStatus === 'all' ||
             (filterStatus === 'active' && type.IsActive) ||
@@ -390,7 +382,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
     // On save
     const handleSaveMaterialType = async () => {
-        if (!maintenanceTypeForm.MaterialTypeCode || !maintenanceTypeForm.Description) {
+        if (!maintenanceTypeForm.MaterialSubTypeCode || !maintenanceTypeForm.Description) {
             toastifyError('Please fill in all required fields');
             return;
         }
@@ -416,9 +408,8 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
         setMaintenanceTypeForm({
             Description: '',
-            MaintenanceTypes: '',
-            MaterialTypeCode: '',
-            Frequency: '',
+            MaterialTypeID: '',
+            MaterialSubTypeCode: ''
         });
         setFilter("active");
         setSearch("");
@@ -429,7 +420,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     const columns: any[] = [
         {
             name: 'Code',
-            selector: (row: MaintenanceType) => row.MaterialTypeCode,
+            selector: (row: MaintenanceType) => row.MaterialSubTypeCode,
             sortable: true,
         },
         {
@@ -443,13 +434,11 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
             },
         },
         {
-            name: 'Material Group',
-            selector: (row: MaintenanceType) => {
-                const group = groupOptions.find(g => g.value === row.MaterialGroupID)
-            },
+            name: 'Material Type',
+            selector: (row: MaintenanceType) => row.MaterialTypeID,
             sortable: true,
             cell: (row: MaintenanceType) => {
-                const group = groupOptions.find(g => g.value === row.MaterialGroupID);
+                const group = groupOptions.find(g => g.value === row.MaterialTypeID);
                 return group ? group.label : '';
             }
         },
@@ -477,12 +466,12 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
             name: 'Actions',
             cell: (row: MaintenanceType) => (
                 <div className="maintenance-type-flex maintenance-type-gap-1">
-                    <button onClick={() => { setSelectedId(row.MaterialTypeID!); setShowModal(true); }}
+                    <button onClick={() => { setSelectedId(row.MaterialSubTypeID!); setShowModal(true); }}
                         className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`} title={row.IsActive ? 'Deactivate' : 'Activate'}>
                         {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
                     </button>
 
-                    <button onClick={() => setEditItemId(row.MaterialTypeID!)} className="list-button ghost primary" title="Edit">
+                    <button onClick={() => setEditItemId(row.MaterialSubTypeID!)} className="list-button ghost primary" title="Edit">
                         <Edit3 className="maintenance-type-icon-sm" />
                     </button>
                 </div>
@@ -493,12 +482,17 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
         },
     ];
 
+    const resizeableColumns = useResizableColumns(columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+      }));
+
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
-            'Material-Type Code': item.MaterialTypeCode,
+            'Material-Sub Type Code': item.MaterialSubTypeCode,
             'Description': item.Description,
-            'Material Group': item.MaterialTypeID,
+            'Material Type': item.MaterialTypeID,
             'Status': item.IsActive ? 'Active' : 'Inactive',
             'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
             'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
@@ -538,7 +532,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                                 setShowMaintenanceTypeModal(true);
                             }} className="maintenance-type-btn maintenance-type-btn-primary">
                                 <Plus className="maintenance-type-icon" />
-                                Add Maintenance Type
+                                Add Material-Sub Type
                             </button>
                         </div>
                     </div>
@@ -616,7 +610,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                                 <div className="maintenance-type-card">
                                     <div className="maintenance-type-card-content">
                                         <DataTable
-                                            columns={columns}
+                                            columns={resizeableColumns}
                                             data={filteredMaintenanceTypes}
                                             pagination
                                             paginationPerPage={10}
@@ -653,7 +647,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                         <div className="maintenance-type-modal maintenance-type-modal-lg" onClick={(e) => e.stopPropagation()}>
                             <div className="maintenance-type-modal-header">
                                 <h3 className="maintenance-type-modal-title">
-                                    {editItemId ? 'Edit Material Type' : 'Add New Material Type'}
+                                    {editItemId ? 'Edit Material-Sub Type' : 'Add New Material-Sub Type'}
                                 </h3>
                                 <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-modal-close">
                                     ×
@@ -667,10 +661,10 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                                                 Code<span style={{ color: 'red' }}>*</span></label>
                                             <input
                                                 type="text"
-                                                value={maintenanceTypeForm.MaterialTypeCode}
-                                                onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaterialTypeCode: e.target.value })}
+                                                value={maintenanceTypeForm.MaterialSubTypeCode}
+                                                onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaterialSubTypeCode: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance code"
+                                                placeholder="Material code"
                                             />
                                         </div>
 
@@ -683,7 +677,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                                                 value={maintenanceTypeForm.Description}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance description"
+                                                placeholder="Material description"
                                                 required
                                             />
                                         </div>
@@ -692,16 +686,16 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                                     <div className='maintenance-type-form-grid maintenance-type-form-grid-2'>
                                         <div>
                                             <Select
-                                                value={groupOptions.find(opt => opt.value === maintenanceTypeForm.MaterialGroupID)}
+                                                value={groupOptions.find(opt => opt.value === maintenanceTypeForm.MaterialTypeID)}
                                                 onChange={(selectedOption: any) =>
                                                     setMaintenanceTypeForm({
                                                         ...maintenanceTypeForm,
-                                                        MaterialGroupID: selectedOption ? selectedOption.value : "",
+                                                        MaterialTypeID: selectedOption ? selectedOption.value : "",
                                                     })
                                                 }
                                                 options={groupOptions}
                                                 isClearable
-                                                placeholder="Select Material Group"
+                                                placeholder="Select Material Type"
                                                 className="basic-single-select"
                                                 styles={multiValue}
                                             />
@@ -738,9 +732,9 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                                 <button onClick={() => setShowMaintenanceTypeModal(false)} className="maintenance-type-btn maintenance-type-btn-secondary">
                                     Cancel
                                 </button>
-                                <button onClick={handleSaveMaterialType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.MaterialTypeCode || !maintenanceTypeForm.Description || loading} >
+                                <button onClick={handleSaveMaterialType} className="maintenance-type-btn maintenance-type-btn-primary" disabled={!maintenanceTypeForm.MaterialSubTypeCode || !maintenanceTypeForm.Description || loading} >
                                     <Save className="maintenance-type-icon" />
-                                    {editItemId ? 'Update Material Type' : 'Add Material Type'}
+                                    {editItemId ? 'Update Material-Sub Type' : 'Add Material-Sub Type'}
                                 </button>
                             </div>
                         </div>
@@ -761,3 +755,4 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 };
 
 export default MaterialSubType;
+

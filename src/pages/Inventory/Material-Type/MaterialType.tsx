@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
 import { setgroups } from 'process';
 import { Group } from 'lucide-react';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components
 interface MaintenanceType {
@@ -279,11 +280,11 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     }, []);
 
     //Get-Single-Data
-useEffect(() => {
-    if (editItemId && dropdownOptions.length > 0) {
+    useEffect(() => {
+      if (editItemId && dropdownOptions.length > 0) {
         getSingleData();
-    }
-}, [editItemId, dropdownOptions]);
+      }
+    }, [editItemId, dropdownOptions]);
 
 
     const getSingleData = async () => {
@@ -496,6 +497,11 @@ useEffect(() => {
         },
     ];
 
+    const resizeableColumns = useResizableColumns(columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
+
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
@@ -541,7 +547,7 @@ useEffect(() => {
                                 setShowMaintenanceTypeModal(true);
                             }} className="maintenance-type-btn maintenance-type-btn-primary">
                                 <Plus className="maintenance-type-icon" />
-                                Add Maintenance Type
+                                Add Material Type
                             </button>
                         </div>
                     </div>
@@ -619,7 +625,7 @@ useEffect(() => {
                                 <div className="maintenance-type-card">
                                     <div className="maintenance-type-card-content">
                                         <DataTable
-                                            columns={columns}
+                                            columns={resizeableColumns}
                                             data={filteredMaintenanceTypes}
                                             pagination
                                             paginationPerPage={10}
@@ -673,7 +679,7 @@ useEffect(() => {
                                                 value={maintenanceTypeForm.MaterialTypeCode}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaterialTypeCode: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance code"
+                                                placeholder="Material code"
                                             />
                                         </div>
 
@@ -686,7 +692,7 @@ useEffect(() => {
                                                 value={maintenanceTypeForm.Description}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance description"
+                                                placeholder="Material description"
                                                 required
                                             />
                                         </div>
