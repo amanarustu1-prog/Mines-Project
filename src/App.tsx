@@ -281,7 +281,7 @@ function App() {
         <Route path="/vehicle-job-details" element={<VehicleJobDetails />} />
         <Route path="/vehicle-master-details" element={<VehicleMasterDetails />} />
         <Route path="/vehicle-renewal-details" element={<VehicleRenewalDetails />} />
-        <Route path="/masterTable/material-type" element={<VehicleServiceType />} />
+        <Route path="/masterTable/vehicle-service-type" element={<VehicleServiceType />} />
         <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
         <Route path="/daily-running" element={<DailyRunning />} />
 
