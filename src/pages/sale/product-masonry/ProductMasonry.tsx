@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { fetch_Post_Data, fetchPostData, AddDeleteUpadate } from '@/components/hooks/Api';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import { customStyles } from '@/common/Utility';
+import { getShowingDateText } from '@/common/DateFormat';
 
 // Icon components
 const Cube = ({ className }: { className?: string }) => (
@@ -34,18 +35,6 @@ const Save = ({ className }: { className?: string }) => (
 const Trash2 = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-  </svg>
-);
-
-const Search = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-  </svg>
-);
-
-const List = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
   </svg>
 );
 
@@ -86,6 +75,7 @@ interface Product {
   CompanyId: number;
   IsActive: boolean;
   CreatedDate: string;
+  UpdatedDate: string;
   LastUpdated: string;
   Remarks?: string;
 }
@@ -115,13 +105,6 @@ const MASONRY_PRODUCTS = [
   'Sub-base Material'
 ];
 
-// Static options for react-select
-const statusOptions = [
-  { value: 'all', label: 'All Status' },
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' }
-];
-
 const productStatusOptions = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' }
@@ -134,9 +117,6 @@ export default function ProductMasonry() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(false);
-
-
-
 
   // State for API data
   const [products, setProducts] = useState<Product[]>([]);
@@ -167,12 +147,12 @@ export default function ProductMasonry() {
     try {
       setLoading(true);
       const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
-      const response = await fetch_Post_Data("GetData_Product", {
-        IsActive: isActive,
-        CompanyId: getCompanyId()
+      const response = await fetch_Post_Data("Product/GetData_Product", {
+        IsActive: 1,
+        CompanyId: Number(localStorage.getItem("companyID"))
       });
 
-      console.log('API Response:', response);
+      // console.log('API Response:', response);
 
       if (response?.Data && Array.isArray(response.Data)) {
         setProducts(response.Data);
@@ -223,10 +203,10 @@ export default function ProductMasonry() {
           }
         ];
         setProducts(sampleData);
-        console.log('Using sample data:', sampleData);
+        // console.log('Using sample data:', sampleData);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      // console.error('Error fetching products:', error);
       toastifyError('Error fetching products');
     } finally {
       setLoading(false);
@@ -235,12 +215,12 @@ export default function ProductMasonry() {
 
   const fetchDropdownData = async () => {
     try {
-      const response = await fetch_Post_Data("GetDataDropDown_Product", {
+      const response = await fetch_Post_Data("Users/GetData_Company", {
         CompanyId: getCompanyId()
       });
-      console.log(response, "response")
+      // console.log(response, "response")
 
-      console.log('Dropdown API Response:', response);
+      // console.log('Dropdown API Response:', response);
 
       if (response?.Data) {
         // Assuming the response contains product groups, unit types, and product names
@@ -264,10 +244,10 @@ export default function ProductMasonry() {
         setProductGroups(sampleGroups);
         setUnitTypes(sampleUnitTypes);
         setProductNames(MASONRY_PRODUCTS);
-        console.log('Using sample dropdown data');
+        // console.log('Using sample dropdown data');
       }
     } catch (error) {
-      console.error('Error fetching dropdown data:', error);
+      // console.error('Error fetching dropdown data:', error);
       // Fallback to predefined data
       setProductNames(MASONRY_PRODUCTS);
     }
@@ -275,7 +255,7 @@ export default function ProductMasonry() {
 
   const insertProduct = async (productData: any) => {
     try {
-      const response = await fetchPostData('Insert_Product', {
+      const response = await fetchPostData('Product/Insert_Product', {
         ...productData,
         CompanyId: getCompanyId()
       });
@@ -286,7 +266,7 @@ export default function ProductMasonry() {
         return true;
       }
     } catch (error) {
-      console.error('Error inserting product:', error);
+      // console.error('Error inserting product:', error);
       toastifyError('Error adding product');
       return false;
     }
@@ -294,7 +274,7 @@ export default function ProductMasonry() {
 
   const updateProduct = async (productData: any, productId: number) => {
     try {
-      const response = await fetchPostData('Update_Product', {
+      const response = await fetchPostData('Product/Update_Product', {
         ...productData,
         ProductID: productId,
         CompanyId: getCompanyId()
@@ -308,7 +288,7 @@ export default function ProductMasonry() {
         return true;
       }
     } catch (error) {
-      console.error('Error updating product:', error);
+      // console.error('Error updating product:', error);
       toastifyError('Error updating product');
       return false;
     }
@@ -316,7 +296,7 @@ export default function ProductMasonry() {
 
   const deleteProduct = async (productId: number) => {
     try {
-      const response = await fetchPostData('Delete_Product', {
+      const response = await fetchPostData('Product/Delete_Product', {
         IsActive: false,
         ProductID: productId
       });
@@ -327,7 +307,7 @@ export default function ProductMasonry() {
         return true;
       }
     } catch (error) {
-      console.error('Error deleting product:', error);
+      // console.error('Error deleting product:', error);
       toastifyError('Error deleting product');
       return false;
     }
@@ -335,7 +315,7 @@ export default function ProductMasonry() {
 
   const getSingleProduct = async (productId: number) => {
     try {
-      const response = await fetch_Post_Data('GetSingleData_Product', {
+      const response = await fetch_Post_Data('Product/GetSingleData_Product', {
         ProductID: productId
       });
 
@@ -343,7 +323,7 @@ export default function ProductMasonry() {
         return response.Data[0];
       }
     } catch (error) {
-      console.error('Error fetching single product:', error);
+      // console.error('Error fetching single product:', error);
       toastifyError('Error fetching product details');
     }
     return null;
@@ -367,12 +347,6 @@ export default function ProductMasonry() {
     fetchProducts();
     fetchDropdownData();
   }, [filterStatus]);
-
-  // Debug effect to log data changes
-  useEffect(() => {
-    console.log('Products updated:', products);
-    console.log('Filtered products:', filteredProducts);
-  }, [products, filteredProducts]);
 
   // Table columns configuration
   const columns = [
@@ -426,6 +400,16 @@ export default function ProductMasonry() {
       )
     },
     {
+      name: 'Created Date',
+      selector: (row: Product) => getShowingDateText(row.CreatedDate),
+      sortable: true,
+    },
+    {
+      name: 'Last Modified',
+      selector: (row: Product) => getShowingDateText(row.UpdatedDate),
+      sortable: true,
+    },
+    {
       name: 'Actions',
       cell: (row: Product) => (
         <div className="product-masonry-flex product-masonry-gap-1">
@@ -448,43 +432,6 @@ export default function ProductMasonry() {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-    },
-  ];
-
-  // Overview table columns
-  const overviewColumns = [
-    {
-      name: 'Product Name',
-      selector: (row: Product) => row.ProductName,
-      sortable: true,
-      cell: (row: Product) => <span className="product-masonry-font-medium">{row.ProductName}</span>
-    },
-    {
-      name: 'Rate (₹/unit)',
-      selector: (row: Product) => row.Rate,
-      sortable: true,
-      cell: (row: Product) => `₹${row.Rate.toLocaleString()}`
-    },
-    {
-      name: 'Unit Type',
-      selector: (row: Product) => row.UnitType,
-      sortable: true,
-    },
-    {
-      name: 'Status',
-      selector: (row: Product) => row.IsActive,
-      sortable: true,
-      cell: (row: Product) => (
-        <span className={`product-masonry-badge ${row.IsActive ? 'product-masonry-badge-success' : 'product-masonry-badge-error'}`}>
-          {row.IsActive ? 'Active' : 'Inactive'}
-        </span>
-      )
-    },
-    {
-      name: 'Last Updated',
-      selector: (row: Product) => row.LastUpdated,
-      sortable: true,
-      cell: (row: Product) => new Date(row.LastUpdated).toLocaleDateString()
     },
   ];
 
@@ -624,272 +571,93 @@ export default function ProductMasonry() {
 
       {/* Main Content */}
       <div className="product-masonry-main">
-        {/* Tab Navigation */}
-        <div className="product-masonry-tabs">
-          <div className="product-masonry-tabs-container">
-            <nav className="product-masonry-tabs-nav">
-              <div className="product-masonry-tabs-list">
-                <button
-                  onClick={() => setActiveTab('overview')}
-                  className={`product-masonry-tab ${activeTab === 'overview' ? 'active' : ''}`}
-                >
-                  <BarChart3 className="product-masonry-tab-icon" />
-                  Overview
-                </button>
-                <button
-                  onClick={() => setActiveTab('products')}
-                  className={`product-masonry-tab ${activeTab === 'products' ? 'active' : ''}`}
-                >
-                  <List className="product-masonry-tab-icon" />
-                  Product List
-                </button>
+        {/* Statistics Cards */}
+        <div className="product-masonry-grid product-masonry-grid-cols-1 product-masonry-md-grid-cols-4 product-masonry-gap-6 product-masonry-mb-6">
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-blue">
+                  <Cube className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Total Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getTotalProducts()}</p>
+                </div>
               </div>
-            </nav>
+            </div>
+          </div>
+
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-green">
+                  <Building className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Active Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getActiveProducts()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-yellow">
+                  <Calendar className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Inactive Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getInactiveProducts()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-masonry-card">
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-purple">
+                  <BarChart3 className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Avg. Rate (₹/ton)</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">₹{getAverageRate()}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Tab Content */}
         <div className="product-masonry-content">
           {/* Overview Tab */}
-          {activeTab === 'overview' && (
-            <div className="product-masonry-tab-content">
-              <div className="product-masonry-section-header">
-                <div>
-                  <h2 className="product-masonry-section-title">Overview</h2>
-                  <p className="product-masonry-section-subtitle">
-                    Summary of masonry stone products and key metrics
-                  </p>
-                </div>
-              </div>
-
-              {/* Statistics Cards */}
-              <div className="product-masonry-grid product-masonry-grid-cols-1 product-masonry-md-grid-cols-4 product-masonry-gap-6 product-masonry-mb-6">
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-blue">
-                        <Cube className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Total Products</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">{getTotalProducts()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-green">
-                        <Building className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Active Products</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">{getActiveProducts()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-yellow">
-                        <Calendar className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Inactive Products</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">{getInactiveProducts()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="product-masonry-card">
-                  <div className="product-masonry-card-content">
-                    <div className="product-masonry-flex product-masonry-items-center p-2">
-                      <div className="product-masonry-stat-icon product-masonry-stat-icon-purple">
-                        <BarChart3 className="product-masonry-icon" />
-                      </div>
-                      <div>
-                        <p className="product-masonry-text-sm product-masonry-text-gray-600">Avg. Rate (₹/ton)</p>
-                        <p className="product-masonry-text-2xl product-masonry-font-bold">₹{getAverageRate()}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Products */}
-              <div className="product-masonry-card">
-                <div className="product-masonry-card-content">
-                  <DataTable
-                    columns={overviewColumns}
-                    data={products.slice(0, 5)}
-                    pagination={false}
-                    highlightOnHover
-                    // customStyles={{
-                    //   table: {
-                    //     style: {
-                    //       backgroundColor: 'transparent',
-                    //     },
-                    //   },
-                    //   headRow: {
-                    //     style: {
-                    //       backgroundColor: '#f9fafb',
-                    //       borderBottom: '1px solid #e5e7eb',
-                    //     },
-                    //   },
-                    //   headCells: {
-                    //     style: {
-                    //       color: '#374151',
-                    //       fontSize: '0.875rem',
-                    //       fontWeight: '600',
-                    //       padding: '0.75rem',
-                    //     },
-                    //   },
-                    //   cells: {
-                    //     style: {
-                    //       padding: '1rem 0.75rem',
-                    //       borderBottom: '1px solid #f3f4f6',
-                    //       fontSize: '0.875rem',
-                    //     },
-                    //   },
-                    //   rows: {
-                    //     style: {
-                    //       '&:hover': {
-                    //         backgroundColor: '#f9fafb',
-                    //       },
-                    //     },
-                    //   },
-                    // }}
-
-                    customStyles={customStyles}
-                  />
-                </div>
-              </div>
+          <div className="product-masonry-tab-content">
+            <div className="product-masonry-search-container  mb-2 d-flex justify-end ">
+              <input type="text"
+                className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                placeholder="Search..." maxLength={300} />
             </div>
-          )}
 
-          {/* Products Tab */}
-          {activeTab === 'products' && (
-            <div className="product-masonry-tab-content">
-              <div className="product-masonry-section-header">
-                <div>
-                  <h2 className="product-masonry-section-title">Product List</h2>
-                  <p className="product-masonry-section-subtitle">
-                    Manage all masonry stone products and their rates
-                  </p>
-                </div>
-              </div>
-
-              {/* Filters */}
-              <div className="product-masonry-filters">
-                <div className="product-masonry-search-container">
-                  <Search className="product-masonry-search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="product-masonry-search-input"
-                  />
-                </div>
-                <Select
-                  value={statusOptions.find(option => option.value === filterStatus)}
-                  onChange={(selectedOption) => setFilterStatus(selectedOption?.value || 'all')}
-                  options={statusOptions}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      minHeight: '48px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      '&:hover': {
-                        borderColor: '#9ca3af',
-                      },
-                    }),
-                    placeholder: (provided) => ({
-                      ...provided,
-                      color: '#6b7280',
-                    }),
-                  }}
-                  className="react-select-container"
-                  classNamePrefix="react-select"
+            {/* Recent Products */}
+            <div className="product-masonry-card">
+              <div className="product-masonry-card-content">
+                <DataTable
+                  columns={columns}
+                  data={products}
+                  pagination
+                  highlightOnHover
+                  customStyles={customStyles}
+                  paginationPerPage={10}
+                  paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                  responsive
+                  progressPending={loading}
                 />
               </div>
-
-              {/* Products Table */}
-              <div className="product-masonry-card">
-                <div className="product-masonry-card-content">
-                  <DataTable
-                    columns={columns}
-                    data={filteredProducts}
-                    pagination
-                    paginationPerPage={10}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
-                    highlightOnHover
-                    responsive
-                    progressPending={loading}
-                    // subHeader
-
-                    noDataComponent={
-                      <div className="product-masonry-text-center product-masonry-py-8">
-                        <p className="product-masonry-text-gray-600">No products found</p>
-                      </div>
-                    }
-                    // customStyles={{
-                    //   table: {
-                    //     style: {
-                    //       backgroundColor: 'transparent',
-                    //     },
-                    //   },
-                    //   headRow: {
-                    //     style: {
-                    //       backgroundColor: '#f9fafb',
-                    //       borderBottom: '1px solid #e5e7eb',
-                    //     },
-                    //   },
-                    //   headCells: {
-                    //     style: {
-                    //       color: '#374151',
-                    //       fontSize: '0.875rem',
-                    //       fontWeight: '600',
-                    //       padding: '0.75rem',
-                    //     },
-                    //   },
-                    //   cells: {
-                    //     style: {
-                    //       padding: '1rem 0.75rem',
-                    //       borderBottom: '1px solid #f3f4f6',
-                    //       fontSize: '0.875rem',
-                    //     },
-                    //   },
-                    //   rows: {
-                    //     style: {
-                    //       '&:hover': {
-                    //         backgroundColor: '#f9fafb',
-                    //       },
-                    //     },
-                    //   },
-                    //   pagination: {
-                    //     style: {
-                    //       backgroundColor: 'transparent',
-                    //       borderTop: '1px solid #e5e7eb',
-                    //       padding: '1rem',
-                    //     },
-                    //   },
-                    // }}
-
-
-                    customStyles={customStyles}
-                  />
-                </div>
-              </div>
             </div>
-          )}
+          </div>
+
         </div>
       </div>
 
@@ -911,7 +679,7 @@ export default function ProductMasonry() {
             <div className="product-masonry-modal-content">
               <div className="product-masonry-space-y-4">
                 <div className="product-masonry-form-grid product-masonry-form-grid-2">
-                  <div>
+                  {/* <div>
                     <label className="product-masonry-label">
                       Product Name <span style={{ color: 'red' }}>*</span>
                     </label>
@@ -938,6 +706,22 @@ export default function ProductMasonry() {
                       }}
                       className="react-select-container"
                       classNamePrefix="react-select"
+                    />
+                  </div> */}
+
+                  <div>
+                    <label className="product-masonry-label">
+                      Product Name <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={productForm.ProductName || ''}
+                      onChange={(selectedOption) => setProductForm({ ...productForm, ProductName: '' })}
+                      className="product-masonry-input"
+                      placeholder="Product rate"
+                      // min="0"
+                      // step="0.01"
+                      required
                     />
                   </div>
 
@@ -1136,7 +920,7 @@ export default function ProductMasonry() {
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="product-masonry-label">Remarks</label>
                   <textarea
                     value={productForm.Remarks}
@@ -1145,7 +929,7 @@ export default function ProductMasonry() {
                     rows={3}
                     placeholder="Any special notes or conditions"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="product-masonry-modal-footer">

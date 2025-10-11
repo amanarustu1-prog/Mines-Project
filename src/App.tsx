@@ -73,7 +73,8 @@ import ProductMasonry from './pages/sale/product-masonry/ProductMasonry'
 import TPCharges from './pages/sale/TP-Charge/TPCharges'
 import CreateChallan from './pages/sale/Create-challan/CreateChallan'
 // import MaterialGroup from './pages/Inventory/Material-Group/MaterialGroup'
-import MaterialType from './pages/Inventory/Material-Type/MaterialType'
+import MaterialType from './pages/Inventory/Material-Type/MaterialType';
+import MaterialSubType from './pages/Inventory/Material-Sub-Type/MaterialSubType';
 import UnitofMeasurement from './pages/Inventory/Unit-Measurement/UnitofMeasurement'
 import DepartmentMaster from './pages/Hr/Department-Master/DepartmentMaster'
 import IDProof from './pages/Hr/ID-Proof/IDProof'
@@ -109,8 +110,12 @@ import ListManagementRoute from './pages/ListManagement/ListManagement';
 import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
+<<<<<<< HEAD
 import MaterialName from './pages/Inventory/Material-Name/MaterialName';
 
+=======
+import MaterialName from './pages/Inventory/Material-Name/Material-Name';
+>>>>>>> 6f1e1f3b53fd8713b806609e027d0f4d58d3a75d
 
 // Layout component for protected routes
 // const ProtectedLayout = () => {
@@ -269,6 +274,7 @@ function App() {
         <Route path="/entry-explosive" element={<EntryExplosive />} />
         <Route path="/blast-entry" element={<BlastEntry />} />
         <Route path="/drilling-entry" element={<DrillingEntry />} />
+        <Route path="/masterTable/material-name" element={<MaterialName />} />
 
         {/* vehicle */}
         <Route path="/daily-check-list" element={<DailyCheckList />} />
@@ -280,7 +286,7 @@ function App() {
         <Route path="/vehicle-job-details" element={<VehicleJobDetails />} />
         <Route path="/vehicle-master-details" element={<VehicleMasterDetails />} />
         <Route path="/vehicle-renewal-details" element={<VehicleRenewalDetails />} />
-        <Route path="/vehicle-service-type" element={<VehicleServiceType />} />
+        <Route path="/masterTable/material-type" element={<VehicleServiceType />} />
         <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
         <Route path="/daily-running" element={<DailyRunning />} />
 
@@ -310,7 +316,8 @@ function App() {
 
         {/* Inventory */}
         {/* <Route path="/inventory/material-group" element={<MaterialGroup />} /> */}
-        <Route path="/inventory/material-type" element={<MaterialType />} />
+        <Route path="/masterTable/material-sub-type" element={<MaterialSubType />} />
+        <Route path="/masterTable/material-type" element={<MaterialType />} />
         <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
 
         <Route path="/material-request-entry" element={<MaterialRequestEntry />} />

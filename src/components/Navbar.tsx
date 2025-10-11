@@ -1859,10 +1859,10 @@ const navigationItems: NavItem[] = [
         title: 'HR',
         items: [
           { title: 'ID Proof', href: '/masterTable/id-proof', icon: CheckCircle, description: 'Employee identification proof types' },
-          { title: 'Qualification', href: '/hr/qualification', icon: CheckCircle, description: 'Employee qualification details' },
-          { title: 'Relation', href: '/hr/relation', icon: CheckCircle, description: 'Relationship types' },
-          { title: 'Religion', href: '/hr/religion', icon: CheckCircle, description: 'Religions list' },
-          { title: 'State', href: '/hr/state', icon: CheckCircle, description: 'State details' },
+          { title: 'Qualification', href: '/masterTable/qualification', icon: CheckCircle, description: 'Employee qualification details' },
+          { title: 'Relation', href: '/masterTable/relation', icon: CheckCircle, description: 'Relationship types' },
+          { title: 'Religion', href: '/masterTable/religion', icon: CheckCircle, description: 'Religions list' },
+          { title: 'State', href: '/masterTable/state', icon: CheckCircle, description: 'State details' },
           { title: 'Martial', href: '/masterTable/marital-status', icon: CheckCircle, description: 'Marital status' },
           { title: 'District', href: '/masterTable/district', icon: CheckCircle, description: 'District details' },
         ]
@@ -1873,6 +1873,7 @@ const navigationItems: NavItem[] = [
           { title: 'Equipment Type', href: '/masterTable/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
           { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
           { title: 'Material Group', href: '/masterTable/material-group', icon: TrendingUp, description: 'Material grouping' },
+<<<<<<< HEAD
           { title: 'Material Name', href: '/material-name', icon: TrendingUp, description: 'Material names' },
           { title: 'Material Specification', href: '/inventory/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
           { title: 'Material SubType', href: '/inventory/material-subtype', icon: TrendingUp, description: 'Material subtypes' },
@@ -1880,6 +1881,15 @@ const navigationItems: NavItem[] = [
           { title: 'Unit Type', href: '/inventory/unit-type', icon: TrendingUp, description: 'Unit measurements' },
           { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
           { title: 'Vehicle Service Type', href: '/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
+=======
+          { title: 'Material Name', href: '/masterTable/material-name', icon: TrendingUp, description: 'Material names' },
+          { title: 'Material Specification', href: '/masterTable/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
+          { title: 'Material SubType', href: '/masterTable/material-sub-type', icon: TrendingUp, description: 'Material subtypes' },
+          { title: 'Material Type', href: '/masterTable/material-type', icon: TrendingUp, description: 'Material types' },
+          { title: 'Unit Type', href: '/masterTable/unit-type', icon: TrendingUp, description: 'Unit measurements' },
+          { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
+          { title: 'Vehicle Service Type', href: '/masterTable/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
+>>>>>>> 6f1e1f3b53fd8713b806609e027d0f4d58d3a75d
           { title: 'Company Unit', href: '/masterTable/company-units', icon: TrendingUp, description: 'Company Units' },
         ]
       },
@@ -1888,8 +1898,8 @@ const navigationItems: NavItem[] = [
         items: [
           { title: 'Loading charge', href: '/masterTable/loading-charge', icon: FlaskConical, description: 'Loading charges list' },
           { title: 'Product', href: '/product-masonry', icon: FlaskConical, description: 'Product list' },
-          { title: 'Tp Amount', href: '/crusher/tp-amount', icon: FlaskConical, description: 'TP amount details' },
-          { title: 'Vehicle Type', href: '/crusher/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
+          { title: 'Tp Amount', href: '/masterTable/tp-amount', icon: FlaskConical, description: 'TP amount details' },
+          { title: 'Vehicle Type', href: '/masterTable/vehicle-type', icon: FlaskConical, description: 'Vehicle types' },
           { title: 'Explosive Type', href: '/masterTable/explosive-type', icon: FlaskConical, description: 'Explosive types' },
         ]
       },
