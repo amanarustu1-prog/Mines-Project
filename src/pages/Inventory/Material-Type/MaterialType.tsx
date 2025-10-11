@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
 import { setgroups } from 'process';
 import { Group } from 'lucide-react';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components
 interface MaintenanceType {
@@ -280,10 +281,11 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 
     //Get-Single-Data
     useEffect(() => {
-        if (editItemId) {
-            getSingleData();
-        }
-    }, [editItemId]);
+      if (editItemId && dropdownOptions.length > 0) {
+        getSingleData();
+      }
+    }, [editItemId, dropdownOptions]);
+
 
     const getSingleData = async () => {
         try {
@@ -294,11 +296,13 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 const record = res[0];
 
                 setMaintenanceTypeForm({
-                    Description: record.Description || '',
-                    MaintenanceTypes: record.MaintenanceType || '',
-                    MaterialTypeCode: record.MaterialTypeCode || '',
-                    Frequency: record.Frequency,
-                });
+    Description: record.Description || '',
+    MaintenanceTypes: record.MaintenanceType || '',
+    MaterialTypeCode: record.MaterialTypeCode || '',
+    Frequency: record.Frequency || '',
+    MaterialGroupID: record.MaterialGroupID || '',
+});
+
 
                 const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
 
@@ -493,6 +497,11 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         },
     ];
 
+    const resizeableColumns = useResizableColumns(columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
+
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
@@ -538,7 +547,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 setShowMaintenanceTypeModal(true);
                             }} className="maintenance-type-btn maintenance-type-btn-primary">
                                 <Plus className="maintenance-type-icon" />
-                                Add Maintenance Type
+                                Add Material Type
                             </button>
                         </div>
                     </div>
@@ -616,7 +625,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 <div className="maintenance-type-card">
                                     <div className="maintenance-type-card-content">
                                         <DataTable
-                                            columns={columns}
+                                            columns={resizeableColumns}
                                             data={filteredMaintenanceTypes}
                                             pagination
                                             paginationPerPage={10}
@@ -670,7 +679,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 value={maintenanceTypeForm.MaterialTypeCode}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaterialTypeCode: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance code"
+                                                placeholder="Material code"
                                             />
                                         </div>
 
@@ -683,7 +692,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 value={maintenanceTypeForm.Description}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance description"
+                                                placeholder="Material description"
                                                 required
                                             />
                                         </div>
@@ -761,8 +770,3 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 };
 
 export default MaterialType;
-
-
-
-// iN THIS WHY AFTER update our MaintenanceTypeModal is get closed "Code is already Present" or "Already Exists Description" our MaintenanceTypeModal get closed.
-// Io not want our MaintenanceTypeModal get closed unteil sfter updstinhwhole form
