@@ -814,7 +814,7 @@ const navigationItems: NavItem[] = [
 
           {
             title: 'Vehicle Service Type',
-            href: '/vehicle-renewal-details',
+            href: '/vehicle-service-type',
             icon: Truck,
             description: 'Material transport and logistics'
           },
@@ -861,7 +861,7 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Plant Service Entry',
-            href: '/vehicle-service-type',
+            href: '/vehicle-service-types',
             icon: Truck,
             description: 'Material transport and logistics'
           },
@@ -1873,13 +1873,13 @@ const navigationItems: NavItem[] = [
           { title: 'Equipment Type', href: '/masterTable/equipment-type', icon: TrendingUp, description: 'Types of equipment' },
           { title: 'Maintenance Type', href: '/inventory/maintenance-type', icon: TrendingUp, description: 'Types of maintenance' },
           { title: 'Material Group', href: '/masterTable/material-group', icon: TrendingUp, description: 'Material grouping' },
-          { title: 'Material Name', href: '/inventory/material-name', icon: TrendingUp, description: 'Material names' },
+          { title: 'Material Name', href: '/masterTable/material-name', icon: TrendingUp, description: 'Material names' },
           { title: 'Material Specification', href: '/masterTable/material-specification', icon: TrendingUp, description: 'Specifications for materials' },
           { title: 'Material SubType', href: '/masterTable/material-sub-type', icon: TrendingUp, description: 'Material subtypes' },
           { title: 'Material Type', href: '/masterTable/material-type', icon: TrendingUp, description: 'Material types' },
           { title: 'Unit Type', href: '/masterTable/unit-type', icon: TrendingUp, description: 'Unit measurements' },
           { title: 'Fuel Type', href: '/masterTable/fuel-type', icon: TrendingUp, description: 'Types of fuels' },
-          { title: 'Vehicle Service Type', href: '/inventory/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
+          { title: 'Vehicle Service Type', href: '/masterTable/vehicle-service-type', icon: TrendingUp, description: 'Types of vehicle services' },
           { title: 'Company Unit', href: '/masterTable/company-units', icon: TrendingUp, description: 'Company Units' },
         ]
       },
