@@ -6,6 +6,8 @@ import { fetch_Post_Data, fetchPostData, AddDeleteUpadate } from '@/components/h
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import { customStyles } from '@/common/Utility';
 import { getShowingDateText } from '@/common/DateFormat';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
+import * as XLSX from 'xlsx';
 
 // Icon components
 const Cube = ({ className }: { className?: string }) => (
@@ -117,6 +119,9 @@ export default function ProductMasonry() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
+  const [activeCounts, setActiveCounts] = useState(0);
+  const [inactiveCounts, setInactiveCounts] = useState(0);
 
   // State for API data
   const [products, setProducts] = useState<Product[]>([]);
@@ -146,70 +151,37 @@ export default function ProductMasonry() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
-      const response = await fetch_Post_Data("Product/GetData_Product", {
-        IsActive: 1,
-        CompanyId: Number(localStorage.getItem("companyID"))
-      });
 
-      // console.log('API Response:', response);
+      const payload = {
+        IsActive: filter === "active" ? 1 : filter === "inactive" ? 0 : "",
+        CompanyId: Number(localStorage.getItem("companyID")),
+      };
+      const response = await fetchPostData("Product/GetData_Product", payload);
+      setProducts(response);
 
-      if (response?.Data && Array.isArray(response.Data)) {
-        setProducts(response.Data);
-      } else {
-        // Add some sample data for testing if API returns empty
-        const sampleData = [
-          {
-            ProductID: 1,
-            ProductName: 'Sand',
-            Productgroupid: 1,
-            GroupName: 'Masonry',
-            Rate: 1200,
-            UnitTypeid: 1,
-            UnitType: 'Ton',
-            Inchallan: false,
-            IsReuse: false,
-            IsPurchase: false,
-            RoyaltyRate: 150,
-            DMGProduct: false,
-            GSTRate: 18,
-            ProductCode: 'SAND001',
-            CompanyId: getCompanyId(),
-            IsActive: true,
-            CreatedDate: '2025-01-01',
-            LastUpdated: '2025-01-20',
-            Remarks: 'Fine sand for construction'
-          },
-          {
-            ProductID: 2,
-            ProductName: 'Grit',
-            Productgroupid: 1,
-            GroupName: 'Masonry',
-            Rate: 1000,
-            UnitTypeid: 1,
-            UnitType: 'Ton',
-            Inchallan: false,
-            IsReuse: false,
-            IsPurchase: false,
-            RoyaltyRate: 120,
-            DMGProduct: false,
-            GSTRate: 18,
-            ProductCode: 'GRIT001',
-            CompanyId: getCompanyId(),
-            IsActive: true,
-            CreatedDate: '2025-01-01',
-            LastUpdated: '2025-01-18',
-            Remarks: 'Coarse grit for road construction'
-          }
-        ];
-        setProducts(sampleData);
-        // console.log('Using sample data:', sampleData);
-      }
     } catch (error) {
-      // console.error('Error fetching products:', error);
       toastifyError('Error fetching products');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const insertProduct = async (productData: any) => {
+    try {
+      const response = await fetchPostData('Product/Insert_Product', {
+        ...productData,
+        CompanyId: getCompanyId()
+      });
+
+      if (response) {
+        toastifySuccess('Product added successfully');
+        fetchProducts();
+        return true;
+      }
+    } catch (error) {
+      // console.error('Error inserting product:', error);
+      toastifyError('Error adding product');
+      return false;
     }
   };
 
@@ -218,9 +190,6 @@ export default function ProductMasonry() {
       const response = await fetch_Post_Data("Users/GetData_Company", {
         CompanyId: getCompanyId()
       });
-      // console.log(response, "response")
-
-      // console.log('Dropdown API Response:', response);
 
       if (response?.Data) {
         // Assuming the response contains product groups, unit types, and product names
@@ -250,25 +219,6 @@ export default function ProductMasonry() {
       // console.error('Error fetching dropdown data:', error);
       // Fallback to predefined data
       setProductNames(MASONRY_PRODUCTS);
-    }
-  };
-
-  const insertProduct = async (productData: any) => {
-    try {
-      const response = await fetchPostData('Product/Insert_Product', {
-        ...productData,
-        CompanyId: getCompanyId()
-      });
-
-      if (response) {
-        toastifySuccess('Product added successfully');
-        fetchProducts();
-        return true;
-      }
-    } catch (error) {
-      // console.error('Error inserting product:', error);
-      toastifyError('Error adding product');
-      return false;
     }
   };
 
@@ -329,6 +279,25 @@ export default function ProductMasonry() {
     return null;
   };
 
+  const fetchCounts = async () => {
+    try {
+      const [activeResp, inactiveResp] = await Promise.all([
+        fetch_Post_Data('Product/GetData_Product', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+        fetch_Post_Data('Product/GetData_Product', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+      ]);
+  
+      setActiveCounts(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
+      setInactiveCounts(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
+      }catch (err) {
+        toastifyError("Error fetching counts");
+      }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCounts();
+  }, [filter]);
+
   // Filter functions
   const filteredProducts = products.filter(product => {
     const matchesSearch = searchTerm === '' ||
@@ -365,7 +334,7 @@ export default function ProductMasonry() {
       name: 'Rate (₹/unit)',
       selector: (row: Product) => row.Rate,
       sortable: true,
-      cell: (row: Product) => `₹${row.Rate.toLocaleString()}`
+      cell: (row: Product) => `₹${(row.Rate ?? 0).toLocaleString()}`
     },
     {
       name: 'Unit Type',
@@ -376,7 +345,7 @@ export default function ProductMasonry() {
       name: 'Royalty Rate (₹/unit)',
       selector: (row: Product) => row.RoyaltyRate,
       sortable: true,
-      cell: (row: Product) => `₹${row.RoyaltyRate.toLocaleString()}`
+      cell: (row: Product) => `₹${(row.RoyaltyRate ?? 0).toLocaleString()}`
     },
     {
       name: 'GST Rate (%)',
@@ -508,9 +477,6 @@ export default function ProductMasonry() {
   };
 
   // Calculate statistics
-  const getTotalProducts = () => products.length;
-  const getActiveProducts = () => products.filter(p => p.IsActive).length;
-  const getInactiveProducts = () => products.filter(p => !p.IsActive).length;
   const getAverageRate = () => {
     const activeProducts = products.filter(p => p.IsActive);
     if (activeProducts.length === 0) return 0;
@@ -538,6 +504,34 @@ export default function ProductMasonry() {
       label: unit.UnitType
     })), [unitTypes]
   );
+
+  const resizeableColumns = useResizableColumns(columns).map(col => ({
+    ...col,
+    minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+  }));
+
+    //Download-Excel_File
+  const exportToExcel = () => {
+        const filteredDataNew = filteredProducts?.map(item => ({
+            'Material-Type Code': item.MaterialTypeCode,
+            'Description': item.Description,
+            'Material Group': item.MaterialTypeID,
+            'Status': item.IsActive ? 'Active' : 'Inactive',
+            'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
+            'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
+        }));
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredDataNew);
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="product-masonry">
@@ -573,21 +567,8 @@ export default function ProductMasonry() {
       <div className="product-masonry-main">
         {/* Statistics Cards */}
         <div className="product-masonry-grid product-masonry-grid-cols-1 product-masonry-md-grid-cols-4 product-masonry-gap-6 product-masonry-mb-6">
-          <div className="product-masonry-card">
-            <div className="product-masonry-card-content">
-              <div className="product-masonry-flex product-masonry-items-center p-2">
-                <div className="product-masonry-stat-icon product-masonry-stat-icon-blue">
-                  <Cube className="product-masonry-icon" />
-                </div>
-                <div>
-                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Total Products</p>
-                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getTotalProducts()}</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="product-masonry-card">
+          <div className="product-masonry-card cursor-pointer" onClick={() => setFilter("active")}>
             <div className="product-masonry-card-content">
               <div className="product-masonry-flex product-masonry-items-center p-2">
                 <div className="product-masonry-stat-icon product-masonry-stat-icon-green">
@@ -595,13 +576,13 @@ export default function ProductMasonry() {
                 </div>
                 <div>
                   <p className="product-masonry-text-sm product-masonry-text-gray-600">Active Products</p>
-                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getActiveProducts()}</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{activeCounts}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="product-masonry-card">
+          <div className="product-masonry-card cursor-pointer" onClick={() => setFilter("inactive")}>
             <div className="product-masonry-card-content">
               <div className="product-masonry-flex product-masonry-items-center p-2">
                 <div className="product-masonry-stat-icon product-masonry-stat-icon-yellow">
@@ -609,7 +590,21 @@ export default function ProductMasonry() {
                 </div>
                 <div>
                   <p className="product-masonry-text-sm product-masonry-text-gray-600">Inactive Products</p>
-                  <p className="product-masonry-text-2xl product-masonry-font-bold">{getInactiveProducts()}</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{inactiveCounts}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-masonry-card cursor-pointer" onClick={() => setFilter("all")}>
+            <div className="product-masonry-card-content">
+              <div className="product-masonry-flex product-masonry-items-center p-2">
+                <div className="product-masonry-stat-icon product-masonry-stat-icon-blue">
+                  <Cube className="product-masonry-icon" />
+                </div>
+                <div>
+                  <p className="product-masonry-text-sm product-masonry-text-gray-600">Total Products</p>
+                  <p className="product-masonry-text-2xl product-masonry-font-bold">{activeCounts + inactiveCounts}</p>
                 </div>
               </div>
             </div>
@@ -644,8 +639,8 @@ export default function ProductMasonry() {
             <div className="product-masonry-card">
               <div className="product-masonry-card-content">
                 <DataTable
-                  columns={columns}
-                  data={products}
+                  columns={resizeableColumns}
+                  data={filteredProducts}
                   pagination
                   highlightOnHover
                   customStyles={customStyles}
@@ -920,16 +915,6 @@ export default function ProductMasonry() {
                   </div>
                 </div>
 
-                {/* <div>
-                  <label className="product-masonry-label">Remarks</label>
-                  <textarea
-                    value={productForm.Remarks}
-                    onChange={(e) => setProductForm({ ...productForm, Remarks: e.target.value })}
-                    className="product-masonry-textarea"
-                    rows={3}
-                    placeholder="Any special notes or conditions"
-                  />
-                </div> */}
               </div>
             </div>
             <div className="product-masonry-modal-footer">

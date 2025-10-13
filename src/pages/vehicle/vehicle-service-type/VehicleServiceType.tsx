@@ -3,10 +3,8 @@ import './VehicleServiceType.css';
 import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
-import axios from '@/interceptors/axios';
 import { customStyles, multiValue } from '@/common/Utility';
-import { fetchPostData } from '@/components/hooks/Api';
-import { CloudCog } from 'lucide-react';
+import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import ConfirmModal from '@/common/ConfirmModal';
 import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
@@ -118,6 +116,8 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [activeCounts, setActiveCounts] = useState(0);
+    const [inactiveCounts, setInactiveCounts] = useState(0);
 
     const [vehicleServiceTypes, setVehicleServiceTypes] = useState<VehicleServiceType[]>([]);
     const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
@@ -139,11 +139,10 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     const fetchVehicleServiceTypes = async () => {
         try {
             setLoading(true);
-            const isActive = filter === 'all' ? '' : filter === 'active' ? true : false;
 
             const response = await fetchPostData('VehicleServiceType/GetData_VehicleServiceType', {
                 CompanyId: Number(localStorage.getItem("companyID")),
-                IsActive: 1
+                IsActive: filter === "active" ? 1 : filter === "inactive" ? 0 : ""
             });
             // console.log(response);
 
@@ -199,6 +198,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                     ...prev
                 ]);
                 await fetchVehicleServiceTypes();
+                await fetchCounts();
                 return true;
             } else {
                 throw new Error('Invalid response from server');
@@ -219,8 +219,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                 KMInterval: data.KMInterval,
                 Days: data.Days,
                 VehicleServiceTypeCode: data.VehicleServiceTypeCode,
-                VehicleServiceTypeID: id,
-
+                VehicleServiceTypeID: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
             });
 
             if (response) {
@@ -236,7 +235,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     };
 
     const deleteVehicleServiceType = async (id: number) => {
-        const item = maintenanceTypes.find(x => x.VehicleServiceTypeID === id);
+        const item = vehicleServiceTypes.find(x => x.VehicleServiceTypeID === id);
         if (!item) return;
 
         const newStatus = item.IsActive ? 0 : 1;
@@ -251,6 +250,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             if (response) {
                 toastifySuccess('Vehicle service type deleted successfully');
                 fetchVehicleServiceTypes();
+                await fetchCounts();
                 return true;
             }
         } catch (error: any) {
@@ -260,6 +260,13 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         }
     };
 
+    //Get-Single-Data
+    useEffect(() => {
+        if(editItemId && dropdownOptions.length > 0){
+            getSingleVehicleServiceType(editItemId);
+        }
+    }, [editItemId, dropdownOptions])
+
     const getSingleVehicleServiceType = async (id: number) => {
         try {
             const response = await fetchPostData('VehicleServiceType/GetSingleData_VehicleServiceType', {
@@ -267,15 +274,57 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             });
 
             if (response && response.length > 0) {
-                return response[0];
-            }
-            return null;
-        } catch (error: any) {
-            // console.error('Error fetching single vehicle service type:', error);
-            toastifyError('Error fetching vehicle service type details');
-            return null;
+            const data = response[0];
+
+            // For dropdown — ensure it matches react-select format
+            const matchOption = maintenanceTypes.find(
+                (opt) => Number(opt.MaintenanceTypeID) === Number(data.MaintenanceTypeID)
+            );
+
+            // For multi-select company dropdown
+            const selectedCompanies = dropdownOptions
+                .filter(opt => data.CompanyId?.toString().split(',').includes(opt.CompanyID.toString()))
+                .map(opt => ({ value: opt.CompanyID, label: opt.CompanyName }));
+            setDropdown(selectedCompanies);
+
+            setDropdown(selectedCompanies);
+
+
+            // Prefill form
+            setVehicleServiceTypeForm({
+                ServiceTypeName: data.ServiceTypeName || '',
+                MaintenanceTypeID: matchOption ? matchOption.MaintenanceTypeID : '',
+                KMInterval: data.KMInterval || '',
+                Days: data.Days || '',
+                VehicleServiceTypeCode: data.VehicleServiceTypeCode || '',
+                IsActive: data.IsActive ?? 1,
+                CompanyId: Number(localStorage.getItem("companyID"))
+            });
+
+            setEditItemId(id);
+            setShowVehicleServiceTypeModal(true);
+        }}catch (error: any) {
+            toastifyError('Error loading vehicle service type data');
         }
     };
+
+    const fetchCounts = async () => {
+        try {
+        const [activeResp, inactiveResp] = await Promise.all([
+            fetch_Post_Data('VehicleServiceType/GetData_VehicleServiceType', { IsActive: 1, CompanyId: Number(localStorage.getItem("companyID")) }),
+            fetch_Post_Data('VehicleServiceType/GetData_VehicleServiceType', { IsActive: 0, CompanyId: Number(localStorage.getItem("companyID")) }),
+        ]);
+    
+        setActiveCounts(Array.isArray(activeResp?.Data) ? activeResp.Data.length : 0);
+        setInactiveCounts(Array.isArray(inactiveResp?.Data) ? inactiveResp.Data.length : 0)
+        } catch (err) {
+            toastifyError("Error fetching counts");
+            }
+    };
+
+    useEffect(() => {
+        fetchCounts();
+    }, [filter]);
 
     // Filter functions
     const filteredVehicleServiceTypes = vehicleServiceTypes.filter(type => {
@@ -297,7 +346,6 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
 
     // Initial load effect - only run if no data
     useEffect(() => {
-        // console.log('Initial mount check, current data length:', vehicleServiceTypes.length);
         if (vehicleServiceTypes.length === 0) {
             fetchVehicleServiceTypes();
         }
@@ -309,60 +357,23 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             return;
         }
 
-        if (editingVehicleServiceType) {
-            const success = await updateVehicleServiceType(vehicleServiceTypeForm, editingVehicleServiceType.VehicleServiceTypeID!);
+        if (editItemId) {
+            const success = await updateVehicleServiceType(vehicleServiceTypeForm, editItemId!);
             if (success) {
-                setEditingVehicleServiceType(null);
+                toastifySuccess('Vehicle service type updated successfully');
                 setShowVehicleServiceTypeModal(false);
+                setEditItemId(null);
+                fetchVehicleServiceTypes();
                 resetForm();
             }
         } else {
-            // Create new vehicle service type
-            // console.log('Creating new vehicle service type');
             const success = await insertVehicleServiceType(vehicleServiceTypeForm);
             if (success) {
+                toastifySuccess('Vehicle service type added successfully');
                 setShowVehicleServiceTypeModal(false);
+                fetchVehicleServiceTypes();
                 resetForm();
             }
-        }
-    };
-
-    // Handle edit
-    const handleEditVehicleServiceType = async (type: VehicleServiceType) => {
-        try {
-            setLoading(true);
-            const singleData = await getSingleVehicleServiceType(type.VehicleServiceTypeID!);
-
-            if (singleData) {
-                setEditingVehicleServiceType(singleData);
-                setVehicleServiceTypeForm({
-                    ServiceTypeName: singleData.ServiceTypeName,
-                    MaintenanceTypeID: singleData.MaintenanceTypeID,
-                    KMInterval: singleData.KMInterval,
-                    Days: singleData.Days,
-                    VehicleServiceTypeCode: singleData.VehicleServiceTypeCode,
-                    IsActive: singleData.IsActive ?? true,
-                    CompanyId: singleData.CompanyId
-                });
-            } else {
-                // Fallback to existing data if API fails
-                setEditingVehicleServiceType(type);
-                setVehicleServiceTypeForm({
-                    ServiceTypeName: type.ServiceTypeName,
-                    MaintenanceTypeID: type.MaintenanceTypeID,
-                    KMInterval: type.KMInterval,
-                    Days: type.Days,
-                    VehicleServiceTypeCode: type.VehicleServiceTypeCode,
-                    IsActive: type.IsActive ?? true,
-                    CompanyId: type.CompanyId
-                });
-            }
-            setShowVehicleServiceTypeModal(true);
-        } catch (error) {
-            // console.error('Error loading vehicle service type for edit:', error);
-            toastifyError('Error loading vehicle service type details');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -401,9 +412,9 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                     value: item.MaintenanceTypeID,
                     label: item.Description,
                 }));
-                // console.log("NEW"+formatted.value);
+                // console.log("NEW "+ formatted[0].value);
 
-                setMaintenanceType(formatted);
+            setMaintenanceTypes(formatted);
             } catch (error) {
                 toastifyError("Error fetching Material Groups");
             }
@@ -413,21 +424,21 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
 
     // Reset form
     const resetForm = () => {
-        setVehicleServiceTypeForm({
-            ServiceTypeName: '',
-            MaintenanceTypeID: 0,
-            KMInterval: 0,
-            Days: 0,
-            VehicleServiceTypeCode: '',
-            IsActive: true,
-            CompanyId: getCompanyId()
-        });
+      setVehicleServiceTypeForm({
+        ServiceTypeName: '',
+        MaintenanceTypeID: 0,
+        KMInterval: 0,
+        Days: 0,
+        VehicleServiceTypeCode: '',
+        IsActive: true,
+        CompanyId: Number(localStorage.getItem("companyID")),
+      });
+      setEditItemId(null);
+      setSearch("");
+      setDropdown([]);
     };
 
     // Calculate statistics
-    const getTotalVehicleServiceTypes = () => vehicleServiceTypes.length;
-    const getActiveVehicleServiceTypes = () => vehicleServiceTypes.filter(t => t.IsActive).length;
-    const getInactiveVehicleServiceTypes = () => vehicleServiceTypes.filter(t => !t.IsActive).length;
     const getVehicleServiceTypesByInterval = () => {
         const intervalCount = vehicleServiceTypes.reduce((acc, type) => {
             const interval = `${type.KMInterval} KM`;
@@ -437,7 +448,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         return Object.keys(intervalCount).length;
     };
 
-    const overviewColumns: any[] = [
+    const Columns: any[] = [
         {
             name: 'Code',
             selector: (row: VehicleServiceType) => row.VehicleServiceTypeCode,
@@ -453,8 +464,8 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         {
             name: 'Maintenance Type',
             selector: (row: VehicleServiceType) => {
-                const maintenanceType = maintenanceTypes.find(mt => mt.MaintenanceTypeID === row.MaintenanceTypeID);
-                return maintenanceType ? maintenanceType.Description : 'Unknown';
+                const maintenanceType = maintenanceTypes.find(mt => mt.value === row.MaintenanceTypeID);
+                return maintenanceType ? maintenanceType.label : 'Unknown';
             },
             sortable: true,
         },
@@ -498,7 +509,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         },
     ];
   
-    const resizeableColumns = useResizableColumns(overviewColumns).map(col => ({
+    const resizeableColumns = useResizableColumns(Columns).map(col => ({
         ...col,
         minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
@@ -567,47 +578,43 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
 
                         {/* Statistics Cards */}
                         <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-grid-box maintenance-type-md-grid-cols-4 maintenance-type-gap-6 p-3 rounded-lg">
-                            <div className="vehicle-service-type-card">
-
-                                <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
-                                    <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-blue">
-                                        <Wrench className="vehicle-service-type-icon" />
-                                    </div>
-                                    <div>
-                                        <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Total Types</p>
-                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getTotalVehicleServiceTypes()}</p>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div className="vehicle-service-type-card">
+                            <div className="vehicle-service-type-card cursor-pointer" onClick={() => setFilter("active")}>
                                 <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
                                     <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-green">
                                         <Settings className="vehicle-service-type-icon" />
                                     </div>
                                     <div>
                                         <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Active Types</p>
-                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getActiveVehicleServiceTypes()}</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{activeCounts}</p>
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div className="vehicle-service-type-card">
+                            <div className="vehicle-service-type-card cursor-pointer" onClick={() => setFilter("inactive")}>
                                 <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
                                     <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-yellow">
                                         <Calendar className="vehicle-service-type-icon" />
                                     </div>
                                     <div>
                                         <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Inactive Types</p>
-                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getInactiveVehicleServiceTypes()}</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{inactiveCounts}</p>
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div className="vehicle-service-type-card">
+                            <div className="vehicle-service-type-card cursor-pointer" onClick={() => setFilter("all")}>
+                                <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                    <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-blue">
+                                        <Wrench className="vehicle-service-type-icon" />
+                                    </div>
+                                    <div>
+                                        <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Total Types</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{activeCounts + inactiveCounts}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="vehicle-service-type-card cursor-pointer">
                                 <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
                                     <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-purple">
                                         <BarChart3 className="vehicle-service-type-icon" />
@@ -617,12 +624,12 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                         <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getVehicleServiceTypesByInterval()}</p>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
                         {/* Recent Vehicle Service Types */}
                         <div className="vehicle-service-type-card mt-4 p-3">
+
                             <div className="maintenance-type-filters mb-1">
                                 <div className="maintenance-type-search-container d-flex justify-between align-center">
                                     <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
@@ -636,7 +643,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                             <div className="vehicle-service-type-card-content">
                                 <DataTable
                                     columns={resizeableColumns}
-                                    data={vehicleServiceTypes}
+                                    data={filteredVehicleServiceTypes}
                                     pagination
                                     paginationPerPage={10}
                                     paginationRowsPerPageOptions={[5, 10, 20, 50]}
@@ -654,7 +661,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                         <div className="vehicle-service-type-modal vehicle-service-type-modal-lg" onClick={(e) => e.stopPropagation()}>
                             <div className="vehicle-service-type-modal-header">
                                 <h3 className="vehicle-service-type-modal-title">
-                                    {editingVehicleServiceType ? 'Edit Vehicle Service Type' : 'Add New Vehicle Service Type'}
+                                    {editItemId ? 'Edit Vehicle Service Type' : 'Add New Vehicle Service Type'}
                                 </h3>
                                 <button
                                     onClick={() => setShowVehicleServiceTypeModal(false)}
@@ -722,38 +729,15 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                     <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
                                         <div>
                                             <Select
-                                                value={
-                                                    maintenanceTypes
-                                                        .map(type => ({
-                                                            value: type.MaintenanceTypeID,
-                                                            label: `${type.Description} - ${type.MaintenanceTypeCode}`,
-                                                        }))
-                                                        .find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)
-                                                }
+                                                value={maintenanceTypes.find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)}
                                                 onChange={(selectedOption) =>
-                                                    setVehicleServiceTypeForm({
-                                                        ...vehicleServiceTypeForm,
-                                                        MaintenanceTypeID: selectedOption ? selectedOption.value : 0,
-                                                    })
-                                                }
-                                                options={maintenanceTypes.map(type => ({
-                                                    value: type.MaintenanceTypeID,
-                                                    label: `${type.Description} - ${type.MaintenanceTypeCode}`,
-                                                }))}
+                                                    setVehicleServiceTypeForm({...vehicleServiceTypeForm,
+                                                        MaintenanceTypeID: selectedOption ? selectedOption.value : 0,})
+                                                    }
+                                                options={maintenanceTypes}
                                                 placeholder="Select Maintenance Type"
-                                                styles={{
-                                                    ...multiValue,
-                                                    valueContainer: (provided) => ({
-                                                        ...provided,
-                                                        maxHeight: "80px",
-                                                        overflowY: "auto",
-                                                        flexWrap: "wrap",
-                                                    }),
-                                                }}
                                                 isSearchable
-                                                required
                                             />
-
                                         </div>
 
                                         <div>
@@ -782,8 +766,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                 </div>
                             </div>
                             <div className="vehicle-service-type-modal-footer">
-                                <button
-                                    onClick={() => setShowVehicleServiceTypeModal(false)}
+                                <button onClick={() => setShowVehicleServiceTypeModal(false)}
                                     className="vehicle-service-type-btn vehicle-service-type-btn-secondary"
                                 >
                                     Cancel
@@ -794,7 +777,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                     disabled={!vehicleServiceTypeForm.VehicleServiceTypeCode || !vehicleServiceTypeForm.ServiceTypeName || loading}
                                 >
                                     <Save className="vehicle-service-type-icon" />
-                                    {editingVehicleServiceType ? 'Update Vehicle Service Type' : 'Add Vehicle Service Type'}
+                                    {editItemId ? 'Update Vehicle Service Type' : 'Add Vehicle Service Type'}
                                 </button>
                             </div>
                         </div>
@@ -802,7 +785,8 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                 )}
             </div>
 
-            <ConfirmModal show={showModal}
+            <ConfirmModal 
+                show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
                     if (selectedId !== null) {
