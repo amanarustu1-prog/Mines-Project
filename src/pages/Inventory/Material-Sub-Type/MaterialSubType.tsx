@@ -485,7 +485,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     const resizeableColumns = useResizableColumns(columns).map(col => ({
         ...col,
         minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
-      }));
+    }));
 
     //Download-Excel_File
     const exportToExcel = () => {

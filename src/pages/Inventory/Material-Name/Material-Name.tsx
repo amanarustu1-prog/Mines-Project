@@ -75,10 +75,8 @@ const ToggleRight = ({ className }: { className?: string }) => (
 // Types
 interface MaterialName {
     MaterialNameID?: number;
-    MaterialName: string;
     MaterialTypeID: number;
     MaterialGroupID: number;
-    UnitMeasurementID: number;
     MaterialNameCode: string;
     CompanyId: number | string;
     IsActive?: boolean;
@@ -93,6 +91,7 @@ interface MaterialName {
     PartNo: string;
     Remarks: string;
     MaterialID: number;
+    UpdatedDate: string;
 }
 
 interface MaterialType {
@@ -105,15 +104,14 @@ interface MaterialType {
 
 interface MaterialGroup {
     MaterialGroupID: number;
-    MaterialGroupName: string;
+    Description: string;
     MaterialGroupCode: string;
     IsActive: boolean;
 }
 
 interface UnitMeasurement {
-    UnitMeasurementID: number;
-    UnitName: string;
-    UnitCode: string;
+    UnitTypeID: number;
+    Description: string;
     IsActive: boolean;
 }
 
@@ -138,7 +136,7 @@ const statusOptions = [
 const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const [activeTab, setActiveTab] = useState('overview');
     const [showMaterialNameModal, setShowMaterialNameModal] = useState(false);
-    const [editingMaterialName, setEditingMaterialName] = useState<MaterialName | null>(null);
+    const [editItemId, setEditItemId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [loading, setLoading] = useState(false);
@@ -151,19 +149,16 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const [materialNames, setMaterialNames] = useState<MaterialName[]>([]);
     const [materialTypes, setMaterialTypes] = useState<MaterialType[]>([]);
     const [materialGroups, setMaterialGroups] = useState<MaterialGroup[]>([]);
-    const [unitMeasurements, setUnitMeasurements] = useState<UnitMeasurement[]>([]);
+    const [unitTypes, setUnitTypes] = useState<UnitMeasurement[]>([]);
     const [materialSpecifications, setMaterialSpecifications] = useState<MaterialSpecification[]>([]);
-    const [editItemId, setEditItemId] = useState<number | null>(null);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
 
     const [materialNameForm, setMaterialNameForm] = useState({
-        MaterialName: '',
         MaterialTypeID: 0,
         MaterialGroupID: 0,
-        UnitMeasurementID: 0,
         MaterialNameCode: '',
-        IsActive: true,
+        // IsActive: true,
         CompanyId: companyId || '',
         Description: '',
         Brand: '',
@@ -190,7 +185,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             // console.log(response);
             setMaterialTypes(response);
         } catch (error: any) {
-            console.error('Error fetching material types:', error);
+            // console.error('Error fetching material types:', error);
             toastifyError(error?.response?.data?.message || 'Error fetching material types');
         }
     };
@@ -203,14 +198,13 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     // Fetch dropdown data for Material Groups
     const fetchMaterialGroups = async () => {
         try {
-            const { data } = await axios.post('MaterialGroup/GetDataDropDown_MaterialGroup', {
-                CompanyId: getCompanyId(),
-                IsActive: 1
+            const response = await fetchPostData('MaterialGroup/GetDataDropDown_MaterialGroup', {
+                CompanyId: localStorage.getItem('companyID')
             });
-            const materialGroupData = Array.isArray(data) ? data : Array.isArray(data?.Data) ? data.Data : [];
-            setMaterialGroups(materialGroupData);
+            // console.log(response);
+            setMaterialGroups(response);
         } catch (error: any) {
-            console.error('Error fetching material groups:', error);
+            // console.error('Error fetching material groups:', error);
             toastifyError(error?.response?.data?.message || 'Error fetching material groups');
         }
     };
@@ -221,19 +215,34 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             const response = await fetchPostData('MaterialSpecification/GetDataDropDown_MaterialSpecification', {
                 CompanyId: Number(localStorage.getItem('companyID')),
             });
-            console.log(response);
+            // console.log(response);
             if (response && Array.isArray(response)) {
                 setMaterialSpecifications(response);
             }
         } catch (error: any) {
-            console.error('Error fetching material specifications:', error);
+            // console.error('Error fetching material specifications:', error);
             toastifyError(`Error fetching material specifications: ${error.message}`);
         }
     };
+
     const options2 = materialSpecifications.map(opt => ({
         value: opt.MaterialSpecificationID,
         label: opt.Description
     }));
+
+    const fetchUnitTypes = async () => {
+        try{
+            const response = await fetchPostData('UnitType/GetDataDropDown_UnitType', {
+                CompanyId: Number(localStorage.getItem('companyID')),
+            });
+            // console.log(response);
+            if (response && Array.isArray(response)) {
+                setUnitTypes(response);
+            }
+        }catch(error: any){
+            toastifyError(`Error fetching Unit Types: ${error.message}`);
+        }
+    }
 
     // Fetch Material Names
     const fetchMaterialNames = async () => {
@@ -262,8 +271,19 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             setLoading(true);
             const response = await fetchPostData('MaterialName/Insert_MaterialName', {
                 ...formData,
-                CompanyId: Number(localStorage.getItem('companyId'))
+                CompanyId: Number(localStorage.getItem('companyID'))
             });
+            const message = response[0].Message;
+            
+            if (message === "Already Exists MaterialNameCode") {
+                toastifyError("Code is already Present");
+                return;
+            }
+
+            if (message === "Already Exists Description") {
+                toastifyError("Description is already Present");
+                return;
+            }
 
             if (response) {
                 toastifySuccess('Material name added successfully');
@@ -274,7 +294,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 return false;
             }
         } catch (error: any) {
-            console.error('Error inserting material name:', error);
+            // console.error('Error inserting material name:', error);
             toastifyError(`Error adding material name: ${error.message}`);
             return false;
         } finally {
@@ -285,34 +305,37 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     // Update Material Name
     const updateMaterialName = async (formData: any, id: number) => {
         try {
-            // const payload = {
-            //     ...formData
-            //     MaterialID: materialId,
-            //     CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
-            // };
-            const response = await fetchPostData("MaterialType/Update_MaterialType", payload);
-    
+            setLoading(true);
+
+            const payload = {
+                ...formData,
+                MaterialID: id,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            };
+            const response = await fetchPostData("MaterialName/Update_MaterialName", payload);
             const message = response[0].Message;
-            if (message === "Already Exists MaterialTypeCode") {
+            
+            if (message === "Already Exists MaterialNameCode") {
                 toastifyError("Code is already Present");
                 return;
             }
-    
+
             if (message === "Already Exists Description") {
                 toastifyError("Description is already Present");
                 return;
             }
-            console.log("Update Response:", response);
-                if (response) {
+                
+            if (response) {
                 toastifySuccess('Item updated successfully');
                 setEditItemId(null);
                 setDropdown([]);
-                setMaintenanceTypeForm({ Description: '', MaterialGroupID: '', MaterialTypeCode: '' });
-                setShowMaintenanceTypeModal(false);
-                await fetchMaterialTypes();
+                // setMaintenanceTypeForm({ Description: '', MaterialGroupID: '', MaterialTypeCode: '' });
+                // setShowMaintenanceTypeModal(false);
+                await fetchMaterialNames();
                 return true;
+                }
             }
-            } catch (error: any) {
+            catch (error: any) {
                 toastifyError(`Error updating material type: ${error.message}`);
                 return false;
             }
@@ -322,18 +345,18 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const deleteMaterialName = async (materialId: number) => {
         try {
             setLoading(true);
-            const item = materialNames.find(x => x.MaterialTypeID === number);
+            const item = materialNames.find(x => x.MaterialID === materialId);
             if (!item) return;
 
             const newStatus = item.IsActive ? 0 : 1;
-
             const payload = {
                 MaterialID: materialId,
                 IsActive: newStatus
             }
+            // console.log(payload);
 
             const response = await fetchPostData('MaterialName/Delete_MaterialName', payload);
-
+            // console.log(response);
             if (response) {
                 toastifySuccess('Material name deleted successfully');
                 await fetchMaterialNames();
@@ -342,7 +365,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             }
             return false;
         } catch (error: any) {
-            console.error('Error deleting material name:', error);
+            // console.error('Error deleting material name:', error);
             toastifyError(`Error deleting material name: ${error.message}`);
             return false;
         } finally {
@@ -350,20 +373,52 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         }
     };
 
+    useEffect(() => {
+        if(editItemId && dropdownOptions.length > 0){
+            getSingleMaterialName();
+        }
+    }, [editItemId, dropdownOptions]);
+
     // Get Single Material Name
-    const getSingleMaterialName = async (materialId: number) => {
+    const getSingleMaterialName = async () => {
         try {
             const response = await fetchPostData('MaterialName/GetSingleData_MaterialName', {
-                MaterialID: materialId,
-                CompanyId: getCompanyId()
+                MaterialID: editItemId,
+                CompanyId: Number(localStorage.getItem('companyID'))
             });
 
-            if (response) {
-                return response;
+            const record = response[0];
+            if (response && response.length > 0) {
+                setMaterialNameForm({
+                  MaterialTypeID: record.MaterialTypeID || 0,
+                  MaterialGroupID: record.MaterialGroupID || 0,
+                  MaterialNameCode: record.MaterialNameCode || '',
+                  CompanyId: record.CompanyId || companyId || '',
+                  Description: record.Description || '',
+                  Brand: record.Brand || '',
+                  Model: record.Model || '',
+                  MaterialSpecificationID: record.MaterialSpecificationID || 0,
+                  MaterialUnitID: record.MaterialUnitID || 0,
+                  HSNCode: record.HSNCode || '',
+                  PartNo: record.PartNo || '',
+                  Remarks: record.Remarks || '',
+                  MaterialID: record.MaterialID || 0
+            });
             }
+
+            const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
+
+            if (companyIdField && dropdownOptions.length > 0) {
+                const companyIds = String(companyIdField).split(",").map(id => id.trim());
+                const matchOptions = dropdownOptions.filter(opt => companyIds.includes(String(opt.CompanyID))).map(opt => ({
+                    value: opt.CompanyID,
+                    label: opt.CompanyName
+            }));
+            setDropdown(matchOptions);
+        }
             return null;
         } catch (error: any) {
-            console.error('Error fetching single material name:', error);
+            // console.error('Error fetching single material name:', error);
             toastifyError(`Error fetching material details: ${error.message}`);
             return null;
         }
@@ -392,8 +447,8 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const filteredMaterialNames = useMemo(() => {
         return materialNames.filter(material => {
             const matchesSearch = searchTerm === '' ||
-                material.MaterialName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                material.MaterialNameCode.toLowerCase().includes(searchTerm.toLowerCase());
+                material?.Description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                material?.MaterialNameCode?.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesStatus = filterStatus === 'all' ||
                 (filterStatus === 'active' && material.IsActive) ||
@@ -403,9 +458,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         });
     }, [materialNames, searchTerm, filterStatus]);
 
-    const tableData = filteredMaterialNames.length > 0
-        ? filteredMaterialNames
-        : [];
+    const tableData = filteredMaterialNames.length > 0 ? filteredMaterialNames: [];
 
     // useEffect hooks
     useEffect(() => {
@@ -416,19 +469,20 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         fetchMaterialTypes();
         fetchMaterialGroups();
         fetchMaterialSpecifications();
+        fetchUnitTypes();
     }, []);
 
     // Handle save
     const handleSaveMaterialName = async () => {
-        if (!materialNameForm.MaterialName || !materialNameForm.MaterialNameCode ) {
+        if (!materialNameForm.MaterialNameCode || !materialNameForm.Description) {
             toastifyError('Please fill in all required fields');
             return;
         }
 
-        if (editingMaterialName) {
-            const success = await updateMaterialName(materialNameForm, editingMaterialName.MaterialID!);
+        if (editItemId) {
+            const success = await updateMaterialName(materialNameForm, editItemId);
             if (success) {
-                setEditingMaterialName(null);
+                setEditItemId(null);
                 setShowMaterialNameModal(false);
                 resetForm();
             }
@@ -444,12 +498,9 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     // Reset form
     const resetForm = () => {
         setMaterialNameForm({
-            MaterialName: '',
             MaterialTypeID: 0,
             MaterialGroupID: 0,
-            UnitMeasurementID: 0,
             MaterialNameCode: '',
-            IsActive: true,
             CompanyId: companyId || '',
             Description: '',
             Brand: '',
@@ -480,38 +531,6 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             sortable: true,
         },
         {
-            name: 'Material Name',
-            selector: (row: MaterialName) => row.MaterialName,
-            sortable: true,
-            cell: (row: MaterialName) => (
-                <span className="material-name-font-medium">{row.MaterialName}</span>
-            )
-        },
-        {
-            name: 'Material Type',
-            selector: (row: MaterialName) => {
-                const materialType = materialTypes.find(mt => mt.MaterialTypeID === row.MaterialTypeID);
-                return materialType ? materialType.MaterialTypeName : 'Unknown';
-            },
-            sortable: true,
-        },
-        {
-            name: 'Material Group',
-            selector: (row: MaterialName) => {
-                const materialGroup = materialGroups.find(mg => mg.MaterialGroupID === row.MaterialGroupID);
-                return materialGroup ? materialGroup.MaterialGroupName : 'Unknown';
-            },
-            sortable: true,
-        },
-        {
-            name: 'Unit',
-            selector: (row: MaterialName) => {
-                const unit = unitMeasurements.find(u => u.UnitMeasurementID === row.UnitMeasurementID);
-                return unit ? unit.UnitName : 'Unknown';
-            },
-            sortable: true,
-        },
-        {
             name: 'Description',
             selector: (row: MaterialName) => row.Description,
             sortable: true,
@@ -523,6 +542,30 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                     }
                 </span>
             ),
+        },
+        {
+            name: 'Material Type',
+            selector: (row: MaterialName) => {
+                const materialType = materialTypes.find(mt => mt.MaterialTypeID === row.MaterialTypeID);
+                return materialType ? materialType.Description : 'Unknown';
+            },
+            sortable: true,
+        },
+        {
+            name: 'Material Group',
+            selector: (row: MaterialName) => {
+                const materialGroup = materialGroups.find(mg => mg.MaterialGroupID === row.MaterialGroupID);
+                return materialGroup ? materialGroup.Description : 'Unknown';
+            },
+            sortable: true,
+        },
+        {
+            name: 'Unit',
+            selector: (row: MaterialName) => {
+                const unit = unitTypes.find(mg => mg.UnitTypeID === row.MaterialUnitID);
+                return unit ? unit.Description : 'Unknown';
+            },
+            sortable: true,
         },
         {
             name: 'Brand',
@@ -557,11 +600,25 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             ),
         },
         {
-            name: 'Material ID',
-            selector: (row: MaterialName) => row.MaterialID,
+            name: 'Material Specification',
+            selector: (row: MaterialName) => {
+                const materialSpec = materialSpecifications.find(ms => ms.MaterialSpecificationID === row.MaterialSpecificationID);
+                return materialSpec ? materialSpec.Description : 'Unknown';
+            },
+            sortable: true,
+        },
+        {
+            name: 'Remark',
+            selector: (row: MaterialName) => row.Remarks,
             sortable: true,
             cell: (row: MaterialName) => (
-                <span className="material-name-text-sm material-name-font-mono">#{row.MaterialID || '-'}</span>
+                // <span className="material-name-text-sm material-name-font-mono">{row.Remarks}</span>
+                <span className="material-name-text-sm material-name-text-gray-600" title={row.Remarks}>
+                    {row.Description && row.Description.length > 30
+                        ? `${row.Remarks.substring(0, 30)}...`
+                        : row.Description || '-'
+                    }
+                </span>
             ),
         },
         {
@@ -575,15 +632,25 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             )
         },
         {
+            name: 'Created Date',
+            selector: (row: MaterialName) => getShowingDateText(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: MaterialName) => getShowingDateText(row.UpdatedDate),
+            sortable: true,
+        },
+        {
             name: 'Actions',
             cell: (row: MaterialName) => (
                 <div className="material-name-flex material-name-gap-1">
-                    <button onClick={() => { setSelectedId(row.MaterialTypeID!); setShowModal(true); }}
+                    <button onClick={() => { setSelectedId(row.MaterialID!); setShowModal(true); }}
                         className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`} title={row.IsActive ? 'Deactivate' : 'Activate'}>
                         {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
                     </button>
 
-                    <button onClick={() => setEditItemId(row.MaterialNameID!)} className="material-name-btn-icon" title="Edit">
+                    <button onClick={() => { setEditItemId(row.MaterialID!) ; setShowMaterialNameModal(true);}} className="material-name-btn-icon" title="Edit">
                         <Edit3 className="material-name-icon-sm" />
                     </button>
                 </div>
@@ -627,9 +694,17 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
   //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaterialNames?.map(item => ({
-            'Material-Type Code': item.MaterialTypeCode,
+            'Material-Name Code': item.MaterialNameCode,
             'Description': item.Description,
-            'Material Group': item.MaterialTypeID,
+            'Material Type': item.MaterialTypeID,
+            'Material Group': item.MaterialGroupID,
+            'Unit ID': item.MaterialUnitID,
+            'Brand': item.Brand,
+            'Model': item.Model,
+            'HSN Code': item.HSNCode,
+            'Part No': item.PartNo,
+            'Material Specification': item.MaterialSpecificationID,
+            'Remark': item.Remarks,
             'Status': item.IsActive ? 'Active' : 'Inactive',
             'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
             'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
@@ -665,7 +740,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                     <div className="material-name-header-actions">
                         <button
                             onClick={() => {
-                                setEditingMaterialName(null);
+                                setEditItemId(null);
                                 resetForm();
                                 setShowMaterialNameModal(true);
                             }}
@@ -787,7 +862,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                     <div className="material-name-modal material-name-modal-lg" onClick={(e) => e.stopPropagation()}>
                         <div className="material-name-modal-header">
                             <h3 className="material-name-modal-title">
-                                {editingMaterialName ? 'Edit Material Name' : 'Add New Material Name'}
+                                {editItemId ? 'Edit Material Name' : 'Add New Material Name'}
                             </h3>
                             <button onClick={() => setShowMaterialNameModal(false)} className="material-name-modal-close">
                                 ×
@@ -798,31 +873,28 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 <div className="material-name-form-grid material-name-form-grid-2">
                                     <div>
                                         <label className="material-name-label">
-                                            Material Name <span style={{ color: 'red' }}>*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={materialNameForm.MaterialName}
-                                            onChange={(e) =>
-                                                setMaterialNameForm({ ...materialNameForm, MaterialName: e.target.value })
-                                            }
-                                            className="material-name-input"
-                                            placeholder="Material name"
-                                            required
-                                        />
-                                    </div>
-                               
-                                    <div>
-                                        <label className="material-name-label">
                                             Material Code <span style={{ color: 'red' }}>*</span>
                                         </label>
                                         <input
                                             type="text"
                                             value={materialNameForm.MaterialNameCode}
                                             onChange={(e) => setMaterialNameForm({ ...materialNameForm, MaterialNameCode: e.target.value })}
-                                            className="material-name-input"
+                                            className="material-name-input requiredColor"
                                             placeholder="Material code"
                                             required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="material-name-label">
+                                            Description <span style={{ color: 'red' }}>*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={materialNameForm.Description}
+                                            onChange={(e) => setMaterialNameForm({ ...materialNameForm, Description: e.target.value })}
+                                            className="material-name-input requiredColor"
+                                            placeholder="Material description"
                                         />
                                     </div>
                                 </div>
@@ -835,7 +907,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                         <Select
                                             value={materialGroups.find(group => group.MaterialGroupID === materialNameForm.MaterialGroupID) ? {
                                                 value: materialNameForm.MaterialGroupID,
-                                                label: materialGroups.find(group => group.MaterialGroupID === materialNameForm.MaterialGroupID)?.MaterialGroupName || ''
+                                                label: materialGroups.find(group => group.MaterialGroupID === materialNameForm.MaterialGroupID)?.Description || ''
                                             } : null}
                                             onChange={(selectedOption: any) => setMaterialNameForm({
                                                 ...materialNameForm,
@@ -843,7 +915,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                             })}
                                             options={materialGroups.map(group => ({
                                                 value: group.MaterialGroupID,
-                                                label: `${group.MaterialGroupName} - ${group.MaterialGroupCode}`
+                                                label: group.Description
                                             }))}
                                             placeholder="Select Material Group"
                                             styles={{
@@ -862,7 +934,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                     color: '#6b7280',
                                                 }),
                                             }}
-                                            className="react-select-container"
+                                            className="react-select-container requiredColor"
                                             classNamePrefix="react-select"
                                             isSearchable={true}
                                             required
@@ -870,13 +942,43 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                     </div>
 
                                     <div>
-                                        <label className="material-name-label">Material Unit ID</label>
-                                        <input
-                                            type="number"
-                                            value={materialNameForm.MaterialUnitID}
-                                            onChange={(e) => setMaterialNameForm({ ...materialNameForm, MaterialUnitID: parseInt(e.target.value) || 0 })}
-                                            className="material-name-input"
-                                            placeholder="Material unit ID"
+                                        <label className="material-name-label">
+                                            Material Unit ID <span style={{ color: 'red' }}>*</span>
+                                        </label>
+                                        <Select
+                                            value={unitTypes.find(group => group.UnitTypeID === materialNameForm.MaterialUnitID) ? {
+                                                value: materialNameForm.MaterialUnitID,
+                                                label: unitTypes.find(group => group.UnitTypeID === materialNameForm.MaterialUnitID)?.Description || ''
+                                            } : null}
+                                            onChange={(selectedOption: any) => setMaterialNameForm({
+                                                ...materialNameForm,
+                                                MaterialUnitID: selectedOption ? selectedOption.value : 0
+                                            })}
+                                            options={unitTypes.map(group => ({
+                                                value: group.UnitTypeID,
+                                                label: group.Description
+                                            }))}
+                                            placeholder="Select Material Group"
+                                            styles={{
+                                                control: (provided) => ({
+                                                    ...provided,
+                                                    minHeight: '48px',
+                                                    border: '1px solid #d1d5db',
+                                                    borderRadius: '0.5rem',
+                                                    fontSize: '0.875rem',
+                                                    '&:hover': {
+                                                        borderColor: '#9ca3af',
+                                                    },
+                                                }),
+                                                placeholder: (provided) => ({
+                                                    ...provided,
+                                                    color: '#6b7280',
+                                                }),
+                                            }}
+                                            className="react-select-container requiredColor"
+                                            classNamePrefix="react-select"
+                                            isSearchable={true}
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -923,17 +1025,43 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                     </div> 
 
                                     <div>
-                                        <label className="material-name-label">
-                                            Description
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={materialNameForm.Description}
-                                            onChange={(e) => setMaterialNameForm({ ...materialNameForm, Description: e.target.value })}
-                                            className="material-name-input"
-                                            placeholder="Material description"
+                                        <label className="material-name-label">Material Specification</label>
+                                        <Select
+                                            value={materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID) ? {
+                                                value: materialNameForm.MaterialSpecificationID,
+                                                label: materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID)?.Description || ''
+                                            } : null}
+                                            onChange={(selectedOption: any) => setMaterialNameForm({
+                                                ...materialNameForm,
+                                                MaterialSpecificationID: selectedOption ? selectedOption.value : 0
+                                            })}
+                                            options={materialSpecifications.map(spec => ({
+                                                value: spec.MaterialSpecificationID,
+                                                label: spec.Description
+                                            }))}
+                                            placeholder="Select Specification"
+                                            styles={{
+                                                control: (provided) => ({
+                                                    ...provided,
+                                                    minHeight: '48px',
+                                                    border: '1px solid #d1d5db',
+                                                    borderRadius: '0.5rem',
+                                                    fontSize: '0.875rem',
+                                                    '&:hover': {
+                                                        borderColor: '#9ca3af',
+                                                    },
+                                                }),
+                                                placeholder: (provided) => ({
+                                                    ...provided,
+                                                    color: '#6b7280',
+                                                }),
+                                            }}
+                                            className="react-select-container"
+                                            classNamePrefix="react-select"
+                                            isSearchable={true}
+                                            isClearable
                                         />
-                                    </div>
+                                    </div>                                  
                                 </div>
 
                                 <div className="material-name-form-grid material-name-form-grid-2">
@@ -985,44 +1113,6 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 </div>
 
                                 <div className="material-name-form-grid material-name-form-grid-2">
-                                    <div>
-                                        <label className="material-name-label">Material Specification</label>
-                                        <Select
-                                            value={materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID) ? {
-                                                value: materialNameForm.MaterialSpecificationID,
-                                                label: materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID)?.Description || ''
-                                            } : null}
-                                            onChange={(selectedOption: any) => setMaterialNameForm({
-                                                ...materialNameForm,
-                                                MaterialSpecificationID: selectedOption ? selectedOption.value : 0
-                                            })}
-                                            options={materialSpecifications.map(spec => ({
-                                                value: spec.MaterialSpecificationID,
-                                                label: spec.Description
-                                            }))}
-                                            placeholder="Select Specification"
-                                            styles={{
-                                                control: (provided) => ({
-                                                    ...provided,
-                                                    minHeight: '48px',
-                                                    border: '1px solid #d1d5db',
-                                                    borderRadius: '0.5rem',
-                                                    fontSize: '0.875rem',
-                                                    '&:hover': {
-                                                        borderColor: '#9ca3af',
-                                                    },
-                                                }),
-                                                placeholder: (provided) => ({
-                                                    ...provided,
-                                                    color: '#6b7280',
-                                                }),
-                                            }}
-                                            className="react-select-container"
-                                            classNamePrefix="react-select"
-                                            isSearchable={true}
-                                            isClearable
-                                        />
-                                    </div>
 
                                     <div>
                                         <label className="material-name-label">Company ID</label>
@@ -1062,16 +1152,12 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                             </div>
                         </div>
                         <div className="material-name-modal-footer">
-                            <button
-                                onClick={() => { setShowMaterialNameModal(false);
-                                    setEditingMaterialName(null);
-                                    resetForm();
-                                }} className="material-name-btn material-name-btn-secondary">
+                            <button onClick={() => { setShowMaterialNameModal(false); setEditItemId(null); resetForm(); }} className="material-name-btn material-name-btn-secondary">
                                 Cancel
                             </button>
-                            <button onClick={handleSaveMaterialName} className="material-name-btn material-name-btn-primary" disabled={!materialNameForm.MaterialName || !materialNameForm.MaterialNameCode || loading}>
+                            <button onClick={handleSaveMaterialName} className="material-name-btn material-name-btn-primary" disabled={!materialNameForm.MaterialNameCode || !materialNameForm.Description || loading}>
                                 <Save className="material-name-icon" />
-                                {editingMaterialName ? 'Update Material Name' : 'Add Material Name'}
+                                {editItemId ? 'Update Material Name' : 'Add Material Name'}
                             </button>
                         </div>
                     </div>

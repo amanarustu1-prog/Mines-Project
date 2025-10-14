@@ -280,7 +280,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
       }
     }, [editItemId, dropdownOptions]);
 
-
     const getSingleData = async () => {
         try {
             const val = { MaterialTypeID: editItemId };

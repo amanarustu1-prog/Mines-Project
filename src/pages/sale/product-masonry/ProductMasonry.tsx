@@ -259,13 +259,10 @@ export default function ProductMasonry() {
       const payload = {ProductID: editItemId}
       const response = await fetch_Post_Data('Product/GetSingleData_Product', payload);
 
-      // if (response?.Data && response.Data.length > 0) {
-      //   return response.Data[0];
-      // }
       if (response && Array.isArray(response) && response.length > 0) {
-                const record = response[0];
+        const record = response[0];
 
-                setProductForm({
+        setProductForm({
                   Productgroupid:  record.Productgroupid,
                   ProductName: record.ProductName ,
                   Rate: record.Rate,
@@ -278,25 +275,21 @@ export default function ProductMasonry() {
                   GSTRate: record.GSTRate,
                   ProductCode: record.ProductCode,
                   Remarks: ''
-                });
+        });
 
+        const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
 
-                const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
-
-                if (companyIdField && dropdownOptions.length > 0) {
-                    const companyIds = String(companyIdField).split(",").map(id => id.trim());
-                    const matchOptions = dropdownOptions.filter(opt => companyIds.includes(String(opt.CompanyID))).map(opt => ({
-                        value: opt.CompanyID,
-                        label: opt.CompanyName
-                    }));
-                    setDropdown(matchOptions);
-                    setShowProductModal(true);
-                } else {
-                    setDropdown([]);
-                }
-            } else {
-               setProductForm({ Productgroupid: 0, ProductName: '', Rate: 0, UnitTypeid: 0, Inchallan: false, IsReuse: false, IsPurchase: false, RoyaltyRate: 0, DMGProduct: false, GSTRate: 0, ProductCode: '', Remarks: '' });
-            }
+        if (companyIdField && dropdownOptions.length > 0) {
+          const companyIds = String(companyIdField).split(",").map(id => id.trim());
+          const matchOptions = dropdownOptions.filter(opt => companyIds.includes(String(opt.CompanyID))).map(opt => ({
+            value: opt.CompanyID,
+            label: opt.CompanyName
+          }));
+          setDropdown(matchOptions);
+        } else {
+          setProductForm({ Productgroupid: 0, ProductName: '', Rate: 0, UnitTypeid: 0, Inchallan: false, IsReuse: false, IsPurchase: false, RoyaltyRate: 0, DMGProduct: false, GSTRate: 0, ProductCode: '', Remarks: '' });
+        }
+      }
     } catch (error) {
       // console.error('Error fetching single product:', error);
       toastifyError('Error fetching product details');
@@ -462,7 +455,7 @@ export default function ProductMasonry() {
     setEditingProduct(null);
     setShowProductModal(false);
   }
-};
+  };
 
   // Handle edit
   const handleEditProduct = (product: Product) => {
