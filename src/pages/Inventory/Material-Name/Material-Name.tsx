@@ -4,7 +4,7 @@ import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
-import { customStyles } from '@/common/Utility';
+import { customStyles, multiValue } from '@/common/Utility';
 import axios from '@/interceptors/axios';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import { getShowingDateText } from '@/common/DateFormat';
@@ -99,6 +99,7 @@ interface MaterialType {
     MaterialTypeID: number;
     MaterialTypeName: string;
     MaterialTypeCode: string;
+    Description: string;
     IsActive: boolean;
 }
 
@@ -118,7 +119,7 @@ interface UnitMeasurement {
 
 interface MaterialSpecification {
     MaterialSpecificationID: number;
-    SpecificationName: string;
+    Description: string;
     IsActive: boolean;
 }
 
@@ -144,6 +145,8 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const [ filter, setFilter ] = useState<"active" | "inactive" | "all">("active");
     const [activeCounts, setActiveCounts] = useState(0);
     const [inactiveCounts, setInactiveCounts] = useState(0);
+    const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+    const [dropdown, setDropdown] = useState<any[]>([]);
 
     const [materialNames, setMaterialNames] = useState<MaterialName[]>([]);
     const [materialTypes, setMaterialTypes] = useState<MaterialType[]>([]);
@@ -181,17 +184,21 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     // Fetch dropdown data for Material Types
     const fetchMaterialTypes = async () => {
         try {
-            const { data } = await axios.post('MaterialType/GetDataDropDown_MaterialType', {
-                CompanyId: getCompanyId(),
-                IsActive: 1
+            const response = await fetchPostData('MaterialType/GetDataDropDown_MaterialType', {
+                CompanyId: localStorage.getItem('companyID')
             });
-            const materialTypeData = Array.isArray(data) ? data : Array.isArray(data?.Data) ? data.Data : [];
-            setMaterialTypes(materialTypeData);
+            // console.log(response);
+            setMaterialTypes(response);
         } catch (error: any) {
             console.error('Error fetching material types:', error);
             toastifyError(error?.response?.data?.message || 'Error fetching material types');
         }
     };
+
+    const options1 = materialTypes.map(opt => ({
+        value: opt.MaterialTypeID,
+        label: opt.Description
+    }));
 
     // Fetch dropdown data for Material Groups
     const fetchMaterialGroups = async () => {
@@ -212,9 +219,9 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const fetchMaterialSpecifications = async () => {
         try {
             const response = await fetchPostData('MaterialSpecification/GetDataDropDown_MaterialSpecification', {
-                CompanyId: getCompanyId(),
-                IsActive: 1
+                CompanyId: Number(localStorage.getItem('companyID')),
             });
+            console.log(response);
             if (response && Array.isArray(response)) {
                 setMaterialSpecifications(response);
             }
@@ -223,6 +230,10 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             toastifyError(`Error fetching material specifications: ${error.message}`);
         }
     };
+    const options2 = materialSpecifications.map(opt => ({
+        value: opt.MaterialSpecificationID,
+        label: opt.Description
+    }));
 
     // Fetch Material Names
     const fetchMaterialNames = async () => {
@@ -305,7 +316,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 toastifyError(`Error updating material type: ${error.message}`);
                 return false;
             }
-        };
+    };
 
     // Delete Material Name
     const deleteMaterialName = async (materialId: number) => {
@@ -583,12 +594,37 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         },
     ];
 
+    //Company-Dropdown
+    useEffect(() => {
+        const fetchDropDown = async () => {
+            try{
+                const payload = { EmployeeID: localStorage.getItem("employeeID") };
+                const response = await fetchPostData('Users/GetData_Company', payload);
+
+                if(response){
+                    const data = response;
+                    setDropdownOptions(Array.isArray(data) ? data : []);
+                }else{
+                    toastifyError("Failed to load Dropdown.")
+                }
+            }catch(error: any){
+                toastifyError("Failed to Load Description");
+            }
+        }
+        fetchDropDown();
+    }, [])
+
+    const options = dropdownOptions.map(opt => ({
+        value: opt.CompanyID,
+        label: opt.CompanyName
+    }));
+
     const resizeableColumns = useResizableColumns(columns).map(col => ({
         ...col,
         minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
 
-    //Download-Excel_File
+  //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaterialNames?.map(item => ({
             'Material-Type Code': item.MaterialTypeCode,
@@ -753,10 +789,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                             <h3 className="material-name-modal-title">
                                 {editingMaterialName ? 'Edit Material Name' : 'Add New Material Name'}
                             </h3>
-                            <button
-                                onClick={() => setShowMaterialNameModal(false)}
-                                className="material-name-modal-close"
-                            >
+                            <button onClick={() => setShowMaterialNameModal(false)} className="material-name-modal-close">
                                 ×
                             </button>
                         </div>
@@ -777,7 +810,6 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                             placeholder="Material name"
                                             required
                                         />
-
                                     </div>
                                
                                     <div>
@@ -854,10 +886,9 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                         <label className="material-name-label">
                                             Material Type <span style={{ color: 'red' }}>*</span>
                                         </label>
-                                        <Select
-                                            value={materialTypes.find(type => type.MaterialTypeID === materialNameForm.MaterialTypeID) ? {
+                                        <Select value={materialTypes.find(type => type.MaterialTypeID === materialNameForm.MaterialTypeID) ? {
                                                 value: materialNameForm.MaterialTypeID,
-                                                label: materialTypes.find(type => type.MaterialTypeID === materialNameForm.MaterialTypeID)?.MaterialTypeName || ''
+                                                label: materialTypes.find(type => type.MaterialTypeID === materialNameForm.MaterialTypeID)?.Description || ''
                                             } : null}
                                             onChange={(selectedOption: any) => setMaterialNameForm({
                                                 ...materialNameForm,
@@ -865,7 +896,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                             })}
                                             options={materialTypes.map(type => ({
                                                 value: type.MaterialTypeID,
-                                                label: `${type.MaterialTypeName} - ${type.MaterialTypeCode}`
+                                                label: type.Description
                                             }))}
                                             placeholder="Select Material Type"
                                             styles={{
@@ -959,7 +990,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                         <Select
                                             value={materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID) ? {
                                                 value: materialNameForm.MaterialSpecificationID,
-                                                label: materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID)?.SpecificationName || ''
+                                                label: materialSpecifications.find(spec => spec.MaterialSpecificationID === materialNameForm.MaterialSpecificationID)?.Description || ''
                                             } : null}
                                             onChange={(selectedOption: any) => setMaterialNameForm({
                                                 ...materialNameForm,
@@ -967,7 +998,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                             })}
                                             options={materialSpecifications.map(spec => ({
                                                 value: spec.MaterialSpecificationID,
-                                                label: spec.SpecificationName
+                                                label: spec.Description
                                             }))}
                                             placeholder="Select Specification"
                                             styles={{
@@ -994,25 +1025,26 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                     </div>
 
                                     <div>
+                                        <label className="material-name-label">Company ID</label>
                                         <Select
-                                            // value={dropdown}
-                                            // onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
-                                            // options={options}
+                                            value={dropdown}
+                                            onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
+                                            options={options}
                                             isMulti
                                             isClearable
                                             closeMenuOnSelect={false}
                                             hideSelectedOptions={true}
                                             placeholder="Select Company"
                                             className="basic-multi-select"
-                                            // styles={{
-                                            //     ...multiValue,
-                                            //     valueContainer: (provided) => ({
-                                            //         ...provided,
-                                            //         maxHeight: "80px",
-                                            //         overflowY: "auto",
-                                            //         flexWrap: "wrap",
-                                            //     }),
-                                            // }}
+                                            styles={{
+                                                ...multiValue,
+                                                valueContainer: (provided) => ({
+                                                    ...provided,
+                                                    maxHeight: "80px",
+                                                    overflowY: "auto",
+                                                    flexWrap: "wrap",
+                                                }),
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -1046,6 +1078,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 </div>
             )}
         </div>
+
         <ConfirmModal show={showModal}
             handleClose={() => setShowModal(false)}
             handleConfirm={() => {
