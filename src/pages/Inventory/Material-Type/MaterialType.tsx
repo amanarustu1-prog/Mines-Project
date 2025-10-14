@@ -729,7 +729,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                         deleteMaterialType(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 };

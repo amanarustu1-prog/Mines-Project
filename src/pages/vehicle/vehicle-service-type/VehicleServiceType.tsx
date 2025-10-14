@@ -80,6 +80,7 @@ interface VehicleServiceType {
     IsActive?: boolean;
     CreatedDate?: string;
     LastUpdated?: string;
+    UpdatedDate?: string;
 }
 
 interface MaintenanceType {
@@ -95,6 +96,11 @@ interface MaintenanceType {
 interface Props {
     baseUrl?: string;
     companyId?: number | string | null;
+}
+
+interface Maintenance {
+    MaintenanceTypeID: number;
+    Description: string;
 }
 
 // Status options
@@ -118,6 +124,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [maintenanceGroup, setMaintenanceGroup] = useState<Maintenance[]>([]);
 
     const [vehicleServiceTypes, setVehicleServiceTypes] = useState<VehicleServiceType[]>([]);
     const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
@@ -391,6 +398,30 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     }));
 
     useEffect(() => {
+        const fetchMaintenanceTypes = async () => {
+          try {
+            const res = await fetchPostData('MaintenanceType/GetDataDropDown_MaintenanceType', {
+            CompanyId: localStorage.getItem('companyID'),
+          });
+          if (Array.isArray(res)) {
+            setMaintenanceType(res.map((x: any) => ({
+          value: x.MaintenanceTypeID,
+          label: x.Description,
+        })));
+      }
+    } catch (err) {
+      toastifyError('Error fetching maintenance types');
+    }
+  };
+  fetchMaintenanceTypes();
+}, []);
+
+
+    useEffect(() => {
+       fetchMaintanceType(); 
+    }, []);
+
+    useEffect(() => {
         const fetchGroupOptions = async () => {
             try {
                 const payload = { CompanyId: localStorage.getItem("companyID") };
@@ -453,8 +484,8 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         {
             name: 'Maintenance Type',
             selector: (row: VehicleServiceType) => {
-                const maintenanceType = maintenanceTypes.find(mt => mt.MaintenanceTypeID === row.MaintenanceTypeID);
-                return maintenanceType ? maintenanceType.Description : 'Unknown';
+              const found = maintenanceType.find(mt => mt.value === row.MaintenanceTypeID);
+              return found ? found.label : 'N/A';
             },
             sortable: true,
         },
@@ -479,15 +510,25 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             )
         },
         {
+            name: 'Created Date',
+            selector: (row: MaintenanceType) => getShowingDateText(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: MaintenanceType) => getShowingDateText(row.UpdatedDate),
+            sortable: true,
+        },
+        {
             name: 'Actions',
             cell: (row: VehicleServiceType) => (
                 <div className="maintenance-type-flex maintenance-type-gap-1">
-                    <button onClick={() => { setSelectedId(row.VehicleServiceTypeID!); setShowModal(true); }}
+                    <button onClick={() => { deleteVehicleServiceType(row.VehicleServiceTypeID!); setShowModal(true); }}
                         className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`} title={row.IsActive ? 'Deactivate' : 'Activate'}>
                         {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
                     </button>
 
-                    <button onClick={() => setEditItemId(row.VehicleServiceTypeID!)} className="list-button ghost primary" title="Edit">
+                    <button onClick={() => handleEditVehicleServiceType(row)} className="list-button ghost primary" title="Edit">
                         <Edit3 className="maintenance-type-icon-sm" />
                     </button>
                 </div>
@@ -506,8 +547,10 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     const exportToExcel = () => {
         const filteredDataNew = vehicleServiceTypes?.map(item => ({
             'Vehicle Service Type Code': item.VehicleServiceTypeCode,
-            'Description': item.ServiceTypeName,
-            'Material Group': item.VehicleServiceTypeID,
+            'Service Type Name': item.ServiceTypeName,
+            'Maintenance Type': item.MaintenanceTypeID,
+            'KMInterval': item.KMInterval,
+            'Days': item.Days,
             'Status': item.IsActive ? 'Active' : 'Inactive',
             'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
             'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
@@ -578,7 +621,6 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                         <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getTotalVehicleServiceTypes()}</p>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div className="vehicle-service-type-card">
@@ -591,7 +633,6 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                         <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getActiveVehicleServiceTypes()}</p>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div className="vehicle-service-type-card">
@@ -722,24 +763,14 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                     <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
                                         <div>
                                             <Select
-                                                value={
-                                                    maintenanceTypes
-                                                        .map(type => ({
-                                                            value: type.MaintenanceTypeID,
-                                                            label: `${type.Description} - ${type.MaintenanceTypeCode}`,
-                                                        }))
-                                                        .find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)
+                                                value={ maintenanceTypes.find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)
                                                 }
                                                 onChange={(selectedOption) =>
-                                                    setVehicleServiceTypeForm({
-                                                        ...vehicleServiceTypeForm,
+                                                    setVehicleServiceTypeForm({ ...vehicleServiceTypeForm,
                                                         MaintenanceTypeID: selectedOption ? selectedOption.value : 0,
                                                     })
                                                 }
-                                                options={maintenanceTypes.map(type => ({
-                                                    value: type.MaintenanceTypeID,
-                                                    label: `${type.Description} - ${type.MaintenanceTypeCode}`,
-                                                }))}
+                                                options={maintenanceType}
                                                 placeholder="Select Maintenance Type"
                                                 styles={{
                                                     ...multiValue,
@@ -809,7 +840,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                         deleteVehicleServiceType(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 };
