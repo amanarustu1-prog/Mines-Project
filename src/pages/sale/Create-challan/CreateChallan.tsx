@@ -1,105 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CreateChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
 import { FiX } from "react-icons/fi";
 import { FaEdit } from 'react-icons/fa';
+import DataTable from 'react-data-table-component';
+import Select from 'react-select';
+
+// React DatePicker
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { customStyles, multiValue } from '@/common/Utility';
+import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
+import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
+import { getShowingDateText } from '@/common/DateFormat';
+import * as XLSX from 'xlsx';
 
 // Icon components
-const Receipt = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5l-5-5 4-4 5 5v6a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h7l5 5v11z" />
-    </svg>
-);
-
-const Plus = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-    </svg>
-);
-
-const Save = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v11a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-    </svg>
-);
-
-const Download = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-    </svg>
-);
-
-const List = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-    </svg>
-);
-
-const Calendar = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
-    </svg>
-);
-
-const Search = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-);
-
-const Trash2 = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-    </svg>
-);
-
-const Edit3 = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1 4l-3 3m0 0l-3-3m3 3V4" />
-    </svg>
-);
-
-const BarChart3 = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 13l4-4L11 13l4-4 4 4M3 21h18" />
-    </svg>
-);
 
 const UsersIcon = ({ style }: { style?: React.CSSProperties }) => (
     <svg className="employee-master-icon" style={style} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    </svg>
-);
-
-const FileTextIcon = () => (
-    <svg className="employee-master-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5l-5-5 4-4 5 5v6a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h7l5 5v11z" />
-    </svg>
-);
-
-const DownloadIcon = () => (
-    <svg className="employee-master-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-    </svg>
-);
-
-
-const ListIcon = () => (
-    <svg className="employee-master-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-    </svg>
-);
-
-const CalendarIcon = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
-    </svg>
-);
-
-const SearchIcon = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
 );
 
@@ -188,12 +110,20 @@ interface ChallanFormData {
     freightAmt: number;
     extraAmt: number;
     grandTotal: number;
+
+    // Status field
+    status?: 'Active' | 'Inactive' | 'Pending' | 'Approved' | 'Rejected';
+
+    // Additional optional fields for UI logic
+    department?: string;
+    joiningDate?: string;
 }
 
 interface ChallanTableItem {
     id: string;
-    challanNo: string;
-    challanDate: string;
+    ChallanNo: string;
+    ChallanDate: string;
+    VoucherType: string;
     consignee: string;
     partyAddress: string;
     vehicleNo: string;
@@ -204,13 +134,76 @@ interface ChallanTableItem {
     gtWeight: number;
     amount: number;
     rate: number;
+    AdvAmt: string;
+    Name: string;
+    PartyID: string;
+    OwnerMobile: string;
+    DriverName: string;
+    DriverMobileNo: string;
+    VehicleNo: string;
+    VehicleTypeid: string;
+    VehicleRemarks: string;
+    Address: string;
+    Productid: string;
+    IsGST: string;
+    BillName: string;
+    GstNo: string;
+    State: string;
+    GstAddress: string;
+    Rate: string;
+    Amount: string;
+    LoadingAmt: string;
+    CommisionAmt: string;
+    TotalAmt: string;
+    GSTAmt: string;
+    RoyaltyAmount: string;
+    TPAmount: string;
+    FreightAmt: string;
+    GTotal: string;
+    Grossweight: string;
+    TareWeight: string;
+    Netweight: string;
+    Lessweight: string;
+    GTWeight: string;
+    financialYear: string;
+    paytype: string;
+    Email: string;
+    StatusReason: string;
+    Taredate: string;
+    Grossdate: string;
+    ExtraAmt: string;
+    ExtraAmtType: string;
+    ProductId1: string;
+    Status: string;
     status: 'Pending' | 'Approved' | 'Rejected';
+}
+
+interface State {
+    ID: number;
+    Description: string;
+}
+
+interface District {
+    ID: number;
+    Discription: string;
 }
 
 export default function CreateChallan() {
     const [activeTab, setActiveTab] = useState('challanOverview');
     const [showInput, setShowInput] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // ----------- Custom ------------
+    const [loading, setLoading] = useState(false);
+    const [ filter, setFilter ] = useState<"pending" | "approved" | "rejected" | "all">("approved");
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [pendingChallan, setpendingChallan] = useState(0);
+    const [approvedChallan, setapprovedChallan] = useState(0);
+    const [rejectedChallan, setrejectedChallan] = useState(0);
+    const [state, setState] = useState<State[]>([]);
+    const [district, setDistrict] = useState<District[]>([]);
+    const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+    const [dropdown, setDropdown] = useState<any[]>([]);
     const [challanData, setChallanData] = useState<ChallanFormData>({
         challanNo: 'S',
         financialYear: '2025-2026',
@@ -294,89 +287,12 @@ export default function CreateChallan() {
         dateTime: new Date().toISOString(),
     });
 
-    const [challanTableData, setChallanTableData] = useState<ChallanTableItem[]>([{
-        id: '1',
-        challanNo: 'CH-2025-001',
-        challanDate: '25/07/2025',
-        consignee: 'ABC Traders',
-        partyAddress: '123 Industrial Area, Mumbai',
-        vehicleNo: 'MH01AB1234',
-        productName: 'Iron Ore',
-        grossWeight: 5000,
-        netWeight: 4950,
-        lessWeight: 50,
-        gtWeight: 4900,
-        amount: 122500,
-        rate: 25.00,
-        status: 'Pending'
-    }, {
-        id: '2',
-        challanNo: 'CH-2025-002',
-        challanDate: '26/07/2025',
-        consignee: 'XYZ Minerals',
-        partyAddress: '456 Mining Zone, Pune',
-        vehicleNo: 'MH12CD5678',
-        productName: 'Bauxite',
-        grossWeight: 3500,
-        netWeight: 3470,
-        lessWeight: 30,
-        gtWeight: 3440,
-        amount: 86000,
-        rate: 25.00,
-        status: 'Approved'
-    }, {
-        id: '3',
-        challanNo: 'CH-2025-003',
-        challanDate: '27/07/2025',
-        consignee: 'PQR Exports',
-        partyAddress: '789 Port Road, Goa',
-        vehicleNo: 'GA07EF9012',
-        productName: 'Coal',
-        grossWeight: 7000,
-        netWeight: 6950,
-        lessWeight: 50,
-        gtWeight: 6900,
-        amount: 172500,
-        rate: 25.00,
-        status: 'Rejected'
-    }]);
-
-    const handleInputChange = (field: keyof ChallanFormData, value: any) => {
-        setChallanData(prev => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-    };
-
-    const handleInputChangeItem = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        const newValue = name === 'productName' ? value : parseFloat(value) || 0;
-        
-        updateCalculations({
-            ...currentItem,
-            [name]: newValue
-        });
-    };
-
-    const handleChallanInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target as HTMLInputElement;
-        let newValue: any = value;
-        
-        if (type === 'number') {
-            newValue = parseFloat(value) || 0;
-        } else if (type === 'checkbox') {
-            newValue = (e.target as HTMLInputElement).checked;
-        }
-        
-        handleInputChange(name as keyof ChallanFormData, newValue);
     };
 
     // Calculate GT Weight (Gross Weight - Tare Weight - Less Weight)
@@ -400,7 +316,7 @@ export default function CreateChallan() {
                 item.rate !== undefined ? item.rate : (currentItem.rate || 0),
                 gtWeight
             );
-            
+
             setCurrentItem(prev => ({
                 ...prev,
                 ...item,
@@ -430,25 +346,11 @@ export default function CreateChallan() {
         setChallanItems(challanItems.filter(item => item.id !== id));
     };
 
-    // Edit existing item
-    const handleEditItem = (id: string) => {
-        const itemToEdit = challanItems.find(item => item.id === id);
-        if (itemToEdit) {
-            setCurrentItem(itemToEdit);
-            handleRemoveItem(id);
-        }
-    };
-
-    // Print challan
-    const handlePrint = () => {
-        window.print();
-    };
-
     // Update challan data when items or related fields change
     React.useEffect(() => {
         // Recalculate totals when challan items or related fields change
         const { totalGTWeight, totalAmount, gstAmount, grandTotal } = calculateTotals();
-        
+
         // Update state with new calculations
         setChallanData(prev => ({
             ...prev,
@@ -467,7 +369,7 @@ export default function CreateChallan() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
-        
+
         // Calculate totals
         const totalGTWeight = challanItems.reduce((sum, item) => sum + item.gtWeight, 0);
         const totalAmount = challanItems.reduce((sum, item) => sum + item.amount, 0);
@@ -475,7 +377,7 @@ export default function CreateChallan() {
         const grandTotal = totalAmount + gstAmount + (challanData.freightAmt || 0) + (challanData.extraAmt || 0);
 
         // Update challan data with calculated values
-        const updatedChallan = {
+        const updatedChallan: any = {
             ...challanData,
             productDetails: [...challanItems],
             amount: totalAmount,
@@ -488,8 +390,9 @@ export default function CreateChallan() {
             }
         };
 
-        setChallanData(updatedChallan);
-        
+        setChallanData(updatedChallan ?? {});
+
+
         // Here you would typically send the data to an API
         console.log('Submitting challan:', updatedChallan);
         alert('Challan saved successfully!');
@@ -555,78 +458,490 @@ export default function CreateChallan() {
         }
     };
 
-    const renderItemsTable = () => (
-        <div className="table-responsive mt-3">
-            <table className="table table-bordered table-hover">
-                <thead className="table-light">
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Rate</th>
-                        <th>Gross Weight</th>
-                        <th>Net Weight</th>
-                        <th>Less Weight</th>
-                        <th>GT Weight</th>
-                        <th>Amount</th>
-                        <th>Date/Time</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {challanItems.length > 0 ? (
-                        challanItems.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.productName}</td>
-                                <td>{item.rate.toFixed(2)}</td>
-                                <td>{item.grossWeight.toFixed(2)}</td>
-                                <td>{item.netWeight.toFixed(2)}</td>
-                                <td>{item.lessWeight.toFixed(2)}</td>
-                                <td>{item.gtWeight.toFixed(2)}</td>
-                                <td>{item.amount.toFixed(2)}</td>
-                                <td>{new Date(item.dateTime).toLocaleString()}</td>
-                                <td>
-                                    <button
-                                        className="btn btn-sm btn-danger"
-                                        onClick={() => handleDeleteItem(item.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={9} className="text-center">No items added yet</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
-    );
+    const Columns = [
+        {
+            name: 'Actions',
+            cell: (row: ChallanTableItem) => (
+                <FaEdit className="text-blue-600 cursor-pointer" size={20} />
+            ),
+        },
+        {
+            name: 'Challan No',
+            selector: (row: ChallanTableItem) => row.ChallanNo,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.ChallanNo}</span>
+            ),
+        },
+        {
+            name: 'Challan Date',
+            selector: (row: ChallanTableItem) => row.ChallanDate,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span>{row.ChallanDate}</span>
+            ),
+        },
+        {
+            name: 'Voucher Type',
+            selector: (row: ChallanTableItem) => row.VoucherType,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.VoucherType}</span>
+            ),
+        },
+        {
+            name: 'Advance Amt',
+            selector: (row: ChallanTableItem) => row.AdvAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.AdvAmt}</span>
+            ),
+        },
+        {
+            name: 'Name',
+            selector: (row: ChallanTableItem) => row.Name,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.Name}</span>
+            ),
+        },
+        {
+            name: 'Party ID',
+            selector: (row: ChallanTableItem) => row.PartyID,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.PartyID}</span>
+            ),
+        },
+        {
+            name: 'OwnerMobile',
+            selector: (row: ChallanTableItem) => row.OwnerMobile,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.OwnerMobile}</span>
+            ),
+        },
+        {
+            name: 'DriverName',
+            selector: (row: ChallanTableItem) => row.DriverName,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.DriverName}</span>
+            ),
+        },
+        {
+            name: 'Driver Mobile No',
+            selector: (row: ChallanTableItem) => row.DriverMobileNo,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-sm text-gray-600">{row.DriverMobileNo}</span>
+            ),
+        },
+        {
+            name: 'Vehicle No',
+            selector: (row: ChallanTableItem) => row.VehicleNo,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-sm text-gray-600">{row.VehicleNo}</span>
+            ),
+        },
+        {
+            name: 'Vehicle Type Id',
+            selector: (row: ChallanTableItem) => row.VehicleTypeid,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-mono text-sm">{row.VehicleTypeid}</span>
+            ),
+        },
+        {
+            name: 'Vehicle Remarks',
+            selector: (row: ChallanTableItem) => row.VehicleRemarks,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.VehicleRemarks}</span>
+            ),
+        },
+        {
+            name: 'Address',
+            selector: (row: ChallanTableItem) => row.Address,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Address}</span>
+            ),
+        },
+        {
+            name: 'Product Id',
+            selector: (row: ChallanTableItem) => row.Productid,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Productid}</span>
+            ),
+        },
+        {
+            name: 'IsGST',
+            selector: (row: ChallanTableItem) => row.IsGST,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.IsGST}</span>
+            ),
+        },
+        {
+            name: 'BillName',
+            selector: (row: ChallanTableItem) => row.BillName,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right font-semibold">{row.BillName}</span>
+            ),
+        },
+        {
+            name: 'GstNo',
+            selector: (row: ChallanTableItem) => row.GstNo,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GstNo}</span>
+            ),
+        },
+        {
+            name: 'State',
+            selector: (row: ChallanTableItem) =>  {
+                const states = state.find(mg => mg.ID === row.state);
+                return states ? states.Description : 'Unknown';
+            },
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.State}</span>
+            ),
+        },
+        {
+            name: 'Gst Address',
+            selector: (row: ChallanTableItem) => row.GstAddress,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GstAddress}</span>
+            ),
+        },
+        {
+            name: 'Rate',
+            selector: (row: ChallanTableItem) => row.Rate,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Rate}</span>
+            ),
+        },
+        {
+            name: 'Amount',
+            selector: (row: ChallanTableItem) => row.Amount,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Amount}</span>
+            ),
+        },
+        {
+            name: 'LoadingAmt',
+            selector: (row: ChallanTableItem) => row.LoadingAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.LoadingAmt}</span>
+            ),
+        },
+        {
+            name: 'Commision Amount',
+            selector: (row: ChallanTableItem) => row.CommisionAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.CommisionAmt}</span>
+            ),
+        },
+        {
+            name: 'Total Amount',
+            selector: (row: ChallanTableItem) => row.TotalAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.TotalAmt}</span>
+            ),
+        },
+        {
+            name: 'GST Amount',
+            selector: (row: ChallanTableItem) => row.GSTAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GSTAmt}</span>
+            ),
+        },
+        {
+            name: 'Royalty Amount',
+            selector: (row: ChallanTableItem) => row.RoyaltyAmount,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.RoyaltyAmount}</span>
+            ),
+        },
+        {
+            name: 'TP Amount',
+            selector: (row: ChallanTableItem) => row.TPAmount,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.TPAmount}</span>
+            ),
+        },
+        {
+            name: 'Freight Amount',
+            selector: (row: ChallanTableItem) => row.FreightAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.FreightAmt}</span>
+            ),
+        },
+        {
+            name: 'GTotal',
+            selector: (row: ChallanTableItem) => row.GTotal,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GTotal}</span>
+            ),
+        },
+        {
+            name: 'Grossweight',
+            selector: (row: ChallanTableItem) => row.Grossweight,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Grossweight}</span>
+            ),
+        },
+        {
+            name: 'TareWeight',
+            selector: (row: ChallanTableItem) => row.TareWeight,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.TareWeight}</span>
+            ),
+        },
+        {
+            name: 'Netweight',
+            selector: (row: ChallanTableItem) => row.Netweight,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Netweight}</span>
+            ),
+        },
+        {
+            name: 'Lessweight',
+            selector: (row: ChallanTableItem) => row.Lessweight,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Lessweight}</span>
+            ),
+        },
+        {
+            name: 'GTWeight',
+            selector: (row: ChallanTableItem) => row.GTWeight,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GTWeight}</span>
+            ),
+        },
+        {
+            name: 'Financial Year',
+            selector: (row: ChallanTableItem) => row.financialYear,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.financialYear}</span>
+            ),
+        },
+        {
+            name: 'Paytype',
+            selector: (row: ChallanTableItem) => row.paytype,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.paytype}</span>
+            ),
+        },
+        {
+            name: 'Email',
+            selector: (row: ChallanTableItem) => row.Email,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.Email}</span>
+            ),
+        },
+        {
+            name: 'Status Reason',
+            selector: (row: ChallanTableItem) => row.StatusReason,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.StatusReason}</span>
+            ),
+        },
+        {
+            name: 'Taredate',
+            selector: (row: ChallanTableItem) => row.Taredate,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{ getShowingDateText(row.Taredate)}</span>
+            ),
+        },
+        {
+            name: 'Grossdate',
+            selector: (row: ChallanTableItem) => row.Grossdate,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{ getShowingDateText(row.Grossdate)}</span>
+            ),
+        },
+        {
+            name: 'Extra Amount',
+            selector: (row: ChallanTableItem) => row.ExtraAmt,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.ExtraAmt}</span>
+            ),
+        },
+        {
+            name: 'Extra Amount Type',
+            selector: (row: ChallanTableItem) => row.ExtraAmtType,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.ExtraAmtType}</span>
+            ),
+        },
+        {
+            name: 'ProductId',
+            selector: (row: ChallanTableItem) => row.ProductId1,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.ProductId1}</span>
+            ),
+        },
+        {
+            name: 'Amount',
+            selector: (row: ChallanTableItem) => row.amount,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right font-semibold text-green-600">
+                    ₹{row.amount?.toLocaleString() || 'N/A'}
+                </span>
+            ),
+        },
+        {
+            name: 'Rate',
+            selector: (row: ChallanTableItem) => row.rate,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right font-mono">
+                    ₹{row.rate?.toFixed(2) || 'N/A'}
+                </span>
+            ),
+        },
+        {
+            name: 'Status',
+            selector: (row: ChallanTableItem) => row.Status,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className={`maintenance-type-badge ${row.Status === 'Pending' ? 'maintenance-type-badge-success' : 'maintenance-type-badge-error'}`}>
+                    {row.Status === 'Pending' ? 'Pending' : 'Approved'}
+                </span>
+            )
+        },
+        {
+            name: 'Created Date',
+            selector: (row: ChallanTableItem) => getShowingDateText(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: ChallanTableItem) => getShowingDateText(row.UpdatedDate),
+            sortable: true,
+        },
+    ];
+    
+    // ---------------Get-Data------------------
+    const getChallanItem = async () => {
+        try {
+            setLoading(true);  
+            const payload = {
+                CompanyId: Number(localStorage.getItem("companyID")),
+                IsForApproval: '',
+                CreatedDatefrom: '',
+                CreatedDateTo: '',
+                IsRejetc: ''
+            }
+            const response = await fetchPostData('Challan/GetData_Challan', payload);
+            // console.log(response);
+            
+            if(response){
+                setChallanItems(response);           
+            }
+            } catch (error: any) {
+                setChallanItems([]);
+            } finally {
+                setLoading(false);
+            }
+    };
 
-    const addProductDetail = () => {
-        const newProduct: ProductDetail = {
-            id: Date.now().toString(),
-            name: '',
-            rate: 0,
-            grossWeight: 0,
-            dateTime: '',
-            netWeight: 0,
-            lessWeight: 0,
-            gtWeight: 0,
-            amount: 0,
+    const insertMaterialType = async (formData: any) => {
+        try {
+            const payload = {
+                ...challanData,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+                MaterialTypeID: maintenanceTypeForm.MaterialTypeID || "", 
+                };
+    
+                const response = await fetchPostData("MaterialSubType/Insert_MaterialSubType", payload);
+                const message = response[0].Message;
+    
+                if (message === "Already Exists MaterialSubTypeCode") {
+                    toastifyError("Code is already Present");
+                    return;
+                }
+    
+                if (message === "Already Exists Description") {
+                    toastifyError("Description is already Present");
+                    return;
+                }
+    
+    
+                if (response) {
+                    toastifySuccess("Material Type added successfully");
+                    await fetchMaterialTypes();
+                    await fetchCounts();
+                    return true;
+                } else {
+                    throw new Error('Invalid response from server');
+                }
+                return true;
+            } catch (error: any) {
+                toastifyError(`Error adding material type: ${error.message}`);
+                return false;
+            }
         };
-        setProductDetails([...productDetails, newProduct]);
-    };
 
-    const removeProductDetail = (id: string) => {
-        setProductDetails(productDetails.filter(product => product.id !== id));
+    const fetchCounts = async () => {
+        try {
+            const payload = {
+                CompanyId: Number(localStorage.getItem("companyID")),
+                IsForApproval: '1',
+                CreatedDatefrom: '',
+                CreatedDateTo: '',
+                IsRejetc: '1'
+            }
+            const [isPending, isApproved, isRejected] = await Promise.all([
+                fetch_Post_Data('Challan/GetData_Challan', payload),
+                fetch_Post_Data('Challan/GetData_Challan', payload),
+                fetch_Post_Data('Challan/GetData_Challan', payload),
+            ]);
+        
+            setpendingChallan(Array.isArray(isPending?.Data) ? isPending.Data.length : 0);
+            setapprovedChallan(Array.isArray(isApproved?.Data) ? isApproved.Data.length : 0);
+            setrejectedChallan(Array.isArray(isRejected?.Data) ? isRejected.Data.length : 0);
+        } catch (err) {
+            toastifyError("Error fetching counts");
+        }
     };
-
-    const updateProductDetail = (id: string, field: keyof ProductDetail, value: any) => {
-        setProductDetails(productDetails.map(product =>
-            product.id === id ? { ...product, [field]: value } : product
-        ));
-    };
+        
+    useEffect(() => {
+        getChallanItem();
+        fetchCounts();
+    }, [filter]);
 
     // Calculate totals including all challan items and additional charges
     const calculateTotals = () => {
@@ -646,11 +961,11 @@ export default function CreateChallan() {
 
         const { totalGTWeight, totalAmount, totalNetWeight } = totals;
         const gstAmount = challanData.gstBill ? totalAmount * 0.18 : 0;
-        
+
         // Calculate subtotal and grand total including all charges
         const subtotal = totalAmount + (challanData.loading || 0) + (challanData.commission || 0);
-        const grandTotal = subtotal + gstAmount + (challanData.royalty || 0) + 
-                         (challanData.tpAmount || 0) + (challanData.freightAmt || 0) + (challanData.extraAmt || 0);
+        const grandTotal = subtotal + gstAmount + (challanData.royalty || 0) +
+            (challanData.tpAmount || 0) + (challanData.freightAmt || 0) + (challanData.extraAmt || 0);
 
         // Convert ChallanItem[] to ProductDetail[] with proper type safety
         const productDetails: ProductDetail[] = challanItems.map(item => ({
@@ -686,6 +1001,66 @@ export default function CreateChallan() {
         return { totalGTWeight, totalAmount, gstAmount, grandTotal };
     };
 
+    //----------------------Dropdowns-----------------------
+    const fetchState = async() => {
+        try{
+            const response = await fetchPostData('State/GetDataDropDown_State', {
+                CompanyId: Number(localStorage.getItem('companyID')),
+            });
+            // console.log(state[0]);
+
+            if(response && Array.isArray(response)){
+                setState(response);
+            }
+        }catch{
+             toastifyError('Error fetching States');
+        }
+    }
+
+    const fetchDistrict = async() => {
+        try{
+            const response = fetchPostData('District/GetDataDropDown_District', {
+                Stateid: state.values,
+                CompanyId: Number(localStorage.getItem('companyID')),
+            })
+            console.log(response);
+            if(response && Array.isArray(response)){
+                setDistrict(response);
+            }
+        }catch{
+            toastifyError('Error fetching District');
+        }
+    }
+
+    useEffect(() => {
+      fetchState();
+      fetchDistrict();
+    }, []);
+
+    useEffect(() => {
+        const fetchDropDown = async () => {
+            try {
+                const payload = { EmployeeID: localStorage.getItem("employeeID") };
+                const response = await fetchPostData('Users/GetData_Company', payload);
+                // console.log(response);
+                if (response) {
+                    const data = response;
+                    setDropdownOptions(Array.isArray(data) ? data : []);
+                } else {
+                    toastifyError("Failed to load Dropdown.")
+                }
+                } catch (error: any) {
+                    toastifyError("Error fetching Dropdown");
+                }
+            }
+            fetchDropDown();
+    }, []);
+    
+    const options = dropdownOptions.map(opt => ({
+        value: opt.CompanyID,
+        label: opt.CompanyName
+    }));
+
     const saveChallan = async () => {
         try {
             // Validate required fields
@@ -696,12 +1071,12 @@ export default function CreateChallan() {
 
             // Ensure all calculations are up to date
             await calculateTotals();
-            
+
             console.log('Saving challan:', challanData);
-            
+
             // Here you would typically make an API call to save the data
             // await api.saveChallan(challanData);
-            
+
             alert('Challan saved successfully!');
         } catch (error) {
             console.error('Error saving challan:', error);
@@ -712,7 +1087,7 @@ export default function CreateChallan() {
     const printChallan = () => {
         // Ensure all calculations are up to date before printing
         calculateTotals();
-        
+
         // Add a small delay to ensure state is updated
         setTimeout(() => {
             window.print();
@@ -774,7 +1149,7 @@ export default function CreateChallan() {
             productName: 'M-Sand',
             quantity: 20.0,
             amount: 110000,
-            status: 'Pending',
+            status: 'approved',
             paymentType: 'Credit'
         },
         {
@@ -874,7 +1249,7 @@ export default function CreateChallan() {
     });
 
     // Filtered history data
-    const filteredHistory = challanHistory.filter(challan => {
+    const filteredHistory: any = challanHistory.filter(challan => {
         const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
             challan.consignee.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
             challan.vehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
@@ -889,6 +1264,60 @@ export default function CreateChallan() {
         return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
     });
 
+    const selectCompactStyles: any = {
+        control: (provided: any) => ({
+            ...provided,
+            minHeight: "33px",
+            height: "33px",
+            fontSize: "14px",
+            padding: "0 2px",
+        }),
+        valueContainer: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        indicatorsContainer: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        dropdownIndicator: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        clearIndicator: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+    };
+
+    const resizeableColumns = useResizableColumns(Columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
+    
+    //Download-Excel_File
+    const exportToExcel = () => {
+        // const filteredDataNew = challanItems?.map(item => ({
+        //     'Material-Sub Type Code': item.MaterialSubTypeCode,
+        //     'Description': item.Description,
+        //     'Material Type': item.MaterialTypeID,
+        //     'Status': item.IsActive ? 'Active' : 'Inactive',
+        //     'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
+        //     'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
+        // }));
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredDataNew);
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
     return (
         <>
             <main className="dashboard-main ">
@@ -898,67 +1327,94 @@ export default function CreateChallan() {
                             <div className="py-3 employee-create-challan-card flex flex-wrap items-end gap-4 w-full" >
                                 <div className="flex items-center gap-2">
                                     <label className=" whitespace-nowrap employee-master-metric-label">From :</label>
-                                    <input
-                                        type="date"
-                                        className="border rounded px-2 py-1 w-[130px]"
-                                        defaultValue="2025-07-23"
+                                    <DatePicker
+                                        selected={new Date('2025-07-23')}
+                                        onChange={(date: Date | null) => console.log(date)}
+                                        className="border rounded px-2 py-1 w-[60px]"
+                                        dateFormat="yyyy-MM-dd"
                                     />
-                                    <input
-                                        type="time"
-                                        className="border rounded px-2 py-1 w-[80px]"
-                                        defaultValue="00:00"
+                                    <DatePicker
+                                        selected={new Date('2025-07-23T00:00:00')}
+                                        onChange={(date: Date | null) => console.log(date)}
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="HH:mm"
+                                        className="border rounded px-2 py-1 w-[60px]"
                                     />
 
                                     <label className=" whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
-                                    <input
-                                        type="date"
-                                        className="border rounded px-2 py-1 w-[130px]"
-                                        defaultValue="2025-07-23"
+                                    <DatePicker
+                                        selected={new Date('2025-07-23')}
+                                        onChange={(date: Date | null) => console.log(date)}
+                                        className="border rounded px-2 py-1 w-[60px]"
+                                        dateFormat="yyyy-MM-dd"
                                     />
-                                    <input
-                                        type="time"
-                                        className="border rounded px-2 py-1 w-[80px]"
-                                        defaultValue="19:35"
+                                    <DatePicker
+                                        selected={new Date('2025-07-23T19:35:00')}
+                                        onChange={(date: Date | null) => console.log(date)}
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="HH:mm"
+                                        className="border rounded px-2 py-1 w-[60px]"
                                     />
                                 </div>
 
-                           
                                 <div className="flex items-center gap-2 ml-6">
                                     <label className=" whitespace-nowrap employee-master-metric-label">Consignee :</label>
-                                    <select className="border rounded px-2 py-1 w-[400px]">
-                                        <option value="">Select Consignee</option>
-                                        <option value="ABC">ABC</option>
-                                        <option value="XYZ">XYZ</option>
-                                    </select>
+                                    <Select
+                                        className="w-[200px]"
+                                        placeholder="Select Consignee"
+                                        options={[
+                                            { value: 'ABC', label: 'ABC' },
+                                            { value: 'XYZ', label: 'XYZ' },
+                                            { value: 'ABC Construction Ltd.', label: 'ABC Construction Ltd.' },
+                                            { value: 'XYZ Builders Pvt Ltd', label: 'XYZ Builders Pvt Ltd' }
+                                        ]}
+                                        isClearable
+                                        isSearchable
+                                        styles={{
+                                            control: (provided) => ({
+                                                ...provided,
+                                                minHeight: '32px',
+                                                fontSize: '14px',
+                                            }),
+                                        }}
+                                    />
                                 </div>
 
-                                <div className="flex flex-row-reverse items-center gap-2" >
-                                    <button
-                                        onClick={() => setShowInput(!showInput)}
-                                        className="text-gray-600 border rounded p-2 hover:bg-gray-100 transition"
-                                    >
+                                <div className="flex justify-between items-center w-full">
+                                  <div className="flex flex-row-reverse items-center gap-2" >
+                                    <button onClick={() => setShowInput(!showInput)} className="text-gray-600 border rounded p-2 hover:bg-gray-100 transition flex items-center gap-2">
                                         <FiSearch size={18} />
+                                        Search
                                     </button>
                                     {showInput && (
-                                        <input
-                                            type="text"
-                                            placeholder="Search "
-                                            className="border rounded px-2 py-1 w-[400px] transition-all"
-                                            autoFocus
-                                        />
+                                        <div className="relative">
+                                            <input type="text" placeholder="Search challans..."
+                                                className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none"
+                                                autoFocus
+                                            />
+                                            <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                                        </div>
                                     )}
+                                  </div>
+                                  <div className="flex">
+                                    <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                                        <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel
+                                    </button>
+                                  </div>
                                 </div>
-
-
                             </div>
                         </div>
-
-
 
                         <div className="employee-master-space-y-2">
                             {/* Employee Summary Cards */}
                             <div className="employee-master-summary-grid ">
-                                <div className="employee-master-summary-card">
+                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("pending")}>
                                     <div className="employee-master-summary-content">
                                         <div className="employee-master-summary-item">
                                             <div className="employee-master-icon-container employee-master-icon-blue">
@@ -966,13 +1422,13 @@ export default function CreateChallan() {
                                             </div>
                                             <div>
                                                 <p className="employee-master-metric-label">Pending Challan</p>
-                                                <p className="employee-master-metric-value employee-master-metric-blue">1</p>
+                                                <p className="employee-master-metric-value employee-master-metric-blue">{pendingChallan}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="employee-master-summary-card">
+                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("approved")}>
                                     <div className="employee-master-summary-content">
                                         <div className="employee-master-summary-item">
                                             <div className="employee-master-icon-container employee-master-icon-green">
@@ -981,14 +1437,14 @@ export default function CreateChallan() {
                                             <div>
                                                 <p className="employee-master-metric-label">Approved Challan</p>
                                                 <p className="employee-master-metric-value employee-master-metric-green">
-                                                    {challanData?.status === 'Active' ? 1 : 0}
+                                                    {approvedChallan}
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="employee-master-summary-card">
+                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("rejected")}>
                                     <div className="employee-master-summary-content">
                                         <div className="employee-master-summary-item">
                                             <div className="employee-master-icon-container employee-master-icon-purple">
@@ -997,14 +1453,14 @@ export default function CreateChallan() {
                                             <div>
                                                 <p className="employee-master-metric-label">Rejected Challan</p>
                                                 <p className="employee-master-metric-value employee-master-metric-purple">
-                                                    {new Set([challanData?.department]).size}
+                                                    {rejectedChallan}
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="employee-master-summary-card">
+                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("all")}>
                                     <div className="employee-master-summary-content">
                                         <div className="employee-master-summary-item">
                                             <div className="employee-master-icon-container employee-master-icon-yellow">
@@ -1013,8 +1469,7 @@ export default function CreateChallan() {
                                             <div>
                                                 <p className="employee-master-metric-label">Total Challan</p>
                                                 <p className="employee-master-metric-value employee-master-metric-yellow">
-                                                    {new Date(challanData?.joiningDate).getMonth() === new Date().getMonth() &&
-                                                        new Date(challanData?.joiningDate).getFullYear() === new Date().getFullYear() ? 1 : 0}
+                                                    {pendingChallan + approvedChallan + rejectedChallan}
                                                 </p>
                                             </div>
                                         </div>
@@ -1035,47 +1490,23 @@ export default function CreateChallan() {
 
                                 </div>
                                 <div className="employee-master-card-content" style={{ padding: '0' }}>
-                                    <div className="employee-master-table-container">
-                                        <table className="employee-master-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Check</th>
-                                                    <th>Challan No</th>
-                                                    <th>Challan Date</th>
-                                                    <th>Consignee</th>
-                                                    <th>PartyAddress</th>
-                                                    <th>Vehicle No</th>
-                                                    <th>Product Name</th>
-                                                    <th>Gross Weight</th>
-                                                    <th>Net Weight</th>
-                                                    <th>Less Weight</th>
-                                                    <th>GT Weight</th>
-                                                    <th>Amount</th>
-                                                    <th>Rate</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {challanTableData.map((item) => (
-                                                    <tr key={item.id}>
-                                                         <td><FaEdit className="" size={20}  /></td>
-                                                        <td>{item.challanNo}</td>
-                                                        <td>{item.challanDate}</td>
-                                                        <td>{item.consignee}</td>
-                                                        <td>{item.partyAddress}</td>
-                                                        <td>{item.vehicleNo}</td>
-                                                        <td>{item.productName}</td>
-                                                        <td>{item.grossWeight.toLocaleString()}</td>
-                                                        <td>{item.netWeight.toLocaleString()}</td>
-                                                        <td>{item.lessWeight.toLocaleString()}</td>
-                                                        <td>{item.gtWeight.toLocaleString()}</td>
-                                                        <td>₹{item.amount.toLocaleString()}</td>
-                                                        <td>₹{item.rate.toFixed(2)}</td>
-                                                       
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <DataTable
+                                        columns={resizeableColumns}
+                                        data={challanItems}
+                                        pagination
+                                        paginationPerPage={10}
+                                        paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                                        highlightOnHover
+                                        customStyles={customStyles}
+                                        striped
+                                        responsive
+                                        noDataComponent={
+                                            <div className="text-center py-8 text-gray-500">
+                                                No challan records found
+                                            </div>
+                                        }
+
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -1107,8 +1538,6 @@ export default function CreateChallan() {
 
                                     {/* Modal Body */}
                                     <div className="modal-body p-2">
-
-
                                         <div className="row align-items-center">
 
                                             <div className="col-xl-5">
@@ -1131,14 +1560,14 @@ export default function CreateChallan() {
                                                             type="text"
                                                             id="date-pick-bano"
                                                             style={{ flex: 1 }}
-                                                            readOnly=""
+                                                            readOnly={true}
                                                         />
                                                         <input
                                                             type="text"
                                                             id="product-desc-bano-<?=uniqid()?>"
                                                             defaultValue="Auto Generated"
                                                             style={{ flex: 1 }}
-                                                            disabled=""
+                                                            disabled={true}
                                                         />
                                                     </div>
                                                 </div>
@@ -1153,7 +1582,16 @@ export default function CreateChallan() {
                                                         Date/Time
                                                     </label>
                                                     <div className="product-des-input flex-grow-1">
-                                                        <input type="text" id="generic-desc" />
+                                                        <DatePicker
+                                                            selected={new Date()}
+                                                            onChange={(date: Date | null) => console.log(date)}
+                                                            showTimeSelect
+                                                            showTimeSelectOnly
+                                                            timeIntervals={15}
+                                                            timeCaption="Time"
+                                                            dateFormat="HH:mm"
+                                                            className="border rounded px-2 py-1 w-full"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1192,10 +1630,7 @@ export default function CreateChallan() {
                                                         Print
                                                     </button>
                                                 </div>
-
                                             </div>
-
-
 
 
                                             <div className="col-xxl-9 col-12 mt-2">
@@ -1204,15 +1639,20 @@ export default function CreateChallan() {
                                                         <div className="form-block ">
                                                             <div className="row align-items-center" style={{ rowGap: 6 }}>
                                                                 <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="ritcNo">
-                                                                        Consignee<span>*</span>
-                                                                    </label>
+                                                                    <label htmlFor="ritcNo"> Consignee<span>*</span> </label>
                                                                 </div>
                                                                 <div className="col-xl-9 col-12">
-                                                                    <select name="" id="ritcNo" style={{ width: "100%" }}>
-                                                                        <option value={54075290}>54075290</option>
-                                                                        <option value={54075291}>54075291</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select Consignee"
+                                                                        options={[
+                                                                            { value: '54075290', label: '54075290' },
+                                                                            { value: '54075291', label: '54075291' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-3">
                                                                     <label htmlFor="prType">
@@ -1229,15 +1669,30 @@ export default function CreateChallan() {
                                                                     />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="ritcNo">
-                                                                        State<span>*</span>
-                                                                    </label>
+                                                                    <label htmlFor="ritcNo">State<span>*</span></label>
                                                                 </div>
                                                                 <div className="col-xl-9 col-12">
-                                                                    <select name="" id="ritcNo" style={{ width: "100%" }}>
-                                                                        <option value="Maharashtra">Maharashtra</option>
-                                                                        <option value="Gujarat">Gujarat</option>
-                                                                    </select>
+                                                                    <Select
+                                                                      value={state.find(st => st.Description  === challanData.state) ? 
+                                                                        { value: challanData.state,
+                                                                          label: challanData.state 
+                                                                        } : null
+                                                                      }
+                                                                        className="w-full"
+                                                                        placeholder="Select State"
+                                                                        options={state.map((st) => ({
+                                                                          value: st.Description,
+                                                                          label: st.Description,
+                                                                        }))}
+                                                                        onChange={(selectedOption) =>
+                                                                           setChallanData(prev => ({
+                                                                           ...prev,
+                                                                           state: selectedOption ? selectedOption.value : '',
+                                                                        }))}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-3">
                                                                     <label htmlFor="prUnit">
@@ -1246,10 +1701,16 @@ export default function CreateChallan() {
                                                                     </label>
                                                                 </div>
                                                                 <div className="col-xl-9 col-12">
-                                                                    <select name="" id="prUnit" style={{ width: "100%" }}>
-                                                                        <option value="BANO">BANO</option>
-                                                                        <option value="BANO">BANO</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select District"
+                                                                        options={[
+                                                                            { value: 'BANO', label: 'BANO' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-3">
                                                                     <label htmlFor="prUnitPrice">
@@ -1257,10 +1718,20 @@ export default function CreateChallan() {
                                                                     </label>
                                                                 </div>
                                                                 <div className="col-xl-9 col-12">
-                                                                    <select name="" id="prUnitPrice" style={{ width: "100%" }}>
-                                                                        <option value={100.0}>100.000000</option>
-                                                                        <option value={100.0}>100.000000</option>
-                                                                    </select>
+                                                                    <Select className="w-full" placeholder="Select PIN"
+                                                                        options={[
+                                                                            { value: '100.0', label: '100.000000' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
+                                                                </div>
+                                                                <div className="single-info-block col-xl-9 col-12 w-full">
+                                                                    <label htmlFor="prAmountUSD">PIN #</label>
+                                                                </div>
+                                                                <div className="col-xl-9 col-12">
+                                                                    <input type="text" id="prAmountUSD" defaultValue={100.0} />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-3">
                                                                     <label htmlFor="prAmountUSD">Contact#</label>
@@ -1275,7 +1746,7 @@ export default function CreateChallan() {
                                                                     <input
                                                                         type="text"
                                                                         id="prAmountINR"
-                                                                        readOnly=""
+                                                                        readOnly={true}
                                                                         defaultValue={100.0}
                                                                     />
                                                                 </div>
@@ -1303,19 +1774,32 @@ export default function CreateChallan() {
                                                                     <label htmlFor="prCTH">Vehicle Type</label>
                                                                 </div>
                                                                 <div className="col-xl-7 col-12">
-                                                                    <select name="" id="prCTH" style={{ width: "100%" }}>
-                                                                        <option value="BANO">BANO</option>
-                                                                        <option value="BANO">BANO</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select "
+                                                                        options={[
+                                                                            { value: 'BANO', label: 'BANO' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-5">
                                                                     <label htmlFor="prCET">Vehicle No.</label>
                                                                 </div>
                                                                 <div className="col-xl-7 col-12">
-                                                                    <select name="" id="prCET" style={{ width: "100%" }}>
-                                                                        <option value="NOEXCISE">NOEXCISE</option>
-                                                                        <option value="DEPB">DEPB</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select "
+                                                                        options={[
+                                                                            { value: 'NOEXCISE', label: 'NOEXCISE' },
+                                                                            { value: 'DEPB', label: 'DEPB' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-5">
                                                                     <label htmlFor="prCode">Driver Name</label>
@@ -1371,10 +1855,17 @@ export default function CreateChallan() {
                                                                     <label htmlFor="SchemeCode">Name</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <select name="" id="SchemeCode" style={{ width: "100%" }}>
-                                                                        <option value="Raw Material">Raw Material</option>
-                                                                        <option value="Finished Goods">Finished Goods</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select Name"
+                                                                        options={[
+                                                                            { value: 'Raw Material', label: 'Raw Material' },
+                                                                            { value: 'Finished Goods', label: 'Finished Goods' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-2">
                                                                     <label htmlFor="EximDesc">Address</label>
@@ -1391,32 +1882,52 @@ export default function CreateChallan() {
                                                                     <label htmlFor="noten">State</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <select name="" id="noten" style={{ width: "100%" }}>
-                                                                        <option value="Raw Material">Raw Material</option>
-                                                                        <option value="Finished Goods">Finished Goods</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select State"
+                                                                        options={[
+                                                                            { value: 'Raw Material', label: 'Raw Material' },
+                                                                            { value: 'Finished Goods', label: 'Finished Goods' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-2">
                                                                     <label htmlFor="Sno2">District</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <select name="" id="Sno2" style={{ width: "100%" }}>
-                                                                        <option value="BANO1">BANO1</option>
-                                                                        <option value="BANO2">BANO2</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select District"
+                                                                        options={[
+                                                                            { value: 'BANO1', label: 'BANO1' },
+                                                                            { value: 'BANO2', label: 'BANO2' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                                 <div className="single-info-block col-xl-2">
                                                                     <label htmlFor="SchemDes">PIN</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <select name="" id="SchemDes" style={{ width: "100%" }}>
-                                                                        <option value="BANO">BANO</option>
-                                                                    </select>
+                                                                    <Select
+                                                                        className="w-full"
+                                                                        placeholder="Select PIN"
+                                                                        options={[
+                                                                            { value: 'BANO', label: 'BANO' }
+                                                                        ]}
+                                                                        isClearable
+                                                                        isSearchable
+                                                                        styles={selectCompactStyles}
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <div className="col-12 mt-2">
                                                     <div className="product-details-table mb-2">
@@ -1425,16 +1936,17 @@ export default function CreateChallan() {
                                                                 <div className="row g-3 align-items-center">
                                                                     <div className="col-md-2 mt-0">
                                                                         <label className="MAINTABLE_LABEL">Product Name</label>
-                                                                        <select
-                                                                            name=""
-                                                                            id="CountryOrigin"
-                                                                            style={{ width: "100%" }}
-                                                                        >
-                                                                            <option value="Korea Rebublic of">
-                                                                                Korea Rebublic of
-                                                                            </option>
-                                                                            <option value="US Rebublic of">US Rebublic of</option>
-                                                                        </select>
+                                                                        <Select
+                                                                            className="w-full"
+                                                                            placeholder="Select Product"
+                                                                            options={[
+                                                                                { value: 'Korea Rebublic of', label: 'Korea Rebublic of' },
+                                                                                { value: 'US Rebublic of', label: 'US Rebublic of' }
+                                                                            ]}
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
                                                                     </div>
                                                                     <div className="col mt-0" style={{ minWidth: 130 }}>
                                                                         <label className="MAINTABLE_LABEL" htmlFor="SchemDes">
@@ -1456,15 +1968,24 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     <div className="col mt-0" style={{ minWidth: 130 }}>
                                                                         <label className="MAINTABLE_LABEL">GT Weight</label>
-                                                                        <input type="number" id="SchemDes" readOnly="" />
+                                                                        <input type="number" id="SchemDes" readOnly={true} />
                                                                     </div>
                                                                     <div className="col mt-0" style={{ minWidth: 130 }}>
                                                                         <label className="MAINTABLE_LABEL">Amount</label>
-                                                                        <input type="number" id="SchemDes" readOnly="" />
+                                                                        <input type="number" id="SchemDes" readOnly={true} />
                                                                     </div>
                                                                     <div className="col-md-2 mt-0">
                                                                         <label className="MAINTABLE_LABEL">Date/Time</label>
-                                                                        <input type="text" id="SchemDes" readOnly="" />
+                                                                        <DatePicker
+                                                                            selected={new Date()}
+                                                                            onChange={(date: Date | null) => console.log(date)}
+                                                                            showTimeSelect
+                                                                            showTimeSelectOnly
+                                                                            timeIntervals={15}
+                                                                            timeCaption="Time"
+                                                                            dateFormat="HH:mm"
+                                                                            className="border rounded px-2 py-1 w-full"
+                                                                        />
                                                                     </div>
                                                                     <div className="col">
                                                                         <button className="btn btn-warning p-1 py-0">
@@ -1517,7 +2038,7 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     <div className="col-md-2 mt-0">
                                                                         <label className="MAINTABLE_LABEL">Date/Time</label>
-                                                                        <input type="text" id="SchemDes" readOnly="" />
+                                                                        <input type="text" id="SchemDes" readOnly={true} />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1533,16 +2054,18 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                         <label className="MAINTABLE_LABEL">Loading</label>
-                                                                        <select
-                                                                            name=""
-                                                                            id="CountryOrigin"
-                                                                            style={{ width: "100%" }}
-                                                                        >
-                                                                            <option value="Korea Rebublic of">
-                                                                                Korea Rebublic of
-                                                                            </option>
-                                                                            <option value="US Rebublic of">US Rebublic of</option>
-                                                                        </select>
+                                                                        <Select
+                                                                            placeholder="Select"
+                                                                            options={[
+                                                                                { value: 'Korea Republic of', label: 'Korea Republic of' },
+                                                                                { value: 'US Republic of', label: 'US Republic of' },
+                                                                            ]}
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            menuPlacement='top'
+                                                                            styles={selectCompactStyles}
+                                                                        />
+
                                                                     </div>
                                                                     <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                         <label className="MAINTABLE_LABEL">Commission</label>
@@ -1561,16 +2084,18 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     <div className="col-md-2 mt-0">
                                                                         <label className="MAINTABLE_LABEL">Tp Amount</label>
-                                                                        <select
-                                                                            name=""
-                                                                            id="CountryOrigin"
-                                                                            style={{ width: "100%" }}
-                                                                        >
-                                                                            <option value="Korea Rebublic of">
-                                                                                Korea Rebublic of
-                                                                            </option>
-                                                                            <option value="US Rebublic of">US Rebublic of</option>
-                                                                        </select>
+                                                                        <Select
+                                                                            className="w-full"
+                                                                            placeholder="Select Product"
+                                                                            options={[
+                                                                                { value: 'Korea Rebublic of', label: 'Korea Rebublic of' },
+                                                                                { value: 'US Rebublic of', label: 'US Rebublic of' }
+                                                                            ]}
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            menuPlacement='top'
+                                                                            styles={selectCompactStyles}
+                                                                        />
                                                                     </div>
                                                                     <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                         <label className="MAINTABLE_LABEL">Freight Amount</label>
@@ -1580,6 +2105,29 @@ export default function CreateChallan() {
                                                                         <label className="MAINTABLE_LABEL">Total</label>
                                                                         <input type="number" id="SchemDes" />
                                                                     </div>
+                                                                    <div className="col-md-3 mt-0">
+                                                                        <label  className="MAINTABLE_LABEL">Company Id</label>
+                                                                        <Select
+                                                                            value={dropdown}
+                                                                            onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
+                                                                            options={options}
+                                                                            isMulti
+                                                                            isClearable
+                                                                            closeMenuOnSelect={false}
+                                                                            hideSelectedOptions={true}
+                                                                            placeholder="Select Company"
+                                                                            className="basic-multi-select"
+                                                                            styles={{
+                                                                              ...multiValue,
+                                                                              valueContainer: (provided) => ({
+                                                                                ...provided,
+                                                                                  maxHeight: "60px",
+                                                                                  overflowY: "auto",
+                                                                                  flexWrap: "wrap",
+                                                                                }),
+                                                                            }}
+                                                                        />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1588,31 +2136,13 @@ export default function CreateChallan() {
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
                         )}
-
-
-
-
-
-
-
                     </div>
-
-
-
-
                 </div>
-
-
-
-
             </main>
-
         </>
     );
 }
