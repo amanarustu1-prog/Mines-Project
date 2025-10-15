@@ -4,9 +4,13 @@ import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
-import { customStyles } from '@/common/Utility';
+import { customStyles, multiValue } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
 import { CloudCog } from 'lucide-react';
+import ConfirmModal from '@/common/ConfirmModal';
+import { getShowingDateText } from '@/common/DateFormat';
+import * as XLSX from 'xlsx';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components
 const Settings = ({ className }: { className?: string }) => (
@@ -28,36 +32,6 @@ const Save = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const Edit3 = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-    </svg>
-);
-
-const Trash2 = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-    </svg>
-);
-
-const Download = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-    </svg>
-);
-
-const Search = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-);
-
-const List = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-    </svg>
-);
-
 const Wrench = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 011-1h1a2 2 0 100-4H7a1 1 0 01-1-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
@@ -76,6 +50,24 @@ const Calendar = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const Edit3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+);
+
+const ToggleLeft = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+);
+
+const ToggleRight = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+);
+
 // Types
 interface VehicleServiceType {
     VehicleServiceTypeID?: number;
@@ -88,6 +80,7 @@ interface VehicleServiceType {
     IsActive?: boolean;
     CreatedDate?: string;
     LastUpdated?: string;
+    UpdatedDate?: string;
 }
 
 interface MaintenanceType {
@@ -97,11 +90,17 @@ interface MaintenanceType {
     MaintenanceTypeCode: string;
     Frequency: string;
     IsActive: boolean;
+    VehicleServiceTypeID: string;
 }
 
 interface Props {
     baseUrl?: string;
     companyId?: number | string | null;
+}
+
+interface Maintenance {
+    MaintenanceTypeID: number;
+    Description: string;
 }
 
 // Status options
@@ -116,8 +115,16 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     const [showVehicleServiceTypeModal, setShowVehicleServiceTypeModal] = useState(false);
     const [editingVehicleServiceType, setEditingVehicleServiceType] = useState<VehicleServiceType | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('all');
+    const [filter, setFilter] = useState<"active" | "inactive" | "all">("active");
+    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
+    const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+    const [dropdown, setDropdown] = useState<any[]>([]);
+    const [maintenanceType, setMaintenanceType] = useState<any[]>([]);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [maintenanceGroup, setMaintenanceGroup] = useState<Maintenance[]>([]);
 
     const [vehicleServiceTypes, setVehicleServiceTypes] = useState<VehicleServiceType[]>([]);
     const [maintenanceTypes, setMaintenanceTypes] = useState<MaintenanceType[]>([]);
@@ -136,40 +143,17 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
     // API Functions
     const getCompanyId = () => Number(companyId) || 0;
 
-    const fetchMaintenanceTypes = async () => {
-        try {
-            const response = await fetchPostData('api/VehicleServiceType/GetDataDropDown_MaintenanceType', {
-                CompanyId: getCompanyId()
-            });
-
-           
-
-            if (response && Array.isArray(response)) {
-               
-                setMaintenanceTypes(response);
-            
-            } 
-        } catch (error: any) {
-            console.error('Error fetching maintenance types:', error);
-            console.error('Error details:', {
-                message: error.message,
-                status: error.response?.status,
-                data: error.response?.data
-            });
-            toastifyError('Error fetching maintenance types');
-        }
-    };
-
     const fetchVehicleServiceTypes = async () => {
         try {
             setLoading(true);
-            const isActive = filterStatus === 'all' ? '' : filterStatus === 'active' ? true : false;
+            const isActive = filter === 'all' ? '' : filter === 'active' ? true : false;
 
-            const response = await fetchPostData('api/VehicleServiceType/GetData_VehicleServiceType', {
-                CompanyId: getCompanyId(),
-                IsActive: isActive
+            const response = await fetchPostData('VehicleServiceType/GetData_VehicleServiceType', {
+                CompanyId: Number(localStorage.getItem("companyID")),
+                IsActive: 1
             });
-        
+            // console.log(response);
+
 
             if (response && Array.isArray(response)) {
                 setVehicleServiceTypes(response);
@@ -200,19 +184,19 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
 
     const insertVehicleServiceType = async (data: any) => {
         try {
-            const response = await fetchPostData('api/VehicleServiceType/Insert_VehicleServiceType', {
-                CompanyId: getCompanyId(),
+            const response = await fetchPostData('VehicleServiceType/Insert_VehicleServiceType', {
+                CompanyId: Number(localStorage.getItem("companyID")),
                 ServiceTypeName: data.ServiceTypeName,
                 MaintenanceTypeID: data.MaintenanceTypeID,
                 KMInterval: data.KMInterval,
                 Days: data.Days,
                 VehicleServiceTypeCode: data.VehicleServiceTypeCode,
-             
+
             });
 
             if (response) {
                 toastifySuccess('Vehicle service type added successfully');
-               
+
                 setVehicleServiceTypes(prev => [
                     {
                         ...data,
@@ -221,13 +205,13 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                     },
                     ...prev
                 ]);
-                await fetchVehicleServiceTypes(); 
+                await fetchVehicleServiceTypes();
                 return true;
             } else {
                 throw new Error('Invalid response from server');
             }
         } catch (error: any) {
-            console.error('Error inserting vehicle service type:', error);
+            // console.error('Error inserting vehicle service type:', error);
             toastifyError(`Error adding vehicle service type: ${error.response?.data?.message || error.message}`);
             return false;
         }
@@ -235,15 +219,15 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
 
     const updateVehicleServiceType = async (data: any, id: number) => {
         try {
-            const response = await fetchPostData('api/VehicleServiceType/Update_VehicleServiceType', {
-                CompanyId: getCompanyId(),
+            const response = await fetchPostData('VehicleServiceType/Update_VehicleServiceType', {
+                CompanyId: Number(localStorage.getItem("companyID")),
                 ServiceTypeName: data.ServiceTypeName,
                 MaintenanceTypeID: data.MaintenanceTypeID,
                 KMInterval: data.KMInterval,
                 Days: data.Days,
                 VehicleServiceTypeCode: data.VehicleServiceTypeCode,
                 VehicleServiceTypeID: id,
-             
+
             });
 
             if (response) {
@@ -252,19 +236,24 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                 return true;
             }
         } catch (error: any) {
-            console.error('Error updating vehicle service type:', error);
+            // console.error('Error updating vehicle service type:', error);
             toastifyError('Error updating vehicle service type');
             return false;
         }
     };
 
     const deleteVehicleServiceType = async (id: number) => {
+        const item = maintenanceTypes.find(x => x.VehicleServiceTypeID === id);
+        if (!item) return;
+
+        const newStatus = item.IsActive ? 0 : 1;
+
+        const payload = {
+            VehicleServiceTypeID: id,
+            IsActive: newStatus,
+        };
         try {
-            const response = await fetchPostData('api/VehicleServiceType/Delete_VehicleServiceType', {
-                VehicleServiceTypeID: id,
-                IsActive: false,
-             
-            });
+            const response = await fetchPostData('VehicleServiceType/Delete_VehicleServiceType', payload);
 
             if (response) {
                 toastifySuccess('Vehicle service type deleted successfully');
@@ -272,7 +261,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                 return true;
             }
         } catch (error: any) {
-            console.error('Error deleting vehicle service type:', error);
+            // console.error('Error deleting vehicle service type:', error);
             toastifyError('Error deleting vehicle service type');
             return false;
         }
@@ -280,7 +269,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
 
     const getSingleVehicleServiceType = async (id: number) => {
         try {
-            const response = await fetchPostData('api/VehicleServiceType/GetSingleData_VehicleServiceType', {
+            const response = await fetchPostData('VehicleServiceType/GetSingleData_VehicleServiceType', {
                 VehicleServiceTypeID: id
             });
 
@@ -289,7 +278,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             }
             return null;
         } catch (error: any) {
-            console.error('Error fetching single vehicle service type:', error);
+            // console.error('Error fetching single vehicle service type:', error);
             toastifyError('Error fetching vehicle service type details');
             return null;
         }
@@ -301,48 +290,33 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             type.ServiceTypeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             type.VehicleServiceTypeCode.toLowerCase().includes(searchTerm.toLowerCase());
 
-        const matchesStatus = filterStatus === 'all' ||
-            (filterStatus === 'active' && type.IsActive) ||
-            (filterStatus === 'inactive' && !type.IsActive);
+        const matchesStatus = filter === 'all' ||
+            (filter === 'active' && type.IsActive) ||
+            (filter === 'inactive' && !type.IsActive);
 
         return matchesSearch && matchesStatus;
     });
 
     // useEffect hooks
     useEffect(() => {
-        console.log('Component mounted or filterStatus changed:', filterStatus);
         fetchVehicleServiceTypes();
-    }, [filterStatus]);
+    }, [filter]);
 
     // Initial load effect - only run if no data
     useEffect(() => {
-        console.log('Initial mount check, current data length:', vehicleServiceTypes.length);
+        // console.log('Initial mount check, current data length:', vehicleServiceTypes.length);
         if (vehicleServiceTypes.length === 0) {
-            console.log('No data found, fetching...');
             fetchVehicleServiceTypes();
         }
-        fetchMaintenanceTypes();
-    }, []); // Run only on mount
+    }, []);
 
-    // Debug effect to log data changes
-    useEffect(() => {
-        console.log('Vehicle service types updated:', vehicleServiceTypes);
-        console.log('Filtered vehicle service types:', filteredVehicleServiceTypes);
-    }, [vehicleServiceTypes, filteredVehicleServiceTypes]);
-
-    // Handle save
     const handleSaveVehicleServiceType = async () => {
-        console.log('Saving vehicle service type:', vehicleServiceTypeForm);
-        console.log('Editing mode:', editingVehicleServiceType);
-
-        if (!vehicleServiceTypeForm.ServiceTypeName || !vehicleServiceTypeForm.MaintenanceTypeID) {
+        if (!vehicleServiceTypeForm.ServiceTypeName || !vehicleServiceTypeForm.VehicleServiceTypeCode) {
             toastifyError('Please fill in all required fields');
             return;
         }
 
         if (editingVehicleServiceType) {
-            // Update existing vehicle service type
-            console.log('Updating existing vehicle service type:', editingVehicleServiceType.VehicleServiceTypeID);
             const success = await updateVehicleServiceType(vehicleServiceTypeForm, editingVehicleServiceType.VehicleServiceTypeID!);
             if (success) {
                 setEditingVehicleServiceType(null);
@@ -351,7 +325,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             }
         } else {
             // Create new vehicle service type
-            console.log('Creating new vehicle service type');
+            // console.log('Creating new vehicle service type');
             const success = await insertVehicleServiceType(vehicleServiceTypeForm);
             if (success) {
                 setShowVehicleServiceTypeModal(false);
@@ -392,19 +366,77 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             }
             setShowVehicleServiceTypeModal(true);
         } catch (error) {
-            console.error('Error loading vehicle service type for edit:', error);
+            // console.error('Error loading vehicle service type for edit:', error);
             toastifyError('Error loading vehicle service type details');
         } finally {
             setLoading(false);
         }
     };
 
-    // Handle delete
-    const handleDeleteVehicleServiceType = async (id: number) => {
-        if (window.confirm('Are you sure you want to delete this vehicle service type?')) {
-            await deleteVehicleServiceType(id);
+    //Company-Dropdown
+    useEffect(() => {
+        const fetchDropDown = async () => {
+            try {
+                const payload = { EmployeeID: localStorage.getItem("employeeID") };
+                const response = await fetchPostData('Users/GetData_Company', payload);
+                if (response) {
+                    const data = response;
+                    setDropdownOptions(Array.isArray(data) ? data : []);
+                } else {
+                    toastifyError("Failed to load Dropdown.")
+                }
+            } catch (error: any) {
+                toastifyError("Error fetching Dropdown");
+            }
         }
-    };
+        fetchDropDown();
+    }, []);
+
+    const options = dropdownOptions.map(opt => ({
+        value: opt.CompanyID,
+        label: opt.CompanyName
+    }));
+
+    useEffect(() => {
+        const fetchMaintenanceTypes = async () => {
+          try {
+            const res = await fetchPostData('MaintenanceType/GetDataDropDown_MaintenanceType', {
+            CompanyId: localStorage.getItem('companyID'),
+          });
+          if (Array.isArray(res)) {
+            setMaintenanceType(res.map((x: any) => ({
+            value: x.MaintenanceTypeID,
+            label: x.Description,
+          })));
+          }
+          } catch (err) {
+            toastifyError('Error fetching maintenance types');
+          }
+        };
+        fetchMaintenanceTypes();
+    }, []);
+
+
+    useEffect(() => {
+        const fetchGroupOptions = async () => {
+            try {
+                const payload = { CompanyId: localStorage.getItem("companyID") };
+                const response = await fetchPostData('MaintenanceType/GetDataDropDown_MaintenanceType', payload);
+                // console.log(response);
+
+                const formatted = response.map((item: any) => ({
+                    value: item.MaintenanceTypeID,
+                    label: item.Description,
+                }));
+                // console.log("NEW"+formatted.value);
+
+                setMaintenanceType(formatted);
+            } catch (error) {
+                toastifyError("Error fetching Material Groups");
+            }
+        };
+        fetchGroupOptions();
+    }, []);
 
     // Reset form
     const resetForm = () => {
@@ -432,11 +464,13 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         return Object.keys(intervalCount).length;
     };
 
-
-  
-
-
     const overviewColumns: any[] = [
+        {
+            name: 'Code',
+            selector: (row: VehicleServiceType) => row.VehicleServiceTypeCode,
+            sortable: true,
+            cell: (row: VehicleServiceType) => <span className="vehicle-service-type-font-medium">{row.VehicleServiceTypeCode}</span>
+        },
         {
             name: 'Service Type Name',
             selector: (row: VehicleServiceType) => row.ServiceTypeName,
@@ -446,14 +480,19 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
         {
             name: 'Maintenance Type',
             selector: (row: VehicleServiceType) => {
-                const maintenanceType = maintenanceTypes.find(mt => mt.MaintenanceTypeID === row.MaintenanceTypeID);
-                return maintenanceType ? maintenanceType.Description : 'Unknown';
+              const found = maintenanceType.find(mt => mt.value === row.MaintenanceTypeID);
+              return found ? found.label : 'N/A';
             },
             sortable: true,
         },
         {
             name: 'KM Interval',
             selector: (row: VehicleServiceType) => row.KMInterval,
+            sortable: true,
+        },
+        {
+            name: 'Days',
+            selector: (row: VehicleServiceType) => row.Days,
             sortable: true,
         },
         {
@@ -466,269 +505,339 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                 </span>
             )
         },
+        {
+            name: 'Created Date',
+            selector: (row: MaintenanceType) => getShowingDateText(row.CreatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Last Modified',
+            selector: (row: MaintenanceType) => getShowingDateText(row.UpdatedDate),
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: (row: VehicleServiceType) => (
+                <div className="maintenance-type-flex maintenance-type-gap-1">
+                    <button onClick={() => { deleteVehicleServiceType(row.VehicleServiceTypeID!); setShowModal(true); }}
+                        className={`list-button ghost ${row.IsActive ? 'danger' : 'success'}`} title={row.IsActive ? 'Deactivate' : 'Activate'}>
+                        {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
+                    </button>
+
+                    <button onClick={() => handleEditVehicleServiceType(row)} className="list-button ghost primary" title="Edit">
+                        <Edit3 className="maintenance-type-icon-sm" />
+                    </button>
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
     ];
+  
+    const resizeableColumns = useResizableColumns(overviewColumns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
+
+    const exportToExcel = () => {
+        const filteredDataNew = vehicleServiceTypes?.map(item => ({
+            'Vehicle Service Type Code': item.VehicleServiceTypeCode,
+            'Service Type Name': item.ServiceTypeName,
+            'Maintenance Type': item.MaintenanceTypeID,
+            'KMInterval': item.KMInterval,
+            'Days': item.Days,
+            'Status': item.IsActive ? 'Active' : 'Inactive',
+            'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
+            'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
+        }));
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredDataNew);
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
 
     return (
-        <div className="vehicle-service-type">
-            {/* Header */}
-            <div className="vehicle-service-type-header">
-                <div className="vehicle-service-type-header-content">
-                    <div className="vehicle-service-type-title-section">
-                        <Wrench className="vehicle-service-type-header-icon" />
-                        <div>
-                            <h1 className="vehicle-service-type-title">Vehicle Service Type Management</h1>
-                            <p className="vehicle-service-type-subtitle">
-                                Manage vehicle service types, maintenance schedules, and service intervals
-                            </p>
-                        </div>
-                    </div>
-                    <div className="vehicle-service-type-header-actions">
-                        <button
-                            onClick={() => {
-                                console.log('Add Vehicle Service Type button clicked');
-                                setEditingVehicleServiceType(null);
-                                resetForm();
-                                setShowVehicleServiceTypeModal(true);
-                            }}
-                            className="vehicle-service-type-btn vehicle-service-type-btn-primary"
-                        >
-                            <Plus className="vehicle-service-type-icon" />
-                            Add Vehicle Service Type
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="vehicle-service-type-main">
-
-                <div className="vehicle-service-type-tab-content">
-                    <div className="vehicle-service-type-section-header">
-
-                    </div>
-
-                    {/* Statistics Cards */}
-                    <div className="vehicle-service-type-grid vehicle-service-type-grid-cols-1 vehicle-service-type-md-grid-cols-4 vehicle-service-type-gap-6 vehicle-service-type-mb-6">
-                        <div className="vehicle-service-type-card">
-
-                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
-                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-blue">
-                                    <Wrench className="vehicle-service-type-icon" />
-                                </div>
-                                <div>
-                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Total Types</p>
-                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getTotalVehicleServiceTypes()}</p>
-                                </div>
+        <>
+            <div className="vehicle-service-type">
+                {/* Header */}
+                <div className="vehicle-service-type-header">
+                    <div className="vehicle-service-type-header-content">
+                        <div className="vehicle-service-type-title-section">
+                            <Wrench className="vehicle-service-type-header-icon" />
+                            <div>
+                                <h1 className="vehicle-service-type-title">Vehicle Service Type Management</h1>
+                                <p className="vehicle-service-type-subtitle">
+                                    Manage vehicle service types, maintenance schedules, and service intervals
+                                </p>
                             </div>
-
                         </div>
-
-                        <div className="vehicle-service-type-card">
-
-                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
-                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-green">
-                                    <Settings className="vehicle-service-type-icon" />
-                                </div>
-                                <div>
-                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Active Types</p>
-                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getActiveVehicleServiceTypes()}</p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div className="vehicle-service-type-card">
-
-                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
-                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-yellow">
-                                    <Calendar className="vehicle-service-type-icon" />
-                                </div>
-                                <div>
-                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Inactive Types</p>
-                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getInactiveVehicleServiceTypes()}</p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div className="vehicle-service-type-card">
-
-                            <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
-                                <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-purple">
-                                    <BarChart3 className="vehicle-service-type-icon" />
-                                </div>
-                                <div>
-                                    <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Interval Types</p>
-                                    <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getVehicleServiceTypesByInterval()}</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    {/* Recent Vehicle Service Types */}
-                    <div className="vehicle-service-type-card">
-                        <div className="vehicle-service-type-card-content">
-                            <DataTable
-                                columns={overviewColumns}
-                                data={vehicleServiceTypes}
-                                pagination
-                                paginationPerPage={10}
-                                paginationRowsPerPageOptions={[5, 10, 20, 50]}
-                                highlightOnHover
-                                customStyles={customStyles}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>
-
-            {/* Vehicle Service Type Modal */}
-            {showVehicleServiceTypeModal && (
-                <div className="vehicle-service-type-modal-overlay" onClick={() => setShowVehicleServiceTypeModal(false)}>
-                    <div className="vehicle-service-type-modal vehicle-service-type-modal-lg" onClick={(e) => e.stopPropagation()}>
-                        <div className="vehicle-service-type-modal-header">
-                            <h3 className="vehicle-service-type-modal-title">
-                                {editingVehicleServiceType ? 'Edit Vehicle Service Type' : 'Add New Vehicle Service Type'}
-                            </h3>
+                        <div className="vehicle-service-type-header-actions">
                             <button
-                                onClick={() => setShowVehicleServiceTypeModal(false)}
-                                className="vehicle-service-type-modal-close"
-                            >
-                                ×
-                            </button>
-                        </div>
-                        <div className="vehicle-service-type-modal-content">
-                            <div className="vehicle-service-type-space-y-4">
-                                <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
-                                    <div>
-                                        <label className="vehicle-service-type-label">
-                                            Service Type Name <span style={{ color: 'red' }}>*</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={vehicleServiceTypeForm.ServiceTypeName}
-                                            onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, ServiceTypeName: e.target.value })}
-                                            className="vehicle-service-type-input"
-                                            placeholder="Service type name"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="vehicle-service-type-label">
-                                            Maintenance Type <span style={{ color: 'red' }}>*</span>
-                                        </label>
-                                        <Select
-                                            value={maintenanceTypes.find(type => type.MaintenanceTypeID === vehicleServiceTypeForm.MaintenanceTypeID)}
-                                            onChange={(selectedOption) => setVehicleServiceTypeForm({
-                                                ...vehicleServiceTypeForm,
-                                                MaintenanceTypeID: selectedOption ? selectedOption.MaintenanceTypeID : 0
-                                            })}
-                                            options={maintenanceTypes.map(type => ({
-                                                value: type.MaintenanceTypeID,
-                                                label: `${type.Description} - ${type.MaintenanceTypeCode}`,
-                                                ...type
-                                            }))}
-                                            placeholder="Select Maintenance Type"
-                                            styles={{
-                                                control: (provided) => ({
-                                                    ...provided,
-                                                    minHeight: '48px',
-                                                    border: '1px solid #d1d5db',
-                                                    borderRadius: '0.5rem',
-                                                    fontSize: '0.875rem',
-                                                    '&:hover': {
-                                                        borderColor: '#9ca3af',
-                                                    },
-                                                }),
-                                                placeholder: (provided) => ({
-                                                    ...provided,
-                                                    color: '#6b7280',
-                                                }),
-                                            }}
-                                            className="react-select-container"
-                                            classNamePrefix="react-select"
-                                            isSearchable={true}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
-                                    <div>
-                                        <label className="vehicle-service-type-label">KM Interval</label>
-                                        <input
-                                            type="number"
-                                            value={vehicleServiceTypeForm.KMInterval}
-                                            onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, KMInterval: Number(e.target.value) })}
-                                            className="vehicle-service-type-input"
-                                            placeholder="KM interval"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="vehicle-service-type-label">Days</label>
-                                        <input
-                                            type="number"
-                                            value={vehicleServiceTypeForm.Days}
-                                            onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, Days: Number(e.target.value) })}
-                                            className="vehicle-service-type-input"
-                                            placeholder="Days"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="vehicle-service-type-label">Service Type Code</label>
-                                    <input
-                                        type="text"
-                                        value={vehicleServiceTypeForm.VehicleServiceTypeCode}
-                                        onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, VehicleServiceTypeCode: e.target.value })}
-                                        className="vehicle-service-type-input"
-                                        placeholder="Service type code"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="vehicle-service-type-label">Status</label>
-                                    <div>
-                                        <label className="vehicle-service-type-label">
-                                            <input
-                                                type="checkbox"
-                                                checked={vehicleServiceTypeForm.IsActive}
-                                                onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, IsActive: e.target.checked })}
-                                                className="mr-2"
-                                            />
-                                            Active
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="vehicle-service-type-modal-footer">
-                            <button
-                                onClick={() => setShowVehicleServiceTypeModal(false)}
-                                className="vehicle-service-type-btn vehicle-service-type-btn-secondary"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleSaveVehicleServiceType}
+                                onClick={() => {
+                                    // console.log('Add Vehicle Service Type button clicked');
+                                    setEditingVehicleServiceType(null);
+                                    resetForm();
+                                    setShowVehicleServiceTypeModal(true);
+                                }}
                                 className="vehicle-service-type-btn vehicle-service-type-btn-primary"
-                                disabled={!vehicleServiceTypeForm.ServiceTypeName || !vehicleServiceTypeForm.MaintenanceTypeID || loading}
                             >
-                                <Save className="vehicle-service-type-icon" />
-                                {editingVehicleServiceType ? 'Update Vehicle Service Type' : 'Add Vehicle Service Type'}
+                                <Plus className="vehicle-service-type-icon" />
+                                Add Vehicle Service Type
                             </button>
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+
+                {/* Main Content */}
+                <div className="vehicle-service-type-main">
+                    <div className="vehicle-service-type-tab-content">
+                        <div className="vehicle-service-type-section-header">
+
+                        </div>
+
+                        {/* Statistics Cards */}
+                        <div className="maintenance-type-grid maintenance-type-grid-cols-1 maintenance-type-grid-box maintenance-type-md-grid-cols-4 maintenance-type-gap-6 p-3 rounded-lg">
+                            <div className="vehicle-service-type-card">
+
+                                <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                    <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-blue">
+                                        <Wrench className="vehicle-service-type-icon" />
+                                    </div>
+                                    <div>
+                                        <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Total Types</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getTotalVehicleServiceTypes()}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="vehicle-service-type-card">
+                                <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                    <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-green">
+                                        <Settings className="vehicle-service-type-icon" />
+                                    </div>
+                                    <div>
+                                        <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Active Types</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getActiveVehicleServiceTypes()}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="vehicle-service-type-card">
+                                <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                    <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-yellow">
+                                        <Calendar className="vehicle-service-type-icon" />
+                                    </div>
+                                    <div>
+                                        <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Inactive Types</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getInactiveVehicleServiceTypes()}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className="vehicle-service-type-card">
+                                <div className="vehicle-service-type-flex vehicle-service-type-items-center p-2">
+                                    <div className="vehicle-service-type-stat-icon vehicle-service-type-stat-icon-purple">
+                                        <BarChart3 className="vehicle-service-type-icon" />
+                                    </div>
+                                    <div>
+                                        <p className="vehicle-service-type-text-sm vehicle-service-type-text-gray-600">Interval Types</p>
+                                        <p className="vehicle-service-type-text-2xl vehicle-service-type-font-bold">{getVehicleServiceTypesByInterval()}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* Recent Vehicle Service Types */}
+                        <div className="vehicle-service-type-card mt-4 p-3">
+                            <div className="maintenance-type-filters mb-1">
+                                <div className="maintenance-type-search-container d-flex justify-between align-center">
+                                    <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                                        <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel</button>
+                                    <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                                        className="list-compact-input w-[20%] text-sm py-1 px-2 h-9 mt-2 mb-2 mr-2"
+                                        placeholder="Search..." maxLength={300} />
+                                </div>
+                            </div>
+
+                            <div className="vehicle-service-type-card-content">
+                                <DataTable
+                                    columns={resizeableColumns}
+                                    data={vehicleServiceTypes}
+                                    pagination
+                                    paginationPerPage={10}
+                                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                                    highlightOnHover
+                                    customStyles={customStyles}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Vehicle Service Type Modal */}
+                {showVehicleServiceTypeModal && (
+                    <div className="vehicle-service-type-modal-overlay" onClick={() => setShowVehicleServiceTypeModal(false)}>
+                        <div className="vehicle-service-type-modal vehicle-service-type-modal-lg" onClick={(e) => e.stopPropagation()}>
+                            <div className="vehicle-service-type-modal-header">
+                                <h3 className="vehicle-service-type-modal-title">
+                                    {editingVehicleServiceType ? 'Edit Vehicle Service Type' : 'Add New Vehicle Service Type'}
+                                </h3>
+                                <button
+                                    onClick={() => setShowVehicleServiceTypeModal(false)}
+                                    className="vehicle-service-type-modal-close"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                            <div className="vehicle-service-type-modal-content">
+                                <div className="vehicle-service-type-space-y-4">
+                                    {/* First-Row */}
+                                    <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
+                                        <div>
+                                            <label className="vehicle-service-type-label">Service Type Code<span style={{ color: 'red' }}>*</span></label>
+                                            <input
+                                                type="text"
+                                                value={vehicleServiceTypeForm.VehicleServiceTypeCode}
+                                                onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, VehicleServiceTypeCode: e.target.value })}
+                                                className="vehicle-service-type-input requiredColor"
+                                                placeholder="Service type code"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="vehicle-service-type-label">
+                                                Service Type Name <span style={{ color: 'red' }}>*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={vehicleServiceTypeForm.ServiceTypeName}
+                                                onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, ServiceTypeName: e.target.value })}
+                                                className="vehicle-service-type-input requiredColor"
+                                                placeholder="Service type name"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Second-Row */}
+                                    <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
+                                        <div>
+                                            <label className="vehicle-service-type-label">KM Interval</label>
+                                            <input
+                                                type="number"
+                                                value={vehicleServiceTypeForm.KMInterval}
+                                                onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, KMInterval: Number(e.target.value) })}
+                                                className="vehicle-service-type-input"
+                                                placeholder="KM interval"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="vehicle-service-type-label">Days</label>
+                                            <input
+                                                type="number"
+                                                value={vehicleServiceTypeForm.Days}
+                                                onChange={(e) => setVehicleServiceTypeForm({ ...vehicleServiceTypeForm, Days: Number(e.target.value) })}
+                                                className="vehicle-service-type-input"
+                                                placeholder="Days"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Third-Row */}
+                                    <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
+                                        <div>
+                                            <Select
+                                                value={ maintenanceTypes.find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)
+                                                }
+                                                onChange={(selectedOption) =>
+                                                    setVehicleServiceTypeForm({ ...vehicleServiceTypeForm,
+                                                        MaintenanceTypeID: selectedOption ? selectedOption.value : 0,
+                                                    })
+                                                }
+                                                options={maintenanceType}
+                                                placeholder="Select Maintenance Type"
+                                                styles={{
+                                                    ...multiValue,
+                                                    valueContainer: (provided) => ({
+                                                        ...provided,
+                                                        maxHeight: "80px",
+                                                        overflowY: "auto",
+                                                        flexWrap: "wrap",
+                                                    }),
+                                                }}
+                                                isSearchable
+                                                required
+                                            />
+
+                                        </div>
+
+                                        <div>
+                                            <Select
+                                                value={dropdown}
+                                                onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
+                                                options={options}
+                                                isMulti
+                                                isClearable
+                                                closeMenuOnSelect={false}
+                                                hideSelectedOptions={true}
+                                                placeholder="Select Company"
+                                                className="basic-multi-select"
+                                                styles={{
+                                                    ...multiValue,
+                                                    valueContainer: (provided) => ({
+                                                        ...provided,
+                                                        maxHeight: "80px",
+                                                        overflowY: "auto",
+                                                        flexWrap: "wrap",
+                                                    }),
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="vehicle-service-type-modal-footer">
+                                <button
+                                    onClick={() => setShowVehicleServiceTypeModal(false)}
+                                    className="vehicle-service-type-btn vehicle-service-type-btn-secondary"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSaveVehicleServiceType}
+                                    className="vehicle-service-type-btn vehicle-service-type-btn-primary"
+                                    disabled={!vehicleServiceTypeForm.VehicleServiceTypeCode || !vehicleServiceTypeForm.ServiceTypeName || loading}
+                                >
+                                    <Save className="vehicle-service-type-icon" />
+                                    {editingVehicleServiceType ? 'Update Vehicle Service Type' : 'Add Vehicle Service Type'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <ConfirmModal show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleConfirm={() => {
+                    if (selectedId !== null) {
+                        deleteVehicleServiceType(selectedId);
+                    }
+                    setShowModal(false);
+            }} />
+        </>
     );
 };
 
