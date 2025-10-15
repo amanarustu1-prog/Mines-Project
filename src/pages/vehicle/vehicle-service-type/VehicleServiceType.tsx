@@ -405,21 +405,17 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
           });
           if (Array.isArray(res)) {
             setMaintenanceType(res.map((x: any) => ({
-          value: x.MaintenanceTypeID,
-          label: x.Description,
-        })));
-      }
-    } catch (err) {
-      toastifyError('Error fetching maintenance types');
-    }
-  };
-  fetchMaintenanceTypes();
-}, []);
-
-
-    useEffect(() => {
-       fetchMaintanceType(); 
+            value: x.MaintenanceTypeID,
+            label: x.Description,
+          })));
+          }
+          } catch (err) {
+            toastifyError('Error fetching maintenance types');
+          }
+        };
+        fetchMaintenanceTypes();
     }, []);
+
 
     useEffect(() => {
         const fetchGroupOptions = async () => {
