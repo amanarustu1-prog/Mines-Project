@@ -474,7 +474,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 
     // Handle save
     const handleSaveMaterialName = async () => {
-        if (!materialNameForm.MaterialNameCode || !materialNameForm.Description) {
+        if (!materialNameForm.MaterialNameCode || !materialNameForm.Description || !materialNameForm.MaterialGroupID || !materialNameForm.MaterialUnitID || !materialNameForm.MaterialTypeID) {
             toastifyError('Please fill in all required fields');
             return;
         }
@@ -650,7 +650,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                         {row.IsActive ? <ToggleLeft className="list-icon-sm1" /> : <ToggleRight className="list-icon-sm1" />}
                     </button>
 
-                    <button onClick={() => { setEditItemId(row.MaterialID!) ; setShowMaterialNameModal(true);}} className="material-name-btn-icon" title="Edit">
+                    <button onClick={() => { setEditItemId(row.MaterialID!) ; setShowMaterialNameModal(true);}} className='list-button ghost primary' title="Edit">
                         <Edit3 className="material-name-icon-sm" />
                     </button>
                 </div>
@@ -925,6 +925,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                     border: '1px solid #d1d5db',
                                                     borderRadius: '0.5rem',
                                                     fontSize: '0.875rem',
+                                                    backgroundColor: '#ffe2a8',
                                                     '&:hover': {
                                                         borderColor: '#9ca3af',
                                                     },
@@ -969,6 +970,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                     '&:hover': {
                                                         borderColor: '#9ca3af',
                                                     },
+                                                    backgroundColor: '#ffe2a8'
                                                 }),
                                                 placeholder: (provided) => ({
                                                     ...provided,
@@ -1008,6 +1010,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                     border: '1px solid #d1d5db',
                                                     borderRadius: '0.5rem',
                                                     fontSize: '0.875rem',
+                                                    backgroundColor: '#ffe2a8',
                                                     '&:hover': {
                                                         borderColor: '#9ca3af',
                                                     },
@@ -1113,7 +1116,6 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 </div>
 
                                 <div className="material-name-form-grid material-name-form-grid-2">
-
                                     <div>
                                         <label className="material-name-label">Company ID</label>
                                         <Select
@@ -1155,7 +1157,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                             <button onClick={() => { setShowMaterialNameModal(false); setEditItemId(null); resetForm(); }} className="material-name-btn material-name-btn-secondary">
                                 Cancel
                             </button>
-                            <button onClick={handleSaveMaterialName} className="material-name-btn material-name-btn-primary" disabled={!materialNameForm.MaterialNameCode || !materialNameForm.Description || loading}>
+                            <button onClick={handleSaveMaterialName} className="material-name-btn material-name-btn-primary" disabled={!materialNameForm.MaterialNameCode || !materialNameForm.Description || !materialNameForm.MaterialGroupID || !materialNameForm.MaterialUnitID || !materialNameForm.MaterialTypeID || loading}>
                                 <Save className="material-name-icon" />
                                 {editItemId ? 'Update Material Name' : 'Add Material Name'}
                             </button>

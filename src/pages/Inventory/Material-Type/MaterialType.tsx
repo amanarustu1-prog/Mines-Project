@@ -676,7 +676,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 options={groupOptions}
                                                 isClearable
                                                 placeholder="Select Material Group"
-                                                className="basic-single-select"
+                                                className="basic-single-select "
                                                 styles={multiValue}
                                             />
 

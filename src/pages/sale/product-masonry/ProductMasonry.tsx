@@ -164,6 +164,16 @@ export default function ProductMasonry() {
         ...productData,
         CompanyId: Number(localStorage.getItem('companyID'))
       });
+      const message = response[0].Message;
+      if (message === "Already Exists ProductCode") {
+        toastifyError("Code is already Present");
+        return;
+      }
+      
+      if (message === "Already Exists ProductName") {
+        toastifyError("Description is already Present");
+        return;
+      }
 
       if (response) {
         toastifySuccess('Product added successfully');
@@ -346,7 +356,7 @@ export default function ProductMasonry() {
       name: 'Product Name',
       selector: (row: Product) => row.ProductName,
       sortable: true,
-      cell: (row: Product) => <span className="product-masonry-font-medium">{row.ProductName}</span>
+      cell: (row: Product) => <span className="">{row.ProductName}</span>
     },
     {
       name: 'Group',
@@ -727,6 +737,17 @@ export default function ProductMasonry() {
               <div className="product-masonry-space-y-4">
                 <div className="product-masonry-form-grid product-masonry-form-grid-2">
                   <div>
+                    <label className="product-masonry-label">Product Code <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="text"
+                      value={productForm.ProductCode}
+                      onChange={(e) => setProductForm({ ...productForm, ProductCode: e.target.value })}
+                      className="product-masonry-input requiredColor"
+                      placeholder="Product code"
+                    />
+                  </div>
+
+                  <div>
                     <label className="product-masonry-label">
                       Product Name <span style={{ color: 'red' }}>*</span>
                     </label>
@@ -737,17 +758,6 @@ export default function ProductMasonry() {
                       className="product-masonry-input requiredColor"
                       placeholder="Product rate"
                       required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="product-masonry-label">Product Code <span style={{ color: 'red' }}>*</span></label>
-                    <input
-                      type="text"
-                      value={productForm.ProductCode}
-                      onChange={(e) => setProductForm({ ...productForm, ProductCode: e.target.value })}
-                      className="product-masonry-input requiredColor"
-                      placeholder="Product code"
                     />
                   </div>
                 </div>

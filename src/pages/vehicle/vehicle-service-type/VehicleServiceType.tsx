@@ -476,8 +476,9 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             Days: 0,
             VehicleServiceTypeCode: '',
             IsActive: true,
-            CompanyId: getCompanyId()
+            CompanyId: ''
         });
+        setDropdown([]);
     };
 
     const fetchCounts = async () => {
@@ -514,13 +515,13 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
             name: 'Code',
             selector: (row: VehicleServiceType) => row.VehicleServiceTypeCode,
             sortable: true,
-            cell: (row: VehicleServiceType) => <span className="vehicle-service-type-font-medium">{row.VehicleServiceTypeCode}</span>
+            cell: (row: VehicleServiceType) => <span className="">{row.VehicleServiceTypeCode}</span>
         },
         {
             name: 'Service Type Name',
             selector: (row: VehicleServiceType) => row.ServiceTypeName,
             sortable: true,
-            cell: (row: VehicleServiceType) => <span className="vehicle-service-type-font-medium">{row.ServiceTypeName}</span>
+            cell: (row: VehicleServiceType) => <span className="">{row.ServiceTypeName}</span>
         },
         {
             name: 'Maintenance Type',
@@ -803,7 +804,7 @@ const VehicleServiceType: React.FC<Props> = ({ baseUrl = '', companyId = null })
                                     <div className="vehicle-service-type-form-grid vehicle-service-type-form-grid-2">
                                         <div>
                                             <Select
-                                                value={ maintenanceTypes.find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)
+                                                value={ maintenanceType.find(opt => opt.value === vehicleServiceTypeForm.MaintenanceTypeID)
                                                 }
                                                 onChange={(selectedOption) =>
                                                     setVehicleServiceTypeForm({ ...vehicleServiceTypeForm,
