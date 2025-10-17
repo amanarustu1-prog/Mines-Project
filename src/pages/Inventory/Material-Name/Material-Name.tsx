@@ -740,7 +740,7 @@ const MaterialName: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                     <div className="material-name-header-actions">
                         <button
                             onClick={() => {
-                                setEditItemId(null);
+                                (null);setEditItemId
                                 resetForm();
                                 setShowMaterialNameModal(true);
                             }}
