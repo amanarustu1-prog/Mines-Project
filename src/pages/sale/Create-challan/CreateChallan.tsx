@@ -60,6 +60,7 @@ interface BaseProductFields {
 
 // ChallanItem is used in the form State
 interface ChallanItem extends BaseProductFields {
+    ChallanNo: any;
     ProductName1: string;
 }
 
@@ -79,10 +80,11 @@ interface ChallanFormData {
 
     // Consignee details
     Name: string;
+    PartyID: number;
     address: string;
     State: string;
     StateID: number;
-    district: number;
+    DistrictID: number;
     PinID: string;
     OwnerMobile: string;
     Email: string;
@@ -90,7 +92,8 @@ interface ChallanFormData {
     // Vehicle details
     AdvAmt: number;
     vehicleType: string;
-    vehicleTypeid: number
+    vehicleTypeid: number;
+    partyTypeid: number;
     VehicleNo: string;
     VehicleRemarks: string;
     DriverName: string;
@@ -102,9 +105,9 @@ interface ChallanFormData {
     Party: number;
     gstName: string;
     gstAddress: string;
-    gstState:  number;
-    gstDistrict:  number;
-    gstPin: string;
+    GstState: number;
+    GstDistrictID: number;
+    GstPinID: string;
 
     // Additional fields
     endUser: boolean;
@@ -154,7 +157,7 @@ interface ChallanFormData {
     Netweight: number;
     Lessweight: number;
     GTotal: number;
-    vehicleCommission: number;
+    VehicleCommision: number;
 
     // Status field
     status?: 'Active' | 'Inactive' | 'Pending' | 'Approved' | 'Rejected';
@@ -165,17 +168,21 @@ interface ChallanFormData {
 }
 
 interface ChallanTableItem {
+    GstDistrictID: any;
+    GstState: any;
+    GstPinID: any;
+    partyTypeid: any;
     ChallanID: number;
     ChallanModule: string;
     id: string;
     ChallanNo: string;
     ChallanDate: string;
     VoucherType: string;
-    // Name: string;
     partyAddress: string;
     // VehicleNo: string;
     vehicleType: string;
     PinID: number;
+    DistrictID: number;
     Name: string;
     ProductName1: string;
     grossWeight: number;
@@ -186,12 +193,13 @@ interface ChallanTableItem {
     rate: number;
     AdvAmt: string;
     Party: number;
-    PartyID: string;
+    PartyID: number;
     OwnerMobile: string;
     DriverName: string;
     DriverMobileNo: string;
     VehicleNo: string;
     VehicleTypeid: number;
+    PartyTypeid: number;
     VehicleRemarks: string;
     Address: string;
     Productid: string;
@@ -278,6 +286,7 @@ export default function CreateChallan() {
     const [vehicleType, setVehicleType] = useState<Vehicle[]>([]);
     const [partyType, setPartyType] = useState<Party[]>([]);
     const [district, setDistrict] = useState<District[]>([]);
+    const [gstPartyType, gstSetPartyType] = useState<Party[]>([]);
     const [gstState, setGSTState] = useState<State[]>([]);
     const [gstDistrict, setGSTDistrict] = useState<District[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
@@ -292,10 +301,12 @@ export default function CreateChallan() {
         paytype: "Cash",
 
         Name: '',
+        partyTypeid: 0,
+        PartyID: 0, 
         address: '',
         State: '',
         StateID: 0,
-        district: 0,
+        DistrictID: 0,
         PinID: '',
         OwnerMobile: '',
         Email: '',
@@ -313,9 +324,9 @@ export default function CreateChallan() {
         Party: 0,
         gstName: '',
         gstAddress: '',
-        gstState: 0,
-        gstDistrict: 0,
-        gstPin: '',
+        GstState: 0,
+        GstDistrictID: 0,
+        GstPinID: '',
 
         endUser: true,
         dealer: false,
@@ -366,7 +377,7 @@ export default function CreateChallan() {
         Netweight: 0,
         Lessweight: 0,
         GTWeight: 0,
-        vehicleCommission: 0,
+        VehicleCommision: 0,
 
         Amount: 0,
         LoadingAmt: 0,
@@ -438,13 +449,15 @@ export default function CreateChallan() {
                 <span className="text-right">{row.paytype}</span>
             ),
         },
+
         {
             name: 'Party',
-            selector: (row: ChallanTableItem) => row.Name,
+            selector: (row: ChallanTableItem) => row.PartyID,
             sortable: true,
-            cell: (row: ChallanTableItem) => (
-                <span className="font-medium">{row.Name}</span>
-            ),
+            cell: (row: ChallanTableItem) => {
+                const p = partyType.find((x) => x.PartyID === row.PartyID);
+                return <span className="font-mono text-sm">{p?.Name}</span>;
+            },
         },
         {
             name: 'Address',
@@ -457,12 +470,20 @@ export default function CreateChallan() {
         {
             name: 'State',
             selector: (row: ChallanTableItem) =>  {
-                const states = State.find(mg => mg.ID === row.State);
-                return states ? states.Description : 'Unknown';
+                const states = State.find(mg => mg.ID === row.StateID);
+                return states?.Description ?? row.State;
             },
             sortable: true,
             cell: (row: ChallanTableItem) => (
-                <span className="text-right">{row.State}</span>
+                <span className="text-right">{State.find(s => s.ID === row.StateID)?.Description ?? row.State}</span>
+            ),
+        },
+        {
+            name: 'District',
+            selector: (row: ChallanTableItem) => row.DistrictID,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="font-medium">{row.DistrictID}</span>
             ),
         },
         {
@@ -489,6 +510,7 @@ export default function CreateChallan() {
                 <span className="text-right">{row.Email}</span>
             ),
         },
+
         {
             name: 'Advance Amt',
             selector: (row: ChallanTableItem) => row.AdvAmt,
@@ -502,7 +524,7 @@ export default function CreateChallan() {
             selector: (row: ChallanTableItem) => row.VehicleTypeid,
             cell: (row: ChallanTableItem) => {
                 const v = vehicleType.find((x) => x.VehicleTypeID === row.VehicleTypeid);
-                return <span className="font-mono text-sm">{v?.Description || 'Unknown'}</span>;
+                return <span className="font-mono text-sm">{v?.Description}</span>;
             },
         },
         {
@@ -537,6 +559,7 @@ export default function CreateChallan() {
                 <span className="font-medium">{row.VehicleRemarks}</span>
             ),
         },
+
         {
             name: 'GstNo',
             selector: (row: ChallanTableItem) => row.GstNo,
@@ -546,11 +569,44 @@ export default function CreateChallan() {
             ),
         },
         {
+            name: 'GST Party',
+            selector: (row: ChallanTableItem) => row.Name,
+            sortable: true,
+            cell: (row: ChallanTableItem) => {
+                return <span className="font-mono text-sm">{row.Name}</span>;
+            },
+        },
+        {
             name: 'Gst Address',
             selector: (row: ChallanTableItem) => row.GstAddress,
             sortable: true,
             cell: (row: ChallanTableItem) => (
                 <span className="text-right">{row.GstAddress}</span>
+            ),
+        },
+        {
+            name: 'Gst State',
+            selector: (row: ChallanTableItem) => row.GstState,
+            sortable: true,
+            cell: (row: ChallanTableItem) => {
+                const s = gstState.find((st) => Number(st.ID) === Number(row.GstState));
+                return <span className="text-right">{s?.Description}</span>
+            },
+        },
+        {
+            name: 'Gst District',
+            selector: (row: ChallanTableItem) => row.GstDistrictID,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GstDistrictID}</span>
+            ),
+        },
+        {
+            name: 'Gst PinID',
+            selector: (row: ChallanTableItem) => row.GstPinID,
+            sortable: true,
+            cell: (row: ChallanTableItem) => (
+                <span className="text-right">{row.GstPinID}</span>
             ),
         },
         //Prod-1
@@ -783,10 +839,10 @@ export default function CreateChallan() {
         },
         {
             name: 'Vehicle Commision',
-            selector: (row: ChallanFormData) => row.vehicleCommission,
+            selector: (row: ChallanFormData) => row.VehicleCommision,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{row.vehicleCommission}</span>
+                <span className="text-right">{row.VehicleCommision}</span>
             ),
         },
         {
@@ -1131,7 +1187,7 @@ export default function CreateChallan() {
         }
     }, [editItemId, dropdownOptions]);
     
-    // Get Single Material Name
+    // Get Single Material 
     const getSingleChallan = async () => {
     try {
         const response = await fetchPostData('Challan/GetSingleData_Challan', {
@@ -1141,6 +1197,8 @@ export default function CreateChallan() {
         if (!response || response.length === 0) return;
 
         const record = response[0];
+        console.log(record);
+        console.log(record.Name);
 
         setChallanData({
             ChallanNo: record.ChallanNo || '',
@@ -1173,7 +1231,7 @@ export default function CreateChallan() {
             gstAddress: record.GstAddress || '',
             gstState: record.GstState || record.Stateid || 0,
             gstDistrict: record.GstDistrictID || 0,
-            gstPin: record.GstPinID || '',
+            GstPinID: record.GstPinID || '',
 
             endUser: true,
             dealer: false,
@@ -1225,7 +1283,7 @@ export default function CreateChallan() {
                 netWeight: Number(record.Netweight) || 0,
                 lessWeight: Number(record.Lessweight) || 0,
                 GTWeight: Number(record.GTWeight) || 0,
-                vehicleCommission: Number(record.CommisionAmt) || 0,
+                VehicleCommision: Number(record.CommisionAmt) || 0,
             },
 
             amount: Number(record.Amount) || 0,
@@ -1255,6 +1313,7 @@ export default function CreateChallan() {
         paytype: "Cash",
 
         Name: '',
+        partyTypeid: 0,
         address: '',
         State: '',
         StateID: 0, 
@@ -1276,9 +1335,9 @@ export default function CreateChallan() {
         Party: 0,
         gstName: '',
         gstAddress: '',
-        gstState: 0,
+        GstState: 0,
         gstDistrict: 0,
-        gstPin: '',
+        GstPinID: '',
 
         endUser: true,
         dealer: false,
@@ -1306,7 +1365,7 @@ export default function CreateChallan() {
             netWeight: 0,
             lessWeight: 0,
             GTWeight: 0,
-            vehicleCommission: 0,
+            VehicleCommision: 0,
         },
 
         amount: 0,
@@ -1381,8 +1440,10 @@ export default function CreateChallan() {
             console.log(response);
             if(response && Array.isArray(response)){
                 setPartyType(response);
+                gstSetPartyType(response);
             }else{
                 setPartyType([]);
+                gstSetPartyType([]);
             }
         }catch{
              toastifyError('Error fetching Party Type.');
@@ -1424,150 +1485,6 @@ export default function CreateChallan() {
         label: opt.CompanyName
     }));
 
-    // Demo challan history data
-    const [challanHistory] = useState([
-        {
-            id: 'CHN001',
-            challanNo: 'S/2025-2026/001',
-            date: '2025-07-24',
-            time: '09:30:00',
-            Name: 'ABC Construction Ltd.',
-            VehicleNo: 'MH12AB1234',
-            DriverName: 'Rajesh Kumar',
-            ProductName1: 'Crushed Stone',
-            quantity: 15.5,
-            amount: 125000,
-            status: 'Completed',
-            paytype: 'Cash'
-        },
-        {
-            id: 'CHN002',
-            challanNo: 'S/2025-2026/002',
-            date: '2025-07-24',
-            time: '11:15:00',
-            Name: 'XYZ Builders Pvt Ltd',
-            VehicleNo: 'MH14CD5678',
-            DriverName: 'Suresh Patil',
-            ProductName1: 'River Sand',
-            quantity: 12.0,
-            amount: 85000,
-            status: 'In Transit',
-            paytype: 'Credit'
-        },
-        {
-            id: 'CHN003',
-            challanNo: 'S/2025-2026/003',
-            date: '2025-07-23',
-            time: '14:45:00',
-            Name: 'Metro Infrastructure',
-            VehicleNo: 'MH16EF9012',
-            DriverName: 'Amit Sharma',
-            ProductName1: 'Gravel',
-            quantity: 18.2,
-            amount: 95000,
-            status: 'Completed',
-            paytype: 'Cash'
-        },
-        {
-            id: 'CHN004',
-            challanNo: 'S/2025-2026/004',
-            date: '2025-07-23',
-            time: '16:20:00',
-            Name: 'Sai Construction',
-            VehicleNo: 'MH18GH3456',
-            DriverName: 'Vikram Singh',
-            ProductName1: 'M-Sand',
-            quantity: 20.0,
-            amount: 110000,
-            status: 'approved',
-            paytype: 'Credit'
-        },
-        {
-            id: 'CHN005',
-            challanNo: 'S/2025-2026/005',
-            date: '2025-07-22',
-            time: '10:30:00',
-            Name: 'Royal Developers',
-            VehicleNo: 'MH20IJ7890',
-            DriverName: 'Mahesh Yadav',
-            ProductName1: 'Crushed Stone',
-            quantity: 16.8,
-            amount: 135000,
-            status: 'Completed',
-            paytype: 'Cash'
-        },
-        {
-            id: 'CHN006',
-            challanNo: 'S/2025-2026/006',
-            date: '2025-07-22',
-            time: '13:15:00',
-            Name: 'Green Build Solutions',
-            VehicleNo: 'MH22KL2345',
-            DriverName: 'Ravi Desai',
-            ProductName1: 'River Sand',
-            quantity: 14.5,
-            amount: 98000,
-            status: 'In Transit',
-            paytype: 'Credit'
-        },
-        {
-            id: 'CHN007',
-            challanNo: 'S/2025-2026/007',
-            date: '2025-07-21',
-            time: '08:45:00',
-            Name: 'Prime Infrastructure',
-            VehicleNo: 'MH24MN6789',
-            DriverName: 'Deepak Joshi',
-            ProductName1: 'Aggregate',
-            quantity: 22.1,
-            amount: 155000,
-            status: 'Completed',
-            paytype: 'Cash'
-        },
-        {
-            id: 'CHN008',
-            challanNo: 'S/2025-2026/008',
-            date: '2025-07-21',
-            time: '15:30:00',
-            Name: 'Skyline Constructions',
-            VehicleNo: 'MH26OP0123',
-            DriverName: 'Santosh Pawar',
-            ProductName1: 'Stone Chips',
-            quantity: 19.3,
-            amount: 142000,
-            status: 'Completed',
-            paytype: 'Credit'
-        },
-        {
-            id: 'CHN009',
-            challanNo: 'S/2025-2026/009',
-            date: '2025-07-20',
-            time: '11:00:00',
-            Name: 'Unity Builders',
-            VehicleNo: 'MH28QR4567',
-            DriverName: 'Ganesh Kulkarni',
-            ProductName1: 'Crushed Stone',
-            quantity: 17.6,
-            amount: 128000,
-            status: 'Cancelled',
-            paytype: 'Cash'
-        },
-        {
-            id: 'CHN010',
-            challanNo: 'S/2025-2026/010',
-            date: '2025-07-20',
-            time: '17:15:00',
-            Name: 'Modern Contractors',
-            VehicleNo: 'MH30ST8901',
-            DriverName: 'Pravin Jadhav',
-            ProductName1: 'M-Sand',
-            quantity: 21.4,
-            amount: 118000,
-            status: 'Completed',
-            paytype: 'Credit'
-        }
-    ]);
-
     // Filter states for history
     const [historyFilters, setHistoryFilters] = useState({
         searchTerm: '',
@@ -1579,25 +1496,24 @@ export default function CreateChallan() {
     });
 
     // Filtered history data
-    const filteredHistory: any = challanHistory.filter(challan => {
-        const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-            challan.Name.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-            challan.VehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-            challan.DriverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
+    // const filteredHistory: any = challanHistory.filter(challan => {
+    //     const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+    //         challan.Name.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+    //         challan.VehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+    //         challan.DriverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
 
-        const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
-        const matchesDateTo = !historyFilters.dateTo || challan.date <= historyFilters.dateTo;
-        const matchesStatus = !historyFilters.status || challan.status === historyFilters.status;
-        const matchesPaymentType = !historyFilters.paytype || challan.paytype === historyFilters.paytype;
-        const matchesConsignee = !historyFilters.Name || challan.Name.toLowerCase().includes(historyFilters.Name.toLowerCase());
+    //     const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
+    //     const matchesDateTo = !historyFilters.dateTo || challan.date <= historyFilters.dateTo;
+    //     const matchesStatus = !historyFilters.status || challan.status === historyFilters.status;
+    //     const matchesPaymentType = !historyFilters.paytype || challan.paytype === historyFilters.paytype;
+    //     const matchesConsignee = !historyFilters.Name || challan.Name.toLowerCase().includes(historyFilters.Name.toLowerCase());
 
-        return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
-    });
+    //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
+    // });
 
     const handleSearch = () => {
         let result = challanItems;
 
-        // Combine date + time into a single Date object
         const fromDateTime = fromDate ? new Date(
             `${moment(fromDate).format('YYYY-MM-DD')} ${
             fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
@@ -1624,7 +1540,7 @@ export default function CreateChallan() {
 
         // Filter by party
         if (selectedParty) {
-            result = result.filter((item) => item.PartyID === selectedParty);
+            result = result.filter((item) => item.PartyID === challanData.Party);
         }
 
         // Filter by challan number (search input)
@@ -1704,12 +1620,14 @@ export default function CreateChallan() {
                                     <DatePicker selected={ fromDate }
                                         onChange={(date) => setFromDate(date)}
                                         className="border rounded px-2 py-1 w-[60px]"
+                                        placeholderText="From Date"
                                         dateFormat="yyyy-MM-dd"
                                     />
 
                                     <DatePicker selected={ fromTime }
                                         onChange={(date) => setFromTime(date)}
                                         showTimeSelect
+                                        placeholderText='00:00'
                                         showTimeSelectOnly
                                         timeIntervals={15}
                                         timeCaption="Time"
@@ -1721,11 +1639,13 @@ export default function CreateChallan() {
                                     <DatePicker selected={ toDate }
                                         onChange={(date) => setToDate(date)}
                                         className="border rounded px-2 py-1 w-[60px]"
+                                        placeholderText='To Date'
                                         dateFormat="yyyy-MM-dd"
                                     />
                                     <DatePicker selected={ toTime }
                                         onChange={(date) => setToTime(date)}
                                         showTimeSelect
+                                        placeholderText='00:00'
                                         showTimeSelectOnly
                                         timeIntervals={15}
                                         timeCaption="Time"
@@ -1770,7 +1690,6 @@ export default function CreateChallan() {
                                         <FiSearch size={18} />
                                         Search
                                     </button>
-                                    {showInput && (
                                         <div className="relative">
                                             <input 
                                                 type="text" 
@@ -1782,7 +1701,6 @@ export default function CreateChallan() {
                                             />
                                             <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                                         </div>
-                                    )}
                                   </div>
                                   <div className="flex">
                                     <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
@@ -1795,7 +1713,7 @@ export default function CreateChallan() {
 
                         <div className="employee-master-space-y-2">
                             {/* Employee Summary Cards */}
-                            <div className="employee-master-summary-grid ">
+                            {/* <div className="employee-master-summary-grid ">
                                 <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("pending")}>
                                     <div className="employee-master-summary-content">
                                         <div className="employee-master-summary-item">
@@ -1857,7 +1775,7 @@ export default function CreateChallan() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             {/* Employee List Table */}
                             <div className="employee-master-card">
@@ -1995,22 +1913,20 @@ export default function CreateChallan() {
                                                                     <label htmlFor="SchemeCode">Party</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <Select
-                                                                        className="w-full"
+                                                                    <Select className="w-full"
                                                                         placeholder="Select Party"
-                                                                        value={ challanData.Party ? {
-                                                                            value: challanData.Party,
-                                                                            label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
+                                                                        value={ challanData.PartyID ? {
+                                                                            value: challanData.PartyID,
+                                                                            label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
                                                                         } : null}
                                                                         options={partyType.map((d) => ({
                                                                             value: d.PartyID,
                                                                             label: d.Name
                                                                         }))}
-                                                                        onChange={(selectedOption: SingleOption<{ value: number, label:string}>) =>
+                                                                        onChange={(selectedOption) =>
                                                                             setChallanData((prev) => ({
                                                                                 ...prev,
-                                                                                Party: selectedOption?.value ?? 0,
-                                                                                Name: selectedOption?.label ?? ""
+                                                                                PartyID: Number(selectedOption?.value ?? 0),
                                                                             }))
                                                                         }
                                                                         isClearable
@@ -2126,7 +2042,7 @@ export default function CreateChallan() {
                                                     </div>
 
                                                     {/* Second-Column */}
-                                                    <div className="col-xl-3 col-sm-6  ">
+                                                    <div className="col-xl-3 col-sm-6 ">
                                                         <div className="form-block ">
                                                             <div className="row align-items-center" style={{ rowGap: 6 }}>
                                                                 {/* Adv-Amount */}
@@ -2214,21 +2130,20 @@ export default function CreateChallan() {
                                                                     <label htmlFor="SchemeCode">Party</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <Select
-                                                                        className="w-full"
+                                                                    <Select className="w-full"
                                                                         placeholder="Select Party"
-                                                                        value={ challanData.Party ? {
-                                                                            value: challanData.Party,
-                                                                            label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
+                                                                        value={ challanData.Name ? {
+                                                                            value: challanData.Name,
+                                                                            label: gstPartyType.find((d) => d.Name === challanData.Name)?.Name || '',
                                                                         } : null}
-                                                                        options={partyType.map((d) => ({
-                                                                            value: d.PartyID,
+                                                                        options={gstPartyType.map((d) => ({
+                                                                            value: d.Name,
                                                                             label: d.Name
                                                                         }))}
-                                                                        onChange={(selectedOption: SingleOption<{ value: number, label:string}>) =>
+                                                                        onChange={(selectedOption) =>
                                                                             setChallanData((prev) => ({
                                                                                 ...prev,
-                                                                                Party: selectedOption?.value ?? 0
+                                                                                Name: selectedOption?.label ?? '',
                                                                             }))
                                                                         }
                                                                         isClearable
@@ -2241,7 +2156,7 @@ export default function CreateChallan() {
                                                                     <label htmlFor="address">Address</label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <textarea name="" id="address" value={challanData.gstAddress}  onChange={(e) => setChallanData({...challanData, gstAddress: e.target.value})}/>
+                                                                    <textarea name="" id="address" placeholder='Address' value={challanData.gstAddress}  onChange={(e) => setChallanData({...challanData, gstAddress: e.target.value})}/>
                                                                 </div>
                                                                 {/* GST State */}
                                                                 <div className="single-info-block col-xl-2">
@@ -2249,9 +2164,9 @@ export default function CreateChallan() {
                                                                 </div>
                                                                 <div className="col-xl-10">
                                                                     <Select
-                                                                      value={ challanData.gstState  ? 
-                                                                        { value: challanData.gstState,
-                                                                          label: gstState.find((st) => st.ID === challanData.gstState)?.Description || "", 
+                                                                      value={ challanData.GstState  ? 
+                                                                        { value: challanData.GstState,
+                                                                          label: gstState.find((st) => st.ID === challanData.GstState)?.Description || "", 
                                                                         } : null
                                                                       }
                                                                         className="w-full"
@@ -2260,11 +2175,12 @@ export default function CreateChallan() {
                                                                           value: st.ID,
                                                                           label: st.Description,
                                                                         }))}
-                                                                        onChange={(selectedOption: SingleValue<{ value: number; label: string }>) => {
+                                                                        onChange={(selectedOption) => {
                                                                             const stateID = selectedOption?.value ?? 0;
+                                                                            console.log(stateID);
                                                                             setChallanData((prev) => ({
                                                                                 ...prev,
-                                                                                gstState: stateID,
+                                                                                GstState: stateID,
                                                                                 district: 0,
                                                                             }));
                                                                             if (stateID) fetchDistrict(stateID);
@@ -2308,7 +2224,7 @@ export default function CreateChallan() {
                                                                     <label htmlFor="prUnitPrice">PIN <span>*</span></label>
                                                                 </div>
                                                                 <div className="col-xl-10">
-                                                                    <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.gstPin} onChange={(e) => setChallanData({...challanData,gstPin: e.target.value})}/>
+                                                                    <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.GstPinID} onChange={(e) => setChallanData({...challanData,GstPinID: e.target.value})}/>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -2417,7 +2333,7 @@ export default function CreateChallan() {
                                                                     {/* Vehicle-Commision */}
                                                                     <div className="col-1 mt-0" style={{ minWidth: 150 }}>
                                                                         <label className="MAINTABLE_LABEL">Vehicle Commision</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.vehicleCommission} onChange={(e) => setChallanData({...challanData, vehicleCommission: Number(e.target.value) })}/>
+                                                                        <input type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({...challanData, VehicleCommision: Number(e.target.value) })}/>
                                                                     </div>
                                                                     {/* Date-Time */}
                                                                     <div className="col-md-2 mt-0">
@@ -2444,7 +2360,7 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     {/* Commission-Amount */}
                                                                     <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Commission Amount</label>
+                                                                        <label className="MAINTABLE_LABEL">Commission Amt</label>
                                                                         <input type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({...challanData, CommisionAmt: Number(e.target.value)})}/>
                                                                     </div>
                                                                     {/* GT-Amount */}
@@ -2459,19 +2375,8 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     {/* TP-Amount */}
                                                                     <div className="col-md-2 mt-0">
-                                                                        <label className="MAINTABLE_LABEL">Tp Amount</label>
-                                                                        <Select
-                                                                            className="w-full"
-                                                                            placeholder="Select Product"
-                                                                            options={[
-                                                                                { value: 'Korea Rebublic of', label: 'Korea Rebublic of' },
-                                                                                { value: 'US Rebublic of', label: 'US Rebublic of' }
-                                                                            ]}
-                                                                            isClearable
-                                                                            isSearchable
-                                                                            menuPlacement='top'
-                                                                            styles={selectCompactStyles}
-                                                                        />
+                                                                        <label className="MAINTABLE_LABEL">TP Amount</label>
+                                                                        <input type="number" id="SchemDes" value={challanData.TPAmount} onChange={(e) => setChallanData({...challanData, TPAmount: Number(e.target.value)})}/>
                                                                     </div>
                                                                     {/* Freight-Amount */}
                                                                     <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
