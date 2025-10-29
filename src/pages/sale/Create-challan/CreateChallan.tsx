@@ -14,7 +14,7 @@ import { customStyles, multiValue } from '@/common/Utility';
 import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
-import { getShowingDateText } from '@/common/DateFormat';
+import { getShowingDateText, getShowingWithOutDate, getShowingWithOutTime } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
 import moment from 'moment';
 import { previousDay } from 'date-fns';
@@ -62,6 +62,103 @@ interface BaseProductFields {
 interface ChallanItem extends BaseProductFields {
     ChallanNo: any;
     ProductName1: string;
+        Companyid: string;
+    GstDistrictID: any;
+    GstState: any;
+    GstPinID: any;
+    partyTypeid: any;
+    ChallanID: number;
+    ChallanModule: string;
+    id: string;
+    ChallanDate: string;
+    VoucherType: string;
+    partyAddress: string;
+    // VehicleNo: string;
+    vehicleType: string;
+    PinID: number;
+    DistrictID: number;
+    Name: string;
+    grossWeight: number;
+    netWeight: number;
+    lessWeight: number;
+    gtWeight: number;
+    amount: number;
+    rate: number;
+    AdvAmt: string;
+    Party: number;
+    PartyID: number;
+    OwnerMobile: string;
+    DriverName: string;
+    DriverMobileNo: string;
+    VehicleNo: string;
+    VehicleTypeid: number;
+    PartyTypeid: number;
+    VehicleRemarks: string;
+    Address: string;
+    Productid: string;
+    IsGST: string;
+    BillName: string;
+    GstNo: string;
+    State: string;
+    StateID: number;
+    GstAddress: string;
+    //   : string;
+    Amount: string;
+    LoadingAmt: string;
+    CommisionAmt: string;
+    TotalAmt: string;
+    GSTAmt: string;
+    RoyaltyAmt: string;
+    TPAmount: string;
+    FreightAmt: string;
+    GTotal: string;
+    Grossweight: string;
+    Netweight: string;
+    Lessweight: string;
+    GTWeight: string;
+    financialYear: string;
+    paytype: 'Cash' | 'Credit';
+    Email: string;
+    StatusReason: string;
+    Taredate: string;
+    Grossdate: string;
+    ExtraAmt: string;
+    ExtraAmtType: string;
+    ProductId1: string;
+    Status: string;
+    status: 'Pending' | 'Approved' | 'Rejected';
+    CreatedDate: string;
+    UpdatedDate: string;
+
+    address: string;
+    VehicleCommision: number;
+    TareWeight: number;
+    Rate: number;
+        // Product and weight details
+    productDetails: ProductDetail[];
+    ProductName2: string,
+    ProductName3: string,
+    Rate1: number,
+    Rate2: number,
+    Rate3: number,
+    Grossweight1: number,
+    Grossweight2: number,
+    Grossweight3: number,
+    Netweight1: number,
+    Netweight2: number,
+    Netweight3: number,
+    Lessweight1: number,
+    Lessweight2: number,
+    Lessweight3: number,
+    GTWeight1: number,
+    GTWeight2: number,
+    GTWeight3: number,
+    Amount1: number,
+    Amount2: number,
+    Amount3: number,
+    Grossweightdate1: string,
+    Grossweightdate2: string,
+    Grossweightdate3: string,
 }
 
 // ProductDetail is used in the form data
@@ -168,6 +265,7 @@ interface ChallanFormData {
 }
 
 interface ChallanTableItem {
+    Companyid: string;
     GstDistrictID: any;
     GstState: any;
     GstPinID: any;
@@ -184,7 +282,6 @@ interface ChallanTableItem {
     PinID: number;
     DistrictID: number;
     Name: string;
-    ProductName1: string;
     grossWeight: number;
     netWeight: number;
     lessWeight: number;
@@ -224,7 +321,7 @@ interface ChallanTableItem {
     Lessweight: string;
     GTWeight: string;
     financialYear: string;
-    paytype: string;
+    paytype: 'Cash' | 'Credit';
     Email: string;
     StatusReason: string;
     Taredate: string;
@@ -236,12 +333,43 @@ interface ChallanTableItem {
     status: 'Pending' | 'Approved' | 'Rejected';
     CreatedDate: string;
     UpdatedDate: string;
+
+    address: string;
+    VehicleCommision: number;
+    TareWeight: number;
+    Rate: number;
+        // Product and weight details
+    productDetails: ProductDetail[];
+    ProductName1: string;
+    ProductName2: string,
+    ProductName3: string,
+    Rate1: number,
+    Rate2: number,
+    Rate3: number,
+    Grossweight1: number,
+    Grossweight2: number,
+    Grossweight3: number,
+    Netweight1: number,
+    Netweight2: number,
+    Netweight3: number,
+    Lessweight1: number,
+    Lessweight2: number,
+    Lessweight3: number,
+    GTWeight1: number,
+    GTWeight2: number,
+    GTWeight3: number,
+    Amount1: number,
+    Amount2: number,
+    Amount3: number,
+    Grossweightdate1: string,
+    Grossweightdate2: string,
+    Grossweightdate3: string,
 }
 
 interface State {
     ID: number;
     Description: string;
-    StateID:number;
+    StateID: number;
 }
 
 interface District {
@@ -269,14 +397,14 @@ export default function CreateChallan() {
     const [fromTime, setFromTime] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const [toTime, setToTime] = useState<Date | null>(null);
-    const [selectedParty, setSelectedParty] = useState<number | null>(null);
+    const [selectedParty, setSelectedParty] = useState<number | string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredData, setFilteredData] = useState<ChallanTableItem[]>([]);
 
 
     // ----------- Custom ------------
     const [loading, setLoading] = useState(false);
-    const [ filter, setFilter ] = useState<"pending" | "approved" | "rejected" | "all">("approved");
+    const [filter, setFilter] = useState<"pending" | "approved" | "rejected" | "all">("approved");
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [pendingChallan, setpendingChallan] = useState(0);
@@ -297,12 +425,12 @@ export default function CreateChallan() {
         ChallanModule: '',
         ChallanID: 0,
         autoGenerated: true,
-        ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        ChallanDate: moment().format('YYYY-MM-DD HH:mm'),
         paytype: "Cash",
 
         Name: '',
         partyTypeid: 0,
-        PartyID: 0, 
+        PartyID: 0,
         address: '',
         State: '',
         StateID: 0,
@@ -405,10 +533,10 @@ export default function CreateChallan() {
             cell: (row: ChallanTableItem) => (
                 <div className="material-name-flex material-name-gap-1">
                     <button onClick={() => { setSelectedId(row.ChallanID!); setShowModal(true); }} className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
-                        <Trash2 className="material-name-icon-sm"/>
+                        <Trash2 className="material-name-icon-sm" />
                     </button>
 
-                    <button onClick={() => { setEditItemId(row.ChallanID!) ; handleOpenModal();}} className="material-name-btn-icon" title="Edit">
+                    <button onClick={() => { setEditItemId(row.ChallanID!); handleOpenModal(); }} className="material-name-btn-icon" title="Edit">
                         <Edit3 className="material-name-icon-sm" />
                     </button>
                 </div>
@@ -438,7 +566,7 @@ export default function CreateChallan() {
             selector: (row: ChallanTableItem) => row.ChallanDate,
             sortable: true,
             cell: (row: ChallanTableItem) => (
-                <span>{row.ChallanDate}</span>
+                <span>{getShowingDateText(row.ChallanDate)}</span>
             ),
         },
         {
@@ -469,7 +597,7 @@ export default function CreateChallan() {
         },
         {
             name: 'State',
-            selector: (row: ChallanTableItem) =>  {
+            selector: (row: ChallanTableItem) => {
                 const states = State.find(mg => mg.ID === row.StateID);
                 return states?.Description ?? row.State;
             },
@@ -612,10 +740,10 @@ export default function CreateChallan() {
         //Prod-1
         {
             name: 'Product Name1',
-            selector: (row : ChallanFormData) => row.ProductName1,
+            selector: (row: ChallanFormData) => row.ProductName1,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{ row.ProductName1}</span>
+                <span className="text-right">{row.ProductName1}</span>
             ),
         },
         {
@@ -650,7 +778,6 @@ export default function CreateChallan() {
                 <span className="text-right">{row.Lessweight1}</span>
             ),
         },
-
         {
             name: 'GT Weight1',
             selector: (row: ChallanFormData) => row.GTWeight1,
@@ -672,16 +799,17 @@ export default function CreateChallan() {
             selector: (row: ChallanFormData) => row.ChallanDate,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{row.ChallanDate}</span>
+                <span className="text-right">{getShowingDateText(row.ChallanDate)}</span>
             ),
         },
+
         //Prod-2
         {
             name: 'Product Name2',
-            selector: (row : ChallanFormData) => row.ProductName2,
+            selector: (row: ChallanFormData) => row.ProductName2,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{ row.ProductName2}</span>
+                <span className="text-right">{row.ProductName2}</span>
             ),
         },
         {
@@ -737,16 +865,16 @@ export default function CreateChallan() {
             selector: (row: ChallanFormData) => row.ChallanDate,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{row.ChallanDate}</span>
+                <span className="text-right">{getShowingDateText(row.ChallanDate)}</span>
             ),
         },
         //Prod-3
         {
             name: 'Product Name3',
-            selector: (row : ChallanFormData) => row.ProductName3,
+            selector: (row: ChallanFormData) => row.ProductName3,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{ row.ProductName3}</span>
+                <span className="text-right">{row.ProductName3}</span>
             ),
         },
         {
@@ -802,9 +930,10 @@ export default function CreateChallan() {
             selector: (row: ChallanFormData) => row.ChallanDate,
             sortable: true,
             cell: (row: ChallanFormData) => (
-                <span className="text-right">{row.ChallanDate}</span>
+                <span className="text-right">{getShowingDateText(row.ChallanDate)}</span>
             ),
-        },  
+        },
+
         {
             name: 'TareWeight',
             selector: (row: ChallanFormData) => row.TareWeight,
@@ -919,17 +1048,17 @@ export default function CreateChallan() {
                 <span className="text-right">{row.GTotal}</span>
             ),
         },
-        
-        {
-            name: 'Status',
-            selector: (row: ChallanTableItem) => row.Status,
-            sortable: true,
-            cell: (row: ChallanTableItem) => (
-                <span className={`maintenance-type-badge ${row.Status === 'Pending' ? 'maintenance-type-badge-success' : 'maintenance-type-badge-error'}`}>
-                    {row.Status === 'Pending' ? 'Pending' : 'Approved'}
-                </span>
-            )
-        },
+
+        // {
+        //     name: 'Status',
+        //     selector: (row: ChallanTableItem) => row.Status,
+        //     sortable: true,
+        //     cell: (row: ChallanTableItem) => (
+        //         <span className={`maintenance-type-badge ${row.Status === 'Pending' ? 'maintenance-type-badge-success' : 'maintenance-type-badge-error'}`}>
+        //             {row.Status === 'Pending' ? 'Pending' : 'Approved'}
+        //         </span>
+        //     )
+        // },
         {
             name: 'Created Date',
             selector: (row: ChallanTableItem) => getShowingDateText(row.CreatedDate),
@@ -941,11 +1070,11 @@ export default function CreateChallan() {
             sortable: true,
         },
     ];
-    
+
     // ---------------Get-Data------------------
     const getChallanItem = async () => {
         try {
-            setLoading(true);  
+            setLoading(true);
             const payload = {
                 CompanyId: Number(localStorage.getItem("companyID")),
                 IsForApproval: '',
@@ -955,20 +1084,20 @@ export default function CreateChallan() {
             }
             const response = await fetchPostData('Challan/GetData_Challan', payload);
             // console.log(response);
-            
-            if(response){
-                setChallanItems(response);           
+
+            if (response) {
+                setChallanItems(response);
             }
-            } catch (error: any) {
-                setChallanItems([]);
-            } finally {
-                setLoading(false);
-            }
+        } catch (error: any) {
+            setChallanItems([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const insertChallan = async (formData: any) => {
         try {
-              const flatProducts = challanData.productDetails.reduce<Record<string, any>>((acc, product, index) => {
+            const flatProducts = challanData.productDetails.reduce<Record<string, any>>((acc, product, index) => {
                 const i = index + 1;
                 acc[`ProductName${i}`] = product.name || '';
                 acc[`Rate${i}`] = product.rate || 0;
@@ -978,48 +1107,48 @@ export default function CreateChallan() {
                 acc[`GTWeight${i}`] = product.gtWeight || 0;
                 acc[`Amount${i}`] = product.amount || 0;
                 acc[`Grossweightdate${i}`] = product.ChallanDate || null;
-                  return acc;
-              }, {});
-              const payload = { 
-                ...challanData, 
-                ...flatProducts, 
-                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"), 
-              };
+                return acc;
+            }, {});
+            const payload = {
+                ...challanData,
+                ...flatProducts,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            };
             //   console.log(payload);
-    
-                const response = await fetchPostData("Challan/Insert_Challan", payload);
-                const message = response[0].Message;
-    
-                if (message === "Already Exists MaterialSubTypeCode") {
-                    toastifyError("Code is already Present");
-                    return;
-                }
-    
-                if (message === "Already Exists Description") {
-                    toastifyError("Description is already Present");
-                    return;
-                }
 
-    
-                if (response) {
-                    toastifySuccess("Challan is added successfully");
-                    await getChallanItem();
-                    await fetchCounts();
-                    return true;
-                } else {
-                    throw new Error('Invalid response from server');
-                }
-                return true;
-            } catch (error: any) {
-                toastifyError(`Error adding material type: ${error.message}`);
-                return false;
+            const response = await fetchPostData("Challan/Insert_Challan", payload);
+            const message = response[0].Message;
+
+            if (message === "Already Exists MaterialSubTypeCode") {
+                toastifyError("Code is already Present");
+                return;
             }
+
+            if (message === "Already Exists Description") {
+                toastifyError("Description is already Present");
+                return;
+            }
+
+
+            if (response) {
+                toastifySuccess("Challan is added successfully");
+                await getChallanItem();
+                await fetchCounts();
+                return true;
+            } else {
+                throw new Error('Invalid response from server');
+            }
+            return true;
+        } catch (error: any) {
+            toastifyError(`Error adding material type: ${error.message}`);
+            return false;
+        }
     };
 
     const updateChallan = async (formData: any, id: number) => {
         try {
             setLoading(true);
-    
+
             const payload = {
                 ...formData,
                 ChallanID: id,
@@ -1028,17 +1157,17 @@ export default function CreateChallan() {
             const response = await fetchPostData("Challan/Update_Challan", payload);
             const message = response[0].Message;
             console.log(response);
-                
+
             if (message === "Already Exists MaterialNameCode") {
                 toastifyError("Code is already Present");
                 return;
             }
-    
+
             if (message === "Already Exists Description") {
                 toastifyError("Description is already Present");
                 return;
             }
-                    
+
             if (response) {
                 toastifySuccess('Challan updated successfully');
                 setEditItemId(null);
@@ -1058,14 +1187,14 @@ export default function CreateChallan() {
             setLoading(true);
             const item = challanItems.find(x => x.ChallanID === Id);
             if (!item) return;
-    
+
             // const newStatus = item.IsActive ? 0 : 1;
             const payload = {
                 ChallanID: Id,
                 IsActive: 1
             }
             // console.log(payload);
-    
+
             const response = await fetchPostData('Challan/Delete_Challan', payload);
             // console.log(response);
             if (response) {
@@ -1098,7 +1227,7 @@ export default function CreateChallan() {
                 fetch_Post_Data('Challan/GetData_Challan', payload),
                 fetch_Post_Data('Challan/GetData_Challan', payload),
             ]);
-        
+
             setpendingChallan(Array.isArray(isPending?.Data) ? isPending.Data.length : 0);
             setapprovedChallan(Array.isArray(isApproved?.Data) ? isApproved.Data.length : 0);
             setrejectedChallan(Array.isArray(isRejected?.Data) ? isRejected.Data.length : 0);
@@ -1106,57 +1235,57 @@ export default function CreateChallan() {
             toastifyError("Error fetching counts");
         }
     };
-        
+
     useEffect(() => {
         getChallanItem();
         fetchCounts();
     }, [filter]);
 
     const handleAddProductRow = () => {
-      if(challanData.productDetails.length >= 3) return;
+        if (challanData.productDetails.length >= 3) return;
 
-      const newRow = {
-        id: '',
-        name: '',
-        ProductName1: '',
-        rate: 0,
-        grossWeight: 0,
-        netWeight: 0,
-        lessWeight: 0,
-        gtWeight: 0,
-        amount: 0,
-        ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-        ChallanID: 0
-      }
-      setChallanData((prev) => ({
-        ...prev,
-        productDetails: [...prev.productDetails, newRow ]
-      }))
+        const newRow = {
+            id: '',
+            name: '',
+            ProductName1: '',
+            rate: 0,
+            grossWeight: 0,
+            netWeight: 0,
+            lessWeight: 0,
+            gtWeight: 0,
+            amount: 0,
+            ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+            ChallanID: 0
+        }
+        setChallanData((prev) => ({
+            ...prev,
+            productDetails: [...prev.productDetails, newRow]
+        }))
     }
 
     const handleProductChange = (index: number, field: string, value: any) => {
-      setChallanData((prev) => {
-      const updatedProducts = [...prev.productDetails];
-      updatedProducts[index] = {
-        ...updatedProducts[index],
-        [field]: value,
-      };
+        setChallanData((prev) => {
+            const updatedProducts = [...prev.productDetails];
+            updatedProducts[index] = {
+                ...updatedProducts[index],
+                [field]: value,
+            };
 
-      // Auto-calculate GT Weight and Amount
-      if (['rate', 'netWeight', 'lessWeight'].includes(field)) {
-        const rate = Number(updatedProducts[index].rate) || 0;
-        const netWeight = Number(updatedProducts[index].netWeight) || 0;
-        const lessWeight = Number(updatedProducts[index].lessWeight) || 0;
+            // Auto-calculate GT Weight and Amount
+            if (['rate', 'netWeight', 'lessWeight'].includes(field)) {
+                const rate = Number(updatedProducts[index].rate) || 0;
+                const netWeight = Number(updatedProducts[index].netWeight) || 0;
+                const lessWeight = Number(updatedProducts[index].lessWeight) || 0;
 
-        const gtWeight = netWeight - lessWeight;
-        const amount = gtWeight * rate;
+                const gtWeight = netWeight - lessWeight;
+                const amount = gtWeight * rate;
 
-        updatedProducts[index].gtWeight = gtWeight;
-        updatedProducts[index].amount = amount;
-      }
+                updatedProducts[index].gtWeight = gtWeight;
+                updatedProducts[index].amount = amount;
+            }
 
-      return { ...prev, productDetails: updatedProducts };
-      });
+            return { ...prev, productDetails: updatedProducts };
+        });
     };
 
     const handleSaveChallan = async () => {
@@ -1164,7 +1293,7 @@ export default function CreateChallan() {
         //     toastifyError('Please fill in all required fields');
         //     return;
         // }
-    
+
         if (editItemId) {
             const success = await updateChallan(challanData, editItemId);
             if (success) {
@@ -1182,255 +1311,312 @@ export default function CreateChallan() {
     };
 
     useEffect(() => {
-        if(editItemId && dropdownOptions.length > 0){
+        if (editItemId && dropdownOptions.length > 0) {
             getSingleChallan();
         }
     }, [editItemId, dropdownOptions]);
-    
+
     // Get Single Material 
- const getSingleChallan = async () => {
-  try {
-    const response = await fetchPostData('Challan/GetSingleData_Challan', {
-      ChallanID: editItemId,
-    });
+    const getSingleChallan = async () => {
+        try {
+            const response = await fetchPostData('Challan/GetSingleData_Challan', { ChallanID: editItemId, });
+            if (!response || response.length === 0) return;
 
-    if (!response || response.length === 0) return;
+            const record = response[0];
 
-    const record = response[0];
-    console.log("Fetched Challan Record:", record);
+            setChallanData({
+                // === Basic Info ===
+                ChallanNo: record.ChallanNo || '',
+                ChallanModule: record.ChallanModule || '',
+                ChallanID: record.ChallanID || 0,
+                financialYear: record.financialYear || '2025-2026',
+                autoGenerated: true,
+                ChallanDate: moment(record.CreatedDate || new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                paytype: (() => {
+                    const p = String(record.paytype || '').toLowerCase();
+                    return p === 'credit' ? 'Credit' : 'Cash';
+                })(),
 
-    setChallanData({
-      // === Basic Info ===
-      ChallanNo: record.ChallanNo || '',
-      ChallanModule: record.ChallanModule || '',
-      ChallanID: record.ChallanID || 0,
-      financialYear: record.financialYear || '2025-2026',
-      autoGenerated: true,
-      ChallanDate: moment(record.CreatedDate || new Date()).format('YYYY-MM-DD HH:mm:ss'),
-      paytype: record.paytype?.toLowerCase() || 'cash',
+                // === Party Info ===
+                Name: record.Name || '',
+                PartyID: record.PartyID || 0,
+                address: record.Address || '',
+                State: record.Stateid || 0,
+                StateID: record.Stateid || 0,
+                district: record.DistrictID || 0,
+                PinID: record.PinID || '',
+                OwnerMobile: record.OwnerMobile || '',
+                Email: record.Email || '',
 
-      // === Party Info ===
-      Name: record.Name || '',
-      PartyID: record.PartyID || 0,
-      address: record.Address || '',
-      State: record.Stateid || 0,
-      StateID: record.Stateid || 0,
-      district: record.DistrictID || 0,
-      PinID: record.PinID || '',
-      OwnerMobile: record.OwnerMobile || '',
-      Email: record.Email || '',
+                // === Vehicle Info ===
+                AdvAmt: record.AdvAmt || 0,
+                vehicleTypeid: record.VehicleTypeid || 0,
+                VehicleNo: record.VehicleNo || '',
+                VehicleRemarks: record.VehicleRemarks || '',
+                DriverName: record.DriverName || '',
+                DriverMobileNo: record.DriverMobileNo || '',
 
-      // === Vehicle Info ===
-      AdvAmt: record.AdvAmt || 0,
-      vehicleTypeid: record.VehicleTypeid || 0,
-      VehicleNo: record.VehicleNo || '',
-      VehicleRemarks: record.VehicleRemarks || '',
-      DriverName: record.DriverName || '',
-      DriverMobileNo: record.DriverMobileNo || '',
+                // === GST Info ===
+                gstBill: record.IsGST === 1,
+                GstNo: record.GstNo || '',
+                gstName: record.BillName || '',
+                gstAddress: record.GstAddress || '',
+                GstState: Number(record.GstState) || 0,
+                GstDistrictID: record.GstDistrictID || 0,
+                GstPinID: record.GstPinID || '',
 
-      // === GST Info ===
-      gstBill: record.IsGST === 1,
-      GstNo: record.GstNo || '',
-      gstName: record.BillName || '',
-      gstAddress: record.GstAddress || '',
-      GstState: record.GstState || record.Stateid || 0,
-      GstDistrictID: record.GstDistrictID || 0,
-      GstPinID: record.GstPinID || '',
+                // === Product Details ===
+                productDetails: [
+                    ...(record.ProductName1 ? [{
+                        id: record.ProductId1 || '',
+                        name: record.ProductName1 || '',
+                        rate: Number(record.Rate1) || 0,
+                        grossWeight: Number(record.Grossweight1) || 0,
+                        netWeight: Number(record.Netweight1) || 0,
+                        lessWeight: Number(record.Lessweight1) || 0,
+                        gtWeight: Number(record.GTWeight1) || 0,
+                        amount: Number(record.Amount1) || 0,
+                        ChallanDate: record.Grossweightdate1 || moment().format('YYYY-MM-DD HH:mm:ss'),
+                    }] : []),
 
-      // === Product Details ===
-      productDetails: [
-        ...(record.ProductId1 ? [{
-          id: record.ProductId1,
-          name: record.ProductName1,
-          rate: Number(record.Rate1) || 0,
-          grossWeight: Number(record.Grossweight1) || 0,
-          netWeight: Number(record.Netweight1) || 0,
-          lessWeight: Number(record.Lessweight1) || 0,
-          gtWeight: Number(record.GTWeight1) || 0,
-          amount: Number(record.Amount1) || 0,
-        }] : []),
-      ],
+                    ...(record.ProductName2 ? [{
+                        id: record.ProductId2 || '',
+                        name: record.ProductName2 || '',
+                        rate: Number(record.Rate2) || 0,
+                        grossWeight: Number(record.Grossweight2) || 0,
+                        netWeight: Number(record.Netweight2) || 0,
+                        lessWeight: Number(record.Lessweight2) || 0,
+                        gtWeight: Number(record.GTWeight2) || 0,
+                        amount: Number(record.Amount2) || 0,
+                        ChallanDate: record.Grossweightdate2 || moment().format('YYYY-MM-DD HH:mm:ss'),
+                    }] : []),
 
-      // === Weight Section (flattened) ===
-      TareWeight: Number(record.TareWeight) || 0,
-      Netweight: Number(record.Netweight) || 0,
-      Lessweight: Number(record.Lessweight) || 0,
-      GTWeight: Number(record.GTWeight) || 0,
-      VehicleCommision: Number(record.CommisionAmt) || 0,
+                    ...(record.ProductName3 ? [{
+                        id: record.ProductId3 || '',
+                        name: record.ProductName3 || '',
+                        rate: Number(record.Rate3) || 0,
+                        grossWeight: Number(record.Grossweight3) || 0,
+                        netWeight: Number(record.Netweight3) || 0,
+                        lessWeight: Number(record.Lessweight3) || 0,
+                        gtWeight: Number(record.GTWeight3) || 0,
+                        amount: Number(record.Amount3) || 0,
+                        ChallanDate: record.Grossweightdate3 || moment().format('YYYY-MM-DD HH:mm:ss'),
+                    }] : []),
+                ],
+                //   ProductName1: record.ProductName1,
+                //   ProductName2: record.ProductName2,
+                //   ProductName3: record.ProductName3,
+                //   Rate1: record.Rate1,
+                //   Rate2: record.Rate2,
+                //   Rate3: record.Rate3,
+                //   Grossweight1: record.Grossweight1,
+                //   Grossweight2: record.Grossweight2,
+                //   Grossweight3: record.Grossweight3,
+                //   Netweight1: record.Netweight1,
+                //   Netweight2: record.Netweight2,
+                //   Netweight3: record.Netweight3,
+                //   Lessweight1: record.Lessweight1,
+                //   Lessweight2: record.Lessweight2,
+                //   Lessweight3: record.Lessweight3,
+                //   GTWeight1: record.GTWeight1,
+                //   GTWeight2: record.GTWeight2,
+                //   GTWeight3: record.GTWeight3,
+                //   Amount1: record.Amount1,
+                //   Amount2: record.Amount2,
+                //   Amount3: record.Amount3,
+                //   Grossweightdate1: record.Grossweightdate1,
+                //   Grossweightdate2: record.Grossweightdate2,
+                //   Grossweightdate3: record.Grossweightdate3,
 
-      // === Amount Section (flattened) ===
-      Amount: Number(record.Amount) || 0,
-      LoadingAmt: Number(record.LoadingAmt) || 0,
-      CommisionAmt: Number(record.CommisionAmt) || 0,
-      GSTAmt: Number(record.GSTAmt) || 0,
-      RoyaltyAmt: Number(record.RoyaltyAmt) || 0,
-      TPAmount: Number(record.TPAmount) || 0,
-      FreightAmt: Number(record.FreightAmt) || 0,
-      GTotal: Number(record.GTotal) || 0,
-    });
+                // === Weight Section (flattened) ===
+                TareWeight: Number(record.TareWeight) || 0,
+                Netweight: Number(record.Netweight) || 0,
+                Lessweight: Number(record.Lessweight) || 0,
+                GTWeight: Number(record.GTWeight) || 0,
+                VehicleCommision: Number(record.CommisionAmt) || 0,
 
-    // Load dependent dropdowns
-    if (record.Stateid) await fetchDistrict(record.Stateid);
-  } catch (error: any) {
-    console.error("Error fetching challan:", error);
-    toastifyError(`Error fetching challan: ${error.message}`);
-  }
-};
+                // === Amount Section (flattened) ===
+                Amount: Number(record.Amount) || 0,
+                LoadingAmt: Number(record.LoadingAmt) || 0,
+                CommisionAmt: Number(record.CommisionAmt) || 0,
+                GSTAmt: Number(record.GSTAmt) || 0,
+                RoyaltyAmt: Number(record.RoyaltyAmt) || 0,
+                TPAmount: Number(record.TPAmount) || 0,
+                FreightAmt: Number(record.FreightAmt) || 0,
+                GTotal: Number(record.GTotal) || 0,
+            });
 
+            // Load dependent dropdowns
+            if (record.Stateid) await fetchDistrict(record.Stateid);
+            const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
+
+            if (companyIdField && dropdownOptions.length > 0) {
+                const companyIds = String(companyIdField).split(",").map(id => id.trim());
+                const matchOptions = dropdownOptions.filter(opt => companyIds.includes(String(opt.CompanyID))).map(opt => ({
+                    value: opt.CompanyID,
+                    label: opt.CompanyName
+                }));
+                setDropdown(matchOptions);
+            }
+        } catch (error: any) {
+            console.error("Error fetching challan:", error);
+            toastifyError(`Error fetching challan: ${error.message}`);
+        }
+    };
 
     const resetForm = () => {
         setChallanData({
-        ChallanNo: '',
-        ChallanModule: '',
-        ChallanID: 0,
-        financialYear: '2025-2026',
-        autoGenerated: true,
-        ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-        paytype: "Cash",
+            ChallanNo: '',
+            ChallanModule: '',
+            ChallanID: 0,
+            financialYear: '2025-2026',
+            autoGenerated: true,
+            ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+            paytype: "Cash",
 
-        Name: '',
-        partyTypeid: 0,
-        address: '',
-        State: '',
-        StateID: 0, 
-        district: 0,
-        PinID: '',
-        OwnerMobile: '',
-        Email: '',
+            Name: '',
+            partyTypeid: 0,
+            address: '',
+            State: '',
+            StateID: 0,
+            district: 0,
+            PinID: '',
+            OwnerMobile: '',
+            Email: '',
 
-        AdvAmt: 0,
-        vehicleType: '',
-        vehicleTypeid: 0,
-        VehicleNo: '',
-        VehicleRemarks: '',
-        DriverName: '',
-        DriverMobileNo: 0,
+            AdvAmt: 0,
+            vehicleType: '',
+            vehicleTypeid: 0,
+            VehicleNo: '',
+            VehicleRemarks: '',
+            DriverName: '',
+            DriverMobileNo: 0,
 
-        gstBill: false,
-        GstNo: '',
-        Party: 0,
-        gstName: '',
-        gstAddress: '',
-        GstState: 0,
-        gstDistrict: 0,
-        GstPinID: '',
+            gstBill: false,
+            GstNo: '',
+            Party: 0,
+            gstName: '',
+            gstAddress: '',
+            GstState: 0,
+            gstDistrict: 0,
+            GstPinID: '',
 
-        endUser: true,
-        dealer: false,
-        balance: 0,
-        limit: 0,
+            endUser: true,
+            dealer: false,
+            balance: 0,
+            limit: 0,
 
-        productDetails: [
-            {
-                id: '',
-                name: '',
-                // ProductName1: '',
-                rate: 0,
-                grossWeight: 0,
+            productDetails: [
+                {
+                    id: '',
+                    name: '',
+                    // ProductName1: '',
+                    rate: 0,
+                    grossWeight: 0,
+                    netWeight: 0,
+                    lessWeight: 0,
+                    gtWeight: 0,
+                    amount: 0,
+                    ChallanDate: moment().format('YYYY-MM-DD HH:mm:'),
+                    ChallanID: 0
+                }
+            ],
+            weightDetails: {
+                TareWeight: 0,
+                ChallanDate: '',
                 netWeight: 0,
                 lessWeight: 0,
-                gtWeight: 0,
-                amount: 0,
-                ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-                ChallanID: 0
-            }
-        ],
-        weightDetails: {
-            TareWeight: 0,
-            ChallanDate: '',
-            netWeight: 0,
-            lessWeight: 0,
-            GTWeight: 0,
-            VehicleCommision: 0,
-        },
+                GTWeight: 0,
+                VehicleCommision: 0,
+            },
 
-        amount: 0,
-        loading: 0,
-        commission: 0,
-        total: 0,
-        gstAmount: 0,
-        royalty: 0,
-        tpAmount: 0,
-        freightAmt: 0,
-        extraAmt: 0,
-        grandTotal: 0,
+            amount: 0,
+            loading: 0,
+            commission: 0,
+            total: 0,
+            gstAmount: 0,
+            royalty: 0,
+            tpAmount: 0,
+            freightAmt: 0,
+            extraAmt: 0,
+            grandTotal: 0,
         });
     };
 
     //----------------------Dropdowns-----------------------
-    const fetchState = async() => {
-        try{
+    const fetchState = async () => {
+        try {
             const response = await fetchPostData('State/GetDataDropDown_State', {
                 CompanyId: Number(localStorage.getItem('companyID')),
             });
             // console.log(State[0]);
 
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setState(response);
                 setGSTState(response);
             }
-        }catch{
-             toastifyError('Error fetching States');
+        } catch {
+            toastifyError('Error fetching States');
         }
     }
 
-    const fetchDistrict = async(stateID : number | string) => {
-        try{
+    const fetchDistrict = async (stateID: number | string) => {
+        try {
             const response = await fetchPostData('District/GetDataDropDown_District', {
                 StateId: stateID,
                 CompanyId: Number(localStorage.getItem('companyID')),
             })
             console.log(response);
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setDistrict(response);
                 setGSTDistrict(response);
-            }else{
+            } else {
                 setDistrict([]);
             }
-        }catch{
+        } catch {
             toastifyError('Error fetching District');
         }
     }
 
-    const fetchVehicleType = async() => {
-        try{
+    const fetchVehicleType = async () => {
+        try {
             const response = await fetchPostData('VehicleType/GetDataDropDown_VehicleType', {
                 CompanyId: Number(localStorage.getItem('companyID'))
             })
             // console.log(response);
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setVehicleType(response);
-            }else{
+            } else {
                 setVehicleType([]);
             }
-        }catch{
+        } catch {
             toastifyError('Error fetching Vehicle Type.');
         }
     }
 
-    const fetchParty = async() => {
-        try{
+    const fetchParty = async () => {
+        try {
             const response = await fetchPostData('Party/GetDataDropDown_Party', {
                 CompanyId: Number(localStorage.getItem('companyID'))
             })
             console.log(response);
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setPartyType(response);
                 gstSetPartyType(response);
-            }else{
+            } else {
                 setPartyType([]);
                 gstSetPartyType([]);
             }
-        }catch{
-             toastifyError('Error fetching Party Type.');
+        } catch {
+            toastifyError('Error fetching Party Type.');
         }
     }
 
     useEffect(() => {
-      fetchState();
-    //   fetchDistrict(State);
-      fetchVehicleType();
-      fetchParty();
+        fetchState();
+        //   fetchDistrict(State);
+        fetchVehicleType();
+        fetchParty();
     }, []);
 
     useEffect(() => {
@@ -1445,13 +1631,13 @@ export default function CreateChallan() {
                 } else {
                     toastifyError("Failed to load Dropdown.")
                 }
-                } catch (error: any) {
-                    toastifyError("Error fetching Dropdown");
-                }
+            } catch (error: any) {
+                toastifyError("Error fetching Dropdown");
             }
-            fetchDropDown();
+        }
+        fetchDropDown();
     }, []);
-    
+
     const options = dropdownOptions.map(opt => ({
         value: opt.CompanyID,
         label: opt.CompanyName
@@ -1555,19 +1741,99 @@ export default function CreateChallan() {
         ...col,
         minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
-    
+
     //Download-Excel_File
     const exportToExcel = () => {
-        // const filteredDataNew = challanItems?.map(item => ({
-        //     'Material-Sub Type Code': item.MaterialSubTypeCode,
-        //     'Description': item.Description,
-        //     'Material Type': item.MaterialTypeID,
-        //     'Status': item.IsActive ? 'Active' : 'Inactive',
-        //     'Created Date': item.CreatedDate ? getShowingDateText(item.CreatedDate) : " ",
-        //     'Last Modified': item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : " ",
-        // }));
+        const filteredDataNew = challanItems.map((item) => ({
+        "Challan ID": item.ChallanID,
+        "Challan No": item.ChallanNo,
+        "Challan Module": item.ChallanModule,
+        "Challan Date": item.ChallanDate,
+        "Financial Year": item.financialYear,
+        "Voucher Type": item.VoucherType || "",
+        "Pay Type": item.paytype || "",
+        "Advance Amount": item.AdvAmt || 0,
+
+        "Party Name": item.Name || "",
+        "Party ID": item.PartyID || "",
+        "Party Type ID": item.partyTypeid || "",
+        "Address": item.Address || item.address || "",
+        "State": item.State || "",
+        "State ID": item.StateID || "",
+        "District ID": item.DistrictID || "",
+        "Pin ID": item.PinID || "",
+        "Email": item.Email || "",
+        "Owner Mobile": item.OwnerMobile || "",
+
+        "Vehicle No": item.VehicleNo || "",
+        "Vehicle Type ID": item.VehicleTypeid || "",
+        "Vehicle Remarks": item.VehicleRemarks || "",
+        "Vehicle Commission": item.VehicleCommision || "",
+        "Driver Name": item.DriverName || "",
+        "Driver Mobile No": item.DriverMobileNo || "",
+
+        "GST Bill": item.IsGST ? "Yes" : "No",
+        "GST No": item.GstNo || "",
+        "GST Address": item.GstAddress || "",
+        "GST State": item.GstState || "",
+        "GST District ID": item.GstDistrictID || "",
+        "GST Pin ID": item.GstPinID || "",
+        "Bill Name": item.BillName || "",
+
+        "Gross Weight": item.Grossweight || "",
+        "Tare Weight": item.TareWeight || "",
+        "Net Weight": item.Netweight || "",
+        "Less Weight": item.Lessweight || "",
+        "GT Weight": item.GTWeight || "",
+
+        "Rate": item.Rate || "",
+        "Amount": item.Amount || "",
+        "Loading Amount": item.LoadingAmt || "",
+        "Commission Amount": item.CommisionAmt || "",
+        "Total Amount": item.TotalAmt || "",
+        "GST Amount": item.GSTAmt || "",
+        "Royalty Amount": item.RoyaltyAmt || "",
+        "TP Amount": item.TPAmount || "",
+        "Freight Amount": item.FreightAmt || "",
+        "Extra Amount": item.ExtraAmt || "",
+        "Grand Total": item.GTotal || "",
+
+        // 🧾 Product 1
+        "Product Name 1": item.ProductName1 || "",
+        "Rate 1": item.Rate1 || "",
+        "Gross Weight 1": item.Grossweight1 || "",
+        "Gross Weight Date 1": item.Grossweightdate1 || "",
+        "Net Weight 1": item.Netweight1 || "",
+        "Less Weight 1": item.Lessweight1 || "",
+        "GT Weight 1": item.GTWeight1 || "",
+        "Amount 1": item.Amount1 || "",
+
+        // 🧾 Product 2
+        "Product Name 2": item.ProductName2 || "",
+        "Rate 2": item.Rate2 || "",
+        "Gross Weight 2": item.Grossweight2 || "",
+        "Gross Weight Date 2": item.Grossweightdate2 || "",
+        "Net Weight 2": item.Netweight2 || "",
+        "Less Weight 2": item.Lessweight2 || "",
+        "GT Weight 2": item.GTWeight2 || "",
+        "Amount 2": item.Amount2 || "",
+
+        // 🧾 Product 3
+        "Product Name 3": item.ProductName3 || "",
+        "Rate 3": item.Rate3 || "",
+        "Gross Weight 3": item.Grossweight3 || "",
+        "Gross Weight Date 3": item.Grossweightdate3 || "",
+        "Net Weight 3": item.Netweight3 || "",
+        "Less Weight 3": item.Lessweight3 || "",
+        "GT Weight 3": item.GTWeight3 || "",
+        "Amount 3": item.Amount3 || "",
+
+        "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
+        "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
+        "Company ID": item.Companyid || "",
+    }));
         const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(filteredData);
+        const ws = XLSX.utils.json_to_sheet(filteredDataNew);
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -1589,14 +1855,14 @@ export default function CreateChallan() {
                                 {/* Filter-Date/Time */}
                                 <div className="flex items-center gap-2">
                                     <label className=" whitespace-nowrap employee-master-metric-label">From :</label>
-                                    <DatePicker selected={ fromDate }
+                                    <DatePicker selected={fromDate}
                                         onChange={(date) => setFromDate(date)}
                                         className="border rounded px-2 py-1 w-[60px]"
                                         placeholderText="From Date"
                                         dateFormat="yyyy-MM-dd"
                                     />
 
-                                    <DatePicker selected={ fromTime }
+                                    <DatePicker selected={fromTime}
                                         onChange={(date) => setFromTime(date)}
                                         showTimeSelect
                                         placeholderText='00:00'
@@ -1608,13 +1874,13 @@ export default function CreateChallan() {
                                     />
 
                                     <label className=" whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
-                                    <DatePicker selected={ toDate }
+                                    <DatePicker selected={toDate}
                                         onChange={(date) => setToDate(date)}
                                         className="border rounded px-2 py-1 w-[60px]"
                                         placeholderText='To Date'
                                         dateFormat="yyyy-MM-dd"
                                     />
-                                    <DatePicker selected={ toTime }
+                                    <DatePicker selected={toTime}
                                         onChange={(date) => setToTime(date)}
                                         showTimeSelect
                                         placeholderText='00:00'
@@ -1632,22 +1898,23 @@ export default function CreateChallan() {
                                     <Select
                                         className="w-full"
                                         placeholder="Select Party"
-                                        value={ challanData.Party ? {
-                                          value: challanData.Party,
-                                          label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
+                                        value={challanData.Party ? {
+                                            value: challanData.Party,
+                                            label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
                                         } : null}
-                                          options={partyType.map((d) => ({
-                                          value: d.PartyID,
-                                          label: d.Name
+                                        options={partyType.map((d) => ({
+                                            value: d.PartyID,
+                                            label: d.Name
                                         }))}
                                         onChange={(selectedOption) => {
-                                          const value = selectedOption?.value ?? null;
-                                          setSelectedParty(value);
-                                          setChallanData((prev) => ({
-                                            ...prev,
-                                              Party: value ?? 0,
-                                              Name: selectedOption?.label ?? ""
-                                          }))
+                                            const value = selectedOption?.value ?? null;
+                                            const label = selectedOption?.label ?? null;
+                                            setSelectedParty(label);
+                                            setChallanData((prev) => ({
+                                                ...prev,
+                                                Party: value ?? 0,
+                                                Name: selectedOption?.label ?? ""
+                                            }))
                                         }}
                                         isClearable
                                         isSearchable
@@ -1656,108 +1923,36 @@ export default function CreateChallan() {
                                 </div>
 
                                 <div className="flex justify-between items-center w-full">
-                                  {/* Search */}
-                                  <div className="flex flex-row-reverse items-center gap-2" >
-                                    <button onClick={handleSearch} className="text-gray-600 border rounded p-2 hover:bg-gray-100 transition flex items-center gap-2">
-                                        <FiSearch size={18} />
-                                        Search
-                                    </button>
+                                    {/* Search */}
+                                    <div className="flex flex-row-reverse items-center gap-2" >
+                                        <button onClick={handleSearch} className="text-gray-600 border rounded p-2 hover:bg-gray-100 transition flex items-center gap-2">
+                                            <FiSearch size={18} /> Search
+                                        </button>
                                         <div className="relative">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Search challans..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none"
-                                                autoFocus
-                                            />
+                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none" autoFocus/>
                                             <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                                         </div>
-                                  </div>
-                                  <div className="flex">
-                                    <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
-                                        <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel
-                                    </button>
-                                  </div>
+                                    </div>
+                                    {/* Export-Button */}
+                                    <div className="flex">
+                                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="employee-master-space-y-2">
-                            {/* Employee Summary Cards */}
-                            {/* <div className="employee-master-summary-grid ">
-                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("pending")}>
-                                    <div className="employee-master-summary-content">
-                                        <div className="employee-master-summary-item">
-                                            <div className="employee-master-icon-container employee-master-icon-blue">
-                                                <UsersIcon />
-                                            </div>
-                                            <div>
-                                                <p className="employee-master-metric-label">Pending Challan</p>
-                                                <p className="employee-master-metric-value employee-master-metric-blue">{pendingChallan}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("approved")}>
-                                    <div className="employee-master-summary-content">
-                                        <div className="employee-master-summary-item">
-                                            <div className="employee-master-icon-container employee-master-icon-green">
-                                                <CheckCircleIcon />
-                                            </div>
-                                            <div>
-                                                <p className="employee-master-metric-label">Approved Challan</p>
-                                                <p className="employee-master-metric-value employee-master-metric-green">
-                                                    {approvedChallan}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("rejected")}>
-                                    <div className="employee-master-summary-content">
-                                        <div className="employee-master-summary-item">
-                                            <div className="employee-master-icon-container employee-master-icon-purple">
-                                                <TrendingUpIcon />
-                                            </div>
-                                            <div>
-                                                <p className="employee-master-metric-label">Rejected Challan</p>
-                                                <p className="employee-master-metric-value employee-master-metric-purple">
-                                                    {rejectedChallan}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="employee-master-summary-card cursor-pointer" onClick={() => setFilter("all")}>
-                                    <div className="employee-master-summary-content">
-                                        <div className="employee-master-summary-item">
-                                            <div className="employee-master-icon-container employee-master-icon-yellow">
-                                                <ClockIcon />
-                                            </div>
-                                            <div>
-                                                <p className="employee-master-metric-label">Total Challan</p>
-                                                <p className="employee-master-metric-value employee-master-metric-yellow">
-                                                    {pendingChallan + approvedChallan + rejectedChallan}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> */}
-
                             {/* Employee List Table */}
                             <div className="employee-master-card">
                                 <div className="employee-master-card-header mt-2 flex justify-end">
-                                    <button className="employee-master-button employee-master-button-primary employee-master-button-sm" 
-                                    onClick={() => { 
-                                        setEditItemId(null);
-                                        resetForm();
-                                        handleOpenModal()
-                                    }}>
+                                    <button className="employee-master-button employee-master-button-primary employee-master-button-sm"
+                                        onClick={() => {
+                                            setEditItemId(null);
+                                            resetForm();
+                                            handleOpenModal()
+                                        }}>
                                         <PlusIcon /> Add Challan
                                     </button>
                                 </div>
@@ -1801,594 +1996,598 @@ export default function CreateChallan() {
 
                                     {/* Modal Body */}
                                     <div className="modal-body p-2">
-                                        <div className="row align-items-center">
-
-                                            <div className="col-xl-5">
-                                                <div className="d-flex align-items-center gap-2">
-                                                    <label htmlFor="product-desc" className="mb-0" style={{ minWidth: 70 }} >
-                                                        Challan#
-                                                    </label>
-                                                    <div className="product-des-input d-flex gap-2 flex-grow-1">
-                                                        <input type="text" id="product-desc-1" placeholder='Challan-No' style={{ flex: 1 }} value={challanData.ChallanNo} onChange={(e) => setChallanData({...challanData, ChallanNo: e.target.value})} />
-                                                        <input type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }}  value={challanData.ChallanModule} onChange={(e) => setChallanData({...challanData, ChallanModule: e.target.value})}/>
-                                                        <input type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-3 mt-3 mt-xl-0">
-                                                <div className="d-flex align-items-center gap-2">
-                                                    <label htmlFor="generic-desc" className="mb-0" style={{ minWidth: 70 }}> Date/Time </label>
-                                                    <div className="product-des-input flex-grow-1">
-                                                        <DatePicker
-                                                          selected={moment(challanData.ChallanDate, "YYYY-MM-DD HH:mm:ss").toDate()} 
-                                                          onChange={(date: Date | null) => {
-                                                          if (date) {
-                                                            const formatted = moment(date).format("YYYY-MM-DD HH:mm:ss"); 
-                                                            setChallanData({ ...challanData, ChallanDate: formatted });
-                                                          }}}
-                                                          showTimeSelect
-                                                          timeIntervals={15}
-                                                          timeCaption="Time"
-                                                          dateFormat="dd/MM/yyyy HH:mm"
-                                                          className="border rounded px-2 py-1 w-full"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-xl-2 mt-3 mt-xl-0">
-                                                <div className="d-flex align-items-center gap-2">
-                                                    <label className="d-flex align-items-center" style={{ gap: 6 }}>
-                                                        <input type="radio" name="paytype" value="Cash" checked={challanData.paytype === "Cash"} onChange={(e) => setChallanData({...challanData, paytype: e.target.value})}/>
-                                                        Cash
-                                                    </label>
-                                                    <label className="d-flex align-items-center" style={{ gap: 6, marginLeft: 20 }}>
-                                                        <input type="radio" name="paytype" value="Credit" checked={challanData.paytype === "Credit"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value })}/>{" "}
-                                                        Credit
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            {/* Button */}
-                                            <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
-                                                <div className="flex gap-2 ">
-                                                    {/* Save Button */}
-                                                    <button type="button"
-                                                        className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                        style={{ backgroundColor: "#34C759" }}
-                                                        onClick = {handleSaveChallan}
-                                                    >
-                                                        <FiSave size={18} />
-                                                        {editItemId ? 'Update' : 'Save'}
-                                                    </button>
-
-                                                    {/* Print Button */}
-                                                    <button
-                                                        type="button"
-                                                        className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                        style={{ backgroundColor: "#212529" }}
-                                                        onClick={() => window.print()}
-                                                    >
-                                                        <FiPrinter size={18} />
-                                                        Print
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="col-xxl-9 col-12 mt-2">
-                                                {/* First-Section */}
-                                                <div className="row">
-                                                    {/* First-Column */}
-                                                    <div className="col-xl-4 col-sm-6">
-                                                        <div className="form-block ">
-                                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
-                                                                {/* Party */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="SchemeCode">Party</label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <Select className="w-full"
-                                                                        placeholder="Select Party"
-                                                                        value={ challanData.PartyID ? {
-                                                                            value: challanData.PartyID,
-                                                                            label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
-                                                                        } : null}
-                                                                        options={partyType.map((d) => ({
-                                                                            value: d.PartyID,
-                                                                            label: d.Name
-                                                                        }))}
-                                                                        onChange={(selectedOption) =>
-                                                                            setChallanData((prev) => ({
-                                                                                ...prev,
-                                                                                PartyID: Number(selectedOption?.value ?? 0),
-                                                                            }))
-                                                                        }
-                                                                        isClearable
-                                                                        isSearchable
-                                                                        styles={selectCompactStyles}
-                                                                    />
-                                                                </div>
-                                                                {/* Address */}
-                                                                <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="prType">
-                                                                        Address <span>*</span>
-                                                                    </label>
-                                                                </div>
-                                                                <div className="col-xl-9 col-12">
-                                                                    <textarea
-                                                                        name=""
-                                                                        id="prType"
-                                                                        className="py-0"
-                                                                        style={{ width: "100%" }}
-                                                                        placeholder='Address'
-                                                                        value={challanData.address}
-                                                                        onChange={(e) => setChallanData({...challanData, address: e.target.value})}
-                                                                    />
-                                                                </div>
-                                                                {/* State */}
-                                                                <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="ritcNo">State<span>*</span></label>
-                                                                </div>
-                                                                <div className="col-xl-9 col-12">
-                                                                    <Select
-                                                                      value={ challanData.State  ? 
-                                                                        { value: challanData.State,
-                                                                          label: State.find((st) => st.ID === challanData.StateID)?.Description || 0, 
-                                                                        } : null
-                                                                      }
-                                                                        className="w-full"
-                                                                        placeholder="Select State"
-                                                                        options={State.map((st) => ({
-                                                                          value: st.ID,
-                                                                          label: st.Description,
-                                                                        }))}
-                                                                        onChange={(selectedOption: SingleValue<{ value: number; label: string }>) => {
-                                                                            const stateID = selectedOption?.value ?? 0;
-                                                                            const stateLabel = selectedOption?.label ?? 0;
-                                                                            setChallanData((prev) => ({
-                                                                                ...prev,
-                                                                                State: stateLabel,
-                                                                                StateID: stateID,
-                                                                                district: 0,
-                                                                            }));
-                                                                            if (stateID) fetchDistrict(stateID);
-                                                                        }}
-                                                                        isClearable
-                                                                        isSearchable
-                                                                        styles={selectCompactStyles}
-                                                                    />
-                                                                </div>
-                                                                {/* District */}
-                                                                <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="prUnit">District<span>*</span></label>
-                                                                </div>
-                                                                <div className="col-xl-9 col-12">
-                                                                    <Select
-                                                                        className="w-full"
-                                                                        placeholder="Select District"
-                                                                        value={ challanData.district
-                                                                            ? {
-                                                                            value: challanData.district,
-                                                                            label: district.find((d) => d.ID === challanData.district)?.Description || '',
-                                                                        } : null
-                                                                    }
-                                                                    options={district.map((d) => ({
-                                                                        value: d.ID,
-                                                                        label: d.Description,
-                                                                    }))}
-                                                                    onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                        setChallanData((prev) => ({
-                                                                            ...prev,
-                                                                            district: Number(selectedOption?.value ?? 0),
-                                                                        }))
-                                                                    }
-                                                                    isClearable
-                                                                    isSearchable
-                                                                    styles={selectCompactStyles}
-                                                                />
-                                                                </div>
-                                                                {/* PIN */}
-                                                                <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="prUnitPrice">
-                                                                        PIN <span>*</span>
-                                                                    </label>
-                                                                </div>
-                                                                <div className="col-xl-9 col-12">
-                                                                    <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(e) => setChallanData({...challanData, PinID: e.target.value})}/>
-                                                                </div>
-                                                                {/* Contact */}
-                                                                <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="prAmountUSD">Contact</label>
-                                                                </div>
-                                                                <div className="col-xl-9 col-12">
-                                                                    <input type="text" id="prAmountUSD" placeholder='Contact No' value={challanData.OwnerMobile} onChange={(e) => setChallanData({...challanData, OwnerMobile: e.target.value})}/>
-                                                                </div>
-                                                                {/* EmailID */}
-                                                                <div className="single-info-block col-xl-3">
-                                                                    <label htmlFor="prAmountINR">EmailID</label>
-                                                                </div>
-                                                                <div className="col-xl-9 col-12">
-                                                                    <input type="email" id="prAmountINR" placeholder="Email ID" value={challanData.Email} onChange={(e) => setChallanData({...challanData, Email: e.target.value})}/>
-                                                                </div>
-                                                                {/* ROW */}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Second-Column */}
-                                                    <div className="col-xl-3 col-sm-6 ">
-                                                        <div className="form-block ">
-                                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
-                                                                {/* Adv-Amount */}
-                                                                <div className="single-info-block col-xl-5">
-                                                                    <label htmlFor="endUse">Adv. Amount <span>*</span></label>
-                                                                </div>
-                                                                <div className="col-xl-7 col-12">
-                                                                    <input type="text" id="endUse" defaultValue={0.0} style={{ width: "100%" }} value={challanData.AdvAmt} onChange={(e) => setChallanData({...challanData, AdvAmt: Number(e.target.value)})}/>
-                                                                </div>
-                                                                {/* Vehicle-type */}
-                                                                <div className="single-info-block col-xl-5">
-                                                                    <label htmlFor="prCTH">Vehicle Type</label>
-                                                                </div>
-                                                                <div className="col-xl-7 col-12">
-                                                                    <Select
-                                                                        className="w-full"
-                                                                        placeholder="Select Vehicle"
-                                                                        value = { challanData.vehicleTypeid ? 
-                                                                            {
-                                                                                value: challanData.vehicleTypeid,
-                                                                                label: vehicleType.find((d) => d.VehicleTypeID === challanData.vehicleTypeid)?.Description || ''
-                                                                            } : null
-                                                                        }
-                                                                        options={vehicleType.map((d) => ({
-                                                                             value: d.VehicleTypeID,
-                                                                             label: d.Description
-                                                                        }))}
-                                                                        onChange={(selectedOptions : SingleValue<{value: number, label: string}>) =>
-                                                                            setChallanData((prev) => ({
-                                                                                ...prev,
-                                                                                vehicleTypeid: Number(selectedOptions?.value ?? 0),
-                                                                                // vehicleTypeid: Number(selectedOptions?.value ?? 0)
-                                                                        }))
-                                                                        }
-                                                                        isClearable
-                                                                        isSearchable
-                                                                        styles={selectCompactStyles}
-                                                                    />
-                                                                </div>
-                                                                {/* Vehicle-No */}
-                                                                <div className="single-info-block col-xl-5">
-                                                                    <label htmlFor="prCET">Vehicle No.</label>
-                                                                </div>
-                                                                <div className="col-xl-7 col-12">
-                                                                  <input type='text' placeholder='Vehicle No' value={challanData.VehicleNo} onChange={(e) => setChallanData({...challanData, VehicleNo: e.target.value})}/>
-                                                                </div>
-                                                                {/* Driver-Name */}
-                                                                <div className="single-info-block col-xl-5">
-                                                                    <label htmlFor="prCode">Driver Name</label>
-                                                                </div>
-                                                                <div className="col-xl-7 col-12">
-                                                                    <input type="text" id="prCode" placeholder="Driver Name" style={{ width: "100%" }} value={challanData.DriverName} onChange={(e) => setChallanData({...challanData, DriverName: e.target.value})}/>
-                                                                </div>
-                                                                {/* Driver-No */}
-                                                                <div className="single-info-block col-xl-5">
-                                                                    <label htmlFor="driverNo">Driver Number</label>
-                                                                </div>
-                                                                <div className="col-xl-7 col-12">
-                                                                    <input type="text" id="driverNo" style={{ width: "100%" }} value={challanData.DriverMobileNo} onChange={(e) => setChallanData({...challanData, DriverMobileNo: Number(e.target.value)})}/>
-                                                                </div>
-                                                                {/* Vehicle-Remark */}
-                                                                <div className="single-info-block col-xl-5">
-                                                                    <label htmlFor="remark">Vehicle Remarks</label>
-                                                                </div>
-                                                                <div className="col-xl-7 col-12">
-                                                                    <textarea name="" id="remark" className="py-0" style={{ width: "100%" }} value={challanData.VehicleRemarks} onChange={(e) => setChallanData({...challanData, VehicleRemarks: e.target.value})}/>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Third-Column */}
-                                                    <div className="col-xl-5 mt-3 mt-xl-0">
-                                                        <div className="form-block bigger-form-block">
-                                                            <div className="row align-items-center" style={{ rowGap: 6 }}>
-                                                                {/* GST-No */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="gst">GST No</label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <input type="text" id="gst" style={{ width: "100%" }} placeholder='GST No' value={challanData.GstNo} onChange={(e) => setChallanData({...challanData, GstNo: e.target.value})}/>
-                                                                </div>
-                                                                {/* GST Party-Drop */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="SchemeCode">Party</label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <Select className="w-full"
-                                                                        placeholder="Select Party"
-                                                                        value={ challanData.Name ? {
-                                                                            value: challanData.Name,
-                                                                            label: gstPartyType.find((d) => d.Name === challanData.Name)?.Name || '',
-                                                                        } : null}
-                                                                        options={gstPartyType.map((d) => ({
-                                                                            value: d.Name,
-                                                                            label: d.Name
-                                                                        }))}
-                                                                        onChange={(selectedOption) =>
-                                                                            setChallanData((prev) => ({
-                                                                                ...prev,
-                                                                                Name: selectedOption?.label ?? '',
-                                                                            }))
-                                                                        }
-                                                                        isClearable
-                                                                        isSearchable
-                                                                        styles={selectCompactStyles}
-                                                                    />
-                                                                </div>
-                                                                {/* GST Address */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="address">Address</label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <textarea name="" id="address" placeholder='Address' value={challanData.gstAddress}  onChange={(e) => setChallanData({...challanData, gstAddress: e.target.value})}/>
-                                                                </div>
-                                                                {/* GST State */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="ritcNo">State<span>*</span></label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <Select
-                                                                      value={ challanData.GstState  ? 
-                                                                        { value: challanData.GstState,
-                                                                          label: gstState.find((st) => st.ID === challanData.GstState)?.Description || "", 
-                                                                        } : null
-                                                                      }
-                                                                        className="w-full"
-                                                                        placeholder="Select State"
-                                                                        options={gstState.map((st) => ({
-                                                                          value: st.ID,
-                                                                          label: st.Description,
-                                                                        }))}
-                                                                        onChange={(selectedOption) => {
-                                                                            const stateID = selectedOption?.value ?? 0;
-                                                                            console.log(stateID);
-                                                                            setChallanData((prev) => ({
-                                                                                ...prev,
-                                                                                GstState: stateID,
-                                                                                district: 0,
-                                                                            }));
-                                                                            if (stateID) fetchDistrict(stateID);
-                                                                        }}
-                                                                        isClearable
-                                                                        isSearchable
-                                                                        styles={selectCompactStyles}
-                                                                    />
-                                                                </div>
-                                                                {/* GST District */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="prUnit">District<span>*</span></label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <Select
-                                                                        className="w-full"
-                                                                        placeholder="Select District"
-                                                                        value={ challanData.gstDistrict
-                                                                            ? {
-                                                                            value: challanData.gstDistrict,
-                                                                            label: gstDistrict.find((d) => d.ID === challanData.gstDistrict)?.Discription || '',
-                                                                        } : null
-                                                                    }
-                                                                    options={gstDistrict.map((d) => ({
-                                                                        value: d.ID,
-                                                                        label: d.Discription,
-                                                                    }))}
-                                                                    onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                        setChallanData((prev) => ({
-                                                                            ...prev,
-                                                                            gstDistrict: Number(selectedOption?.value ?? 0),
-                                                                        }))
-                                                                    }
-                                                                    isClearable
-                                                                    isSearchable
-                                                                    styles={selectCompactStyles}
-                                                                />
-                                                                </div>
-                                                                {/* GST PIN */}
-                                                                <div className="single-info-block col-xl-2">
-                                                                    <label htmlFor="prUnitPrice">PIN <span>*</span></label>
-                                                                </div>
-                                                                <div className="col-xl-10">
-                                                                    <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.GstPinID} onChange={(e) => setChallanData({...challanData,GstPinID: e.target.value})}/>
-                                                                </div>
-                                                            </div>
+                                        <div className='col-12 col-lg-12'>
+                                            <div className="row align-items-center">
+                                                <div className="col-xl-5">
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <label htmlFor="product-desc" className="mb-0" style={{ minWidth: 70 }} >
+                                                            Challan#
+                                                        </label>
+                                                        <div className="product-des-input d-flex gap-2 flex-grow-1">
+                                                            <input type="text" id="product-desc-1" placeholder='Challan-No' style={{ flex: 1 }} value={challanData.ChallanNo} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} />
+                                                            <input type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} />
+                                                            <input type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                {/* Second-Second */}
-                                                <div className="col-12 mt-2">
-                                                    {/* First-Row */}
-                                                    <div className="product-details-table mb-2">
-                                                        {challanData.productDetails.map((product, index) => (
-                                                            <div key={index} className="product-des-box product-details-form ">
-                                                                <div className="product-form-container ">
-                                                                    <div className="row g-3 align-items-center mt-2">
-                                                                        {/* Product Name */}
-                                                                        <div className="col-md-2 mt-0">
-                                                                            <label className="MAINTABLE_LABEL">Product Name</label>
-                                                                            <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => handleProductChange(index, 'name', e.target.value) } />
-                                                                        </div>
-                                                                        {/* Rate */}
-                                                                        <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Rate</label>
-                                                                            <input type="number" value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value)) } />
-                                                                        </div>
-                                                                        {/* Gross Weight */}
-                                                                        <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Gross Weight</label>
-                                                                            <input type="number" value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))}/>
-                                                                        </div>
-                                                                        {/* Net Weight */}
-                                                                        <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Net Weight</label>
-                                                                            <input type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))}/>
-                                                                        </div>
-                                                                        {/* Less Weight */}
-                                                                        <div className="col mt-0" style={{ minWidth: 150 }}>
-                                                                            <label className="MAINTABLE_LABEL">Less Weight</label>
-                                                                            <input type="number" value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))}/>
-                                                                        </div>
-                                                                        {/* GT Weight */}
-                                                                        <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">GT Weight</label>
-                                                                            <input type="number" value={product.gtWeight} readOnly />
-                                                                        </div>
-                                                                        {/* Amount */}
-                                                                        <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Amount</label>
-                                                                            <input type="number" value={product.amount} readOnly />
-                                                                        </div>
-                                                                        {/* Date/Time */}
-                                                                        <div className="col-md-2 mt-0">
-                                                                            <label className="MAINTABLE_LABEL">Date/Time</label>
-                                                                            <DatePicker selected={moment(product.ChallanDate, 'YYYY-MM-DD HH:mm:ss').toDate()} onChange={(date: Date | null) => {
-                                                                                if (date) {
-                                                                                    const formatted = moment(date).format('YYYY-MM-DD HH:mm:ss'); handleProductChange(index, 'ChallanDate', formatted);
-                                                                                }}}
-                                                                                showTimeSelect
-                                                                                timeIntervals={15}
-                                                                                timeCaption="Time"
-                                                                                dateFormat="dd/MM/yyyy HH:mm"
-                                                                                className="border rounded px-2 py-1 w-full"
-                                                                            />
-                                                                        </div>
-
-                                                                        {/* Add Button (only on last row, max 3 rows) */}
-                                                                        {index === challanData.productDetails.length - 1 && challanData.productDetails.length < 3 && (
-                                                                            <div className="col">
-                                                                                <button type="button" className="btn btn-warning p-1 py-0" onClick={handleAddProductRow} >
-                                                                                    <svg className="text-white" style={{ width: 20, height: 25 }} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                                                                    </svg>
-                                                                                </button>
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-
-                                                    {/* Second-Row */}
-                                                    <div className="product-details-table mb-2">
-                                                        <div className="product-des-box product-details-form ">
-                                                            <div className="product-form-container ">
-                                                                <div className="row g-3">
-                                                                    {/* Tare-Weight */}
-                                                                    <div className="col-2 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Tare Weight</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({...challanData, TareWeight: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Net-Weight */}
-                                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Net Weight</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.Netweight} onChange={(e) => setChallanData({...challanData, Netweight: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Less-Weight */}
-                                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Less Weight</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({...challanData, Lessweight: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* GT-Weight */}
-                                                                    <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Total GT Weight</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.GTWeight} onChange={(e) => setChallanData({...challanData, GTWeight: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Vehicle-Commision */}
-                                                                    <div className="col-1 mt-0" style={{ minWidth: 150 }}>
-                                                                        <label className="MAINTABLE_LABEL">Vehicle Commision</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({...challanData, VehicleCommision: Number(e.target.value) })}/>
-                                                                    </div>
-                                                                    {/* Date-Time */}
-                                                                    <div className="col-md-2 mt-0">
-                                                                        <label className="MAINTABLE_LABEL">Financial Year</label>
-                                                                        <input type="text" id="SchemDes" readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({...challanData, financialYear: e.target.value})}/>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                <div className="col-xl-3 mt-3 mt-xl-0">
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <label htmlFor="generic-desc" className="mb-0" style={{ minWidth: 70 }}> Date/Time </label>
+                                                        <div className="product-des-input flex-grow-1">
+                                                            <DatePicker selected={moment(challanData.ChallanDate, "YYYY-MM-DD HH:mm:ss").toDate()}
+                                                                onChange={(date: Date | null) => {
+                                                                    if (date) {
+                                                                        const formatted = moment(date).format("YYYY-MM-DD HH:mm:ss");
+                                                                        setChallanData({ ...challanData, ChallanDate: formatted });
+                                                                    }
+                                                                }}
+                                                                showTimeSelect
+                                                                timeIntervals={15}
+                                                                timeCaption="Time"
+                                                                dateFormat="dd/MM/yyyy HH:mm"
+                                                                className="border rounded px-2 py-1 w-full"
+                                                            />
                                                         </div>
                                                     </div>
-                                                    <div className="product-details-table mb-2">
-                                                        <div className="product-des-box product-details-form">
-                                                            <div className="product-form-container ">
-                                                                <div className="row g-3">
-                                                                    {/* Amount */}
-                                                                    <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Amount</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.Amount} onChange={(e) => setChallanData({...challanData, Amount: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Loading-Amount */}
-                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Loading Amount</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.LoadingAmt} onChange={(e) => setChallanData({...challanData, LoadingAmt: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Commission-Amount */}
-                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Commission Amt</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({...challanData, CommisionAmt: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* GT-Amount */}
-                                                                    <div className="col-md-1 col-sm-6 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">GT Amount</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.GSTAmt} onChange={(e) => setChallanData({...challanData, GSTAmt: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Royality-Amount */}
-                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
-                                                                        <label className="MAINTABLE_LABEL">Royalty Amount</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.RoyaltyAmt} onChange={(e) => setChallanData({...challanData, RoyaltyAmt: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* TP-Amount */}
-                                                                    <div className="col-md-2 mt-0">
-                                                                        <label className="MAINTABLE_LABEL">TP Amount</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.TPAmount} onChange={(e) => setChallanData({...challanData, TPAmount: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Freight-Amount */}
-                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Freight Amount</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.FreightAmt} onChange={(e) => setChallanData({...challanData, FreightAmt: Number(e.target.value)})}/>
-                                                                    </div>
-                                                                    {/* Grand-Total */}
-                                                                    <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                        <label className="MAINTABLE_LABEL">Grand Total</label>
-                                                                        <input type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({...challanData, GTotal: Number(e.target.value)})}/>
-                                                                    </div>
+                                                </div>
+                                                <div className="col-xl-2 mt-3 mt-xl-0">
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <label className="d-flex align-items-center" style={{ gap: 6 }}>
+                                                            <input type="radio" name="paytype" value="Cash" checked={challanData.paytype === "Cash"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value as 'Cash' | 'Credit' })} />
+                                                            Cash
+                                                        </label>
+                                                        <label className="d-flex align-items-center" style={{ gap: 6, marginLeft: 20 }}>
+                                                            <input type="radio" name="paytype" value="Credit" checked={challanData.paytype === "Credit"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value as 'Cash' | 'Credit' })} />{" "}
+                                                            Credit
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                {/* Button */}
+                                                <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
+                                                    <div className="flex gap-2 ">
+                                                        {/* Save Button */}
+                                                        <button type="button"
+                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                            style={{ backgroundColor: "#34C759" }}
+                                                            onClick={handleSaveChallan}
+                                                        >
+                                                            <FiSave size={18} />
+                                                            {editItemId ? 'Update' : 'Save'}
+                                                        </button>
 
-                                                                    <div className="col-md-3 mt-0">
-                                                                        <label  className="MAINTABLE_LABEL">Company Id</label>
-                                                                        <Select
-                                                                            value={dropdown}
-                                                                            onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
-                                                                            options={options}
-                                                                            isMulti
+                                                        {/* Print Button */}
+                                                        <button
+                                                            type="button"
+                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                            style={{ backgroundColor: "#212529" }}
+                                                            onClick={() => window.print()}
+                                                        >
+                                                            <FiPrinter size={18} />
+                                                            Print
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xxl-9 col-12 mt-2">
+                                                    {/* First-Section */}
+                                                    <div className="row">
+                                                        {/* First-Column */}
+                                                        <div className="col-xl-4 col-sm-6">
+                                                            <div className="form-block ">
+                                                                <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                    {/* Party */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="SchemeCode">Party</label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <Select className="w-full"
+                                                                            placeholder="Select Party"
+                                                                            value={challanData.PartyID ? {
+                                                                                value: challanData.PartyID,
+                                                                                label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
+                                                                            } : null}
+                                                                            options={partyType.map((d) => ({
+                                                                                value: d.PartyID,
+                                                                                label: d.Name
+                                                                            }))}
+                                                                            onChange={(selectedOption) =>
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    PartyID: Number(selectedOption?.value ?? 0),
+                                                                                }))
+                                                                            }
                                                                             isClearable
-                                                                            closeMenuOnSelect={false}
-                                                                            hideSelectedOptions={true}
-                                                                            placeholder="Select Company"
-                                                                            className="basic-multi-select"
-                                                                            styles={{
-                                                                              ...multiValue,
-                                                                              valueContainer: (provided) => ({
-                                                                                ...provided,
-                                                                                  maxHeight: "60px",
-                                                                                  overflowY: "auto",
-                                                                                  flexWrap: "wrap",
-                                                                                }),
-                                                                            }}
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
                                                                         />
                                                                     </div>
+                                                                    {/* Address */}
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label htmlFor="prType">
+                                                                            Address <span>*</span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <textarea
+                                                                            name=""
+                                                                            id="prType"
+                                                                            className="py-0"
+                                                                            style={{ width: "100%" }}
+                                                                            placeholder='Address'
+                                                                            value={challanData.address}
+                                                                            onChange={(e) => setChallanData({ ...challanData, address: e.target.value })}
+                                                                        />
+                                                                    </div>
+                                                                    {/* State */}
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label htmlFor="ritcNo">State<span>*</span></label>
+                                                                    </div>
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <Select
+                                                                            value={challanData.State ?
+                                                                                {
+                                                                                    value: challanData.State,
+                                                                                    label: State.find((st) => st.ID === challanData.StateID)?.Description || 0,
+                                                                                } : null
+                                                                            }
+                                                                            className="w-full"
+                                                                            placeholder="Select State"
+                                                                            options={State.map((st) => ({
+                                                                                value: st.ID,
+                                                                                label: st.Description,
+                                                                            }))}
+                                                                            onChange={(selectedOption: SingleValue<{ value: number; label: string }>) => {
+                                                                                const stateID = selectedOption?.value ?? 0;
+                                                                                const stateLabel = selectedOption?.label ?? 0;
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    State: stateLabel,
+                                                                                    StateID: stateID,
+                                                                                    district: 0,
+                                                                                }));
+                                                                                if (stateID) fetchDistrict(stateID);
+                                                                            }}
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
+                                                                    </div>
+                                                                    {/* District */}
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label htmlFor="prUnit">District<span>*</span></label>
+                                                                    </div>
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <Select
+                                                                            className="w-full"
+                                                                            placeholder="Select District"
+                                                                            value={challanData.district
+                                                                                ? {
+                                                                                    value: challanData.district,
+                                                                                    label: district.find((d) => d.ID === challanData.district)?.Description || '',
+                                                                                } : null
+                                                                            }
+                                                                            options={district.map((d) => ({
+                                                                                value: d.ID,
+                                                                                label: d.Description,
+                                                                            }))}
+                                                                            onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    district: Number(selectedOption?.value ?? 0),
+                                                                                }))
+                                                                            }
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
+                                                                    </div>
+                                                                    {/* PIN */}
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label htmlFor="prUnitPrice">
+                                                                            PIN <span>*</span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(e) => setChallanData({ ...challanData, PinID: e.target.value })} />
+                                                                    </div>
+                                                                    {/* Contact */}
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label htmlFor="prAmountUSD">Contact</label>
+                                                                    </div>
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <input type="text" id="prAmountUSD" placeholder='Contact No' value={challanData.OwnerMobile} onChange={(e) => setChallanData({ ...challanData, OwnerMobile: e.target.value })} />
+                                                                    </div>
+                                                                    {/* EmailID */}
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label htmlFor="prAmountINR">EmailID</label>
+                                                                    </div>
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <input type="email" id="prAmountINR" placeholder="Email ID" value={challanData.Email} onChange={(e) => setChallanData({ ...challanData, Email: e.target.value })} />
+                                                                    </div>
+                                                                    {/* ROW */}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Second-Column */}
+                                                        <div className="col-xl-3 col-sm-6 ">
+                                                            <div className="form-block ">
+                                                                <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                    {/* Adv-Amount */}
+                                                                    <div className="single-info-block col-xl-5">
+                                                                        <label htmlFor="endUse">Adv. Amount <span>*</span></label>
+                                                                    </div>
+                                                                    <div className="col-xl-7 col-12">
+                                                                        <input type="text" id="endUse" defaultValue={0.0} style={{ width: "100%" }} value={challanData.AdvAmt} onChange={(e) => setChallanData({ ...challanData, AdvAmt: Number(e.target.value) })} />
+                                                                    </div>
+                                                                    {/* Vehicle-type */}
+                                                                    <div className="single-info-block col-xl-5">
+                                                                        <label htmlFor="prCTH">Vehicle Type</label>
+                                                                    </div>
+                                                                    <div className="col-xl-7 col-12">
+                                                                        <Select
+                                                                            className="w-full"
+                                                                            placeholder="Select Vehicle"
+                                                                            value={challanData.vehicleTypeid ?
+                                                                                {
+                                                                                    value: challanData.vehicleTypeid,
+                                                                                    label: vehicleType.find((d) => d.VehicleTypeID === challanData.vehicleTypeid)?.Description || ''
+                                                                                } : null
+                                                                            }
+                                                                            options={vehicleType.map((d) => ({
+                                                                                value: d.VehicleTypeID,
+                                                                                label: d.Description
+                                                                            }))}
+                                                                            onChange={(selectedOptions: SingleValue<{ value: number, label: string }>) =>
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    vehicleTypeid: Number(selectedOptions?.value ?? 0),
+                                                                                    // vehicleTypeid: Number(selectedOptions?.value ?? 0)
+                                                                                }))
+                                                                            }
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
+                                                                    </div>
+                                                                    {/* Vehicle-No */}
+                                                                    <div className="single-info-block col-xl-5">
+                                                                        <label htmlFor="prCET">Vehicle No.</label>
+                                                                    </div>
+                                                                    <div className="col-xl-7 col-12">
+                                                                        <input type='text' placeholder='Vehicle No' value={challanData.VehicleNo} onChange={(e) => setChallanData({ ...challanData, VehicleNo: e.target.value })} />
+                                                                    </div>
+                                                                    {/* Driver-Name */}
+                                                                    <div className="single-info-block col-xl-5">
+                                                                        <label htmlFor="prCode">Driver Name</label>
+                                                                    </div>
+                                                                    <div className="col-xl-7 col-12">
+                                                                        <input type="text" id="prCode" placeholder="Driver Name" style={{ width: "100%" }} value={challanData.DriverName} onChange={(e) => setChallanData({ ...challanData, DriverName: e.target.value })} />
+                                                                    </div>
+                                                                    {/* Driver-No */}
+                                                                    <div className="single-info-block col-xl-5">
+                                                                        <label htmlFor="driverNo">Driver Number</label>
+                                                                    </div>
+                                                                    <div className="col-xl-7 col-12">
+                                                                        <input type="text" id="driverNo" style={{ width: "100%" }} value={challanData.DriverMobileNo} onChange={(e) => setChallanData({ ...challanData, DriverMobileNo: Number(e.target.value) })} />
+                                                                    </div>
+                                                                    {/* Vehicle-Remark */}
+                                                                    <div className="single-info-block col-xl-5">
+                                                                        <label htmlFor="remark">Vehicle Remarks</label>
+                                                                    </div>
+                                                                    <div className="col-xl-7 col-12">
+                                                                        <textarea name="" id="remark" className="py-0" style={{ width: "100%" }} value={challanData.VehicleRemarks} onChange={(e) => setChallanData({ ...challanData, VehicleRemarks: e.target.value })} />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Third-Column */}
+                                                        <div className="col-xl-5 mt-3 mt-xl-0">
+                                                            <div className="form-block bigger-form-block">
+                                                                <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                    {/* GST-No */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="gst">GST No</label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <input type="text" id="gst" style={{ width: "100%" }} placeholder='GST No' value={challanData.GstNo} onChange={(e) => setChallanData({ ...challanData, GstNo: e.target.value })} />
+                                                                    </div>
+                                                                    {/* GST Party-Drop */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="SchemeCode">Party</label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <Select className="w-full"
+                                                                            placeholder="Select Party"
+                                                                            value={challanData.Name ? {
+                                                                                value: challanData.Name,
+                                                                                label: gstPartyType.find((d) => d.Name === challanData.Name)?.Name || '',
+                                                                            } : null}
+                                                                            options={gstPartyType.map((d) => ({
+                                                                                value: d.Name,
+                                                                                label: d.Name
+                                                                            }))}
+                                                                            onChange={(selectedOption) =>
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    Name: selectedOption?.label ?? '',
+                                                                                }))
+                                                                            }
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
+                                                                    </div>
+                                                                    {/* GST Address */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="address">Address</label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <textarea name="" id="address" placeholder='Address' value={challanData.gstAddress} onChange={(e) => setChallanData({ ...challanData, gstAddress: e.target.value })} />
+                                                                    </div>
+                                                                    {/* GST State */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="ritcNo">State<span>*</span></label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <Select
+                                                                            value={challanData.GstState ?
+                                                                                {
+                                                                                    value: challanData.GstState,
+                                                                                    label: gstState.find((st) => st.ID === challanData.GstState)?.Description || "",
+                                                                                } : null
+                                                                            }
+                                                                            className="w-full"
+                                                                            placeholder="Select State"
+                                                                            options={gstState.map((st) => ({
+                                                                                value: st.ID,
+                                                                                label: st.Description,
+                                                                            }))}
+                                                                            onChange={(selectedOption) => {
+                                                                                const stateID = selectedOption?.value ?? 0;
+                                                                                console.log(stateID);
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    GstState: stateID,
+                                                                                    district: 0,
+                                                                                }));
+                                                                                if (stateID) fetchDistrict(stateID);
+                                                                            }}
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
+                                                                    </div>
+                                                                    {/* GST District */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="prUnit">District<span>*</span></label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <Select
+                                                                            className="w-full"
+                                                                            placeholder="Select District"
+                                                                            value={challanData.gstDistrict
+                                                                                ? {
+                                                                                    value: challanData.gstDistrict,
+                                                                                    label: gstDistrict.find((d) => d.ID === challanData.gstDistrict)?.Discription || '',
+                                                                                } : null
+                                                                            }
+                                                                            options={gstDistrict.map((d) => ({
+                                                                                value: d.ID,
+                                                                                label: d.Discription,
+                                                                            }))}
+                                                                            onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    gstDistrict: Number(selectedOption?.value ?? 0),
+                                                                                }))
+                                                                            }
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
+                                                                    </div>
+                                                                    {/* GST PIN */}
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label htmlFor="prUnitPrice">PIN <span>*</span></label>
+                                                                    </div>
+                                                                    <div className="col-xl-10">
+                                                                        <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.GstPinID} onChange={(e) => setChallanData({ ...challanData, GstPinID: e.target.value })} />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    {/* {renderItemsTable()} */}
+
+                                                    {/* Second-Second */}
+                                                    <div className="col-12 mt-2">
+                                                        {/* First-Row */}
+                                                        <div className="product-details-table mb-2">
+                                                            {challanData.productDetails.map((product, index) => (
+                                                                <div key={index} className="product-des-box product-details-form ">
+                                                                    <div className="product-form-container ">
+                                                                        <div className="row g-3 align-items-center mt-2">
+                                                                            {/* Product Name */}
+                                                                            <div className="col-md-2 mt-0">
+                                                                                <label className="MAINTABLE_LABEL">Product Name</label>
+                                                                                <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => handleProductChange(index, 'name', e.target.value)} />
+                                                                            </div>
+                                                                            {/* Rate */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL">Rate</label>
+                                                                                <input type="number" value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value))} />
+                                                                            </div>
+                                                                            {/* Gross Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL">Gross Weight</label>
+                                                                                <input type="number" value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
+                                                                            </div>
+                                                                            {/* Net Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL">Net Weight</label>
+                                                                                <input type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
+                                                                            </div>
+                                                                            {/* Less Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 150 }}>
+                                                                                <label className="MAINTABLE_LABEL">Less Weight</label>
+                                                                                <input type="number" value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))} />
+                                                                            </div>
+                                                                            {/* GT Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL">GT Weight</label>
+                                                                                <input type="number" value={product.gtWeight} readOnly />
+                                                                            </div>
+                                                                            {/* Amount */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL">Amount</label>
+                                                                                <input type="number" value={product.amount} readOnly />
+                                                                            </div>
+                                                                            {/* Date/Time */}
+                                                                            <div className="col-md-2 mt-0">
+                                                                                <label className="MAINTABLE_LABEL">Date/Time</label>
+                                                                                <DatePicker selected={moment(product.ChallanDate, 'YYYY-MM-DD HH:mm:ss').toDate()} onChange={(date: Date | null) => {
+                                                                                    if (date) {
+                                                                                        const formatted = moment(date).format('YYYY-MM-DD HH:mm:ss'); handleProductChange(index, 'ChallanDate', formatted);
+                                                                                    }
+                                                                                }}
+                                                                                    showTimeSelect
+                                                                                    timeIntervals={15}
+                                                                                    timeCaption="Time"
+                                                                                    dateFormat="dd/MM/yyyy HH:mm"
+                                                                                    className="border rounded px-2 py-1 w-full"
+                                                                                />
+                                                                            </div>
+
+                                                                            {/* Add Button (only on last row, max 3 rows) */}
+                                                                            {index === challanData.productDetails.length - 1 && challanData.productDetails.length < 3 && (
+                                                                                <div className="col">
+                                                                                    <button type="button" className="btn btn-warning p-1 py-0" onClick={handleAddProductRow} >
+                                                                                        <svg className="text-white" style={{ width: 20, height: 25 }} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                                                        </svg>
+                                                                                    </button>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {/* Second-Row */}
+                                                        <div className="product-details-table mb-2">
+                                                            <div className="product-des-box product-details-form ">
+                                                                <div className="product-form-container ">
+                                                                    <div className="row g-3">
+                                                                        {/* Tare-Weight */}
+                                                                        <div className="col-2 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Tare Weight</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Net-Weight */}
+                                                                        <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Net Weight</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.Netweight} onChange={(e) => setChallanData({ ...challanData, Netweight: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Less-Weight */}
+                                                                        <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Less Weight</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* GT-Weight */}
+                                                                        <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Total GT Weight</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.GTWeight} onChange={(e) => setChallanData({ ...challanData, GTWeight: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Vehicle-Commision */}
+                                                                        <div className="col-1 mt-0" style={{ minWidth: 150 }}>
+                                                                            <label className="MAINTABLE_LABEL">Vehicle Commision</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Date-Time */}
+                                                                        <div className="col-md-2 mt-0">
+                                                                            <label className="MAINTABLE_LABEL">Financial Year</label>
+                                                                            <input type="text" id="SchemDes" readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="product-details-table mb-2">
+                                                            <div className="product-des-box product-details-form">
+                                                                <div className="product-form-container ">
+                                                                    <div className="row g-3">
+                                                                        {/* Amount */}
+                                                                        <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Amount</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.Amount} onChange={(e) => setChallanData({ ...challanData, Amount: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Loading-Amount */}
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Loading Amount</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.LoadingAmt} onChange={(e) => setChallanData({ ...challanData, LoadingAmt: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Commission-Amount */}
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Commission Amt</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({ ...challanData, CommisionAmt: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* GT-Amount */}
+                                                                        <div className="col-md-1 col-sm-6 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">GT Amount</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.GSTAmt} onChange={(e) => setChallanData({ ...challanData, GSTAmt: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Royality-Amount */}
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
+                                                                            <label className="MAINTABLE_LABEL">Royalty Amount</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.RoyaltyAmt} onChange={(e) => setChallanData({ ...challanData, RoyaltyAmt: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* TP-Amount */}
+                                                                        <div className="col-md-2 mt-0">
+                                                                            <label className="MAINTABLE_LABEL">TP Amount</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.TPAmount} onChange={(e) => setChallanData({ ...challanData, TPAmount: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Freight-Amount */}
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Freight Amount</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.FreightAmt} onChange={(e) => setChallanData({ ...challanData, FreightAmt: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* Grand-Total */}
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Grand Total</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
+                                                                        </div>
+
+                                                                        <div className="col-md-3 mt-0">
+                                                                            <label className="MAINTABLE_LABEL">Company Id</label>
+                                                                            <Select
+                                                                                value={dropdown}
+                                                                                onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
+                                                                                options={options}
+                                                                                isMulti
+                                                                                isClearable
+                                                                                closeMenuOnSelect={false}
+                                                                                hideSelectedOptions={true}
+                                                                                placeholder="Select Company"
+                                                                                className="basic-multi-select"
+                                                                                styles={{
+                                                                                    ...multiValue,
+                                                                                    valueContainer: (provided) => ({
+                                                                                        ...provided,
+                                                                                        maxHeight: "60px",
+                                                                                        overflowY: "auto",
+                                                                                        flexWrap: "wrap",
+                                                                                    }),
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {/* {renderItemsTable()} */}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -2403,11 +2602,11 @@ export default function CreateChallan() {
             <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
-                if (selectedId !== null) {
-                    deleteMaterialName(selectedId);
-                }
-                setShowModal(false);
-            }} />
+                    if (selectedId !== null) {
+                        deleteMaterialName(selectedId);
+                    }
+                    setShowModal(false);
+                }} />
         </>
     );
 }
