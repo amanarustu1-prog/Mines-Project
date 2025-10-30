@@ -62,7 +62,7 @@ interface BaseProductFields {
 interface ChallanItem extends BaseProductFields {
     ChallanNo: any;
     ProductName1: string;
-        Companyid: string;
+    Companyid: string;
     GstDistrictID: any;
     GstState: any;
     GstPinID: any;
@@ -338,7 +338,7 @@ interface ChallanTableItem {
     VehicleCommision: number;
     TareWeight: number;
     Rate: number;
-        // Product and weight details
+    // Product and weight details
     productDetails: ProductDetail[];
     ProductName1: string;
     ProductName2: string,
@@ -400,7 +400,6 @@ export default function CreateChallan() {
     const [selectedParty, setSelectedParty] = useState<number | string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredData, setFilteredData] = useState<ChallanTableItem[]>([]);
-
 
     // ----------- Custom ------------
     const [loading, setLoading] = useState(false);
@@ -521,6 +520,18 @@ export default function CreateChallan() {
     const [challanItems, setChallanItems] = useState<ChallanItem[]>([]);
     const handleOpenModal = () => {
         setIsModalOpen(true);
+    };
+
+    const blankProduct = {
+      id: '',
+      name: '',
+      rate: 0,
+      grossWeight: 0,
+      netWeight: 0,
+      lessWeight: 0,
+      gtWeight: 0,
+      amount: 0,
+      ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
     };
 
     const handleCloseModal = () => {
@@ -1087,6 +1098,7 @@ export default function CreateChallan() {
 
             if (response) {
                 setChallanItems(response);
+                setFilteredData(response);
             }
         } catch (error: any) {
             setChallanItems([]);
@@ -1148,15 +1160,27 @@ export default function CreateChallan() {
     const updateChallan = async (formData: any, id: number) => {
         try {
             setLoading(true);
-
+            const flatProducts = challanData.productDetails.reduce<Record<string, any>>((acc, product, index) => {
+                const i = index + 1;
+                acc[`ProductName${i}`] = product.name || '';
+                acc[`Rate${i}`] = product.rate || 0;
+                acc[`Grossweight${i}`] = product.grossWeight || 0;
+                acc[`Netweight${i}`] = product.netWeight || 0;
+                acc[`Lessweight${i}`] = product.lessWeight || 0;
+                acc[`GTWeight${i}`] = product.gtWeight || 0;
+                acc[`Amount${i}`] = product.amount || 0;
+                acc[`Grossweightdate${i}`] = product.ChallanDate || null;
+                return acc;
+            }, {});
             const payload = {
                 ...formData,
+                ...flatProducts,
                 ChallanID: id,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
             };
             const response = await fetchPostData("Challan/Update_Challan", payload);
             const message = response[0].Message;
-            console.log(response);
+            // console.log(response);
 
             if (message === "Already Exists MaterialNameCode") {
                 toastifyError("Code is already Present");
@@ -1240,6 +1264,15 @@ export default function CreateChallan() {
         getChallanItem();
         fetchCounts();
     }, [filter]);
+
+    useEffect(() => {
+        if (challanData.productDetails.length === 0) {
+            setChallanData((prev) => ({
+                ...prev,
+                productDetails: [blankProduct],
+            }));
+        }
+    }, [challanData]);
 
     const handleAddProductRow = () => {
         if (challanData.productDetails.length >= 3) return;
@@ -1668,7 +1701,7 @@ export default function CreateChallan() {
 
     //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
     // });
-
+    
     const handleSearch = () => {
         let result = challanItems;
 
@@ -1687,18 +1720,19 @@ export default function CreateChallan() {
         // Filter by date range
         if (fromDateTime && toDateTime) {
             result = result.filter((item) => {
-            const challanDate = new Date(item.ChallanDate);
+            const challanDate = new Date(item.CreatedDate);
             return challanDate >= fromDateTime && challanDate <= toDateTime;
         });}
         else if (fromDateTime && !toDateTime) {
             result = result.filter((item) => {
-            const challanDate = new Date(item.ChallanDate);
+            const challanDate = new Date(item.CreatedDate);
             return challanDate >= fromDateTime;
         });}
 
         // Filter by party
         if (selectedParty) {
             result = result.filter((item) => item.PartyID === challanData.Party);
+            console.log(result.length);
         }
 
         // Filter by challan number (search input)
@@ -1859,7 +1893,7 @@ export default function CreateChallan() {
                                         onChange={(date) => setFromDate(date)}
                                         className="border rounded px-2 py-1 w-[60px]"
                                         placeholderText="From Date"
-                                        dateFormat="yyyy-MM-dd"
+                                        dateFormat="MM-dd-yyyy"
                                     />
 
                                     <DatePicker selected={fromTime}
@@ -1878,7 +1912,7 @@ export default function CreateChallan() {
                                         onChange={(date) => setToDate(date)}
                                         className="border rounded px-2 py-1 w-[60px]"
                                         placeholderText='To Date'
-                                        dateFormat="yyyy-MM-dd"
+                                        dateFormat="MM-dd-yyyy"
                                     />
                                     <DatePicker selected={toTime}
                                         onChange={(date) => setToTime(date)}
@@ -1959,7 +1993,7 @@ export default function CreateChallan() {
                                 <div className="employee-master-card-content" style={{ padding: '0' }}>
                                     <DataTable
                                         columns={resizeableColumns}
-                                        data={filteredData.length > 0 ? filteredData : challanItems}
+                                        data={filteredData}
                                         pagination
                                         paginationPerPage={10}
                                         paginationRowsPerPageOptions={[5, 10, 20, 50]}
@@ -1969,7 +2003,11 @@ export default function CreateChallan() {
                                         responsive
                                         noDataComponent={
                                             <div className="text-center py-8 text-gray-500">
-                                                No challan records found
+                                                <p>
+                                                { 
+                                                  searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
+                                                }
+                                                </p>
                                             </div>
                                         }
                                     />
@@ -2404,7 +2442,7 @@ export default function CreateChallan() {
                                                     <div className="col-12 mt-2">
                                                         {/* First-Row */}
                                                         <div className="product-details-table mb-2">
-                                                            {challanData.productDetails.map((product, index) => (
+                                                            {(challanData.productDetails.length === 0 ? [blankProduct] : challanData.productDetails).map((product, index) => (
                                                                 <div key={index} className="product-des-box product-details-form ">
                                                                     <div className="product-form-container ">
                                                                         <div className="row g-3 align-items-center mt-2">
