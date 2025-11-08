@@ -56,6 +56,7 @@ interface BaseProductFields {
     gtWeight: number;
     amount: number;
     ChallanDate: string;
+    product: string;
 }
 
 // ChallanItem is used in the form State
@@ -124,7 +125,7 @@ interface ChallanItem extends BaseProductFields {
     Grossdate: string;
     ExtraAmt: string;
     ExtraAmtType: string;
-    ProductId1: string;
+    ProductId1: number;
     Status: string;
     status: 'Pending' | 'Approved' | 'Rejected';
     CreatedDate: string;
@@ -164,6 +165,7 @@ interface ChallanItem extends BaseProductFields {
 // ProductDetail is used in the form data
 interface ProductDetail extends BaseProductFields {
     name: string;
+    ProductId: number;
 }
 
 interface ChallanFormData {
@@ -214,7 +216,8 @@ interface ChallanFormData {
 
     // Product and weight details
     productDetails: ProductDetail[];
-    ProductName1: string;
+    ProductId1: number,
+    ProductName1: string,
     ProductName2: string,
     ProductName3: string,
     Rate1: number,
@@ -328,7 +331,7 @@ interface ChallanTableItem {
     Grossdate: string;
     ExtraAmt: string;
     ExtraAmtType: string;
-    ProductId1: string;
+    ProductId1: number;
     Status: string;
     status: 'Pending' | 'Approved' | 'Rejected';
     CreatedDate: string;
@@ -388,6 +391,11 @@ interface Party {
     Name: string
 }
 
+interface ProductName {
+    ProductID: number,
+    ProductName: string
+}
+
 export default function CreateChallan() {
     const [activeTab, setActiveTab] = useState('challanOverview');
     const [showInput, setShowInput] = useState(false);
@@ -416,6 +424,7 @@ export default function CreateChallan() {
     const [gstPartyType, gstSetPartyType] = useState<Party[]>([]);
     const [gstState, setGSTState] = useState<State[]>([]);
     const [gstDistrict, setGSTDistrict] = useState<District[]>([]);
+    const [productName, setProductName] = useState<ProductName[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
     const [dropdown, setDropdown] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -464,6 +473,7 @@ export default function CreateChallan() {
             {
                 id: '',
                 name: '',
+                ProductId: 0,
                 rate: 0,
                 grossWeight: 0,
                 netWeight: 0,
@@ -474,6 +484,7 @@ export default function CreateChallan() {
             }
         ],
 
+        ProductId1: 0,
         ProductName1: '',
         ProductName2: '',
         ProductName3: '',
@@ -564,14 +575,14 @@ export default function CreateChallan() {
                 <span className="font-medium">{row.ChallanNo}</span>
             ),
         },
-        {
-            name: 'Challan Module',
-            selector: (row: ChallanTableItem) => row.ChallanModule,
-            sortable: true,
-            cell: (row: ChallanTableItem) => (
-                <span className="font-medium">{row.ChallanModule}</span>
-            ),
-        },
+        // {
+        //     name: 'Challan Module',
+        //     selector: (row: ChallanTableItem) => row.ChallanModule,
+        //     sortable: true,
+        //     cell: (row: ChallanTableItem) => (
+        //         <span className="font-medium">{row.ChallanModule}</span>
+        //     ),
+        // },
         {
             name: 'Challan Date',
             selector: (row: ChallanTableItem) => row.ChallanDate,
@@ -1401,7 +1412,7 @@ export default function CreateChallan() {
                 // === Product Details ===
                 productDetails: [
                     ...(record.ProductName1 ? [{
-                        id: record.ProductId1 || '',
+                        id: record.ProductId1 || 0,
                         name: record.ProductName1 || '',
                         rate: Number(record.Rate1) || 0,
                         grossWeight: Number(record.Grossweight1) || 0,
@@ -1599,7 +1610,7 @@ export default function CreateChallan() {
                 StateId: stateID,
                 CompanyId: Number(localStorage.getItem('companyID')),
             })
-            console.log(response);
+            // console.log(response);
             if (response && Array.isArray(response)) {
                 setDistrict(response);
                 setGSTDistrict(response);
@@ -1632,7 +1643,7 @@ export default function CreateChallan() {
             const response = await fetchPostData('Party/GetDataDropDown_Party', {
                 CompanyId: Number(localStorage.getItem('companyID'))
             })
-            console.log(response);
+            // console.log(response);
             if (response && Array.isArray(response)) {
                 setPartyType(response);
                 gstSetPartyType(response);
@@ -1645,31 +1656,48 @@ export default function CreateChallan() {
         }
     }
 
+    const fetchProductName = async () => {
+        try{
+            const response = await fetchPostData('Product/GetDataDropDown_Product', {
+                CompanyId: Number(localStorage.getItem('companyID'))
+            })
+            // console.log(response);
+            if(response && Array.isArray(response)){
+                setProductName(response);
+            }else{
+                setProductName([]);
+            }
+        }catch{
+            toastifyError('Error fetching Product Name');
+        }
+    }
+
     useEffect(() => {
         fetchState();
         //   fetchDistrict(State);
         fetchVehicleType();
         fetchParty();
+        fetchProductName();
     }, []);
 
-    useEffect(() => {
-        const fetchDropDown = async () => {
-            try {
-                const payload = { EmployeeID: localStorage.getItem("employeeID") };
-                const response = await fetchPostData('Users/GetData_Company', payload);
-                // console.log(response);
-                if (response) {
-                    const data = response;
-                    setDropdownOptions(Array.isArray(data) ? data : []);
-                } else {
-                    toastifyError("Failed to load Dropdown.")
-                }
-            } catch (error: any) {
-                toastifyError("Error fetching Dropdown");
-            }
-        }
-        fetchDropDown();
-    }, []);
+    // useEffect(() => {
+    //     const fetchDropDown = async () => {
+    //         try {
+    //             const payload = { EmployeeID: localStorage.getItem("employeeID") };
+    //             const response = await fetchPostData('Users/GetData_Company', payload);
+    //             // console.log(response);
+    //             if (response) {
+    //                 const data = response;
+    //                 setDropdownOptions(Array.isArray(data) ? data : []);
+    //             } else {
+    //                 toastifyError("Failed to load Dropdown.")
+    //             }
+    //         } catch (error: any) {
+    //             toastifyError("Error fetching Dropdown");
+    //         }
+    //     }
+    //     fetchDropDown();
+    // }, []);
 
     const options = dropdownOptions.map(opt => ({
         value: opt.CompanyID,
@@ -1732,7 +1760,7 @@ export default function CreateChallan() {
         // Filter by party
         if (selectedParty) {
             result = result.filter((item) => item.PartyID === challanData.Party);
-            console.log(result.length);
+            // console.log(result.length);
         }
 
         // Filter by challan number (search input)
@@ -1772,13 +1800,11 @@ export default function CreateChallan() {
     };
 
     const resizeableColumns = useResizableColumns(Columns).map(col => ({
-        ...col,
-        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+        ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
 
     //Download-Excel_File
-    const exportToExcel = () => {
-        const filteredDataNew = challanItems.map((item) => ({
+    const exportToExcel = () => { const filteredDataNew = challanItems.map((item) => ({
         "Challan ID": item.ChallanID,
         "Challan No": item.ChallanNo,
         "Challan Module": item.ChallanModule,
@@ -1864,7 +1890,7 @@ export default function CreateChallan() {
 
         "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
         "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
-        "Company ID": item.Companyid || "",
+        "Company ID": localStorage.getItem ("companyID")
     }));
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(filteredDataNew);
@@ -1929,8 +1955,7 @@ export default function CreateChallan() {
                                 {/* Select-Party */}
                                 <div className="flex items-center gap-2 ml-6">
                                     <label className=" whitespace-nowrap employee-master-metric-label">Party :</label>
-                                    <Select
-                                        className="w-full"
+                                    <Select className="w-full"
                                         placeholder="Select Party"
                                         value={challanData.Party ? {
                                             value: challanData.Party,
@@ -2043,7 +2068,7 @@ export default function CreateChallan() {
                                                         </label>
                                                         <div className="product-des-input d-flex gap-2 flex-grow-1">
                                                             <input type="text" id="product-desc-1" placeholder='Challan-No' style={{ flex: 1 }} value={challanData.ChallanNo} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} />
-                                                            <input type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} />
+                                                            <input type="text" id="date-pick-bano" placeholder='Financial Year' style={{ flex: 1 }} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} />
                                                             <input type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
                                                         </div>
                                                     </div>
@@ -2085,22 +2110,13 @@ export default function CreateChallan() {
                                                 <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
                                                     <div className="flex gap-2 ">
                                                         {/* Save Button */}
-                                                        <button type="button"
-                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                            style={{ backgroundColor: "#34C759" }}
-                                                            onClick={handleSaveChallan}
-                                                        >
+                                                        <button type="button" className="flex items-center gap-2 px-2 py-1 rounded-md text-white" style={{ backgroundColor: "#34C759" }} onClick={handleSaveChallan}>
                                                             <FiSave size={18} />
                                                             {editItemId ? 'Update' : 'Save'}
                                                         </button>
 
                                                         {/* Print Button */}
-                                                        <button
-                                                            type="button"
-                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                            style={{ backgroundColor: "#212529" }}
-                                                            onClick={() => window.print()}
-                                                        >
+                                                        <button type="button" className="flex items-center gap-2 px-2 py-1 rounded-md text-white" style={{ backgroundColor: "#212529" }} onClick={() => window.print()}>
                                                             <FiPrinter size={18} />
                                                             Print
                                                         </button>
@@ -2384,7 +2400,7 @@ export default function CreateChallan() {
                                                                             }))}
                                                                             onChange={(selectedOption) => {
                                                                                 const stateID = selectedOption?.value ?? 0;
-                                                                                console.log(stateID);
+                                                                                // console.log(stateID);
                                                                                 setChallanData((prev) => ({
                                                                                     ...prev,
                                                                                     GstState: stateID,
@@ -2449,7 +2465,28 @@ export default function CreateChallan() {
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
                                                                                 <label className="MAINTABLE_LABEL">Product Name</label>
-                                                                                <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => handleProductChange(index, 'name', e.target.value)} />
+                                                                                {/* <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => handleProductChange(index, 'name', e.target.value)} /> */}
+                                                                                <Select className="w-full"
+                                                                                  placeholder="Select Party"
+                                                                                  value={challanData.ProductId1 ? {
+                                                                                    value: challanData.ProductId1,
+                                                                                    label: productName.find((d) => d.ProductID === challanData.ProductId1)?.ProductName || '',
+                                                                                  } : null}
+                                                                                  options={productName.map((d) => ({
+                                                                                    value: d.ProductID,
+                                                                                    label: d.ProductName
+                                                                                  }))}
+                                                                                  onChange={(selectedOption) =>
+                                                                                    setChallanData((prev) => ({
+                                                                                      ...prev,
+                                                                                      ProductId1: selectedOption ? selectedOption.value : 0,
+                                                                                      ProductName1: selectedOption ? selectedOption.label : "",
+                                                                                    }))
+                                                                                 }
+                                                                                 isClearable
+                                                                                 isSearchable
+                                                                                  styles={selectCompactStyles}
+                                                                                />
                                                                             </div>
                                                                             {/* Rate */}
                                                                             <div className="col mt-0" style={{ minWidth: 130 }}>
@@ -2512,7 +2549,6 @@ export default function CreateChallan() {
                                                                 </div>
                                                             ))}
                                                         </div>
-
                                                         {/* Second-Row */}
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form ">
@@ -2544,14 +2580,15 @@ export default function CreateChallan() {
                                                                             <input type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Date-Time */}
-                                                                        <div className="col-md-2 mt-0">
+                                                                        {/* <div className="col-md-2 mt-0">
                                                                             <label className="MAINTABLE_LABEL">Financial Year</label>
                                                                             <input type="text" id="SchemDes" readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        {/* Third-Row */}
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form">
                                                                 <div className="product-form-container ">
@@ -2571,9 +2608,14 @@ export default function CreateChallan() {
                                                                             <label className="MAINTABLE_LABEL">Commission Amt</label>
                                                                             <input type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({ ...challanData, CommisionAmt: Number(e.target.value) })} />
                                                                         </div>
-                                                                        {/* GT-Amount */}
+                                                                        {/* Total */}
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL">Total</label>
+                                                                            <input type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({ ...challanData, CommisionAmt: Number(e.target.value) })} />
+                                                                        </div>
+                                                                        {/* GST-Amount */}
                                                                         <div className="col-md-1 col-sm-6 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">GT Amount</label>
+                                                                            <label className="MAINTABLE_LABEL">GST Amount</label>
                                                                             <input type="number" id="SchemDes" value={challanData.GSTAmt} onChange={(e) => setChallanData({ ...challanData, GSTAmt: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Royality-Amount */}
@@ -2582,7 +2624,7 @@ export default function CreateChallan() {
                                                                             <input type="number" id="SchemDes" value={challanData.RoyaltyAmt} onChange={(e) => setChallanData({ ...challanData, RoyaltyAmt: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* TP-Amount */}
-                                                                        <div className="col-md-2 mt-0">
+                                                                        <div className="col-md-1 mt-0">
                                                                             <label className="MAINTABLE_LABEL">TP Amount</label>
                                                                             <input type="number" id="SchemDes" value={challanData.TPAmount} onChange={(e) => setChallanData({ ...challanData, TPAmount: Number(e.target.value) })} />
                                                                         </div>
@@ -2597,7 +2639,7 @@ export default function CreateChallan() {
                                                                             <input type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
                                                                         </div>
 
-                                                                        <div className="col-md-3 mt-0">
+                                                                        {/* <div className="col-md-3 mt-0">
                                                                             <label className="MAINTABLE_LABEL">Company Id</label>
                                                                             <Select
                                                                                 value={dropdown}
@@ -2619,7 +2661,7 @@ export default function CreateChallan() {
                                                                                     }),
                                                                                 }}
                                                                             />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2644,7 +2686,7 @@ export default function CreateChallan() {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 }
