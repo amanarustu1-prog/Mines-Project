@@ -116,11 +116,8 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             };
 
             const response = await fetchPostData("MaterialType/GetData_MaterialType", payload);
-            // console.log("API Response:", response);
-            const parsed = JSON.parse(response?.data?.data || "{}");
-            const data = parsed?.Table || [];
-            // console.log("Fetched Material Types:", data);
-
+            // const parsed = JSON.parse(response?.data?.data || "{}");
+            // const data = parsed?.Table || [];
             setMaintenanceTypes(response);
         } catch (error: any) {
             toastifyError("Error fetching material types");
@@ -132,9 +129,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const insertMaterialType = async (formData: any) => {
         try {
             const payload = {
-                // MaterialGroupID: formData.MaterialGroupID || "",
-                // Description: formData.Description,
-                // MaterialTypeCode: formData.MaterialTypeCode,
                 ...maintenanceTypeForm,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
             };
@@ -286,7 +280,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
       }
     }, [editItemId, dropdownOptions]);
 
-
     const getSingleData = async () => {
         try {
             const val = { MaterialTypeID: editItemId };
@@ -296,12 +289,12 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                 const record = res[0];
 
                 setMaintenanceTypeForm({
-    Description: record.Description || '',
-    MaintenanceTypes: record.MaintenanceType || '',
-    MaterialTypeCode: record.MaterialTypeCode || '',
-    Frequency: record.Frequency || '',
-    MaterialGroupID: record.MaterialGroupID || '',
-});
+                    Description: record.Description || '',
+                    MaintenanceTypes: record.MaintenanceType || '',
+                    MaterialTypeCode: record.MaterialTypeCode || '',
+                    Frequency: record.Frequency || '',
+                    MaterialGroupID: record.MaterialGroupID || '',
+                });
 
 
                 const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
@@ -326,33 +319,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             toastifyError("Error fetching record data");
         }
     }
-
-    // const fetchData = async () => {
-    //     try {
-    //         if (filter === "all") {
-    //             const activeResp = await fetch_Post_Data('MaterialType/Insert_MaterialType', { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
-    //             fetchCounts();
-
-    //             const activeData = activeResp?.Data || [];
-
-    //             setMaintenanceTypes([
-    //                 ...(Array.isArray(activeData) ? activeData : []),
-    //             ])
-    //         } else {
-    //             const value = {
-    //                 IsActive: filter === "active" ? 1 : 0,
-    //                 CompanyId: Number(localStorage.getItem("companyID")),
-    //             };
-    //             fetchCounts();
-
-    //             const response = await fetch_Post_Data('MaterialType/Insert_MaterialType', value);
-    //             const parsedData = response?.Data;
-    //             setMaintenanceTypes(Array.isArray(parsedData) ? parsedData : []);
-    //         }
-    //     } catch (err) {
-    //         toastifyError("Error fetching data");
-    //     }
-    // };
 
     const fetchCounts = async () => {
         try {
@@ -417,7 +383,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 
     //Reset form
     const resetForm = () => {
-
         setMaintenanceTypeForm({
             Description: '',
             MaintenanceTypes: '',
@@ -711,7 +676,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 options={groupOptions}
                                                 isClearable
                                                 placeholder="Select Material Group"
-                                                className="basic-single-select"
+                                                className="basic-single-select "
                                                 styles={multiValue}
                                             />
 
@@ -764,7 +729,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                         deleteMaterialType(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 };
