@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import ConfirmModal from '@/common/ConfirmModal';
 import { setgroups } from 'process';
 import { Group } from 'lucide-react';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 
 // Icon components
 interface MaintenanceType {
@@ -115,11 +116,8 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             };
 
             const response = await fetchPostData("MaterialType/GetData_MaterialType", payload);
-            // console.log("API Response:", response);
-            const parsed = JSON.parse(response?.data?.data || "{}");
-            const data = parsed?.Table || [];
-            // console.log("Fetched Material Types:", data);
-
+            // const parsed = JSON.parse(response?.data?.data || "{}");
+            // const data = parsed?.Table || [];
             setMaintenanceTypes(response);
         } catch (error: any) {
             toastifyError("Error fetching material types");
@@ -131,9 +129,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
     const insertMaterialType = async (formData: any) => {
         try {
             const payload = {
-                // MaterialGroupID: formData.MaterialGroupID || "",
-                // Description: formData.Description,
-                // MaterialTypeCode: formData.MaterialTypeCode,
                 ...maintenanceTypeForm,
                 CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
             };
@@ -280,10 +275,10 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 
     //Get-Single-Data
     useEffect(() => {
-        if (editItemId) {
-            getSingleData();
-        }
-    }, [editItemId]);
+      if (editItemId && dropdownOptions.length > 0) {
+        getSingleData();
+      }
+    }, [editItemId, dropdownOptions]);
 
     const getSingleData = async () => {
         try {
@@ -297,8 +292,10 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                     Description: record.Description || '',
                     MaintenanceTypes: record.MaintenanceType || '',
                     MaterialTypeCode: record.MaterialTypeCode || '',
-                    Frequency: record.Frequency,
+                    Frequency: record.Frequency || '',
+                    MaterialGroupID: record.MaterialGroupID || '',
                 });
+
 
                 const companyIdField = record.Companyid ?? record.CompanyID ?? record.CompanyId ?? "";
 
@@ -322,33 +319,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
             toastifyError("Error fetching record data");
         }
     }
-
-    // const fetchData = async () => {
-    //     try {
-    //         if (filter === "all") {
-    //             const activeResp = await fetch_Post_Data('MaterialType/Insert_MaterialType', { IsActive: "", CompanyId: Number(localStorage.getItem("companyID")) });
-    //             fetchCounts();
-
-    //             const activeData = activeResp?.Data || [];
-
-    //             setMaintenanceTypes([
-    //                 ...(Array.isArray(activeData) ? activeData : []),
-    //             ])
-    //         } else {
-    //             const value = {
-    //                 IsActive: filter === "active" ? 1 : 0,
-    //                 CompanyId: Number(localStorage.getItem("companyID")),
-    //             };
-    //             fetchCounts();
-
-    //             const response = await fetch_Post_Data('MaterialType/Insert_MaterialType', value);
-    //             const parsedData = response?.Data;
-    //             setMaintenanceTypes(Array.isArray(parsedData) ? parsedData : []);
-    //         }
-    //     } catch (err) {
-    //         toastifyError("Error fetching data");
-    //     }
-    // };
 
     const fetchCounts = async () => {
         try {
@@ -413,7 +383,6 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
 
     //Reset form
     const resetForm = () => {
-
         setMaintenanceTypeForm({
             Description: '',
             MaintenanceTypes: '',
@@ -493,6 +462,11 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
         },
     ];
 
+    const resizeableColumns = useResizableColumns(columns).map(col => ({
+        ...col,
+        minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
+
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = filteredMaintenanceTypes?.map(item => ({
@@ -538,7 +512,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 setShowMaintenanceTypeModal(true);
                             }} className="maintenance-type-btn maintenance-type-btn-primary">
                                 <Plus className="maintenance-type-icon" />
-                                Add Maintenance Type
+                                Add Material Type
                             </button>
                         </div>
                     </div>
@@ -616,7 +590,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                 <div className="maintenance-type-card">
                                     <div className="maintenance-type-card-content">
                                         <DataTable
-                                            columns={columns}
+                                            columns={resizeableColumns}
                                             data={filteredMaintenanceTypes}
                                             pagination
                                             paginationPerPage={10}
@@ -670,7 +644,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 value={maintenanceTypeForm.MaterialTypeCode}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, MaterialTypeCode: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance code"
+                                                placeholder="Material code"
                                             />
                                         </div>
 
@@ -683,7 +657,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 value={maintenanceTypeForm.Description}
                                                 onChange={(e) => setMaintenanceTypeForm({ ...maintenanceTypeForm, Description: e.target.value })}
                                                 className="maintenance-type-input requiredColor"
-                                                placeholder="Maintenance description"
+                                                placeholder="Material description"
                                                 required
                                             />
                                         </div>
@@ -702,7 +676,7 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                                                 options={groupOptions}
                                                 isClearable
                                                 placeholder="Select Material Group"
-                                                className="basic-single-select"
+                                                className="basic-single-select "
                                                 styles={multiValue}
                                             />
 
@@ -755,14 +729,9 @@ const MaterialType: React.FC<Props> = ({ baseUrl = '', companyId = null }) => {
                         deleteMaterialType(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 };
 
 export default MaterialType;
-
-
-
-// iN THIS WHY AFTER update our MaintenanceTypeModal is get closed "Code is already Present" or "Already Exists Description" our MaintenanceTypeModal get closed.
-// Io not want our MaintenanceTypeModal get closed unteil sfter updstinhwhole form

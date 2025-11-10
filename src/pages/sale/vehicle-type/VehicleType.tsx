@@ -3,6 +3,7 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import Select from "react-select";
 import "./styles.css";
 import { customStyles } from "@/common/Utility";
+import { fetchPostData } from "@/components/hooks/Api";
 
 // ---------- Icon Components ----------
 const Car = ({ className }: { className?: string }) => (
@@ -96,8 +97,6 @@ const columns = [
             </div>
         ),
     }
-
-
 ];
 
 const data = [
@@ -116,51 +115,136 @@ export default function VehicleType() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState<"active" | "inactive" | "all">("all");
 
-    const listData = data; // फिलहाल dummy
-    // const activeCount = listData.length; // फिलहाल सबको active मान रहे हैं
-    // const inactiveCount = 0;
+    const listData = data;
 
-    const handleInputChange = (field: string, value: string | boolean) => {
-        setNewItem(prev => ({ ...prev, [field]: value }));
-    };
+    const fetchMaterialTypes = async () => {
+        try {
+            setLoading(true);
+            const payload = {
+                IsActive: filter === "active" ? 1 : filter === "inactive" ? 0 : "",
+                CompanyId: Number(localStorage.getItem("companyID")),
+            };
 
-    const handleSaveItem = () => {
-        if (!newItem.code.trim() || !newItem.description.trim()) {
-            alert('Please fill in all required fields');
-            return;
+            const response = await fetchPostData("MaterialType/GetData_MaterialType", payload);
+            // console.log("API Response:", response);
+            const parsed = JSON.parse(response?.data?.data || "{}");
+            const data = parsed?.Table || [];
+            // console.log("Fetched Material Types:", data);
+
+            setMaintenanceTypes(response);
+        } catch (error: any) {
+            toastifyError("Error fetching material types");
+        } finally {
+            setLoading(false);
         }
-        console.log("Saved Item:", newItem);
     };
 
+    const insertMaterialType = async (formData: any) => {
+        try {
+            const payload = {
+                // MaterialGroupID: formData.MaterialGroupID || "",
+                // Description: formData.Description,
+                // MaterialTypeCode: formData.MaterialTypeCode,
+                ...maintenanceTypeForm,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            };
+            // console.log("Insert Payload:", payload);
 
+            const response = await fetchPostData("MaterialType/Insert_MaterialType", payload);
+            // console.log("Insert Response:", response);
+            const message = response[0].Message;
 
-    const filteredData = useMemo(() => {
-        return data.filter(item => {
-            // 1. Card filter
-            if (filter === "active" && !item.isActive) return false;
-            if (filter === "inactive" && item.isActive) return false;
-
-            // 2. Search filter
-            if (search) {
-                const searchLower = search.toLowerCase();
-                if (!item.code.toLowerCase().includes(searchLower) &&
-                    !item.description.toLowerCase().includes(searchLower)) {
-                    return false;
-                }
+            if (message === "Already Exists MaterialTypeCode") {
+                toastifyError("Code is already Present");
+                return;
             }
 
-            return true;
-        });
-    }, [filter, search, data]);
+            if (message === "Already Exists Description") {
+                toastifyError("Description is already Present");
+                return;
+            }
 
+
+            if (response) {
+                toastifySuccess("Material Type added successfully");
+                await fetchMaterialTypes();
+                await fetchCounts();
+                return true;
+            } else {
+                throw new Error('Invalid response from server');
+            }
+            return true;
+        } catch (error: any) {
+            toastifyError(`Error adding material type: ${error.message}`);
+            return false;
+        }
+    };
+
+    const updateMaterialType = async (formData: any, id: number) => {
+        try {
+            const payload = {
+                MaterialTypeID: id,
+                MaterialGroupID: formData.MaterialGroupID || "",
+                Description: formData.Description,
+                MaterialTypeCode: formData.MaterialTypeCode,
+                CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
+            };
+            const response = await fetchPostData("MaterialType/Update_MaterialType", payload);
+
+            const message = response[0].Message;
+            if (message === "Already Exists MaterialTypeCode") {
+                toastifyError("Code is already Present");
+                return;
+            }
+
+            if (message === "Already Exists Description") {
+                toastifyError("Description is already Present");
+                return;
+            }
+            console.log("Update Response:", response);
+            if (response) {
+                toastifySuccess('Item updated successfully');
+                setEditItemId(null);
+                setDropdown([]);
+                setMaintenanceTypeForm({ Description: '', MaterialGroupID: '', MaterialTypeCode: '' });
+                setShowMaintenanceTypeModal(false);
+                await fetchMaterialTypes();
+                return true;
+            }
+        } catch (error: any) {
+            toastifyError(`Error updating material type: ${error.message}`);
+            return false;
+        }
+    };
+
+    const deleteMaterialType = async (id: number) => {
+        try {
+            const item = maintenanceTypes.find(x => x.MaterialTypeID === id);
+            if (!item) return;
+
+            const newStatus = item.IsActive ? 0 : 1;
+
+            const payload = {
+                MaterialTypeID: id,
+                IsActive: newStatus,
+            };
+
+            const response = await fetchPostData("MaterialType/Delete_MaterialType", payload);
+            console.log("Delete Response:", response);
+            if (response) {
+                toastifySuccess(`Item ${newStatus === 1 ? "activated" : "deactivated"} successfully`);
+                await fetchMaterialTypes();
+                await fetchCounts();
+                return true;
+            }
+        } catch (error: any) {
+            toastifyError(`Error deleting material type: ${error.message}`);
+            return false;
+        }
+    };
     // Counts
     const activeCount = data.filter(item => item.isActive).length;
     const inactiveCount = data.filter(item => !item.isActive).length;
-
-
-
-
-
 
     return (
         <div className="list-management-container">
@@ -261,8 +345,6 @@ export default function VehicleType() {
                                             />
                                         </div>
 
-
-
                                         <div className="col-span-4">
                                             <Select
                                                 defaultValue={[agencyOptions[2], agencyOptions[3]]}
@@ -318,7 +400,6 @@ export default function VehicleType() {
                                 />
                             </div>
                         </div>
-
                     </div>
                 )}
             </div>

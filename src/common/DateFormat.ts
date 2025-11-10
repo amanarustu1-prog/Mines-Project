@@ -28,3 +28,6 @@ export const getShowingMonthDateYear = (dateStr : any) => {
 export const getShowingWithOutTime = (dateStr : any) => {
   return moment(dateStr).format("MM/DD/YYYY")
 }
+export const getShowingWithOutDate = (dateStr : any) => {
+  return moment(dateStr).format("HH:mm")
+}
