@@ -314,6 +314,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
         setMaintenanceTypes([
           ...(Array.isArray(activeData) ? activeData : []),
+          
         ])
       } else {
         const value = {
