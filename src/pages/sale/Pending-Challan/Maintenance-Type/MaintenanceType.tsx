@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { toastifySuccess, toastifyError } from '@/common/AlertMsg';
 import axios from '@/interceptors/axios';
+
 import { customStyles, multiValue } from '@/common/Utility';
 import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { getShowingDateText } from '@/common/DateFormat';
@@ -313,6 +314,7 @@ const MaintenanceType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
 
         setMaintenanceTypes([
           ...(Array.isArray(activeData) ? activeData : []),
+          
         ])
       } else {
         const value = {
