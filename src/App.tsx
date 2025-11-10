@@ -287,9 +287,11 @@ function App() {
 
         {/* Sale */}
         <Route path="/vehicle-type" element={<VehicleType />} />
+        <Route path="/material-name" element={<MaterialName />} />  
         <Route path="/loading-charge" element={<LoadingCharge />} />
         <Route path="/sundry-debtors" element={<SundryDebtors />} />
         <Route path="/product-masonry" element={<ProductMasonry />} />
+       
         <Route path="/inventory/maintenance-type" element={<MaintenanceType />} />
         <Route path="/tp-charges" element={<TPCharges />} />
         <Route path="/create-challan" element={<CreateChallan />} />
