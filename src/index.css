@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -52,6 +54,8 @@
 
   body {
     @apply bg-background text-foreground overflow-x-hidden;
+    /* font-family: "Poppins", sans-serif; */
+
   }
 }
 
@@ -293,13 +297,13 @@ div[data-testid="table-header"],
 
 
 .basic-single-select .select__value-container {
-  max-height: 36px;   
-  overflow-y: auto;   
+  max-height: 36px;
+  overflow-y: auto;
 }
 
 .select__value-container {
-  max-height: 36px;  
-  overflow-y: auto;   
+  max-height: 36px;
+  overflow-y: auto;
 }
 
 .requiredColor {
@@ -414,12 +418,16 @@ div[data-testid="table-header"],
 
 
 .basic-single-select .select__value-container {
-  max-height: 36px;   /* 👈 यहाँ अपनी required height set करें */
-  overflow-y: auto;    /* 👈 scroll enable */
+  max-height: 36px;
+  /* 👈 यहाँ अपनी required height set करें */
+  overflow-y: auto;
+  /* 👈 scroll enable */
 }
 
 /* React Select global style */
 .select__value-container {
-  max-height: 36px;   /* अपनी required height */
-  overflow-y: auto;   /* scroll enable */
+  max-height: 36px;
+  /* अपनी required height */
+  overflow-y: auto;
+  /* scroll enable */
 }
