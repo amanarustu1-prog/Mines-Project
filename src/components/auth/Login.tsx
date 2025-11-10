@@ -70,8 +70,7 @@ const Login = () => {
     e.preventDefault();
   }
 
-  const [companies, setCompanies] = useState<
-    { CompanyID: number; CompanyName: string }[]>([]);
+  const[companies, setCompanies] = useState<{ CompanyID: number; CompanyName: string }[]>([]);
 
   const verify_User = async (e: any) => {
     e.preventDefault();

@@ -527,6 +527,10 @@ export default function CreateChallan() {
         FreightAmt: 0,
         extraAmt: 0,
         GTotal: 0,
+
+        //Added-Fields
+        IsCompleted: "",
+        IsForApproval: 1
     });
     const [challanItems, setChallanItems] = useState<ChallanItem[]>([]);
     const handleOpenModal = () => {
@@ -1151,7 +1155,6 @@ export default function CreateChallan() {
                 toastifyError("Description is already Present");
                 return;
             }
-
 
             if (response) {
                 toastifySuccess("Challan is added successfully");
