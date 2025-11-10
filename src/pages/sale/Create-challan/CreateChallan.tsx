@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useReactToPrint } from 'react-to-print';
+// import ChallanSlip from "./ChallanSlip";
 import './CreateChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
@@ -19,6 +21,7 @@ import * as XLSX from 'xlsx';
 import moment from 'moment';
 import { previousDay } from 'date-fns';
 import ConfirmModal from '@/common/ConfirmModal';
+import ChallanSlip from './ChallanSlip';
 
 // Icon components
 
@@ -388,7 +391,7 @@ interface Party {
     Name: string
 }
 
-export default function CreateChallan() {
+const CreateChallan: React.FC = () => {
     const [activeTab, setActiveTab] = useState('challanOverview');
     const [showInput, setShowInput] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -518,6 +521,18 @@ export default function CreateChallan() {
         GTotal: 0,
     });
     const [challanItems, setChallanItems] = useState<ChallanItem[]>([]);
+
+    const printRef = useRef<HTMLDivElement>(null);
+
+    // 🔹 Setup print handler
+    const handlePrint = useReactToPrint({
+        contentRef: printRef,
+        documentTitle: `Challan_${challanData.ChallanNo || "Slip"}`,
+        preserveAfterPrint: false,
+    });
+
+
+
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -2063,30 +2078,35 @@ export default function CreateChallan() {
                                             </ul>
                                         </div>
                                         {/* Button */}
-                                        <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
-                                            <div className="flex gap-2 ">
+                                        <div className="col-xl-2 mt-3 mt-xl-0 d-flex justify-content-end">
+                                            <div className="flex gap-2 no-print">
                                                 {/* Save Button */}
-                                                <button type="button"
+                                                <button
+                                                    type="button"
                                                     className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
                                                     style={{ backgroundColor: "#34C759" }}
                                                     onClick={handleSaveChallan}
                                                 >
                                                     <FiSave size={18} />
-                                                    {editItemId ? 'Update' : 'Save'}
+                                                    {editItemId ? "Update" : "Save"}
                                                 </button>
 
                                                 {/* Print Button */}
                                                 <button
                                                     type="button"
-                                                    className="flex items-center gap-2 px-2 py-1 mr-3    rounded-md text-white"
+                                                    className="flex items-center gap-2 px-2 py-1 mr-3 rounded-md text-white"
                                                     style={{ backgroundColor: "#212529" }}
-                                                    onClick={() => window.print()}
+                                                    onClick={() => {
+                                                        console.log("Print button clicked");
+                                                        handlePrint();
+                                                    }}
                                                 >
                                                     <FiPrinter size={18} />
                                                     Print
                                                 </button>
                                             </div>
                                         </div>
+
                                         <button onClick={handleCloseModal} className="text-gray-600 hover:text-red-500 p-2">
                                             <FiX size={20} />
                                         </button>
@@ -2752,6 +2772,27 @@ export default function CreateChallan() {
                 </div>
             </main>
 
+            {/* ✅ Jo print karna hai – yaha rakho */}
+            <div className="print-area">
+                <div ref={printRef}>
+                    <ChallanSlip
+                        challanNo={challanData.ChallanNo || "N/A"}
+                        dateTime={
+                            challanData.ChallanDate
+                                ? moment(challanData.ChallanDate).format("DD/MM/YYYY HH:mm")
+                                : moment().format("DD/MM/YYYY HH:mm")
+                        }
+                        vehicleNo={challanData.VehicleNo || "N/A"}
+                        material={challanData.productDetails?.[0]?.name || "N/A"}
+                        consignee={challanData.Name || "N/A"}
+                        tareWeight={challanData.TareWeight || 0}
+                        amount={`${challanData.paytype || "Cash"} (${challanData.Amount || "0"
+                            })`}
+                    />
+                </div>
+            </div>
+
+
             <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
@@ -2763,3 +2804,5 @@ export default function CreateChallan() {
         </>
     );
 }
+
+export default CreateChallan;
