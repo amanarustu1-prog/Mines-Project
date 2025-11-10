@@ -1803,8 +1803,6 @@ export default function CreateChallan() {
     //     }),
     // };
 
-
-
     const selectCompactStyles: any = {
         control: (provided: any, state: any) => ({
             ...provided,
@@ -1835,7 +1833,6 @@ export default function CreateChallan() {
             padding: "0 6px",
         }),
     };
-
 
     const resizeableColumns = useResizableColumns(Columns).map(col => ({
         ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
