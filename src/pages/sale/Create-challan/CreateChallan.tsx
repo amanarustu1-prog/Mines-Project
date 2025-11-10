@@ -134,7 +134,7 @@ interface ChallanItem extends BaseProductFields {
     VehicleCommision: number;
     TareWeight: number;
     Rate: number;
-        // Product and weight details
+    // Product and weight details
     productDetails: ProductDetail[];
     ProductName2: string,
     ProductName3: string,
@@ -523,15 +523,15 @@ export default function CreateChallan() {
     };
 
     const blankProduct = {
-      id: '',
-      name: '',
-      rate: 0,
-      grossWeight: 0,
-      netWeight: 0,
-      lessWeight: 0,
-      gtWeight: 0,
-      amount: 0,
-      ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        id: '',
+        name: '',
+        rate: 0,
+        grossWeight: 0,
+        netWeight: 0,
+        lessWeight: 0,
+        gtWeight: 0,
+        amount: 0,
+        ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
     };
 
     const handleCloseModal = () => {
@@ -1701,33 +1701,33 @@ export default function CreateChallan() {
 
     //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
     // });
-    
+
     const handleSearch = () => {
         let result = challanItems;
 
         const fromDateTime = fromDate ? new Date(
-            `${moment(fromDate).format('YYYY-MM-DD')} ${
-            fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
-        }`) : null;
+            `${moment(fromDate).format('YYYY-MM-DD')} ${fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
+            }`) : null;
 
         const toDateTime = toDate
             ? new Date(
-            `${moment(toDate).format('YYYY-MM-DD')} ${
-            toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
-            }`
-        ) : null;
+                `${moment(toDate).format('YYYY-MM-DD')} ${toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
+                }`
+            ) : null;
 
         // Filter by date range
         if (fromDateTime && toDateTime) {
             result = result.filter((item) => {
-            const challanDate = new Date(item.CreatedDate);
-            return challanDate >= fromDateTime && challanDate <= toDateTime;
-        });}
+                const challanDate = new Date(item.CreatedDate);
+                return challanDate >= fromDateTime && challanDate <= toDateTime;
+            });
+        }
         else if (fromDateTime && !toDateTime) {
             result = result.filter((item) => {
-            const challanDate = new Date(item.CreatedDate);
-            return challanDate >= fromDateTime;
-        });}
+                const challanDate = new Date(item.CreatedDate);
+                return challanDate >= fromDateTime;
+            });
+        }
 
         // Filter by party
         if (selectedParty) {
@@ -1739,19 +1739,53 @@ export default function CreateChallan() {
         if (searchTerm.trim()) {
             const term = searchTerm.trim().toLowerCase();
             result = result.filter((item) =>
-            item.ChallanNo?.toLowerCase().includes(term)
-        );}
+                item.ChallanNo?.toLowerCase().includes(term)
+            );
+        }
 
         setFilteredData(result);
     };
 
+    // const selectCompactStyles: any = {
+    //     control: (provided: any) => ({
+    //         ...provided,
+    //         minHeight: "33px",
+    //         height: "33px",
+    //         fontSize: "14px",
+    //         padding: "0 2px",
+    //     }),
+    //     valueContainer: (provided: any) => ({
+    //         ...provided,
+    //         padding: "0 6px",
+    //     }),
+    //     indicatorsContainer: (provided: any) => ({
+    //         ...provided,
+    //         padding: "0 6px",
+    //     }),
+    //     dropdownIndicator: (provided: any) => ({
+    //         ...provided,
+    //         padding: "0 6px",
+    //     }),
+    //     clearIndicator: (provided: any) => ({
+    //         ...provided,
+    //         padding: "0 6px",
+    //     }),
+    // };
+
+
+
     const selectCompactStyles: any = {
-        control: (provided: any) => ({
+        control: (provided: any, state: any) => ({
             ...provided,
             minHeight: "33px",
             height: "33px",
             fontSize: "14px",
             padding: "0 2px",
+            borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", // ✅ Default light blue border
+            boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+            "&:hover": {
+                borderColor: "#6ea8ff", // Hover पर थोड़ा गहरा blue
+            },
         }),
         valueContainer: (provided: any) => ({
             ...provided,
@@ -1771,6 +1805,7 @@ export default function CreateChallan() {
         }),
     };
 
+
     const resizeableColumns = useResizableColumns(Columns).map(col => ({
         ...col,
         minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
@@ -1779,93 +1814,93 @@ export default function CreateChallan() {
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = challanItems.map((item) => ({
-        "Challan ID": item.ChallanID,
-        "Challan No": item.ChallanNo,
-        "Challan Module": item.ChallanModule,
-        "Challan Date": item.ChallanDate,
-        "Financial Year": item.financialYear,
-        "Voucher Type": item.VoucherType || "",
-        "Pay Type": item.paytype || "",
-        "Advance Amount": item.AdvAmt || 0,
+            "Challan ID": item.ChallanID,
+            "Challan No": item.ChallanNo,
+            "Challan Module": item.ChallanModule,
+            "Challan Date": item.ChallanDate,
+            "Financial Year": item.financialYear,
+            "Voucher Type": item.VoucherType || "",
+            "Pay Type": item.paytype || "",
+            "Advance Amount": item.AdvAmt || 0,
 
-        "Party Name": item.Name || "",
-        "Party ID": item.PartyID || "",
-        "Party Type ID": item.partyTypeid || "",
-        "Address": item.Address || item.address || "",
-        "State": item.State || "",
-        "State ID": item.StateID || "",
-        "District ID": item.DistrictID || "",
-        "Pin ID": item.PinID || "",
-        "Email": item.Email || "",
-        "Owner Mobile": item.OwnerMobile || "",
+            "Party Name": item.Name || "",
+            "Party ID": item.PartyID || "",
+            "Party Type ID": item.partyTypeid || "",
+            "Address": item.Address || item.address || "",
+            "State": item.State || "",
+            "State ID": item.StateID || "",
+            "District ID": item.DistrictID || "",
+            "Pin ID": item.PinID || "",
+            "Email": item.Email || "",
+            "Owner Mobile": item.OwnerMobile || "",
 
-        "Vehicle No": item.VehicleNo || "",
-        "Vehicle Type ID": item.VehicleTypeid || "",
-        "Vehicle Remarks": item.VehicleRemarks || "",
-        "Vehicle Commission": item.VehicleCommision || "",
-        "Driver Name": item.DriverName || "",
-        "Driver Mobile No": item.DriverMobileNo || "",
+            "Vehicle No": item.VehicleNo || "",
+            "Vehicle Type ID": item.VehicleTypeid || "",
+            "Vehicle Remarks": item.VehicleRemarks || "",
+            "Vehicle Commission": item.VehicleCommision || "",
+            "Driver Name": item.DriverName || "",
+            "Driver Mobile No": item.DriverMobileNo || "",
 
-        "GST Bill": item.IsGST ? "Yes" : "No",
-        "GST No": item.GstNo || "",
-        "GST Address": item.GstAddress || "",
-        "GST State": item.GstState || "",
-        "GST District ID": item.GstDistrictID || "",
-        "GST Pin ID": item.GstPinID || "",
-        "Bill Name": item.BillName || "",
+            "GST Bill": item.IsGST ? "Yes" : "No",
+            "GST No": item.GstNo || "",
+            "GST Address": item.GstAddress || "",
+            "GST State": item.GstState || "",
+            "GST District ID": item.GstDistrictID || "",
+            "GST Pin ID": item.GstPinID || "",
+            "Bill Name": item.BillName || "",
 
-        "Gross Weight": item.Grossweight || "",
-        "Tare Weight": item.TareWeight || "",
-        "Net Weight": item.Netweight || "",
-        "Less Weight": item.Lessweight || "",
-        "GT Weight": item.GTWeight || "",
+            "Gross Weight": item.Grossweight || "",
+            "Tare Weight": item.TareWeight || "",
+            "Net Weight": item.Netweight || "",
+            "Less Weight": item.Lessweight || "",
+            "GT Weight": item.GTWeight || "",
 
-        "Rate": item.Rate || "",
-        "Amount": item.Amount || "",
-        "Loading Amount": item.LoadingAmt || "",
-        "Commission Amount": item.CommisionAmt || "",
-        "Total Amount": item.TotalAmt || "",
-        "GST Amount": item.GSTAmt || "",
-        "Royalty Amount": item.RoyaltyAmt || "",
-        "TP Amount": item.TPAmount || "",
-        "Freight Amount": item.FreightAmt || "",
-        "Extra Amount": item.ExtraAmt || "",
-        "Grand Total": item.GTotal || "",
+            "Rate": item.Rate || "",
+            "Amount": item.Amount || "",
+            "Loading Amount": item.LoadingAmt || "",
+            "Commission Amount": item.CommisionAmt || "",
+            "Total Amount": item.TotalAmt || "",
+            "GST Amount": item.GSTAmt || "",
+            "Royalty Amount": item.RoyaltyAmt || "",
+            "TP Amount": item.TPAmount || "",
+            "Freight Amount": item.FreightAmt || "",
+            "Extra Amount": item.ExtraAmt || "",
+            "Grand Total": item.GTotal || "",
 
-        // 🧾 Product 1
-        "Product Name 1": item.ProductName1 || "",
-        "Rate 1": item.Rate1 || "",
-        "Gross Weight 1": item.Grossweight1 || "",
-        "Gross Weight Date 1": item.Grossweightdate1 || "",
-        "Net Weight 1": item.Netweight1 || "",
-        "Less Weight 1": item.Lessweight1 || "",
-        "GT Weight 1": item.GTWeight1 || "",
-        "Amount 1": item.Amount1 || "",
+            // 🧾 Product 1
+            "Product Name 1": item.ProductName1 || "",
+            "Rate 1": item.Rate1 || "",
+            "Gross Weight 1": item.Grossweight1 || "",
+            "Gross Weight Date 1": item.Grossweightdate1 || "",
+            "Net Weight 1": item.Netweight1 || "",
+            "Less Weight 1": item.Lessweight1 || "",
+            "GT Weight 1": item.GTWeight1 || "",
+            "Amount 1": item.Amount1 || "",
 
-        // 🧾 Product 2
-        "Product Name 2": item.ProductName2 || "",
-        "Rate 2": item.Rate2 || "",
-        "Gross Weight 2": item.Grossweight2 || "",
-        "Gross Weight Date 2": item.Grossweightdate2 || "",
-        "Net Weight 2": item.Netweight2 || "",
-        "Less Weight 2": item.Lessweight2 || "",
-        "GT Weight 2": item.GTWeight2 || "",
-        "Amount 2": item.Amount2 || "",
+            // 🧾 Product 2
+            "Product Name 2": item.ProductName2 || "",
+            "Rate 2": item.Rate2 || "",
+            "Gross Weight 2": item.Grossweight2 || "",
+            "Gross Weight Date 2": item.Grossweightdate2 || "",
+            "Net Weight 2": item.Netweight2 || "",
+            "Less Weight 2": item.Lessweight2 || "",
+            "GT Weight 2": item.GTWeight2 || "",
+            "Amount 2": item.Amount2 || "",
 
-        // 🧾 Product 3
-        "Product Name 3": item.ProductName3 || "",
-        "Rate 3": item.Rate3 || "",
-        "Gross Weight 3": item.Grossweight3 || "",
-        "Gross Weight Date 3": item.Grossweightdate3 || "",
-        "Net Weight 3": item.Netweight3 || "",
-        "Less Weight 3": item.Lessweight3 || "",
-        "GT Weight 3": item.GTWeight3 || "",
-        "Amount 3": item.Amount3 || "",
+            // 🧾 Product 3
+            "Product Name 3": item.ProductName3 || "",
+            "Rate 3": item.Rate3 || "",
+            "Gross Weight 3": item.Grossweight3 || "",
+            "Gross Weight Date 3": item.Grossweightdate3 || "",
+            "Net Weight 3": item.Netweight3 || "",
+            "Less Weight 3": item.Lessweight3 || "",
+            "GT Weight 3": item.GTWeight3 || "",
+            "Amount 3": item.Amount3 || "",
 
-        "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
-        "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
-        "Company ID": item.Companyid || "",
-    }));
+            "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
+            "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
+            "Company ID": item.Companyid || "",
+        }));
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(filteredDataNew);
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
@@ -1888,10 +1923,10 @@ export default function CreateChallan() {
                             <div className="py-3 employee-create-challan-card flex flex-wrap items-end gap-4 w-full" >
                                 {/* Filter-Date/Time */}
                                 <div className="flex items-center gap-2">
-                                    <label className=" whitespace-nowrap employee-master-metric-label">From :</label>
+                                    <label className=" name-label whitespace-nowrap employee-master-metric-label">From :</label>
                                     <DatePicker selected={fromDate}
                                         onChange={(date) => setFromDate(date)}
-                                        className="border rounded px-2 py-1 w-[60px]"
+                                        className="border rounded px-2 py-1 w-[60px] challan"
                                         placeholderText="From Date"
                                         dateFormat="MM-dd-yyyy"
                                     />
@@ -1904,13 +1939,13 @@ export default function CreateChallan() {
                                         timeIntervals={15}
                                         timeCaption="Time"
                                         dateFormat="HH:mm"
-                                        className="border rounded px-2 py-1 w-[60px]"
+                                        className="border rounded px-2 py-1 w-[60px] challan"
                                     />
 
-                                    <label className=" whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
+                                    <label className=" name-label whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
                                     <DatePicker selected={toDate}
                                         onChange={(date) => setToDate(date)}
-                                        className="border rounded px-2 py-1 w-[60px]"
+                                        className="border rounded px-2 py-1 w-[60px] challan"
                                         placeholderText='To Date'
                                         dateFormat="MM-dd-yyyy"
                                     />
@@ -1922,13 +1957,13 @@ export default function CreateChallan() {
                                         timeIntervals={15}
                                         timeCaption="Time"
                                         dateFormat="HH:mm"
-                                        className="border rounded px-2 py-1 w-[60px]"
+                                        className="border rounded px-2 py-1 w-[60px] challan"
                                     />
                                 </div>
 
                                 {/* Select-Party */}
                                 <div className="flex items-center gap-2 ml-6">
-                                    <label className=" whitespace-nowrap employee-master-metric-label">Party :</label>
+                                    <label className=" name-label whitespace-nowrap employee-master-metric-label ">Party :</label>
                                     <Select
                                         className="w-full"
                                         placeholder="Select Party"
@@ -1959,11 +1994,11 @@ export default function CreateChallan() {
                                 <div className="flex justify-between items-center w-full">
                                     {/* Search */}
                                     <div className="flex flex-row-reverse items-center gap-2" >
-                                        <button onClick={handleSearch} className="text-gray-600 border rounded p-2 hover:bg-gray-100 transition flex items-center gap-2">
-                                            <FiSearch size={18} /> Search
+                                        <button onClick={handleSearch} className="text-gray-600 border rounded p-1 hover:bg-gray-100 transition flex items-center gap-2">
+                                            <FiSearch size={16} /> Search
                                         </button>
                                         <div className="relative">
-                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none" autoFocus/>
+                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none challan" autoFocus />
                                             <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                                         </div>
                                     </div>
@@ -2004,9 +2039,9 @@ export default function CreateChallan() {
                                         noDataComponent={
                                             <div className="text-center py-8 text-gray-500">
                                                 <p>
-                                                { 
-                                                  searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
-                                                }
+                                                    {
+                                                        searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
+                                                    }
                                                 </p>
                                             </div>
                                         }
@@ -2027,6 +2062,31 @@ export default function CreateChallan() {
                                                 <li> <a href="#">BILL</a></li>
                                             </ul>
                                         </div>
+                                        {/* Button */}
+                                        <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
+                                            <div className="flex gap-2 ">
+                                                {/* Save Button */}
+                                                <button type="button"
+                                                    className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                    style={{ backgroundColor: "#34C759" }}
+                                                    onClick={handleSaveChallan}
+                                                >
+                                                    <FiSave size={18} />
+                                                    {editItemId ? 'Update' : 'Save'}
+                                                </button>
+
+                                                {/* Print Button */}
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center gap-2 px-2 py-1 mr-3    rounded-md text-white"
+                                                    style={{ backgroundColor: "#212529" }}
+                                                    onClick={() => window.print()}
+                                                >
+                                                    <FiPrinter size={18} />
+                                                    Print
+                                                </button>
+                                            </div>
+                                        </div>
                                         <button onClick={handleCloseModal} className="text-gray-600 hover:text-red-500 p-2">
                                             <FiX size={20} />
                                         </button>
@@ -2038,20 +2098,20 @@ export default function CreateChallan() {
                                             <div className="row align-items-center">
                                                 <div className="col-xl-5">
                                                     <div className="d-flex align-items-center gap-2">
-                                                        <label htmlFor="product-desc" className="mb-0" style={{ minWidth: 70 }} >
+                                                        <label className="name-label" htmlFor="product-desc" className="mb-0" style={{ minWidth: 70 }} >
                                                             Challan#
                                                         </label>
                                                         <div className="product-des-input d-flex gap-2 flex-grow-1">
-                                                            <input type="text" id="product-desc-1" placeholder='Challan-No' style={{ flex: 1 }} value={challanData.ChallanNo} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} />
-                                                            <input type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} />
-                                                            <input type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
+                                                            <input className='challan' type="text" id="product-desc-1" placeholder='Challan-No' style={{ flex: 1 }} value={challanData.ChallanNo} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} />
+                                                            <input className='challan' type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} />
+                                                            <input className='challan' type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div className="col-xl-3 mt-3 mt-xl-0">
                                                     <div className="d-flex align-items-center gap-2">
-                                                        <label htmlFor="generic-desc" className="mb-0" style={{ minWidth: 70 }}> Date/Time </label>
+                                                        <label htmlFor="generic-desc" className="mb-0 name-label" style={{ minWidth: 70 }}> Date/Time </label>
                                                         <div className="product-des-input flex-grow-1">
                                                             <DatePicker selected={moment(challanData.ChallanDate, "YYYY-MM-DD HH:mm:ss").toDate()}
                                                                 onChange={(date: Date | null) => {
@@ -2064,7 +2124,7 @@ export default function CreateChallan() {
                                                                 timeIntervals={15}
                                                                 timeCaption="Time"
                                                                 dateFormat="dd/MM/yyyy HH:mm"
-                                                                className="border rounded px-2 py-1 w-full"
+                                                                className="border rounded px-2 py-1 w-full challan"
                                                             />
                                                         </div>
                                                     </div>
@@ -2072,40 +2132,16 @@ export default function CreateChallan() {
                                                 <div className="col-xl-2 mt-3 mt-xl-0">
                                                     <div className="d-flex align-items-center gap-2">
                                                         <label className="d-flex align-items-center" style={{ gap: 6 }}>
-                                                            <input type="radio" name="paytype" value="Cash" checked={challanData.paytype === "Cash"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value as 'Cash' | 'Credit' })} />
+                                                            <input className='name-label' type="radio" name="paytype" value="Cash" checked={challanData.paytype === "Cash"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value as 'Cash' | 'Credit' })} />
                                                             Cash
                                                         </label>
                                                         <label className="d-flex align-items-center" style={{ gap: 6, marginLeft: 20 }}>
-                                                            <input type="radio" name="paytype" value="Credit" checked={challanData.paytype === "Credit"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value as 'Cash' | 'Credit' })} />{" "}
+                                                            <input className='name-label' type="radio" name="paytype" value="Credit" checked={challanData.paytype === "Credit"} onChange={(e) => setChallanData({ ...challanData, paytype: e.target.value as 'Cash' | 'Credit' })} />{" "}
                                                             Credit
                                                         </label>
                                                     </div>
                                                 </div>
-                                                {/* Button */}
-                                                <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
-                                                    <div className="flex gap-2 ">
-                                                        {/* Save Button */}
-                                                        <button type="button"
-                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                            style={{ backgroundColor: "#34C759" }}
-                                                            onClick={handleSaveChallan}
-                                                        >
-                                                            <FiSave size={18} />
-                                                            {editItemId ? 'Update' : 'Save'}
-                                                        </button>
 
-                                                        {/* Print Button */}
-                                                        <button
-                                                            type="button"
-                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                            style={{ backgroundColor: "#212529" }}
-                                                            onClick={() => window.print()}
-                                                        >
-                                                            <FiPrinter size={18} />
-                                                            Print
-                                                        </button>
-                                                    </div>
-                                                </div>
                                                 <div className="col-xxl-9 col-12 mt-2">
                                                     {/* First-Section */}
                                                     <div className="row">
@@ -2115,7 +2151,7 @@ export default function CreateChallan() {
                                                                 <div className="row align-items-center" style={{ rowGap: 6 }}>
                                                                     {/* Party */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="SchemeCode">Party</label>
+                                                                        <label className="name-label" htmlFor="SchemeCode">Party</label>
                                                                     </div>
                                                                     <div className="col-xl-10">
                                                                         <Select className="w-full"
@@ -2140,27 +2176,28 @@ export default function CreateChallan() {
                                                                         />
                                                                     </div>
                                                                     {/* Address */}
-                                                                    <div className="single-info-block col-xl-3">
-                                                                        <label htmlFor="prType">
-                                                                            Address <span>*</span>
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label className="name-label" htmlFor="prType">
+                                                                            Address <span className="text-danger">*</span>
                                                                         </label>
                                                                     </div>
-                                                                    <div className="col-xl-9 col-12">
+                                                                    <div className="col-xl-10 col-12">
                                                                         <textarea
                                                                             name=""
                                                                             id="prType"
-                                                                            className="py-0"
+                                                                            className="py-0 challan"
                                                                             style={{ width: "100%" }}
                                                                             placeholder='Address'
                                                                             value={challanData.address}
                                                                             onChange={(e) => setChallanData({ ...challanData, address: e.target.value })}
                                                                         />
                                                                     </div>
+
                                                                     {/* State */}
-                                                                    <div className="single-info-block col-xl-3">
-                                                                        <label htmlFor="ritcNo">State<span>*</span></label>
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label className="name-label" htmlFor="ritcNo">State<span className="text-danger">*</span></label>
                                                                     </div>
-                                                                    <div className="col-xl-9 col-12">
+                                                                    <div className="col-xl-10 col-12">
                                                                         <Select
                                                                             value={challanData.State ?
                                                                                 {
@@ -2191,10 +2228,10 @@ export default function CreateChallan() {
                                                                         />
                                                                     </div>
                                                                     {/* District */}
-                                                                    <div className="single-info-block col-xl-3">
-                                                                        <label htmlFor="prUnit">District<span>*</span></label>
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label className="name-label" htmlFor="prUnit">District<span className="text-danger">*</span></label>
                                                                     </div>
-                                                                    <div className="col-xl-9 col-12">
+                                                                    <div className="col-xl-10 col-12">
                                                                         <Select
                                                                             className="w-full"
                                                                             placeholder="Select District"
@@ -2220,27 +2257,34 @@ export default function CreateChallan() {
                                                                         />
                                                                     </div>
                                                                     {/* PIN */}
-                                                                    <div className="single-info-block col-xl-3">
-                                                                        <label htmlFor="prUnitPrice">
-                                                                            PIN <span>*</span>
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label className="name-label" htmlFor="prUnitPrice">
+                                                                            PIN <span className="text-danger">*</span>
                                                                         </label>
                                                                     </div>
-                                                                    <div className="col-xl-9 col-12">
-                                                                        <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(e) => setChallanData({ ...challanData, PinID: e.target.value })} />
+                                                                    <div className="col-xl-10 col-12">
+                                                                        <Select id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                            setChallanData((prev) => ({
+                                                                                ...prev,
+                                                                                district: Number(selectedOption?.value ?? 0),
+                                                                            }))
+                                                                        }
+                                                                            styles={selectCompactStyles}
+                                                                        />
                                                                     </div>
                                                                     {/* Contact */}
-                                                                    <div className="single-info-block col-xl-3">
-                                                                        <label htmlFor="prAmountUSD">Contact</label>
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label className="name-label" htmlFor="prAmountUSD">Contact</label>
                                                                     </div>
-                                                                    <div className="col-xl-9 col-12">
-                                                                        <input type="text" id="prAmountUSD" placeholder='Contact No' value={challanData.OwnerMobile} onChange={(e) => setChallanData({ ...challanData, OwnerMobile: e.target.value })} />
+                                                                    <div className="col-xl-10 col-12">
+                                                                        <input className="challan" type="text" id="prAmountUSD" placeholder='Contact No' value={challanData.OwnerMobile} onChange={(e) => setChallanData({ ...challanData, OwnerMobile: e.target.value })} />
                                                                     </div>
                                                                     {/* EmailID */}
-                                                                    <div className="single-info-block col-xl-3">
-                                                                        <label htmlFor="prAmountINR">EmailID</label>
+                                                                    <div className="single-info-block col-xl-2">
+                                                                        <label className="name-label" htmlFor="prAmountINR">EmailID</label>
                                                                     </div>
-                                                                    <div className="col-xl-9 col-12">
-                                                                        <input type="email" id="prAmountINR" placeholder="Email ID" value={challanData.Email} onChange={(e) => setChallanData({ ...challanData, Email: e.target.value })} />
+                                                                    <div className="col-xl-10 col-12">
+                                                                        <input className="challan" type="email" id="prAmountINR" placeholder="Email ID" value={challanData.Email} onChange={(e) => setChallanData({ ...challanData, Email: e.target.value })} />
                                                                     </div>
                                                                     {/* ROW */}
                                                                 </div>
@@ -2248,21 +2292,21 @@ export default function CreateChallan() {
                                                         </div>
 
                                                         {/* Second-Column */}
-                                                        <div className="col-xl-3 col-sm-6 ">
+                                                        <div className="col-xl-4 col-sm-6 ">
                                                             <div className="form-block ">
                                                                 <div className="row align-items-center" style={{ rowGap: 6 }}>
                                                                     {/* Adv-Amount */}
-                                                                    <div className="single-info-block col-xl-5">
-                                                                        <label htmlFor="endUse">Adv. Amount <span>*</span></label>
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label className="name-label" htmlFor="endUse">Adv. Amount <span className="text-danger">*</span></label>
                                                                     </div>
-                                                                    <div className="col-xl-7 col-12">
-                                                                        <input type="text" id="endUse" defaultValue={0.0} style={{ width: "100%" }} value={challanData.AdvAmt} onChange={(e) => setChallanData({ ...challanData, AdvAmt: Number(e.target.value) })} />
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <input className="challan" type="text" id="endUse" defaultValue={0.0} style={{ width: "100%" }} value={challanData.AdvAmt} onChange={(e) => setChallanData({ ...challanData, AdvAmt: Number(e.target.value) })} />
                                                                     </div>
                                                                     {/* Vehicle-type */}
-                                                                    <div className="single-info-block col-xl-5">
-                                                                        <label htmlFor="prCTH">Vehicle Type</label>
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label className="name-label" htmlFor="prCTH">Vehicle Type</label>
                                                                     </div>
-                                                                    <div className="col-xl-7 col-12">
+                                                                    <div className="col-xl-9 col-12">
                                                                         <Select
                                                                             className="w-full"
                                                                             placeholder="Select Vehicle"
@@ -2289,54 +2333,84 @@ export default function CreateChallan() {
                                                                         />
                                                                     </div>
                                                                     {/* Vehicle-No */}
-                                                                    <div className="single-info-block col-xl-5">
-                                                                        <label htmlFor="prCET">Vehicle No.</label>
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label className="name-label" htmlFor="prCET">Vehicle No.</label>
                                                                     </div>
-                                                                    <div className="col-xl-7 col-12">
-                                                                        <input type='text' placeholder='Vehicle No' value={challanData.VehicleNo} onChange={(e) => setChallanData({ ...challanData, VehicleNo: e.target.value })} />
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <Select
+                                                                            placeholder="Vehicle No"
+                                                                            value={
+                                                                                challanData.VehicleNo
+                                                                                    ? { value: challanData.VehicleNo, label: challanData.VehicleNo }
+                                                                                    : null
+                                                                            }
+                                                                            onChange={(selectedOption) =>
+                                                                                setChallanData({
+                                                                                    ...challanData,
+                                                                                    VehicleNo: selectedOption?.value || "",
+                                                                                })
+                                                                            }
+                                                                            options={[]}
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={selectCompactStyles}
+                                                                        />
                                                                     </div>
                                                                     {/* Driver-Name */}
-                                                                    <div className="single-info-block col-xl-5">
-                                                                        <label htmlFor="prCode">Driver Name</label>
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label className="name-label" htmlFor="prCode">Driver Name</label>
                                                                     </div>
-                                                                    <div className="col-xl-7 col-12">
-                                                                        <input type="text" id="prCode" placeholder="Driver Name" style={{ width: "100%" }} value={challanData.DriverName} onChange={(e) => setChallanData({ ...challanData, DriverName: e.target.value })} />
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <input className="challan" type="text" id="prCode" placeholder="Driver Name" style={{ width: "100%" }} value={challanData.DriverName} onChange={(e) => setChallanData({ ...challanData, DriverName: e.target.value })} />
                                                                     </div>
                                                                     {/* Driver-No */}
-                                                                    <div className="single-info-block col-xl-5">
-                                                                        <label htmlFor="driverNo">Driver Number</label>
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label className="name-label" htmlFor="driverNo">Driver Number</label>
                                                                     </div>
-                                                                    <div className="col-xl-7 col-12">
-                                                                        <input type="text" id="driverNo" style={{ width: "100%" }} value={challanData.DriverMobileNo} onChange={(e) => setChallanData({ ...challanData, DriverMobileNo: Number(e.target.value) })} />
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <input className="challan" type="text" id="driverNo" style={{ width: "100%" }} value={challanData.DriverMobileNo} onChange={(e) => setChallanData({ ...challanData, DriverMobileNo: Number(e.target.value) })} />
                                                                     </div>
                                                                     {/* Vehicle-Remark */}
-                                                                    <div className="single-info-block col-xl-5">
-                                                                        <label htmlFor="remark">Vehicle Remarks</label>
+                                                                    <div className="single-info-block col-xl-3">
+                                                                        <label className="name-label" htmlFor="remark">Vehicle Remarks</label>
                                                                     </div>
-                                                                    <div className="col-xl-7 col-12">
-                                                                        <textarea name="" id="remark" className="py-0" style={{ width: "100%" }} value={challanData.VehicleRemarks} onChange={(e) => setChallanData({ ...challanData, VehicleRemarks: e.target.value })} />
+                                                                    <div className="col-xl-9 col-12">
+                                                                        <textarea name="" id="remark" className="py-0 challan" style={{ width: "100%", height: "60px" }} value={challanData.VehicleRemarks} onChange={(e) => setChallanData({ ...challanData, VehicleRemarks: e.target.value })} />
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                         {/* Third-Column */}
-                                                        <div className="col-xl-5 mt-3 mt-xl-0">
+                                                        <div className="col-xl-4 mt-3 mt-xl-0">
                                                             <div className="form-block bigger-form-block">
                                                                 <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                    <div className="single-info-block col-xl-2"></div>
+                                                                    <div className="col-xl-10">
+                                                                        <div className="form-check d-flex align-items-center gap-2 pl-0">
+                                                                            <input
+                                                                                className="form-check-input_gst-bill name-label"
+                                                                                type="checkbox"
+                                                                                id="gstBill"
+                                                                            />
+                                                                            <label className="form-check-label fw-bold name-label" htmlFor="gstBill">
+                                                                                GST Bill
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
                                                                     {/* GST-No */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="gst">GST No</label>
+                                                                        <label className="name-label" htmlFor="gst">GST No</label>
                                                                     </div>
                                                                     <div className="col-xl-10">
-                                                                        <input type="text" id="gst" style={{ width: "100%" }} placeholder='GST No' value={challanData.GstNo} onChange={(e) => setChallanData({ ...challanData, GstNo: e.target.value })} />
+                                                                        <input className="challan" type="text" id="gst" style={{ width: "100%" }} placeholder='GST No' value={challanData.GstNo} onChange={(e) => setChallanData({ ...challanData, GstNo: e.target.value })} />
                                                                     </div>
                                                                     {/* GST Party-Drop */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="SchemeCode">Party</label>
+                                                                        <label className="name-label" htmlFor="SchemeCode">Party</label>
                                                                     </div>
                                                                     <div className="col-xl-10">
-                                                                        <Select className="w-full"
+                                                                        <Select className="w-full "
                                                                             placeholder="Select Party"
                                                                             value={challanData.Name ? {
                                                                                 value: challanData.Name,
@@ -2359,14 +2433,14 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     {/* GST Address */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="address">Address</label>
+                                                                        <label className="name-label" htmlFor="address">Address</label>
                                                                     </div>
                                                                     <div className="col-xl-10">
-                                                                        <textarea name="" id="address" placeholder='Address' value={challanData.gstAddress} onChange={(e) => setChallanData({ ...challanData, gstAddress: e.target.value })} />
+                                                                        <textarea className="challan" name="" id="address" placeholder='Address' value={challanData.gstAddress} onChange={(e) => setChallanData({ ...challanData, gstAddress: e.target.value })} />
                                                                     </div>
                                                                     {/* GST State */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="ritcNo">State<span>*</span></label>
+                                                                        <label className="name-label" htmlFor="ritcNo">State<span className="text-danger">*</span></label>
                                                                     </div>
                                                                     <div className="col-xl-10">
                                                                         <Select
@@ -2399,7 +2473,7 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     {/* GST District */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="prUnit">District<span>*</span></label>
+                                                                        <label className="name-label" htmlFor="prUnit">District<span className="text-danger">*</span></label>
                                                                     </div>
                                                                     <div className="col-xl-10">
                                                                         <Select
@@ -2428,10 +2502,13 @@ export default function CreateChallan() {
                                                                     </div>
                                                                     {/* GST PIN */}
                                                                     <div className="single-info-block col-xl-2">
-                                                                        <label htmlFor="prUnitPrice">PIN <span>*</span></label>
+                                                                        <label className="name-label" htmlFor="prUnitPrice">PIN <span className="text-danger">*</span></label>
                                                                     </div>
                                                                     <div className="col-xl-10">
-                                                                        <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.GstPinID} onChange={(e) => setChallanData({ ...challanData, GstPinID: e.target.value })} />
+                                                                        <Select
+                                                                            placeholder="Select.."
+                                                                            styles={selectCompactStyles}
+                                                                        />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2445,45 +2522,32 @@ export default function CreateChallan() {
                                                             {(challanData.productDetails.length === 0 ? [blankProduct] : challanData.productDetails).map((product, index) => (
                                                                 <div key={index} className="product-des-box product-details-form ">
                                                                     <div className="product-form-container ">
-                                                                        <div className="row g-3 align-items-center mt-2">
+                                                                        <div className="row g-3 align-items-center">
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
-                                                                                <label className="MAINTABLE_LABEL">Product Name</label>
-                                                                                <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => handleProductChange(index, 'name', e.target.value)} />
+                                                                                <label className="MAINTABLE_LABEL name-label">Product Name</label>
+                                                                                <Select placeholder="Select.." value={product.name} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                    setChallanData((prev) => ({
+                                                                                        ...prev,
+                                                                                        district: Number(selectedOption?.value ?? 0),
+                                                                                    }))
+                                                                                }
+                                                                                    styles={selectCompactStyles}
+                                                                                />
                                                                             </div>
                                                                             {/* Rate */}
                                                                             <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                                <label className="MAINTABLE_LABEL">Rate</label>
-                                                                                <input type="number" value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value))} />
+                                                                                <label className="MAINTABLE_LABEL name-label">Rate</label>
+                                                                                <input className="challan" type="number" value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value))} />
                                                                             </div>
                                                                             {/* Gross Weight */}
                                                                             <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                                <label className="MAINTABLE_LABEL">Gross Weight</label>
-                                                                                <input type="number" value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
-                                                                            </div>
-                                                                            {/* Net Weight */}
-                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                                <label className="MAINTABLE_LABEL">Net Weight</label>
-                                                                                <input type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
-                                                                            </div>
-                                                                            {/* Less Weight */}
-                                                                            <div className="col mt-0" style={{ minWidth: 150 }}>
-                                                                                <label className="MAINTABLE_LABEL">Less Weight</label>
-                                                                                <input type="number" value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))} />
-                                                                            </div>
-                                                                            {/* GT Weight */}
-                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                                <label className="MAINTABLE_LABEL">GT Weight</label>
-                                                                                <input type="number" value={product.gtWeight} readOnly />
-                                                                            </div>
-                                                                            {/* Amount */}
-                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
-                                                                                <label className="MAINTABLE_LABEL">Amount</label>
-                                                                                <input type="number" value={product.amount} readOnly />
+                                                                                <label className="MAINTABLE_LABEL name-label">Gross Weight</label>
+                                                                                <input className="challan" type="number" value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
                                                                             </div>
                                                                             {/* Date/Time */}
                                                                             <div className="col-md-2 mt-0">
-                                                                                <label className="MAINTABLE_LABEL">Date/Time</label>
+                                                                                <label className="MAINTABLE_LABEL name-label">Date/Time</label>
                                                                                 <DatePicker selected={moment(product.ChallanDate, 'YYYY-MM-DD HH:mm:ss').toDate()} onChange={(date: Date | null) => {
                                                                                     if (date) {
                                                                                         const formatted = moment(date).format('YYYY-MM-DD HH:mm:ss'); handleProductChange(index, 'ChallanDate', formatted);
@@ -2493,9 +2557,30 @@ export default function CreateChallan() {
                                                                                     timeIntervals={15}
                                                                                     timeCaption="Time"
                                                                                     dateFormat="dd/MM/yyyy HH:mm"
-                                                                                    className="border rounded px-2 py-1 w-full"
+                                                                                    className="border rounded px-2 py-1 w-full challan"
                                                                                 />
                                                                             </div>
+                                                                            {/* Net Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL name-label">Net Weight</label>
+                                                                                <input className="challan" type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
+                                                                            </div>
+                                                                            {/* Less Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 150 }}>
+                                                                                <label className="MAINTABLE_LABEL name-label">Less Weight</label>
+                                                                                <input className="challan" type="number" value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))} />
+                                                                            </div>
+                                                                            {/* GT Weight */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL name-label">GT Weight</label>
+                                                                                <input className="challan" type="number" value={product.gtWeight} readOnly />
+                                                                            </div>
+                                                                            {/* Amount */}
+                                                                            <div className="col mt-0" style={{ minWidth: 130 }}>
+                                                                                <label className="MAINTABLE_LABEL name-label">Amount</label>
+                                                                                <input className="challan" type="number" value={product.amount} readOnly />
+                                                                            </div>
+
 
                                                                             {/* Add Button (only on last row, max 3 rows) */}
                                                                             {index === challanData.productDetails.length - 1 && challanData.productDetails.length < 3 && (
@@ -2517,37 +2602,49 @@ export default function CreateChallan() {
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form ">
                                                                 <div className="product-form-container ">
-                                                                    <div className="row g-3">
+                                                                    <div className="row g-3 ">
                                                                         {/* Tare-Weight */}
                                                                         <div className="col-2 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Tare Weight</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                                                        </div>
+
+                                                                        {/* Date/Time */}
+                                                                        <div className="col-md-2 mt-0">
+                                                                            <label className="MAINTABLE_LABEL name-label">Date/Time</label>
+                                                                            <DatePicker
+                                                                                showTimeSelect
+                                                                                timeIntervals={15}
+                                                                                timeCaption="Time"
+                                                                                dateFormat="dd/MM/yyyy HH:mm"
+                                                                                className="border rounded px-2 py-1 w-full challan"
+                                                                            />
                                                                         </div>
                                                                         {/* Net-Weight */}
                                                                         <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Net Weight</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.Netweight} onChange={(e) => setChallanData({ ...challanData, Netweight: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Net Weight</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.Netweight} onChange={(e) => setChallanData({ ...challanData, Netweight: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Less-Weight */}
                                                                         <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Less Weight</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Less Weight</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* GT-Weight */}
                                                                         <div className="col-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Total GT Weight</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.GTWeight} onChange={(e) => setChallanData({ ...challanData, GTWeight: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Total GT Weight</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.GTWeight} onChange={(e) => setChallanData({ ...challanData, GTWeight: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Vehicle-Commision */}
                                                                         <div className="col-1 mt-0" style={{ minWidth: 150 }}>
-                                                                            <label className="MAINTABLE_LABEL">Vehicle Commision</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Vehicle Commision</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Date-Time */}
-                                                                        <div className="col-md-2 mt-0">
-                                                                            <label className="MAINTABLE_LABEL">Financial Year</label>
+                                                                        {/* <div className="col-md-2 mt-0">
+                                                                            <label className="MAINTABLE_LABEL name-label">Financial Year</label>
                                                                             <input type="text" id="SchemDes" readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2555,49 +2652,67 @@ export default function CreateChallan() {
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form">
                                                                 <div className="product-form-container ">
-                                                                    <div className="row g-3">
+                                                                    <div className="row g-3 ">
                                                                         {/* Amount */}
                                                                         <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Amount</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.Amount} onChange={(e) => setChallanData({ ...challanData, Amount: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Amount</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.Amount} onChange={(e) => setChallanData({ ...challanData, Amount: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Loading-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Loading Amount</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.LoadingAmt} onChange={(e) => setChallanData({ ...challanData, LoadingAmt: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Loading Amount</label>
+                                                                            <Select id="SchemDes" value={challanData.LoadingAmt} menuPlacement='top' onChange={(e) => setChallanData({ ...challanData, LoadingAmt: Number(e.target.value) })}
+                                                                                styles={selectCompactStyles}
+                                                                            />
                                                                         </div>
                                                                         {/* Commission-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Commission Amt</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({ ...challanData, CommisionAmt: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Commission Amt</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({ ...challanData, CommisionAmt: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* GT-Amount */}
                                                                         <div className="col-md-1 col-sm-6 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">GT Amount</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.GSTAmt} onChange={(e) => setChallanData({ ...challanData, GSTAmt: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">GT Amount</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.GSTAmt} onChange={(e) => setChallanData({ ...challanData, GSTAmt: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Royality-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
-                                                                            <label className="MAINTABLE_LABEL">Royalty Amount</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.RoyaltyAmt} onChange={(e) => setChallanData({ ...challanData, RoyaltyAmt: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Royalty Amount</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.RoyaltyAmt} onChange={(e) => setChallanData({ ...challanData, RoyaltyAmt: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* TP-Amount */}
                                                                         <div className="col-md-2 mt-0">
-                                                                            <label className="MAINTABLE_LABEL">TP Amount</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.TPAmount} onChange={(e) => setChallanData({ ...challanData, TPAmount: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">TP Amount</label>
+                                                                            <Select
+                                                                                id="SchemDes"
+                                                                                value={
+                                                                                    challanData.TPAmount
+                                                                                        ? { value: challanData.TPAmount, label: challanData.TPAmount }
+                                                                                        : null
+                                                                                }
+                                                                                menuPlacement="top"
+                                                                                onChange={(selectedOption) =>
+                                                                                    setChallanData({
+                                                                                        ...challanData,
+                                                                                        TPAmount: Number(selectedOption?.value || 0),
+                                                                                    })
+                                                                                }
+                                                                                styles={selectCompactStyles}
+                                                                            />
+
                                                                         </div>
                                                                         {/* Freight-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Freight Amount</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.FreightAmt} onChange={(e) => setChallanData({ ...challanData, FreightAmt: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Freight Amount</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.FreightAmt} onChange={(e) => setChallanData({ ...challanData, FreightAmt: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Grand-Total */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL">Grand Total</label>
-                                                                            <input type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
+                                                                            <label className="MAINTABLE_LABEL name-label">Grand Total</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
                                                                         </div>
 
-                                                                        <div className="col-md-3 mt-0">
+                                                                        {/* <div className="col-md-3 mt-0">
                                                                             <label className="MAINTABLE_LABEL">Company Id</label>
                                                                             <Select
                                                                                 value={dropdown}
@@ -2619,7 +2734,7 @@ export default function CreateChallan() {
                                                                                     }),
                                                                                 }}
                                                                             />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
