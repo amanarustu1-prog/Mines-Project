@@ -1059,9 +1059,11 @@ input.challan:focus {
   display: none;
 }
 
+
 @media print {
   .print-area {
     display: block;
+    
   }
 }
 
