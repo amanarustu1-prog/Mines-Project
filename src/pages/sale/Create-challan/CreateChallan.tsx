@@ -396,6 +396,17 @@ interface ProductName {
     ProductName: string
 }
 
+interface LoadingAmt {
+    LoadingchargeID: number,
+    Description: string
+}
+
+interface TPAmount {
+    TpAmountID: number,
+    Description: string
+}
+
+
 export default function CreateChallan() {
     const [activeTab, setActiveTab] = useState('challanOverview');
     const [showInput, setShowInput] = useState(false);
@@ -425,6 +436,8 @@ export default function CreateChallan() {
     const [gstState, setGSTState] = useState<State[]>([]);
     const [gstDistrict, setGSTDistrict] = useState<District[]>([]);
     const [productName, setProductName] = useState<ProductName[]>([]);
+    const [loadingAmt, setLoadingAmt] = useState<LoadingAmt[]>([]);
+    const [tpAmount, setTPAmount] = useState<TPAmount[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
     const [dropdown, setDropdown] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -1583,7 +1596,7 @@ export default function CreateChallan() {
             total: 0,
             gstAmount: 0,
             royalty: 0,
-            tpAmount: 0,
+            TPAmount: 0,
             freightAmt: 0,
             extraAmt: 0,
             grandTotal: 0,
@@ -1660,18 +1673,48 @@ export default function CreateChallan() {
     }
 
     const fetchProductName = async () => {
-        try{
+        try {
             const response = await fetchPostData('Product/GetDataDropDown_Product', {
                 CompanyId: Number(localStorage.getItem('companyID'))
             })
             // console.log(response);
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setProductName(response);
-            }else{
+            } else {
                 setProductName([]);
             }
-        }catch{
+        } catch {
             toastifyError('Error fetching Product Name');
+        }
+    }
+
+    const fetchLoading = async () => {
+        try {
+            const response = await fetchPostData('Loadingcharge/GetDataDropDown_Loadingcharge', {
+                CompanyId: Number(localStorage.getItem('companyID'))
+            });
+            // console.log(response);
+            if (response && Array.isArray(response)) {
+                setLoadingAmt(response);
+            } else {
+                setLoadingAmt([]);
+            }
+        } catch {
+            toastifyError("Error fetching the ")
+        }
+    }
+
+    const fetchTPAmount = async () => {
+        try {
+            const response = await fetchPostData('TpAmount/GetDataDropDown_TpAmount', {
+                CompanyId: Number(localStorage.getItem('companyID'))
+            });
+            // console.log(response);
+            if (response && Array.isArray(response)) {
+                setTPAmount(response);
+            }
+        } catch {
+            setTPAmount([]);
         }
     }
 
@@ -1681,6 +1724,8 @@ export default function CreateChallan() {
         fetchVehicleType();
         fetchParty();
         fetchProductName();
+        fetchLoading();
+        fetchTPAmount();
     }, []);
 
     // useEffect(() => {
@@ -2130,7 +2175,8 @@ export default function CreateChallan() {
                                                         </label>
                                                         <div className="product-des-input d-flex gap-2 flex-grow-1">
                                                             <input className='challan' type="text" id="product-desc-1" placeholder='Challan-No' style={{ flex: 1 }} value={challanData.ChallanNo} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} />
-                                                            <input className='challan' type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} />
+                                                            {/* <input className='challan' type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} /> */}
+                                                            <input className='challan' type="text" id="date-pick-bano" style={{ flex: 1 }} readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
                                                             <input className='challan' type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
                                                         </div>
                                                     </div>
@@ -2553,13 +2599,25 @@ export default function CreateChallan() {
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
                                                                                 <label className="MAINTABLE_LABEL name-label">Product Name</label>
-                                                                                <Select placeholder="Select.." value={product.name} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                                    setChallanData((prev) => ({
+                                                                                <Select 
+                                                                                   placeholder="Select Product"
+                                                                                   value={ challanData.ProductId1 ? 
+                                                                                    {
+                                                                                        value: challanData.ProductId1,
+                                                                                        label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
+                                                                                    } : null
+                                                                                   } 
+                                                                                   options={productName.map((pn) => ({
+                                                                                    value: pn.ProductID,
+                                                                                    label: pn.ProductName
+                                                                                   }))}
+                                                                                   onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                     setChallanData((prev) => ({
                                                                                         ...prev,
                                                                                         district: Number(selectedOption?.value ?? 0),
-                                                                                    }))
-                                                                                }
-                                                                                    styles={selectCompactStyles}
+                                                                                     }))
+                                                                                   }
+                                                                                   styles={selectCompactStyles}
                                                                                 />
                                                                             </div>
                                                                             {/* Rate */}
@@ -2675,6 +2733,7 @@ export default function CreateChallan() {
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        {/* Third-Row */}
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form">
                                                                 <div className="product-form-container ">
@@ -2687,7 +2746,25 @@ export default function CreateChallan() {
                                                                         {/* Loading-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Loading Amount</label>
-                                                                            <Select id="SchemDes" value={challanData.LoadingAmt} menuPlacement='top' onChange={(e) => setChallanData({ ...challanData, LoadingAmt: Number(e.target.value) })}
+                                                                            <Select 
+                                                                                placeholder="Select..."
+                                                                                value={challanData.LoadingAmt ?
+                                                                                    {
+                                                                                        value: challanData.LoadingAmt,
+                                                                                        label: loadingAmt.find((lm) => lm.LoadingchargeID === challanData.LoadingAmt) ?.Description || ''
+                                                                                    } : null
+                                                                                } 
+                                                                                options={ loadingAmt.map((lm) => ({
+                                                                                    value: lm.LoadingchargeID,
+                                                                                    label: lm.Description
+                                                                                }))}
+                                                                                menuPlacement='top' 
+                                                                                onChange={(selectedOption) => 
+                                                                                    setChallanData((prev) => ({
+                                                                                        ...prev,
+                                                                                        LoadingAmt: Number(selectedOption?.value ?? 0)
+                                                                                    }))
+                                                                                }
                                                                                 styles={selectCompactStyles}
                                                                             />
                                                                         </div>
@@ -2710,13 +2787,20 @@ export default function CreateChallan() {
                                                                         <div className="col-md-2 mt-0">
                                                                             <label className="MAINTABLE_LABEL name-label">TP Amount</label>
                                                                             <Select
+                                                                                placeholder="Select TPAmount"
                                                                                 id="SchemDes"
                                                                                 value={
-                                                                                    challanData.TPAmount
-                                                                                        ? { value: challanData.TPAmount, label: challanData.TPAmount }
-                                                                                        : null
+                                                                                    challanData.TPAmount ? 
+                                                                                    { 
+                                                                                        value: challanData.TPAmount,
+                                                                                        label: tpAmount.find((tp) => tp.TpAmountID === challanData.TPAmount)?.Description || ''
+                                                                                    } : null
                                                                                 }
                                                                                 menuPlacement="top"
+                                                                                options={tpAmount.map((tp) => ({
+                                                                                    value: tp.TpAmountID,
+                                                                                    label: tp.Description
+                                                                                }))}
                                                                                 onChange={(selectedOption) =>
                                                                                     setChallanData({
                                                                                         ...challanData,
@@ -2725,7 +2809,6 @@ export default function CreateChallan() {
                                                                                 }
                                                                                 styles={selectCompactStyles}
                                                                             />
-
                                                                         </div>
                                                                         {/* Freight-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
@@ -2785,7 +2868,7 @@ export default function CreateChallan() {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </>
     );
 }
