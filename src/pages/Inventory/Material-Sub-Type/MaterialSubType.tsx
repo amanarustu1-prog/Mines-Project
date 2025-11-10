@@ -485,7 +485,7 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
     const resizeableColumns = useResizableColumns(columns).map(col => ({
         ...col,
         minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
-      }));
+    }));
 
     //Download-Excel_File
     const exportToExcel = () => {
@@ -749,10 +749,12 @@ const MaterialSubType: React.FC<Props> = ({ baseUrl = '', companyId = null }) =>
                         deleteMaterialType(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 };
 
 export default MaterialSubType;
 
+// In this columns how we are getting data & showing that data is our DataTable.
+// Okk So columns tells to that dataTable how many columns we have & by data={filteredMaintenanceTypes} we are going to push data to that table
