@@ -962,3 +962,15 @@ GOBAL CSS START
 .employee-master-table-container table{
   overflow-x: auto !important ;
 }
+
+
+.form-check-input_gst-bill {
+  width: 16px !important;
+  height: 16px !important;
+  cursor: pointer;
+}
+
+.form-check-label_gst-bill {
+  font-size: 14px;
+  
+}

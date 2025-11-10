@@ -134,7 +134,7 @@ interface ChallanItem extends BaseProductFields {
     VehicleCommision: number;
     TareWeight: number;
     Rate: number;
-        // Product and weight details
+    // Product and weight details
     productDetails: ProductDetail[];
     ProductName2: string,
     ProductName3: string,
@@ -523,15 +523,15 @@ export default function CreateChallan() {
     };
 
     const blankProduct = {
-      id: '',
-      name: '',
-      rate: 0,
-      grossWeight: 0,
-      netWeight: 0,
-      lessWeight: 0,
-      gtWeight: 0,
-      amount: 0,
-      ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        id: '',
+        name: '',
+        rate: 0,
+        grossWeight: 0,
+        netWeight: 0,
+        lessWeight: 0,
+        gtWeight: 0,
+        amount: 0,
+        ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
     };
 
     const handleCloseModal = () => {
@@ -1701,33 +1701,33 @@ export default function CreateChallan() {
 
     //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
     // });
-    
+
     const handleSearch = () => {
         let result = challanItems;
 
         const fromDateTime = fromDate ? new Date(
-            `${moment(fromDate).format('YYYY-MM-DD')} ${
-            fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
-        }`) : null;
+            `${moment(fromDate).format('YYYY-MM-DD')} ${fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
+            }`) : null;
 
         const toDateTime = toDate
             ? new Date(
-            `${moment(toDate).format('YYYY-MM-DD')} ${
-            toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
-            }`
-        ) : null;
+                `${moment(toDate).format('YYYY-MM-DD')} ${toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
+                }`
+            ) : null;
 
         // Filter by date range
         if (fromDateTime && toDateTime) {
             result = result.filter((item) => {
-            const challanDate = new Date(item.CreatedDate);
-            return challanDate >= fromDateTime && challanDate <= toDateTime;
-        });}
+                const challanDate = new Date(item.CreatedDate);
+                return challanDate >= fromDateTime && challanDate <= toDateTime;
+            });
+        }
         else if (fromDateTime && !toDateTime) {
             result = result.filter((item) => {
-            const challanDate = new Date(item.CreatedDate);
-            return challanDate >= fromDateTime;
-        });}
+                const challanDate = new Date(item.CreatedDate);
+                return challanDate >= fromDateTime;
+            });
+        }
 
         // Filter by party
         if (selectedParty) {
@@ -1739,8 +1739,9 @@ export default function CreateChallan() {
         if (searchTerm.trim()) {
             const term = searchTerm.trim().toLowerCase();
             result = result.filter((item) =>
-            item.ChallanNo?.toLowerCase().includes(term)
-        );}
+                item.ChallanNo?.toLowerCase().includes(term)
+            );
+        }
 
         setFilteredData(result);
     };
@@ -1779,93 +1780,93 @@ export default function CreateChallan() {
     //Download-Excel_File
     const exportToExcel = () => {
         const filteredDataNew = challanItems.map((item) => ({
-        "Challan ID": item.ChallanID,
-        "Challan No": item.ChallanNo,
-        "Challan Module": item.ChallanModule,
-        "Challan Date": item.ChallanDate,
-        "Financial Year": item.financialYear,
-        "Voucher Type": item.VoucherType || "",
-        "Pay Type": item.paytype || "",
-        "Advance Amount": item.AdvAmt || 0,
+            "Challan ID": item.ChallanID,
+            "Challan No": item.ChallanNo,
+            "Challan Module": item.ChallanModule,
+            "Challan Date": item.ChallanDate,
+            "Financial Year": item.financialYear,
+            "Voucher Type": item.VoucherType || "",
+            "Pay Type": item.paytype || "",
+            "Advance Amount": item.AdvAmt || 0,
 
-        "Party Name": item.Name || "",
-        "Party ID": item.PartyID || "",
-        "Party Type ID": item.partyTypeid || "",
-        "Address": item.Address || item.address || "",
-        "State": item.State || "",
-        "State ID": item.StateID || "",
-        "District ID": item.DistrictID || "",
-        "Pin ID": item.PinID || "",
-        "Email": item.Email || "",
-        "Owner Mobile": item.OwnerMobile || "",
+            "Party Name": item.Name || "",
+            "Party ID": item.PartyID || "",
+            "Party Type ID": item.partyTypeid || "",
+            "Address": item.Address || item.address || "",
+            "State": item.State || "",
+            "State ID": item.StateID || "",
+            "District ID": item.DistrictID || "",
+            "Pin ID": item.PinID || "",
+            "Email": item.Email || "",
+            "Owner Mobile": item.OwnerMobile || "",
 
-        "Vehicle No": item.VehicleNo || "",
-        "Vehicle Type ID": item.VehicleTypeid || "",
-        "Vehicle Remarks": item.VehicleRemarks || "",
-        "Vehicle Commission": item.VehicleCommision || "",
-        "Driver Name": item.DriverName || "",
-        "Driver Mobile No": item.DriverMobileNo || "",
+            "Vehicle No": item.VehicleNo || "",
+            "Vehicle Type ID": item.VehicleTypeid || "",
+            "Vehicle Remarks": item.VehicleRemarks || "",
+            "Vehicle Commission": item.VehicleCommision || "",
+            "Driver Name": item.DriverName || "",
+            "Driver Mobile No": item.DriverMobileNo || "",
 
-        "GST Bill": item.IsGST ? "Yes" : "No",
-        "GST No": item.GstNo || "",
-        "GST Address": item.GstAddress || "",
-        "GST State": item.GstState || "",
-        "GST District ID": item.GstDistrictID || "",
-        "GST Pin ID": item.GstPinID || "",
-        "Bill Name": item.BillName || "",
+            "GST Bill": item.IsGST ? "Yes" : "No",
+            "GST No": item.GstNo || "",
+            "GST Address": item.GstAddress || "",
+            "GST State": item.GstState || "",
+            "GST District ID": item.GstDistrictID || "",
+            "GST Pin ID": item.GstPinID || "",
+            "Bill Name": item.BillName || "",
 
-        "Gross Weight": item.Grossweight || "",
-        "Tare Weight": item.TareWeight || "",
-        "Net Weight": item.Netweight || "",
-        "Less Weight": item.Lessweight || "",
-        "GT Weight": item.GTWeight || "",
+            "Gross Weight": item.Grossweight || "",
+            "Tare Weight": item.TareWeight || "",
+            "Net Weight": item.Netweight || "",
+            "Less Weight": item.Lessweight || "",
+            "GT Weight": item.GTWeight || "",
 
-        "Rate": item.Rate || "",
-        "Amount": item.Amount || "",
-        "Loading Amount": item.LoadingAmt || "",
-        "Commission Amount": item.CommisionAmt || "",
-        "Total Amount": item.TotalAmt || "",
-        "GST Amount": item.GSTAmt || "",
-        "Royalty Amount": item.RoyaltyAmt || "",
-        "TP Amount": item.TPAmount || "",
-        "Freight Amount": item.FreightAmt || "",
-        "Extra Amount": item.ExtraAmt || "",
-        "Grand Total": item.GTotal || "",
+            "Rate": item.Rate || "",
+            "Amount": item.Amount || "",
+            "Loading Amount": item.LoadingAmt || "",
+            "Commission Amount": item.CommisionAmt || "",
+            "Total Amount": item.TotalAmt || "",
+            "GST Amount": item.GSTAmt || "",
+            "Royalty Amount": item.RoyaltyAmt || "",
+            "TP Amount": item.TPAmount || "",
+            "Freight Amount": item.FreightAmt || "",
+            "Extra Amount": item.ExtraAmt || "",
+            "Grand Total": item.GTotal || "",
 
-        // 🧾 Product 1
-        "Product Name 1": item.ProductName1 || "",
-        "Rate 1": item.Rate1 || "",
-        "Gross Weight 1": item.Grossweight1 || "",
-        "Gross Weight Date 1": item.Grossweightdate1 || "",
-        "Net Weight 1": item.Netweight1 || "",
-        "Less Weight 1": item.Lessweight1 || "",
-        "GT Weight 1": item.GTWeight1 || "",
-        "Amount 1": item.Amount1 || "",
+            // 🧾 Product 1
+            "Product Name 1": item.ProductName1 || "",
+            "Rate 1": item.Rate1 || "",
+            "Gross Weight 1": item.Grossweight1 || "",
+            "Gross Weight Date 1": item.Grossweightdate1 || "",
+            "Net Weight 1": item.Netweight1 || "",
+            "Less Weight 1": item.Lessweight1 || "",
+            "GT Weight 1": item.GTWeight1 || "",
+            "Amount 1": item.Amount1 || "",
 
-        // 🧾 Product 2
-        "Product Name 2": item.ProductName2 || "",
-        "Rate 2": item.Rate2 || "",
-        "Gross Weight 2": item.Grossweight2 || "",
-        "Gross Weight Date 2": item.Grossweightdate2 || "",
-        "Net Weight 2": item.Netweight2 || "",
-        "Less Weight 2": item.Lessweight2 || "",
-        "GT Weight 2": item.GTWeight2 || "",
-        "Amount 2": item.Amount2 || "",
+            // 🧾 Product 2
+            "Product Name 2": item.ProductName2 || "",
+            "Rate 2": item.Rate2 || "",
+            "Gross Weight 2": item.Grossweight2 || "",
+            "Gross Weight Date 2": item.Grossweightdate2 || "",
+            "Net Weight 2": item.Netweight2 || "",
+            "Less Weight 2": item.Lessweight2 || "",
+            "GT Weight 2": item.GTWeight2 || "",
+            "Amount 2": item.Amount2 || "",
 
-        // 🧾 Product 3
-        "Product Name 3": item.ProductName3 || "",
-        "Rate 3": item.Rate3 || "",
-        "Gross Weight 3": item.Grossweight3 || "",
-        "Gross Weight Date 3": item.Grossweightdate3 || "",
-        "Net Weight 3": item.Netweight3 || "",
-        "Less Weight 3": item.Lessweight3 || "",
-        "GT Weight 3": item.GTWeight3 || "",
-        "Amount 3": item.Amount3 || "",
+            // 🧾 Product 3
+            "Product Name 3": item.ProductName3 || "",
+            "Rate 3": item.Rate3 || "",
+            "Gross Weight 3": item.Grossweight3 || "",
+            "Gross Weight Date 3": item.Grossweightdate3 || "",
+            "Net Weight 3": item.Netweight3 || "",
+            "Less Weight 3": item.Lessweight3 || "",
+            "GT Weight 3": item.GTWeight3 || "",
+            "Amount 3": item.Amount3 || "",
 
-        "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
-        "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
-        "Company ID": item.Companyid || "",
-    }));
+            "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
+            "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
+            "Company ID": item.Companyid || "",
+        }));
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(filteredDataNew);
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
@@ -1963,7 +1964,7 @@ export default function CreateChallan() {
                                             <FiSearch size={18} /> Search
                                         </button>
                                         <div className="relative">
-                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none" autoFocus/>
+                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none" autoFocus />
                                             <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                                         </div>
                                     </div>
@@ -2004,9 +2005,9 @@ export default function CreateChallan() {
                                         noDataComponent={
                                             <div className="text-center py-8 text-gray-500">
                                                 <p>
-                                                { 
-                                                  searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
-                                                }
+                                                    {
+                                                        searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
+                                                    }
                                                 </p>
                                             </div>
                                         }
@@ -2026,6 +2027,31 @@ export default function CreateChallan() {
                                                 <li><a href="#">TP</a></li>
                                                 <li> <a href="#">BILL</a></li>
                                             </ul>
+                                        </div>
+                                        {/* Button */}
+                                        <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
+                                            <div className="flex gap-2 ">
+                                                {/* Save Button */}
+                                                <button type="button"
+                                                    className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                    style={{ backgroundColor: "#34C759" }}
+                                                    onClick={handleSaveChallan}
+                                                >
+                                                    <FiSave size={18} />
+                                                    {editItemId ? 'Update' : 'Save'}
+                                                </button>
+
+                                                {/* Print Button */}
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center gap-2 px-2 py-1 mr-3    rounded-md text-white"
+                                                    style={{ backgroundColor: "#212529" }}
+                                                    onClick={() => window.print()}
+                                                >
+                                                    <FiPrinter size={18} />
+                                                    Print
+                                                </button>
+                                            </div>
                                         </div>
                                         <button onClick={handleCloseModal} className="text-gray-600 hover:text-red-500 p-2">
                                             <FiX size={20} />
@@ -2081,31 +2107,7 @@ export default function CreateChallan() {
                                                         </label>
                                                     </div>
                                                 </div>
-                                                {/* Button */}
-                                                <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
-                                                    <div className="flex gap-2 ">
-                                                        {/* Save Button */}
-                                                        <button type="button"
-                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                            style={{ backgroundColor: "#34C759" }}
-                                                            onClick={handleSaveChallan}
-                                                        >
-                                                            <FiSave size={18} />
-                                                            {editItemId ? 'Update' : 'Save'}
-                                                        </button>
 
-                                                        {/* Print Button */}
-                                                        <button
-                                                            type="button"
-                                                            className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
-                                                            style={{ backgroundColor: "#212529" }}
-                                                            onClick={() => window.print()}
-                                                        >
-                                                            <FiPrinter size={18} />
-                                                            Print
-                                                        </button>
-                                                    </div>
-                                                </div>
                                                 <div className="col-xxl-9 col-12 mt-2">
                                                     {/* First-Section */}
                                                     <div className="row">
@@ -2226,7 +2228,12 @@ export default function CreateChallan() {
                                                                         </label>
                                                                     </div>
                                                                     <div className="col-xl-9 col-12">
-                                                                        <input type="text" id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(e) => setChallanData({ ...challanData, PinID: e.target.value })} />
+                                                                        <Select id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                            setChallanData((prev) => ({
+                                                                                ...prev,
+                                                                                district: Number(selectedOption?.value ?? 0),
+                                                                            }))
+                                                                        } />
                                                                     </div>
                                                                     {/* Contact */}
                                                                     <div className="single-info-block col-xl-3">
@@ -2293,7 +2300,31 @@ export default function CreateChallan() {
                                                                         <label htmlFor="prCET">Vehicle No.</label>
                                                                     </div>
                                                                     <div className="col-xl-7 col-12">
-                                                                        <input type='text' placeholder='Vehicle No' value={challanData.VehicleNo} onChange={(e) => setChallanData({ ...challanData, VehicleNo: e.target.value })} />
+                                                                        <Select
+                                                                            placeholder="Vehicle No"
+                                                                            value={
+                                                                                challanData.VehicleNo
+                                                                                    ? { value: challanData.VehicleNo, label: challanData.VehicleNo }
+                                                                                    : null
+                                                                            }
+                                                                            onChange={(selectedOption) =>
+                                                                                setChallanData({
+                                                                                    ...challanData,
+                                                                                    VehicleNo: selectedOption?.value || "",
+                                                                                })
+                                                                            }
+                                                                            options={[]} 
+                                                                            isClearable
+                                                                            isSearchable
+                                                                            styles={{
+                                                                                control: (base) => ({
+                                                                                    ...base,
+                                                                                    borderColor: "#ced4da",
+                                                                                    boxShadow: "none",
+                                                                                    minHeight: "38px",
+                                                                                }),
+                                                                            }}
+                                                                        />
                                                                     </div>
                                                                     {/* Driver-Name */}
                                                                     <div className="single-info-block col-xl-5">
@@ -2324,6 +2355,19 @@ export default function CreateChallan() {
                                                         <div className="col-xl-5 mt-3 mt-xl-0">
                                                             <div className="form-block bigger-form-block">
                                                                 <div className="row align-items-center" style={{ rowGap: 6 }}>
+                                                                    <div className="single-info-block col-xl-2"></div>
+                                                                    <div className="col-xl-10">
+                                                                        <div className="form-check d-flex align-items-center gap-2 pl-0">
+                                                                            <input
+                                                                                className="form-check-input_gst-bill"
+                                                                                type="checkbox"
+                                                                                id="gstBill"
+                                                                            />
+                                                                            <label className="form-check-label fw-bold" htmlFor="gstBill">
+                                                                                GST Bill
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
                                                                     {/* GST-No */}
                                                                     <div className="single-info-block col-xl-2">
                                                                         <label htmlFor="gst">GST No</label>
@@ -2449,7 +2493,12 @@ export default function CreateChallan() {
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
                                                                                 <label className="MAINTABLE_LABEL">Product Name</label>
-                                                                                <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => handleProductChange(index, 'name', e.target.value)} />
+                                                                                <Select placeholder="Select.." value={product.name} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                    setChallanData((prev) => ({
+                                                                                        ...prev,
+                                                                                        district: Number(selectedOption?.value ?? 0),
+                                                                                    }))
+                                                                                } />
                                                                             </div>
                                                                             {/* Rate */}
                                                                             <div className="col mt-0" style={{ minWidth: 130 }}>
@@ -2597,7 +2646,7 @@ export default function CreateChallan() {
                                                                             <input type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
                                                                         </div>
 
-                                                                        <div className="col-md-3 mt-0">
+                                                                        {/* <div className="col-md-3 mt-0">
                                                                             <label className="MAINTABLE_LABEL">Company Id</label>
                                                                             <Select
                                                                                 value={dropdown}
@@ -2619,7 +2668,7 @@ export default function CreateChallan() {
                                                                                     }),
                                                                                 }}
                                                                             />
-                                                                        </div>
+                                                                        </div> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
