@@ -22,6 +22,7 @@ import moment from 'moment';
 import { previousDay } from 'date-fns';
 import ConfirmModal from '@/common/ConfirmModal';
 import ChallanSlip from './ChallanSlip';
+import ChallanPrint from './ChallanPrint';
 
 // Icon components
 
@@ -534,13 +535,24 @@ const CreateChallan: React.FC = () => {
     });
     const [challanItems, setChallanItems] = useState<ChallanItem[]>([]);
 
+    // const printRef = useRef<HTMLDivElement>(null);
+    const slipRef = useRef<HTMLDivElement>(null);
     const printRef = useRef<HTMLDivElement>(null);
 
     // 🔹 Setup print handler
     const handlePrint = useReactToPrint({
-        contentRef: printRef,
+        contentRef: slipRef,
         documentTitle: `Challan_${challanData.ChallanNo || "Slip"}`,
         preserveAfterPrint: false,
+    });
+
+    const handleChallanPrint = useReactToPrint({
+        contentRef: printRef,
+        documentTitle: `Challan_${challanData?.ChallanNo || "Print"}`,
+        pageStyle: `
+    @page { size: A4 portrait; margin: 10mm; }
+    body { -webkit-print-color-adjust: exact; }
+  `,
     });
 
 
@@ -576,6 +588,14 @@ const CreateChallan: React.FC = () => {
 
                     <button onClick={() => { setEditItemId(row.ChallanID!); handleOpenModal(); }} className="material-name-btn-icon" title="Edit">
                         <Edit3 className="material-name-icon-sm" />
+                    </button>
+                    {/*Challan Print */}
+                    <button
+                        onClick={() => handleChallanPrint(row.ChallanID!)}
+                        className="material-name-btn-icon text-green-600 hover:text-green-800"
+                        title="Print"
+                    >
+                        <FiPrinter className="material-name-icon-sm" />
                     </button>
                 </div>
             ),
@@ -2093,42 +2113,72 @@ const CreateChallan: React.FC = () => {
                                             />
                                         </div>
                                     </div>
-
-                                    {/* ===== Search + Export (col-3) ===== */}
-                                    <div className="col-md-6 d-flex  align-items-center">
-                                        {/* Search */}
-                                        <div className="d-flex align-items-center gap-4 flex-grow-1 ml-5 pl-4">
-                                            <div className="position-relative">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Search challans..."
-                                                    value={searchTerm}
-                                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                                    className="form-control form-control-sm challan pe-5 "
-                                                    style={{ borderRadius: "5px", width:"268px" }}
-                                                />
-                                                <FiSearch
-                                                    className="position-absolute top-50 end-0 translate-middle-y text-muted me-2"
-                                                    size={16}
-                                                />
+                                    {/* ===== Search + Export (col-8) ===== */}
+                                    <div className="col-md-8">
+                                        <div className="row g-2 align-items-center">
+                                            {/* Challan search – col-5 */}
+                                            <div className="col-md-4">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <label className="name-label employee-master-metric-label mb-0 flex-shrink-0">
+                                                        Challan
+                                                    </label>
+                                                    <div className="position-relative flex-grow-1">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Search challans..."
+                                                            value={searchTerm}
+                                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                                            className="form-control form-control-sm challan pe-5"
+                                                            style={{ borderRadius: "5px", }}
+                                                        />
+                                                        {/* <FiSearch
+                                                            className="position-absolute top-50 end-0 translate-middle-y text-muted me-2"
+                                                            size={16}
+                                                        /> */}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <button
-                                                onClick={handleSearch}
-                                                className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 ml-3"
-                                                style={{
-                                                    backgroundColor: "#495057",       // white background
-                                                    borderColor: "#ced4da",        // Bootstrap input border color
-                                                    color: "#fff",              // dark gray text
-                                                }}
-                                            >
-                                                {/* <FiSearch size={16} /> */}
-                                                 Search
-                                            </button>
+
+                                            {/* Vehicle search – col-5 */}
+                                            <div className="col-md-4    ">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <label className="name-label employee-master-metric-label mb-0 flex-shrink-0">
+                                                        Vehicle
+                                                    </label>
+                                                    <div className="flex-grow-1">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Search vehicles..."
+                                                            value={searchTerm}
+                                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                                            className="form-control form-control-sm challan"
+                                                            style={{ borderRadius: "5px", }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Search button – col-2 */}
+                                            <div className="col-md-2 d-flex">
+                                                <button
+                                                    onClick={handleSearch}
+                                                    className="btn btn-sm  d-flex align-items-center justify-content-center"
+                                                    style={{
+                                                        backgroundColor: "#495057",
+                                                        borderColor: "#ced4da",
+                                                        color: "#fff",
+                                                    }}
+                                                >
+                                                    Search
+                                                </button>
+                                            </div>
                                         </div>
-
-
                                     </div>
-                                    <div className="col-md-6 d-flex justify-content-end">
+
+
+
+
+                                    <div className="col-md-4 d-flex justify-content-end">
                                         {/* Export */}
                                         <button
                                             type="button"
@@ -2667,25 +2717,25 @@ const CreateChallan: React.FC = () => {
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
                                                                                 <label className="MAINTABLE_LABEL name-label">Product Name</label>
-                                                                                <Select 
-                                                                                   placeholder="Select Product"
-                                                                                   value={ challanData.ProductId1 ? 
-                                                                                    {
-                                                                                        value: challanData.ProductId1,
-                                                                                        label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
-                                                                                    } : null
-                                                                                   } 
-                                                                                   options={productName.map((pn) => ({
-                                                                                    value: pn.ProductID,
-                                                                                    label: pn.ProductName
-                                                                                   }))}
-                                                                                   onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                                     setChallanData((prev) => ({
-                                                                                        ...prev,
-                                                                                        district: Number(selectedOption?.value ?? 0),
-                                                                                     }))
-                                                                                   }
-                                                                                   styles={selectCompactStyles}
+                                                                                <Select
+                                                                                    placeholder="Select Product"
+                                                                                    value={challanData.ProductId1 ?
+                                                                                        {
+                                                                                            value: challanData.ProductId1,
+                                                                                            label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
+                                                                                        } : null
+                                                                                    }
+                                                                                    options={productName.map((pn) => ({
+                                                                                        value: pn.ProductID,
+                                                                                        label: pn.ProductName
+                                                                                    }))}
+                                                                                    onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                        setChallanData((prev) => ({
+                                                                                            ...prev,
+                                                                                            district: Number(selectedOption?.value ?? 0),
+                                                                                        }))
+                                                                                    }
+                                                                                    styles={selectCompactStyles}
                                                                                 />
                                                                             </div>
                                                                             {/* Rate */}
@@ -2750,6 +2800,9 @@ const CreateChallan: React.FC = () => {
                                                                 </div>
                                                             ))}
                                                         </div>
+
+
+                                                        
                                                         {/* Second-Row */}
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form ">
@@ -2814,20 +2867,20 @@ const CreateChallan: React.FC = () => {
                                                                         {/* Loading-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Loading Amount</label>
-                                                                            <Select 
+                                                                            <Select
                                                                                 placeholder="Select..."
                                                                                 value={challanData.LoadingAmt ?
                                                                                     {
                                                                                         value: challanData.LoadingAmt,
-                                                                                        label: loadingAmt.find((lm) => lm.LoadingchargeID === challanData.LoadingAmt) ?.Description || ''
+                                                                                        label: loadingAmt.find((lm) => lm.LoadingchargeID === challanData.LoadingAmt)?.Description || ''
                                                                                     } : null
-                                                                                } 
-                                                                                options={ loadingAmt.map((lm) => ({
+                                                                                }
+                                                                                options={loadingAmt.map((lm) => ({
                                                                                     value: lm.LoadingchargeID,
                                                                                     label: lm.Description
                                                                                 }))}
-                                                                                menuPlacement='top' 
-                                                                                onChange={(selectedOption) => 
+                                                                                menuPlacement='top'
+                                                                                onChange={(selectedOption) =>
                                                                                     setChallanData((prev) => ({
                                                                                         ...prev,
                                                                                         LoadingAmt: Number(selectedOption?.value ?? 0)
@@ -2858,11 +2911,11 @@ const CreateChallan: React.FC = () => {
                                                                                 placeholder="Select TPAmount"
                                                                                 id="SchemDes"
                                                                                 value={
-                                                                                    challanData.TPAmount ? 
-                                                                                    { 
-                                                                                        value: challanData.TPAmount,
-                                                                                        label: tpAmount.find((tp) => tp.TpAmountID === challanData.TPAmount)?.Description || ''
-                                                                                    } : null
+                                                                                    challanData.TPAmount ?
+                                                                                        {
+                                                                                            value: challanData.TPAmount,
+                                                                                            label: tpAmount.find((tp) => tp.TpAmountID === challanData.TPAmount)?.Description || ''
+                                                                                        } : null
                                                                                 }
                                                                                 menuPlacement="top"
                                                                                 options={tpAmount.map((tp) => ({
@@ -2931,7 +2984,7 @@ const CreateChallan: React.FC = () => {
 
             {/* ✅ Jo print karna hai – yaha rakho */}
             <div className="print-area">
-                <div ref={printRef}>
+                <div ref={slipRef}>
                     <ChallanSlip
                         challanNo={challanData.ChallanNo || "N/A"}
                         dateTime={
@@ -2946,6 +2999,13 @@ const CreateChallan: React.FC = () => {
                         amount={`${challanData.paytype || "Cash"} (${challanData.Amount || "0"
                             })`}
                     />
+                </div>
+            </div>
+
+
+            <div className="print-area">
+                <div ref={printRef}>
+                    <ChallanPrint />
                 </div>
             </div>
 
