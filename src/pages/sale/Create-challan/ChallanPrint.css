@@ -1,0 +1,200 @@
+/* Common table style */
+.challan-info-table_print {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+/* ========= OUTER CARD ========= */
+.challan-print-card {
+  padding: 2px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 870px;
+  margin: auto;
+}
+
+/* ========= MAIN CHALLAN BOX ========= */
+.challan-main {
+  width: 800px;
+  border: 1px solid #000;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #000;
+  background: #fff;
+}
+
+/* ========= HEADER ========= */
+.challan-header {
+  border-bottom: 1px solid #000;
+  padding: 4px 8px 2px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.challan-header-left {
+  width: 30%;
+}
+
+.challan-header-center {
+  width: 40%;
+  text-align: center;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 16px;
+}
+
+.challan-header-right {
+  width: 30%;
+  text-align: right;
+  font-weight: 600;
+}
+
+.challan-cash {
+  font-weight: 600;
+}
+
+.challan-date {
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* ========= INFO BLOCK ========= */
+.challan-info {
+  padding: 4px 8px 2px 8px;
+}
+
+.challan-info-label {
+  padding: 2px 4px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.challan-info-colon {
+  padding: 2px 4px;
+  width: 8px;
+}
+
+.challan-info-value {
+  padding: 2px 4px;
+}
+
+/* ========= PRODUCT TABLE ========= */
+.challan-product-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 1px solid #000;     /* top border */
+  border-bottom: 1px solid #000;
+}
+
+/* header top line */   
+.challan-product-table thead th {
+  border-top: 1px solid #000 !important;
+}
+
+/* cell borders (vertical) */
+.challan-product-table th,
+.challan-product-table td {
+  border-right: 1px solid #000;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* last column no right border */
+.challan-product-table th:last-child,
+.challan-product-table td:last-child {
+  border-right: none;
+}
+
+/* body cells height */
+.challan-product-table tbody td {
+  padding: 20px 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ========= LOWER PART ========= */
+.challan-lower {
+  display: flex;
+  padding: 4px 8px 2px 8px;
+  border-bottom: 1px solid #000;
+}
+
+/* left charges */
+.challan-charges {
+  flex: 1;
+  padding-right: 8px;
+  border-right: 1px solid #000;
+}
+
+.challan-charges-label {
+  padding: 3px 4px;
+}
+
+.challan-charges-value {
+  padding: 3px 4px;
+  text-align: right;
+}
+
+.challan-charges-value-total {
+  font-weight: 600;
+}
+
+/* right driver / weights */
+.challan-driver {
+  flex: 1;
+  padding-left: 8px;
+  font-size: 14px;
+}
+
+.challan-driver-label {
+  padding: 3px 4px;
+  white-space: nowrap;
+}
+
+.challan-driver-value {
+  padding: 3px 4px;
+}
+
+/* कुल राशि box */
+.challan-total-box {
+  border: 1px solid #000;
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.challan-total-box-label {
+  font-size: 11px;
+}
+
+.challan-total-box-amount {
+  font-weight: 600;
+}
+
+/* ========= FOOTER ========= */
+.challan-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* helpers */
+.text-center {
+  text-align: center;
+}
+
+/* ========= PRINT FIXES ========= */
+@media print {
+  .challan-product-table {
+    border-top: 1px solid #000 !important;
+  }
+
+  .challan-product-table thead th {
+    border-top: 1px solid #000 !important;
+  }
+}
