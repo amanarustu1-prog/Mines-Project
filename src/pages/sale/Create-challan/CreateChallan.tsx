@@ -1935,96 +1935,160 @@ const CreateChallan: React.FC = () => {
                 <div className="main-content-area ">
                     <div className="main-content-wrapper mt-5 ">
                         <div className="relative lg:mt-8 mb-3">
-                            <div className="py-3 employee-create-challan-card flex flex-wrap items-end gap-4 w-full" >
-                                {/* Filter-Date/Time */}
-                                <div className="flex items-center gap-2">
-                                    <label className=" name-label whitespace-nowrap employee-master-metric-label">From :</label>
-                                    <DatePicker selected={fromDate}
-                                        onChange={(date) => setFromDate(date)}
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                        placeholderText="From Date"
-                                        dateFormat="MM-dd-yyyy"
-                                    />
+                            <div className="container py-3 employee-create-challan-card">
+                                <div className="row align-items-center g-3">
 
-                                    <DatePicker selected={fromTime}
-                                        onChange={(date) => setFromTime(date)}
-                                        showTimeSelect
-                                        placeholderText='00:00'
-                                        showTimeSelectOnly
-                                        timeIntervals={15}
-                                        timeCaption="Time"
-                                        dateFormat="HH:mm"
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                    />
+                                    {/* ===== From / To Filter (col-4) ===== */}
+                                    <div className="col-md-6">
+                                        <div
+                                            className="d-flex align-items-center justify-content-start flex-nowrap"
+                                            style={{ gap: "16px", flexWrap: "nowrap" }}
+                                        >
+                                            {/* From group */}
+                                            <div className="d-flex align-items-center gap-2 flex-nowrap">
+                                                <label className="mb-0 fw-semibold name-label ">From </label>
+                                                <div className="d-flex gap-2 flex-nowrap">
+                                                    <DatePicker
+                                                        selected={fromDate}
+                                                        onChange={(date) => setFromDate(date)}
+                                                        className="form-control form-control-sm p-1 challan"
+                                                        dateFormat="MM/dd/yyyy"
+                                                        placeholderText="mm/dd/yyyy"
 
-                                    <label className=" name-label whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
-                                    <DatePicker selected={toDate}
-                                        onChange={(date) => setToDate(date)}
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                        placeholderText='To Date'
-                                        dateFormat="MM-dd-yyyy"
-                                    />
-                                    <DatePicker selected={toTime}
-                                        onChange={(date) => setToTime(date)}
-                                        showTimeSelect
-                                        placeholderText='00:00'
-                                        showTimeSelectOnly
-                                        timeIntervals={15}
-                                        timeCaption="Time"
-                                        dateFormat="HH:mm"
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                    />
-                                </div>
+                                                    />
+                                                    <DatePicker
+                                                        selected={fromTime}
+                                                        onChange={(date) => setFromTime(date)}
+                                                        showTimeSelect
+                                                        showTimeSelectOnly
+                                                        timeIntervals={15}
+                                                        timeCaption="Time"
+                                                        dateFormat="HH:mm"
+                                                        className="form-control form-control-sm p-1 challan"
+                                                        placeholderText="00:00"
+                                                        style={{ width: "50px", minWidth: "50px" }}
+                                                    />
+                                                </div>
+                                            </div>
 
-                                {/* Select-Party */}
-                                <div className="flex items-center gap-2 ml-6">
-                                    <label className=" name-label whitespace-nowrap employee-master-metric-label ">Party :</label>
-                                    <Select
-                                        className="w-full"
-                                        placeholder="Select Party"
-                                        value={challanData.Party ? {
-                                            value: challanData.Party,
-                                            label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
-                                        } : null}
-                                        options={partyType.map((d) => ({
-                                            value: d.PartyID,
-                                            label: d.Name
-                                        }))}
-                                        onChange={(selectedOption) => {
-                                            const value = selectedOption?.value ?? null;
-                                            const label = selectedOption?.label ?? null;
-                                            setSelectedParty(label);
-                                            setChallanData((prev) => ({
-                                                ...prev,
-                                                Party: value ?? 0,
-                                                Name: selectedOption?.label ?? ""
-                                            }))
-                                        }}
-                                        isClearable
-                                        isSearchable
-                                        styles={selectCompactStyles}
-                                    />
-                                </div>
-
-                                <div className="flex justify-between items-center w-full">
-                                    {/* Search */}
-                                    <div className="flex flex-row-reverse items-center gap-2" >
-                                        <button onClick={handleSearch} className="text-gray-600 border rounded p-1 hover:bg-gray-100 transition flex items-center gap-2">
-                                            <FiSearch size={16} /> Search
-                                        </button>
-                                        <div className="relative">
-                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none challan" autoFocus />
-                                            <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                                            {/* To group */}
+                                            <div className="d-flex align-items-center gap-2 flex-nowrap">
+                                                <label className="mb-0 fw-semibold name-label">To </label>
+                                                <div className="d-flex gap-2 flex-nowrap">
+                                                    <DatePicker
+                                                        selected={toDate}
+                                                        onChange={(date) => setToDate(date)}
+                                                        className="form-control form-control-sm p-1 challan"
+                                                        dateFormat="MM/dd/yyyy"
+                                                        placeholderText="mm/dd/yyyy"
+                                                    />
+                                                    <DatePicker
+                                                        selected={toTime}
+                                                        onChange={(date) => setToTime(date)}
+                                                        showTimeSelect
+                                                        showTimeSelectOnly
+                                                        timeIntervals={15}
+                                                        timeCaption="Time"
+                                                        dateFormat="HH:mm"
+                                                        className="form-control form-control-sm p-1 challan"
+                                                        placeholderText="00:00"
+                                                        style={{ width: "80px", minWidth: "80px" }}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    {/* Export-Button */}
-                                    <div className="flex">
-                                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
-                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel
+
+
+
+                                    {/* ===== Party Selector (col-5) ===== */}
+                                    <div className="col-md-4 d-flex align-items-center gap-2">
+                                        <label className="name-label employee-master-metric-label mb-0 name-label">Party:</label>
+                                        <div className="flex-grow-1">
+                                            <Select
+                                                placeholder="Select Party"
+                                                value={
+                                                    challanData.Party
+                                                        ? {
+                                                            value: challanData.Party,
+                                                            label:
+                                                                partyType.find((d) => d.PartyID === challanData.Party)
+                                                                    ?.Name || "",
+                                                        }
+                                                        : null
+                                                }
+                                                options={partyType.map((d) => ({
+                                                    value: d.PartyID,
+                                                    label: d.Name,
+                                                }))}
+                                                onChange={(selectedOption) => {
+                                                    const value = selectedOption?.value ?? null;
+                                                    const label = selectedOption?.label ?? null;
+                                                    setSelectedParty(label);
+                                                    setChallanData((prev) => ({
+                                                        ...prev,
+                                                        Party: value ?? 0,
+                                                        Name: label ?? "",
+                                                    }));
+                                                }}
+                                                isClearable
+                                                isSearchable
+                                                styles={selectCompactStyles}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* ===== Search + Export (col-3) ===== */}
+                                    <div className="col-md-6 d-flex  align-items-center">
+                                        {/* Search */}
+                                        <div className="d-flex align-items-center gap-4 flex-grow-1 ml-5 pl-4">
+                                            <div className="position-relative">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search challans..."
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                    className="form-control form-control-sm challan pe-5 "
+                                                    style={{ borderRadius: "5px", width:"268px" }}
+                                                />
+                                                <FiSearch
+                                                    className="position-absolute top-50 end-0 translate-middle-y text-muted me-2"
+                                                    size={16}
+                                                />
+                                            </div>
+                                            <button
+                                                onClick={handleSearch}
+                                                className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 ml-3"
+                                                style={{
+                                                    backgroundColor: "#495057",       // white background
+                                                    borderColor: "#ced4da",        // Bootstrap input border color
+                                                    color: "#fff",              // dark gray text
+                                                }}
+                                            >
+                                                {/* <FiSearch size={16} /> */}
+                                                 Search
+                                            </button>
+                                        </div>
+
+
+                                    </div>
+                                    <div className="col-md-6 d-flex justify-content-end">
+                                        {/* Export */}
+                                        <button
+                                            type="button"
+                                            onClick={exportToExcel}
+                                            className="btn btn-sm btn-primary d-flex align-items-center gap-2 ms-2"
+                                        >
+                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export
                                         </button>
+
                                     </div>
                                 </div>
+
                             </div>
+
+
+
                         </div>
 
                         <div className="employee-master-space-y-2">
