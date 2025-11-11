@@ -8,6 +8,7 @@ import { FiX } from "react-icons/fi";
 import { FaEdit } from 'react-icons/fa';
 import DataTable from 'react-data-table-component';
 import Select, { SingleValue } from 'react-select';
+import CreatableSelect from "react-select/creatable";
 
 // React DatePicker
 import DatePicker from 'react-datepicker';
@@ -187,9 +188,11 @@ interface ChallanFormData {
     State: string;
     StateID: number;
     DistrictID: number;
-    PinID: string;
+    PinID: number;
     OwnerMobile: string;
     Email: string;
+    PartyName: string;
+    PartyGstName: string;
 
     // Vehicle details
     AdvAmt: number;
@@ -200,6 +203,7 @@ interface ChallanFormData {
     VehicleRemarks: string;
     DriverName: string;
     DriverMobileNo: number;
+    VehicleNoID: number;
 
     // GST details
     gstBill: boolean;
@@ -379,8 +383,8 @@ interface State {
 }
 
 interface District {
-    ID: number;
-    Discription: string;
+    DistrictID: number;
+    DistrictName: string;
 }
 
 interface Vehicle {
@@ -392,6 +396,31 @@ interface Vehicle {
 interface Party {
     PartyID: number,
     Name: string
+}
+
+interface ProductName {
+    ProductID: number,
+    ProductName: string
+}
+
+interface LoadingAmt {
+    LoadingchargeID: number,
+    Description: string
+}
+
+interface TPAmount {
+    TpAmountID: number,
+    Description: string
+}
+
+interface ZIPCode {
+    ZipCodeID: number,
+    ZipCodeName: string
+}
+
+interface VehicleNou {
+    VehicleNumberID: number,
+    Description: string
 }
 
 const CreateChallan: React.FC = () => {
@@ -425,6 +454,10 @@ const CreateChallan: React.FC = () => {
     const [productName, setProductName] = useState<ProductName[]>([]);
     const [loadingAmt, setLoadingAmt] = useState<LoadingAmt[]>([]);
     const [tpAmount, setTPAmount] = useState<TPAmount[]>([]);
+    const [zipCode, setZipCode] = useState<ZIPCode[]>([]);
+    const [gstZipCode, setGSTZipCode] = useState<ZIPCode[]>([]);
+    const [vehicleNo, setVehicleNo] = useState<VehicleNou[]>([]);
+
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
     const [dropdown, setDropdown] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -443,17 +476,20 @@ const CreateChallan: React.FC = () => {
         State: '',
         StateID: 0,
         DistrictID: 0,
-        PinID: '',
+        PinID: 0,
         OwnerMobile: '',
         Email: '',
+        PartyName: '',
+        PartyGstName: '',
 
         AdvAmt: 0,
         vehicleType: '',
         vehicleTypeid: 0,
-        VehicleNo: '',
+        VehicleNo: '', //In this-Put
         VehicleRemarks: '',
         DriverName: '',
         DriverMobileNo: 0,
+        VehicleNoID: 0,
 
         gstBill: false,
         GstNo: '',
@@ -536,14 +572,12 @@ const CreateChallan: React.FC = () => {
 
     const printRef = useRef<HTMLDivElement>(null);
 
-    // 🔹 Setup print handler
+    //Setup print handler
     const handlePrint = useReactToPrint({
         contentRef: printRef,
         documentTitle: `Challan_${challanData.ChallanNo || "Slip"}`,
         preserveAfterPrint: false,
     });
-
-
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -1370,13 +1404,15 @@ const CreateChallan: React.FC = () => {
     };
 
     useEffect(() => {
-        if (editItemId && dropdownOptions.length > 0) {
+        // alert("Hello");
+        if (editItemId) {
             getSingleChallan();
         }
     }, [editItemId, dropdownOptions]);
 
     // Get Single Material 
     const getSingleChallan = async () => {
+        alert("Hello");
         try {
             const response = await fetchPostData('Challan/GetSingleData_Challan', { ChallanID: editItemId, });
             if (!response || response.length === 0) return;
@@ -1608,7 +1644,7 @@ const CreateChallan: React.FC = () => {
             const response = await fetchPostData('State/GetDataDropDown_State', {
                 CompanyId: Number(localStorage.getItem('companyID')),
             });
-            // console.log(State[0]);
+            console.log(response);
 
             if (response && Array.isArray(response)) {
                 setState(response);
@@ -1625,7 +1661,7 @@ const CreateChallan: React.FC = () => {
                 StateId: stateID,
                 CompanyId: Number(localStorage.getItem('companyID')),
             })
-            // console.log(response);
+            console.log(response);
             if (response && Array.isArray(response)) {
                 setDistrict(response);
                 setGSTDistrict(response);
@@ -1650,6 +1686,20 @@ const CreateChallan: React.FC = () => {
             }
         } catch {
             toastifyError('Error fetching Vehicle Type.');
+        }
+    }
+
+    const fetchVehicleNo = async (vehicleNo: number | string) => {
+        const response = await fetchPostData('VehicleNumber/GetDataDropDown_VehicleNumber', {
+            CompanyId: Number(localStorage.getItem('companyID')),
+            VehicleTypeID: vehicleNo
+        })
+        // console.log(response);
+        if (response && Array.isArray(response)) {
+            setVehicleNo(response);
+        }
+        else {
+            setVehicleNo([]);
         }
     }
 
@@ -1712,7 +1762,25 @@ const CreateChallan: React.FC = () => {
             if (response && Array.isArray(response)) {
                 setTPAmount(response);
             }
+            else {
+                setTPAmount([]);
+            }
         } catch {
+            setTPAmount([]);
+        }
+    }
+
+    const fetchZipCode = async (id: number | string) => {
+        const response = await fetchPostData('ZipCode/GetDataDropDown_ZipCode', {
+            CompanyId: Number(localStorage.getItem('companyID')),
+            DistrictId: id
+        })
+        // console.log(response);
+        if (response && Array.isArray(response)) {
+            setZipCode(response);
+            setGSTZipCode(response);
+        }
+        else {
             setTPAmount([]);
         }
     }
@@ -2231,26 +2299,60 @@ const CreateChallan: React.FC = () => {
                                                                         <label className="name-label" htmlFor="SchemeCode">Party</label>
                                                                     </div>
                                                                     <div className="col-xl-10">
-                                                                        <Select className="w-full"
-                                                                            placeholder="Select Party"
-                                                                            value={challanData.PartyID ? {
-                                                                                value: challanData.PartyID,
-                                                                                label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
-                                                                            } : null}
+                                                                        <CreatableSelect
+                                                                            className="w-full"
+                                                                            placeholder="Select or Add Party"
+                                                                            value={
+                                                                                challanData.PartyID
+                                                                                    ? {
+                                                                                        value: challanData.PartyID,
+                                                                                        label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
+                                                                                    }
+                                                                                    : challanData.PartyName
+                                                                                        ? { value: challanData.PartyName, label: challanData.PartyName }
+                                                                                        : null
+                                                                            }
                                                                             options={partyType.map((d) => ({
                                                                                 value: d.PartyID,
                                                                                 label: d.Name
                                                                             }))}
-                                                                            onChange={(selectedOption) =>
-                                                                                setChallanData((prev) => ({
+                                                                            onChange={(selectedOption) => {
+                                                                                if (selectedOption) {
+                                                                                    const selectedParty = partyType.find(p => p.PartyID === selectedOption.value);
+
+                                                                                    if (selectedParty) {
+                                                                                        setChallanData(prev => ({
+                                                                                            ...prev,
+                                                                                            PartyID: selectedParty.PartyID,
+                                                                                            PartyName: selectedParty.Name,
+                                                                                        }));
+                                                                                    } else {
+                                                                                        setChallanData(prev => ({
+                                                                                            ...prev,
+                                                                                            PartyID: 0,
+                                                                                            PartyName: selectedOption.label,
+                                                                                        }));
+                                                                                    }
+                                                                                } else {
+                                                                                    setChallanData(prev => ({
+                                                                                        ...prev,
+                                                                                        PartyID: 0,
+                                                                                        PartyName: "",
+                                                                                    }));
+                                                                                }
+                                                                            }}
+                                                                            onCreateOption={(inputValue: number | string) => {
+                                                                                setChallanData(prev => ({
                                                                                     ...prev,
-                                                                                    PartyID: Number(selectedOption?.value ?? 0),
-                                                                                }))
-                                                                            }
+                                                                                    PartyID: 0,
+                                                                                    PartyName: inputValue,
+                                                                                }));
+                                                                            }}
                                                                             isClearable
                                                                             isSearchable
                                                                             styles={selectCompactStyles}
                                                                         />
+
                                                                     </div>
                                                                     {/* Address */}
                                                                     <div className="single-info-block col-xl-2">
@@ -2269,7 +2371,6 @@ const CreateChallan: React.FC = () => {
                                                                             onChange={(e) => setChallanData({ ...challanData, address: e.target.value })}
                                                                         />
                                                                     </div>
-
                                                                     {/* State */}
                                                                     <div className="single-info-block col-xl-2">
                                                                         <label className="name-label" htmlFor="ritcNo">State<span className="text-danger">*</span></label>
@@ -2312,22 +2413,24 @@ const CreateChallan: React.FC = () => {
                                                                         <Select
                                                                             className="w-full"
                                                                             placeholder="Select District"
-                                                                            value={challanData.district
+                                                                            value={challanData.DistrictID
                                                                                 ? {
-                                                                                    value: challanData.district,
-                                                                                    label: district.find((d) => d.ID === challanData.district)?.Description || '',
+                                                                                    value: challanData.DistrictID,
+                                                                                    label: district.find((d) => d.DistrictID === challanData.DistrictID)?.DistrictName || '',
                                                                                 } : null
                                                                             }
                                                                             options={district.map((d) => ({
-                                                                                value: d.ID,
-                                                                                label: d.Description,
+                                                                                value: d.DistrictID,
+                                                                                label: d.DistrictName,
                                                                             }))}
-                                                                            onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                            onChange={(selectedOption) => {
+                                                                                const DistrictID = selectedOption?.value;
                                                                                 setChallanData((prev) => ({
                                                                                     ...prev,
-                                                                                    district: Number(selectedOption?.value ?? 0),
+                                                                                    DistrictID: Number(selectedOption?.value ?? 0),
                                                                                 }))
-                                                                            }
+                                                                                if (DistrictID) fetchZipCode(DistrictID);
+                                                                            }}
                                                                             isClearable
                                                                             isSearchable
                                                                             styles={selectCompactStyles}
@@ -2340,12 +2443,23 @@ const CreateChallan: React.FC = () => {
                                                                         </label>
                                                                     </div>
                                                                     <div className="col-xl-10 col-12">
-                                                                        <Select id="prAmountUSD" placeholder="Enter PIN" value={challanData.PinID} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                            setChallanData((prev) => ({
-                                                                                ...prev,
-                                                                                district: Number(selectedOption?.value ?? 0),
-                                                                            }))
-                                                                        }
+                                                                        <Select id="prAmountUSD"
+                                                                            placeholder="Enter PIN"
+                                                                            value={challanData.PinID ? {
+                                                                                value: challanData.PinID,
+                                                                                label: zipCode.find((z) => z.ZipCodeID === challanData.PinID)?.ZipCodeName || '',
+                                                                            } : null
+                                                                            }
+                                                                            options={zipCode.map((z) => ({
+                                                                                value: z.ZipCodeID,
+                                                                                label: z.ZipCodeName
+                                                                            }))}
+                                                                            onChange={(selectedOption) => {
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    PinID: Number(selectedOption?.value ?? 0),
+                                                                                }));
+                                                                            }}
                                                                             styles={selectCompactStyles}
                                                                         />
                                                                     </div>
@@ -2397,13 +2511,15 @@ const CreateChallan: React.FC = () => {
                                                                                 value: d.VehicleTypeID,
                                                                                 label: d.Description
                                                                             }))}
-                                                                            onChange={(selectedOptions: SingleValue<{ value: number, label: string }>) =>
+                                                                            onChange={(selectedOptions) => {
+                                                                                const vehicleNo = selectedOptions?.value;
                                                                                 setChallanData((prev) => ({
                                                                                     ...prev,
                                                                                     vehicleTypeid: Number(selectedOptions?.value ?? 0),
                                                                                     // vehicleTypeid: Number(selectedOptions?.value ?? 0)
                                                                                 }))
-                                                                            }
+                                                                                if (vehicleNo) fetchVehicleNo(vehicleNo);
+                                                                            }}
                                                                             isClearable
                                                                             isSearchable
                                                                             styles={selectCompactStyles}
@@ -2414,25 +2530,65 @@ const CreateChallan: React.FC = () => {
                                                                         <label className="name-label" htmlFor="prCET">Vehicle No.</label>
                                                                     </div>
                                                                     <div className="col-xl-9 col-12">
-                                                                        <Select
-                                                                            placeholder="Vehicle No"
+                                                                        <CreatableSelect
+                                                                            placeholder="Select or Add Vehicle No"
                                                                             value={
-                                                                                challanData.VehicleNo
-                                                                                    ? { value: challanData.VehicleNo, label: challanData.VehicleNo }
-                                                                                    : null
+                                                                                challanData.VehicleNoID
+                                                                                    ? {
+                                                                                        value: challanData.VehicleNoID,
+                                                                                        label:
+                                                                                            vehicleNo.find((v) => v.VehicleNumberID === challanData.VehicleNoID)
+                                                                                                ?.Description || "",
+                                                                                    }
+                                                                                    : challanData.VehicleNo
+                                                                                        ? { value: challanData.VehicleNo, label: challanData.VehicleNo }
+                                                                                        : null
                                                                             }
-                                                                            onChange={(selectedOption) =>
-                                                                                setChallanData({
-                                                                                    ...challanData,
-                                                                                    VehicleNo: selectedOption?.value || "",
-                                                                                })
-                                                                            }
-                                                                            options={[]}
+                                                                            options={vehicleNo.map((v) => ({
+                                                                                value: v.VehicleNumberID,
+                                                                                label: v.Description,
+                                                                            }))}
+                                                                            onChange={(selectedOption) => {
+                                                                                if (selectedOption) {
+                                                                                    const existingVehicle = vehicleNo.find(
+                                                                                        (v) => v.VehicleNumberID === selectedOption.value
+                                                                                    );
+
+                                                                                    if (existingVehicle) {
+                                                                                        setChallanData((prev) => ({
+                                                                                            ...prev,
+                                                                                            VehicleNoID: existingVehicle.VehicleNumberID,
+                                                                                            VehicleNo: existingVehicle.Description,
+                                                                                        }));
+                                                                                    } else {
+                                                                                        setChallanData((prev) => ({
+                                                                                            ...prev,
+                                                                                            VehicleNoID: 0,
+                                                                                            VehicleNo: selectedOption.label,
+                                                                                        }));
+                                                                                    }
+                                                                                } else {
+                                                                                    // Cleared
+                                                                                    setChallanData((prev) => ({
+                                                                                        ...prev,
+                                                                                        VehicleNoID: 0,
+                                                                                        VehicleNo: "",
+                                                                                    }));
+                                                                                }
+                                                                            }}
+                                                                            onCreateOption={(inputValue) => {
+                                                                                setChallanData((prev) => ({
+                                                                                    ...prev,
+                                                                                    VehicleNoID: 0,
+                                                                                    VehicleNo: inputValue,
+                                                                                }));
+                                                                            }}
                                                                             isClearable
                                                                             isSearchable
                                                                             styles={selectCompactStyles}
                                                                         />
                                                                     </div>
+
                                                                     {/* Driver-Name */}
                                                                     <div className="single-info-block col-xl-3">
                                                                         <label className="name-label" htmlFor="prCode">Driver Name</label>
@@ -2487,22 +2643,58 @@ const CreateChallan: React.FC = () => {
                                                                         <label className="name-label" htmlFor="SchemeCode">Party</label>
                                                                     </div>
                                                                     <div className="col-xl-10">
-                                                                        <Select className="w-full "
-                                                                            placeholder="Select Party"
-                                                                            value={challanData.Name ? {
-                                                                                value: challanData.Name,
-                                                                                label: gstPartyType.find((d) => d.Name === challanData.Name)?.Name || '',
-                                                                            } : null}
+                                                                        <CreatableSelect
+                                                                            className="w-full"
+                                                                            placeholder="Select or Add GST Party"
+                                                                            value={
+                                                                                challanData.Name
+                                                                                    ? {
+                                                                                        value: challanData.Name,
+                                                                                        label:
+                                                                                            gstPartyType.find((d) => d.Name === challanData.Name)?.Name ||
+                                                                                            challanData.Name,
+                                                                                    }
+                                                                                    : challanData.PartyGstName
+                                                                                        ? { value: challanData.PartyGstName, label: challanData.PartyGstName }
+                                                                                        : null
+                                                                            }
                                                                             options={gstPartyType.map((d) => ({
                                                                                 value: d.Name,
-                                                                                label: d.Name
+                                                                                label: d.Name,
                                                                             }))}
-                                                                            onChange={(selectedOption) =>
+                                                                            onChange={(selectedOption) => {
+                                                                                if (selectedOption) {
+                                                                                    const selectedParty = gstPartyType.find(
+                                                                                        (p) => p.Name === selectedOption.value
+                                                                                    );
+                                                                                    if (selectedParty) {
+                                                                                        setChallanData((prev) => ({
+                                                                                            ...prev,
+                                                                                            Name: selectedParty.Name,
+                                                                                            PartyGstName: selectedParty.Name,
+                                                                                        }));
+                                                                                    } else {
+                                                                                        setChallanData((prev) => ({
+                                                                                            ...prev,
+                                                                                            Name: selectedOption.label,
+                                                                                            PartyGstName: selectedOption.label,
+                                                                                        }));
+                                                                                    }
+                                                                                } else {
+                                                                                    setChallanData((prev) => ({
+                                                                                        ...prev,
+                                                                                        Name: "",
+                                                                                        PartyGstName: "",
+                                                                                    }));
+                                                                                }
+                                                                            }}
+                                                                            onCreateOption={(inputValue) => {
                                                                                 setChallanData((prev) => ({
                                                                                     ...prev,
-                                                                                    Name: selectedOption?.label ?? '',
-                                                                                }))
-                                                                            }
+                                                                                    Name: inputValue,
+                                                                                    PartyGstName: inputValue,
+                                                                                }));
+                                                                            }}
                                                                             isClearable
                                                                             isSearchable
                                                                             styles={selectCompactStyles}
@@ -2592,7 +2784,7 @@ const CreateChallan: React.FC = () => {
                                                         </div>
                                                     </div>
 
-                                                    {/* Second-Second */}
+                                                    {/* Second-Section */}
                                                     <div className="col-12 mt-2">
                                                         {/* First-Row */}
                                                         <div className="product-details-table mb-2">
@@ -2603,25 +2795,25 @@ const CreateChallan: React.FC = () => {
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
                                                                                 <label className="MAINTABLE_LABEL name-label">Product Name</label>
-                                                                                <Select 
-                                                                                   placeholder="Select Product"
-                                                                                   value={ challanData.ProductId1 ? 
-                                                                                    {
-                                                                                        value: challanData.ProductId1,
-                                                                                        label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
-                                                                                    } : null
-                                                                                   } 
-                                                                                   options={productName.map((pn) => ({
-                                                                                    value: pn.ProductID,
-                                                                                    label: pn.ProductName
-                                                                                   }))}
-                                                                                   onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                                     setChallanData((prev) => ({
-                                                                                        ...prev,
-                                                                                        district: Number(selectedOption?.value ?? 0),
-                                                                                     }))
-                                                                                   }
-                                                                                   styles={selectCompactStyles}
+                                                                                <Select
+                                                                                    placeholder="Select Product"
+                                                                                    value={challanData.ProductId1 ?
+                                                                                        {
+                                                                                            value: challanData.ProductId1,
+                                                                                            label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
+                                                                                        } : null
+                                                                                    }
+                                                                                    options={productName.map((pn) => ({
+                                                                                        value: pn.ProductID,
+                                                                                        label: pn.ProductName
+                                                                                    }))}
+                                                                                    onChange={(selectedOption) =>
+                                                                                        setChallanData((prev) => ({
+                                                                                            ...prev,
+                                                                                            ProductId1: Number(selectedOption?.value ?? 0),
+                                                                                        }))
+                                                                                    }
+                                                                                    styles={selectCompactStyles}
                                                                                 />
                                                                             </div>
                                                                             {/* Rate */}
@@ -2709,22 +2901,22 @@ const CreateChallan: React.FC = () => {
                                                                             />
                                                                         </div>
                                                                         {/* Net-Weight */}
-                                                                        <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <div className="col-2 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Net Weight</label>
                                                                             <input className="challan" type="number" id="SchemDes" value={challanData.Netweight} onChange={(e) => setChallanData({ ...challanData, Netweight: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Less-Weight */}
-                                                                        <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <div className="col-2 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Less Weight</label>
                                                                             <input className="challan" type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* GT-Weight */}
-                                                                        <div className="col-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <div className="col-2 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Total GT Weight</label>
                                                                             <input className="challan" type="number" id="SchemDes" value={challanData.GTWeight} onChange={(e) => setChallanData({ ...challanData, GTWeight: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Vehicle-Commision */}
-                                                                        <div className="col-1 mt-0" style={{ minWidth: 150 }}>
+                                                                        <div className="col-2 mt-0" style={{ minWidth: 150 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Vehicle Commision</label>
                                                                             <input className="challan" type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
                                                                         </div>
@@ -2743,27 +2935,27 @@ const CreateChallan: React.FC = () => {
                                                                 <div className="product-form-container ">
                                                                     <div className="row g-3 ">
                                                                         {/* Amount */}
-                                                                        <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
+                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Amount</label>
                                                                             <input className="challan" type="number" id="SchemDes" value={challanData.Amount} onChange={(e) => setChallanData({ ...challanData, Amount: Number(e.target.value) })} />
                                                                         </div>
                                                                         {/* Loading-Amount */}
-                                                                        <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
+                                                                        <div className="col-md-2 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Loading Amount</label>
-                                                                            <Select 
-                                                                                placeholder="Select..."
+                                                                            <Select
+                                                                                placeholder="Select Amount"
                                                                                 value={challanData.LoadingAmt ?
                                                                                     {
                                                                                         value: challanData.LoadingAmt,
-                                                                                        label: loadingAmt.find((lm) => lm.LoadingchargeID === challanData.LoadingAmt) ?.Description || ''
+                                                                                        label: loadingAmt.find((lm) => lm.LoadingchargeID === challanData.LoadingAmt)?.Description || ''
                                                                                     } : null
-                                                                                } 
-                                                                                options={ loadingAmt.map((lm) => ({
+                                                                                }
+                                                                                options={loadingAmt.map((lm) => ({
                                                                                     value: lm.LoadingchargeID,
                                                                                     label: lm.Description
                                                                                 }))}
-                                                                                menuPlacement='top' 
-                                                                                onChange={(selectedOption) => 
+                                                                                menuPlacement='top'
+                                                                                onChange={(selectedOption) =>
                                                                                     setChallanData((prev) => ({
                                                                                         ...prev,
                                                                                         LoadingAmt: Number(selectedOption?.value ?? 0)
@@ -2794,11 +2986,11 @@ const CreateChallan: React.FC = () => {
                                                                                 placeholder="Select TPAmount"
                                                                                 id="SchemDes"
                                                                                 value={
-                                                                                    challanData.TPAmount ? 
-                                                                                    { 
-                                                                                        value: challanData.TPAmount,
-                                                                                        label: tpAmount.find((tp) => tp.TpAmountID === challanData.TPAmount)?.Description || ''
-                                                                                    } : null
+                                                                                    challanData.TPAmount ?
+                                                                                        {
+                                                                                            value: challanData.TPAmount,
+                                                                                            label: tpAmount.find((tp) => tp.TpAmountID === challanData.TPAmount)?.Description || ''
+                                                                                        } : null
                                                                                 }
                                                                                 menuPlacement="top"
                                                                                 options={tpAmount.map((tp) => ({
@@ -2865,7 +3057,6 @@ const CreateChallan: React.FC = () => {
                 </div>
             </main>
 
-            {/* ✅ Jo print karna hai – yaha rakho */}
             <div className="print-area">
                 <div ref={printRef}>
                     <ChallanSlip
@@ -2884,7 +3075,6 @@ const CreateChallan: React.FC = () => {
                     />
                 </div>
             </div>
-
 
             <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
