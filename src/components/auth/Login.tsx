@@ -70,8 +70,7 @@ const Login = () => {
     e.preventDefault();
   }
 
-  const [companies, setCompanies] = useState<
-    { CompanyID: number; CompanyName: string }[]>([]);
+  const[companies, setCompanies] = useState<{ CompanyID: number; CompanyName: string }[]>([]);
 
   const verify_User = async (e: any) => {
     e.preventDefault();
@@ -226,12 +225,8 @@ const Login = () => {
               </div>
 
               {/* Submit button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 rounded-md bg-indigo-600 py-2 text-white font-medium hover:bg-indigo-700 shadow disabled:opacity-50"
-              >
-                {loading ? "Signing in..." : "Sign in"}
+              <button type="submit" disabled={loading} className="w-full flex items-center justify-center gap-2 rounded-md bg-indigo-600 py-2 text-white font-medium hover:bg-indigo-700 shadow disabled:opacity-50">
+                {loading ? "Logging in..." : "Log in"}
               </button>
             </form>
           </div>

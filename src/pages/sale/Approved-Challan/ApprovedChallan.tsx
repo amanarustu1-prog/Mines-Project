@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
-// import ChallanSlip from "./ChallanSlip";
-import './CreateChallan.css';
+import React, { useEffect, useState } from 'react';
+import '../Pending-Challan/PendingChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
 import { FiX } from "react-icons/fi";
@@ -21,7 +19,6 @@ import * as XLSX from 'xlsx';
 import moment from 'moment';
 import { previousDay } from 'date-fns';
 import ConfirmModal from '@/common/ConfirmModal';
-import ChallanSlip from './ChallanSlip';
 
 // Icon components
 
@@ -394,7 +391,12 @@ interface Party {
     Name: string
 }
 
-const CreateChallan: React.FC = () => {
+interface ProductName {
+    ProductID: number,
+    ProductName: string
+}
+
+export default function ApprovedChallan() {
     const [activeTab, setActiveTab] = useState('challanOverview');
     const [showInput, setShowInput] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -423,8 +425,6 @@ const CreateChallan: React.FC = () => {
     const [gstState, setGSTState] = useState<State[]>([]);
     const [gstDistrict, setGSTDistrict] = useState<District[]>([]);
     const [productName, setProductName] = useState<ProductName[]>([]);
-    const [loadingAmt, setLoadingAmt] = useState<LoadingAmt[]>([]);
-    const [tpAmount, setTPAmount] = useState<TPAmount[]>([]);
     const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
     const [dropdown, setDropdown] = useState<any[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -529,22 +529,11 @@ const CreateChallan: React.FC = () => {
         GTotal: 0,
 
         //Added-Fields
-        IsCompleted: "",
-        IsForApproval: 1
+        IsCompleted: "1",
+        IsForApproval: ""
     });
+
     const [challanItems, setChallanItems] = useState<ChallanItem[]>([]);
-
-    const printRef = useRef<HTMLDivElement>(null);
-
-    // 🔹 Setup print handler
-    const handlePrint = useReactToPrint({
-        contentRef: printRef,
-        documentTitle: `Challan_${challanData.ChallanNo || "Slip"}`,
-        preserveAfterPrint: false,
-    });
-
-
-
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -1118,7 +1107,7 @@ const CreateChallan: React.FC = () => {
                 IsForApproval: '',
                 CreatedDatefrom: '',
                 CreatedDateTo: '',
-                IsReject: ''
+                ISCompleted: '1'
             }
             const response = await fetchPostData('Challan/GetData_Challan', payload);
             // console.log(response);
@@ -1219,7 +1208,7 @@ const CreateChallan: React.FC = () => {
             }
 
             if (response) {
-                toastifySuccess('Challan updated successfully');
+                toastifySuccess('Challan Approved successfully');
                 setEditItemId(null);
                 setDropdown([]);
                 await getChallanItem();
@@ -1595,7 +1584,7 @@ const CreateChallan: React.FC = () => {
             total: 0,
             gstAmount: 0,
             royalty: 0,
-            TPAmount: 0,
+            tpAmount: 0,
             freightAmt: 0,
             extraAmt: 0,
             grandTotal: 0,
@@ -1672,48 +1661,18 @@ const CreateChallan: React.FC = () => {
     }
 
     const fetchProductName = async () => {
-        try {
+        try{
             const response = await fetchPostData('Product/GetDataDropDown_Product', {
                 CompanyId: Number(localStorage.getItem('companyID'))
             })
             // console.log(response);
-            if (response && Array.isArray(response)) {
+            if(response && Array.isArray(response)){
                 setProductName(response);
-            } else {
+            }else{
                 setProductName([]);
             }
-        } catch {
+        }catch{
             toastifyError('Error fetching Product Name');
-        }
-    }
-
-    const fetchLoading = async () => {
-        try {
-            const response = await fetchPostData('Loadingcharge/GetDataDropDown_Loadingcharge', {
-                CompanyId: Number(localStorage.getItem('companyID'))
-            });
-            // console.log(response);
-            if (response && Array.isArray(response)) {
-                setLoadingAmt(response);
-            } else {
-                setLoadingAmt([]);
-            }
-        } catch {
-            toastifyError("Error fetching the ")
-        }
-    }
-
-    const fetchTPAmount = async () => {
-        try {
-            const response = await fetchPostData('TpAmount/GetDataDropDown_TpAmount', {
-                CompanyId: Number(localStorage.getItem('companyID'))
-            });
-            // console.log(response);
-            if (response && Array.isArray(response)) {
-                setTPAmount(response);
-            }
-        } catch {
-            setTPAmount([]);
         }
     }
 
@@ -1723,8 +1682,6 @@ const CreateChallan: React.FC = () => {
         fetchVehicleType();
         fetchParty();
         fetchProductName();
-        fetchLoading();
-        fetchTPAmount();
     }, []);
 
     // useEffect(() => {
@@ -1991,166 +1948,102 @@ const CreateChallan: React.FC = () => {
                 <div className="main-content-area ">
                     <div className="main-content-wrapper mt-5 ">
                         <div className="relative lg:mt-8 mb-3">
-                            <div className="container py-3 employee-create-challan-card">
-                                <div className="row align-items-center g-3">
+                            <div className="py-3 employee-create-challan-card flex flex-wrap items-end gap-4 w-full" >
+                                {/* Filter-Date/Time */}
+                                <div className="flex items-center gap-2">
+                                    <label className=" name-label whitespace-nowrap employee-master-metric-label">From :</label>
+                                    <DatePicker selected={fromDate}
+                                        onChange={(date) => setFromDate(date)}
+                                        className="border rounded px-2 py-1 w-[60px] challan"
+                                        placeholderText="From Date"
+                                        dateFormat="MM-dd-yyyy"
+                                    />
 
-                                    {/* ===== From / To Filter (col-4) ===== */}
-                                    <div className="col-md-6">
-                                        <div
-                                            className="d-flex align-items-center justify-content-start flex-nowrap"
-                                            style={{ gap: "16px", flexWrap: "nowrap" }}
-                                        >
-                                            {/* From group */}
-                                            <div className="d-flex align-items-center gap-2 flex-nowrap">
-                                                <label className="mb-0 fw-semibold name-label ">From </label>
-                                                <div className="d-flex gap-2 flex-nowrap">
-                                                    <DatePicker
-                                                        selected={fromDate}
-                                                        onChange={(date) => setFromDate(date)}
-                                                        className="form-control form-control-sm p-1 challan"
-                                                        dateFormat="MM/dd/yyyy"
-                                                        placeholderText="mm/dd/yyyy"
+                                    <DatePicker selected={fromTime}
+                                        onChange={(date) => setFromTime(date)}
+                                        showTimeSelect
+                                        placeholderText='00:00'
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="HH:mm"
+                                        className="border rounded px-2 py-1 w-[60px] challan"
+                                    />
 
-                                                    />
-                                                    <DatePicker
-                                                        selected={fromTime}
-                                                        onChange={(date) => setFromTime(date)}
-                                                        showTimeSelect
-                                                        showTimeSelectOnly
-                                                        timeIntervals={15}
-                                                        timeCaption="Time"
-                                                        dateFormat="HH:mm"
-                                                        className="form-control form-control-sm p-1 challan"
-                                                        placeholderText="00:00"
-                                                        style={{ width: "50px", minWidth: "50px" }}
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* To group */}
-                                            <div className="d-flex align-items-center gap-2 flex-nowrap">
-                                                <label className="mb-0 fw-semibold name-label">To </label>
-                                                <div className="d-flex gap-2 flex-nowrap">
-                                                    <DatePicker
-                                                        selected={toDate}
-                                                        onChange={(date) => setToDate(date)}
-                                                        className="form-control form-control-sm p-1 challan"
-                                                        dateFormat="MM/dd/yyyy"
-                                                        placeholderText="mm/dd/yyyy"
-                                                    />
-                                                    <DatePicker
-                                                        selected={toTime}
-                                                        onChange={(date) => setToTime(date)}
-                                                        showTimeSelect
-                                                        showTimeSelectOnly
-                                                        timeIntervals={15}
-                                                        timeCaption="Time"
-                                                        dateFormat="HH:mm"
-                                                        className="form-control form-control-sm p-1 challan"
-                                                        placeholderText="00:00"
-                                                        style={{ width: "80px", minWidth: "80px" }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-                                    {/* ===== Party Selector (col-5) ===== */}
-                                    <div className="col-md-4 d-flex align-items-center gap-2">
-                                        <label className="name-label employee-master-metric-label mb-0 name-label">Party:</label>
-                                        <div className="flex-grow-1">
-                                            <Select
-                                                placeholder="Select Party"
-                                                value={
-                                                    challanData.Party
-                                                        ? {
-                                                            value: challanData.Party,
-                                                            label:
-                                                                partyType.find((d) => d.PartyID === challanData.Party)
-                                                                    ?.Name || "",
-                                                        }
-                                                        : null
-                                                }
-                                                options={partyType.map((d) => ({
-                                                    value: d.PartyID,
-                                                    label: d.Name,
-                                                }))}
-                                                onChange={(selectedOption) => {
-                                                    const value = selectedOption?.value ?? null;
-                                                    const label = selectedOption?.label ?? null;
-                                                    setSelectedParty(label);
-                                                    setChallanData((prev) => ({
-                                                        ...prev,
-                                                        Party: value ?? 0,
-                                                        Name: label ?? "",
-                                                    }));
-                                                }}
-                                                isClearable
-                                                isSearchable
-                                                styles={selectCompactStyles}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* ===== Search + Export (col-3) ===== */}
-                                    <div className="col-md-6 d-flex  align-items-center">
-                                        {/* Search */}
-                                        <div className="d-flex align-items-center gap-4 flex-grow-1 ml-5 pl-4">
-                                            <div className="position-relative">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Search challans..."
-                                                    value={searchTerm}
-                                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                                    className="form-control form-control-sm challan pe-5 "
-                                                    style={{ borderRadius: "5px", width:"268px" }}
-                                                />
-                                                <FiSearch
-                                                    className="position-absolute top-50 end-0 translate-middle-y text-muted me-2"
-                                                    size={16}
-                                                />
-                                            </div>
-                                            <button
-                                                onClick={handleSearch}
-                                                className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 ml-3"
-                                                style={{
-                                                    backgroundColor: "#495057",       // white background
-                                                    borderColor: "#ced4da",        // Bootstrap input border color
-                                                    color: "#fff",              // dark gray text
-                                                }}
-                                            >
-                                                {/* <FiSearch size={16} /> */}
-                                                 Search
-                                            </button>
-                                        </div>
-
-
-                                    </div>
-                                    <div className="col-md-6 d-flex justify-content-end">
-                                        {/* Export */}
-                                        <button
-                                            type="button"
-                                            onClick={exportToExcel}
-                                            className="btn btn-sm btn-primary d-flex align-items-center gap-2 ms-2"
-                                        >
-                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export
-                                        </button>
-
-                                    </div>
+                                    <label className=" name-label whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
+                                    <DatePicker selected={toDate}
+                                        onChange={(date) => setToDate(date)}
+                                        className="border rounded px-2 py-1 w-[60px] challan"
+                                        placeholderText='To Date'
+                                        dateFormat="MM-dd-yyyy"
+                                    />
+                                    <DatePicker selected={toTime}
+                                        onChange={(date) => setToTime(date)}
+                                        showTimeSelect
+                                        placeholderText='00:00'
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="HH:mm"
+                                        className="border rounded px-2 py-1 w-[60px] challan"
+                                    />
                                 </div>
 
+                                {/* Select-Party */}
+                                <div className="flex items-center gap-2 ml-6">
+                                    <label className=" name-label whitespace-nowrap employee-master-metric-label ">Party :</label>
+                                    <Select
+                                        className="w-full"
+                                        placeholder="Select Party"
+                                        value={challanData.Party ? {
+                                            value: challanData.Party,
+                                            label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
+                                        } : null}
+                                        options={partyType.map((d) => ({
+                                            value: d.PartyID,
+                                            label: d.Name
+                                        }))}
+                                        onChange={(selectedOption) => {
+                                            const value = selectedOption?.value ?? null;
+                                            const label = selectedOption?.label ?? null;
+                                            setSelectedParty(label);
+                                            setChallanData((prev) => ({
+                                                ...prev,
+                                                Party: value ?? 0,
+                                                Name: selectedOption?.label ?? ""
+                                            }))
+                                        }}
+                                        isClearable
+                                        isSearchable
+                                        styles={selectCompactStyles}
+                                    />
+                                </div>
+
+                                <div className="flex justify-between items-center w-full">
+                                    {/* Search */}
+                                    <div className="flex flex-row-reverse items-center gap-2" >
+                                        <button onClick={handleSearch} className="text-gray-600 border rounded p-1 hover:bg-gray-100 transition flex items-center gap-2">
+                                            <FiSearch size={16} /> Search
+                                        </button>
+                                        <div className="relative">
+                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none challan" autoFocus />
+                                            <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                                        </div>
+                                    </div>
+                                    {/* Export-Button */}
+                                    <div className="flex">
+                                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
+                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-
-
-
                         </div>
 
                         <div className="employee-master-space-y-2">
                             {/* Employee List Table */}
                             <div className="employee-master-card">
-                                <div className="employee-master-card-header mt-2 flex justify-end">
+                                {/* <div className="employee-master-card-header mt-2 flex justify-end">
                                     <button className="employee-master-button employee-master-button-primary employee-master-button-sm"
                                         onClick={() => {
                                             setEditItemId(null);
@@ -2159,7 +2052,7 @@ const CreateChallan: React.FC = () => {
                                         }}>
                                         <PlusIcon /> Add Challan
                                     </button>
-                                </div>
+                                </div> */}
                                 <div className="employee-master-card-content" style={{ padding: '0' }}>
                                     <DataTable
                                         columns={resizeableColumns}
@@ -2198,35 +2091,37 @@ const CreateChallan: React.FC = () => {
                                             </ul>
                                         </div>
                                         {/* Button */}
-                                        <div className="col-xl-2 mt-3 mt-xl-0 d-flex justify-content-end">
-                                            <div className="flex gap-2 no-print">
+                                        <div className='col-xl-2 mt-3 mt-xl-0  d-flex justify-content-end '>
+                                            <div className="flex gap-2 ">
                                                 {/* Save Button */}
-                                                <button
-                                                    type="button"
+                                                {/* <button type="button"
+                                                    className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
+                                                    style={{ backgroundColor: "#34C759" }}
+                                                    onClick={handleSaveChallan}>
+                                                    <FiSave size={18} />
+                                                    Approve
+                                                </button> */}
+                                                <button type="button"
                                                     className="flex items-center gap-2 px-2 py-1 rounded-md text-white"
                                                     style={{ backgroundColor: "#34C759" }}
                                                     onClick={handleSaveChallan}
                                                 >
                                                     <FiSave size={18} />
-                                                    {editItemId ? "Update" : "Save"}
+                                                    {editItemId ? 'Approve' : 'Save'}
                                                 </button>
 
                                                 {/* Print Button */}
                                                 <button
                                                     type="button"
-                                                    className="flex items-center gap-2 px-2 py-1 mr-3 rounded-md text-white"
+                                                    className="flex items-center gap-2 px-2 py-1 mr-3    rounded-md text-white"
                                                     style={{ backgroundColor: "#212529" }}
-                                                    onClick={() => {
-                                                        console.log("Print button clicked");
-                                                        handlePrint();
-                                                    }}
+                                                    onClick={() => window.print()}
                                                 >
                                                     <FiPrinter size={18} />
                                                     Print
                                                 </button>
                                             </div>
                                         </div>
-
                                         <button onClick={handleCloseModal} className="text-gray-600 hover:text-red-500 p-2">
                                             <FiX size={20} />
                                         </button>
@@ -2667,25 +2562,13 @@ const CreateChallan: React.FC = () => {
                                                                             {/* Product Name */}
                                                                             <div className="col-md-2 mt-0">
                                                                                 <label className="MAINTABLE_LABEL name-label">Product Name</label>
-                                                                                <Select 
-                                                                                   placeholder="Select Product"
-                                                                                   value={ challanData.ProductId1 ? 
-                                                                                    {
-                                                                                        value: challanData.ProductId1,
-                                                                                        label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
-                                                                                    } : null
-                                                                                   } 
-                                                                                   options={productName.map((pn) => ({
-                                                                                    value: pn.ProductID,
-                                                                                    label: pn.ProductName
-                                                                                   }))}
-                                                                                   onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
-                                                                                     setChallanData((prev) => ({
+                                                                                <Select placeholder="Select.." value={product.name} onChange={(selectedOption: SingleValue<{ value: number; label: string }>) =>
+                                                                                    setChallanData((prev) => ({
                                                                                         ...prev,
                                                                                         district: Number(selectedOption?.value ?? 0),
-                                                                                     }))
-                                                                                   }
-                                                                                   styles={selectCompactStyles}
+                                                                                    }))
+                                                                                }
+                                                                                    styles={selectCompactStyles}
                                                                                 />
                                                                             </div>
                                                                             {/* Rate */}
@@ -2801,7 +2684,6 @@ const CreateChallan: React.FC = () => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {/* Third-Row */}
                                                         <div className="product-details-table mb-2">
                                                             <div className="product-des-box product-details-form">
                                                                 <div className="product-form-container ">
@@ -2814,25 +2696,7 @@ const CreateChallan: React.FC = () => {
                                                                         {/* Loading-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                                                             <label className="MAINTABLE_LABEL name-label">Loading Amount</label>
-                                                                            <Select 
-                                                                                placeholder="Select..."
-                                                                                value={challanData.LoadingAmt ?
-                                                                                    {
-                                                                                        value: challanData.LoadingAmt,
-                                                                                        label: loadingAmt.find((lm) => lm.LoadingchargeID === challanData.LoadingAmt) ?.Description || ''
-                                                                                    } : null
-                                                                                } 
-                                                                                options={ loadingAmt.map((lm) => ({
-                                                                                    value: lm.LoadingchargeID,
-                                                                                    label: lm.Description
-                                                                                }))}
-                                                                                menuPlacement='top' 
-                                                                                onChange={(selectedOption) => 
-                                                                                    setChallanData((prev) => ({
-                                                                                        ...prev,
-                                                                                        LoadingAmt: Number(selectedOption?.value ?? 0)
-                                                                                    }))
-                                                                                }
+                                                                            <Select id="SchemDes" value={challanData.LoadingAmt} menuPlacement='top' onChange={(e) => setChallanData({ ...challanData, LoadingAmt: Number(e.target.value) })}
                                                                                 styles={selectCompactStyles}
                                                                             />
                                                                         </div>
@@ -2855,20 +2719,13 @@ const CreateChallan: React.FC = () => {
                                                                         <div className="col-md-2 mt-0">
                                                                             <label className="MAINTABLE_LABEL name-label">TP Amount</label>
                                                                             <Select
-                                                                                placeholder="Select TPAmount"
                                                                                 id="SchemDes"
                                                                                 value={
-                                                                                    challanData.TPAmount ? 
-                                                                                    { 
-                                                                                        value: challanData.TPAmount,
-                                                                                        label: tpAmount.find((tp) => tp.TpAmountID === challanData.TPAmount)?.Description || ''
-                                                                                    } : null
+                                                                                    challanData.TPAmount
+                                                                                        ? { value: challanData.TPAmount, label: challanData.TPAmount }
+                                                                                        : null
                                                                                 }
                                                                                 menuPlacement="top"
-                                                                                options={tpAmount.map((tp) => ({
-                                                                                    value: tp.TpAmountID,
-                                                                                    label: tp.Description
-                                                                                }))}
                                                                                 onChange={(selectedOption) =>
                                                                                     setChallanData({
                                                                                         ...challanData,
@@ -2877,6 +2734,7 @@ const CreateChallan: React.FC = () => {
                                                                                 }
                                                                                 styles={selectCompactStyles}
                                                                             />
+
                                                                         </div>
                                                                         {/* Freight-Amount */}
                                                                         <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
@@ -2929,27 +2787,6 @@ const CreateChallan: React.FC = () => {
                 </div>
             </main>
 
-            {/* ✅ Jo print karna hai – yaha rakho */}
-            <div className="print-area">
-                <div ref={printRef}>
-                    <ChallanSlip
-                        challanNo={challanData.ChallanNo || "N/A"}
-                        dateTime={
-                            challanData.ChallanDate
-                                ? moment(challanData.ChallanDate).format("DD/MM/YYYY HH:mm")
-                                : moment().format("DD/MM/YYYY HH:mm")
-                        }
-                        vehicleNo={challanData.VehicleNo || "N/A"}
-                        material={challanData.productDetails?.[0]?.name || "N/A"}
-                        consignee={challanData.Name || "N/A"}
-                        tareWeight={challanData.TareWeight || 0}
-                        amount={`${challanData.paytype || "Cash"} (${challanData.Amount || "0"
-                            })`}
-                    />
-                </div>
-            </div>
-
-
             <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
@@ -2957,9 +2794,7 @@ const CreateChallan: React.FC = () => {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 }
-
-export default CreateChallan;

@@ -83,6 +83,7 @@ import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 // import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 import Ledger from './pages/Accounts/ledger/Ledger'
 import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
+import ApprovedChallan from './pages/sale/Approved-Challan/ApprovedChallan';
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
 import Purchase from './pages/sale/Puchase/Puchase'
 import PartyRate from './pages/sale/Party-Rate/PartyRate'
@@ -296,6 +297,7 @@ function App() {
         <Route path="/tp-charges" element={<TPCharges />} />
         <Route path="/create-challan" element={<CreateChallan />} />
         <Route path="/pending-challan" element={<PendingChallan />} />
+        <Route path="/approved-challan" element={<ApprovedChallan />} />
         <Route path="/extra-tp" element={<ExtraTP />} />
         <Route path="/purchase" element={<Purchase />} />
         <Route path="/party-rate" element={<PartyRate />} />

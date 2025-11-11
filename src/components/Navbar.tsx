@@ -295,6 +295,12 @@ const navigationItems: NavItem[] = [
             icon: Wrench,
             description: 'Material processing and refinement'
           },
+          {
+            title: 'Approved Challan',
+            href: '/approved-challan',
+            icon: Wrench,
+            description: 'Material processing and refinement'
+          },
 
           {
             title: 'Extra TP',
