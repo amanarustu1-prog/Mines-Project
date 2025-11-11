@@ -1,322 +1,376 @@
 /* PendingChallan.css */
 .pending-challan-container {
-    padding: 16px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    max-width: 100%;
-    box-sizing: border-box;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .pending-challan-container {
+    padding: 20px;
   }
-  
-  @media (min-width: 640px) {
-    .pending-challan-container {
-      padding: 20px;
-    }
+}
+
+@media (min-width: 1024px) {
+  .pending-challan-container {
+    padding: 24px;
+    max-width: 1400px;
   }
-  
-  @media (min-width: 1024px) {
-    .pending-challan-container {
-      padding: 24px;
-      max-width: 1400px;
-    }
-  }
-  
-  .pending-challan-header {
-    background: #4f46e5;
-    color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    margin: 4rem 0 1.5rem 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pending-challan-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: white;
-  }
-  
-  /* Summary Cards */
+}
+
+.pending-challan-header {
+  background: #4f46e5;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 4rem 0 1.5rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pending-challan-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Summary Cards */
+.pending-challan__summary-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.pending-challan__summary-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3b82f6;
+  border-right: 4px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pending-challan__summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.pending-challan__summary-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.pending-challan__summary-card-content {
+  flex: 1;
+}
+
+.pending-challan__summary-card--pending {
+  border-left-color: #f59e0b;
+  border-right-color: #f59e0b;
+}
+
+.pending-challan__summary-card--completed {
+  border-left-color: #10b981;
+  border-right-color: #10b981;
+}
+
+.pending-challan__summary-card--cancelled {
+  border-left-color: #ef4444;
+  border-right-color: #ef4444;
+}
+
+.pending-challan__summary-card-title {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.pending-challan__summary-card-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.date-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.filter-group label {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.search-filter {
+  width: 100%;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.challan-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.challan-table th,
+.challan-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.challan-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+
+.challan-table td {
+  word-break: break-word;
+}
+
+.challan-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background-color: #f0f0f0;
+}
+
+.btn-icon.primary {
+  color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-icon.success {
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-icon.danger {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+}
+
+/* Responsive Breakpoints */
+@media (min-width: 480px) {
   .pending-challan__summary-cards {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .pending-challan__summary-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #3b82f6;
-    border-right: 4px solid #3b82f6;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .pending-challan__summary-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-  
-  .pending-challan__summary-card-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-  }
-  
-  .pending-challan__summary-card-content {
-    flex: 1;
-  }
-  
-  .pending-challan__summary-card--pending {
-    border-left-color: #f59e0b;
-    border-right-color: #f59e0b;
-  }
-  
-  .pending-challan__summary-card--completed {
-    border-left-color: #10b981;
-    border-right-color: #10b981;
-  }
-  
-  .pending-challan__summary-card--cancelled {
-    border-left-color: #ef4444;
-    border-right-color: #ef4444;
-  }
-  
-  .pending-challan__summary-card-title {
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 8px;
-  }
-  
-  .pending-challan__summary-card-value {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1f2937;
-  }
-  
-  .filters-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 20px;
-    width: 100%;
-  }
-  
+
   .date-filters {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .filter-group {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+}
+
+@media (min-width: 768px) {
+  .pending-challan__summary-cards {
+    grid-template-columns: repeat(4, 1fr);
   }
-  
-  .filter-group label {
-    margin-bottom: 4px;
-    font-size: 14px;
-    color: #4b5563;
-    font-weight: 500;
+
+  .date-filters {
+    grid-template-columns: repeat(3, 1fr);
   }
-  
+
+  .filters-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
   .search-filter {
-    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
   }
-  
-  .form-control {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .filters-container {
+    flex-wrap: nowrap;
   }
-  
-  .form-control:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+
+  .date-filters {
+    grid-template-columns: repeat(4, 1fr);
   }
-  
+
+  .search-filter {
+    min-width: 300px;
+  }
+}
+
+/* Table Responsive Styles */
+@media (max-width: 1024px) {
   .challan-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 14px;
-  }
-  
-  .challan-table th,
-  .challan-table td {
-    padding: 12px 10px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
-  }
-  
-  .challan-table th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
+    display: block;
+    overflow-x: auto;
     white-space: nowrap;
   }
-  
-  .challan-table td {
-    word-break: break-word;
+
+  .challan-table thead {
+    display: table;
+    width: 100%;
   }
-  
-  .challan-table tbody tr:hover {
-    background-color: #f5f5f5;
+
+  .challan-table tbody {
+    display: table;
+    width: 100%;
   }
-  
-  .status-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  
-  .status-badge.pending {
-    background-color: #fff3cd;
-    color: #856404;
-  }
-  
-  .status-badge.completed {
-    background-color: #d4edda;
-    color: #155724;
-  }
-  
-  .status-badge.cancelled {
-    background-color: #f8d7da;
-    color: #721c24;
-  }
-  
-  .actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
-  }
-  
-  .btn-icon {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-  
-  .btn-icon:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .btn-icon.primary {
-    color: #007bff;
-    border-color: #007bff;
-  }
-  
-  .btn-icon.success {
-    color: #28a745;
-    border-color: #28a745;
-  }
-  
-  .btn-icon.danger {
-    color: #dc3545;
-    border-color: #dc3545;
-  }
-  
-  .btn-icon:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  .no-data {
-    text-align: center;
-    padding: 20px;
-    color: #6c757d;
-  }
-  
-  /* Responsive Breakpoints */
-  @media (min-width: 480px) {
-    .pending-challan__summary-cards {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .date-filters {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (min-width: 768px) {
-    .pending-challan__summary-cards {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .date-filters {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .filters-container {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: flex-end;
-    }
-    
-    .search-filter {
-      max-width: 300px;
-      margin-left: auto;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .filters-container {
-      flex-wrap: nowrap;
-    }
-    
-    .date-filters {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .search-filter {
-      min-width: 300px;
-    }
-  }
-  
-  /* Table Responsive Styles */
-  @media (max-width: 1024px) {
-    .challan-table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-    
-    .challan-table thead {
-      display: table;
-      width: 100%;
-    }
-    
-    .challan-table tbody {
-      display: table;
-      width: 100%;
-    }
-  }
+}
+
+.margin_top {
+  margin-top: 2rem;
+}
+
+
+.pending-challan-header-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+
+
+/* ===== HEADER STYLE ===== */
+.pending-challan-header-info {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 3px 0px;
+}
+
+.pending-challan-header-icon {
+  background: #e9f3ff;
+  border-radius: 50%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.pending-challan-header-subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* ===== DATATABLE ===== */
+.rdt_TableHeadRow {
+  background-color: #f8f9fa !important;
+  font-weight: 600;
+}
+
+.rdt_TableRow:hover {
+  background-color: #f1f5ff !important;
+}
+
+.badge {
+  font-size: 13px;
+}

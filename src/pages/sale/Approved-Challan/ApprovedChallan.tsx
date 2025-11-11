@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import '../Pending-Challan/PendingChallan.css';
+import './ApprovedChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
-import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
+import { FiCheckCircle, FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
 import { FiX } from "react-icons/fi";
 import { FaEdit } from 'react-icons/fa';
 import DataTable from 'react-data-table-component';
@@ -1661,17 +1661,17 @@ export default function ApprovedChallan() {
     }
 
     const fetchProductName = async () => {
-        try{
+        try {
             const response = await fetchPostData('Product/GetDataDropDown_Product', {
                 CompanyId: Number(localStorage.getItem('companyID'))
             })
             // console.log(response);
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setProductName(response);
-            }else{
+            } else {
                 setProductName([]);
             }
-        }catch{
+        } catch {
             toastifyError('Error fetching Product Name');
         }
     }
@@ -1944,115 +1944,28 @@ export default function ApprovedChallan() {
 
     return (
         <>
-            <main className="dashboard-main ">
+            <main className="dashboard-main">
                 <div className="main-content-area ">
                     <div className="main-content-wrapper mt-5 ">
-                        <div className="relative lg:mt-8 mb-3">
-                            <div className="py-3 employee-create-challan-card flex flex-wrap items-end gap-4 w-full" >
-                                {/* Filter-Date/Time */}
-                                <div className="flex items-center gap-2">
-                                    <label className=" name-label whitespace-nowrap employee-master-metric-label">From :</label>
-                                    <DatePicker selected={fromDate}
-                                        onChange={(date) => setFromDate(date)}
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                        placeholderText="From Date"
-                                        dateFormat="MM-dd-yyyy"
-                                    />
+                        {/* Header */}
+                        <div className="approved-challan-header-info d-flex align-items-center employee-master-card p-2 margin_top">
+                            {/* Icon */}
+                            <div className="approved-challan-header-icon me-3">
+                                <FiCheckCircle size={28} className="text-success" />
+                            </div>
 
-                                    <DatePicker selected={fromTime}
-                                        onChange={(date) => setFromTime(date)}
-                                        showTimeSelect
-                                        placeholderText='00:00'
-                                        showTimeSelectOnly
-                                        timeIntervals={15}
-                                        timeCaption="Time"
-                                        dateFormat="HH:mm"
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                    />
-
-                                    <label className=" name-label whitespace-nowrap ml-4 employee-master-metric-label">To :</label>
-                                    <DatePicker selected={toDate}
-                                        onChange={(date) => setToDate(date)}
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                        placeholderText='To Date'
-                                        dateFormat="MM-dd-yyyy"
-                                    />
-                                    <DatePicker selected={toTime}
-                                        onChange={(date) => setToTime(date)}
-                                        showTimeSelect
-                                        placeholderText='00:00'
-                                        showTimeSelectOnly
-                                        timeIntervals={15}
-                                        timeCaption="Time"
-                                        dateFormat="HH:mm"
-                                        className="border rounded px-2 py-1 w-[60px] challan"
-                                    />
-                                </div>
-
-                                {/* Select-Party */}
-                                <div className="flex items-center gap-2 ml-6">
-                                    <label className=" name-label whitespace-nowrap employee-master-metric-label ">Party :</label>
-                                    <Select
-                                        className="w-full"
-                                        placeholder="Select Party"
-                                        value={challanData.Party ? {
-                                            value: challanData.Party,
-                                            label: partyType.find((d) => d.PartyID === challanData.Party)?.Name || '',
-                                        } : null}
-                                        options={partyType.map((d) => ({
-                                            value: d.PartyID,
-                                            label: d.Name
-                                        }))}
-                                        onChange={(selectedOption) => {
-                                            const value = selectedOption?.value ?? null;
-                                            const label = selectedOption?.label ?? null;
-                                            setSelectedParty(label);
-                                            setChallanData((prev) => ({
-                                                ...prev,
-                                                Party: value ?? 0,
-                                                Name: selectedOption?.label ?? ""
-                                            }))
-                                        }}
-                                        isClearable
-                                        isSearchable
-                                        styles={selectCompactStyles}
-                                    />
-                                </div>
-
-                                <div className="flex justify-between items-center w-full">
-                                    {/* Search */}
-                                    <div className="flex flex-row-reverse items-center gap-2" >
-                                        <button onClick={handleSearch} className="text-gray-600 border rounded p-1 hover:bg-gray-100 transition flex items-center gap-2">
-                                            <FiSearch size={16} /> Search
-                                        </button>
-                                        <div className="relative">
-                                            <input type="text" placeholder="Search challans..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="border rounded px-3 py-2 pr-8 w-[400px] transition-all focus:border-blue-500 focus:outline-none challan" autoFocus />
-                                            <FiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                                        </div>
-                                    </div>
-                                    {/* Export-Button */}
-                                    <div className="flex">
-                                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary bg-[#3b82f6]  py-1 h-9 px-2 mt-2 flex items-center gap-1">
-                                            <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel
-                                        </button>
-                                    </div>
-                                </div>
+                            {/* Title + Subtitle */}
+                            <div>
+                                <h1 className="approved-challan-header-title mb-1">Approved Challans</h1>
+                                <p className="approved-challan-header-subtitle mb-0 text-muted">
+                                    View and manage challans approved for dispatch and record keeping
+                                </p>
                             </div>
                         </div>
 
-                        <div className="employee-master-space-y-2">
+                        <div className="employee-master-space-y-2 mt-3">
                             {/* Employee List Table */}
                             <div className="employee-master-card">
-                                {/* <div className="employee-master-card-header mt-2 flex justify-end">
-                                    <button className="employee-master-button employee-master-button-primary employee-master-button-sm"
-                                        onClick={() => {
-                                            setEditItemId(null);
-                                            resetForm();
-                                            handleOpenModal()
-                                        }}>
-                                        <PlusIcon /> Add Challan
-                                    </button>
-                                </div> */}
                                 <div className="employee-master-card-content" style={{ padding: '0' }}>
                                     <DataTable
                                         columns={resizeableColumns}
@@ -2794,7 +2707,7 @@ export default function ApprovedChallan() {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </>
     );
 }
