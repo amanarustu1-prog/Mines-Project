@@ -396,7 +396,7 @@ interface ProductName {
     ProductName: string
 }
 
-export default function CreateChallan() {
+export default function ApprovedChallan() {
     const [activeTab, setActiveTab] = useState('challanOverview');
     const [showInput, setShowInput] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -1104,10 +1104,10 @@ export default function CreateChallan() {
             setLoading(true);
             const payload = {
                 CompanyId: Number(localStorage.getItem("companyID")),
-                IsForApproval: '1',
+                IsForApproval: '',
                 CreatedDatefrom: '',
                 CreatedDateTo: '',
-                IsReject: ''
+                ISCompleted: '1'
             }
             const response = await fetchPostData('Challan/GetData_Challan', payload);
             // console.log(response);
