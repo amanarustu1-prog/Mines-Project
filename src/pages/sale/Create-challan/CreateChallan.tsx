@@ -438,6 +438,8 @@ const CreateChallan: React.FC = () => {
   const [selectedParty, setSelectedParty] = useState<number | string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState<ChallanTableItem[]>([]);
+  const [vehicleSearchTerm, setVehicleSearchTerm] = useState('');
+
 
   // ----------- Custom ------------
   const [loading, setLoading] = useState(false);
@@ -1860,49 +1862,66 @@ const CreateChallan: React.FC = () => {
   // });
 
   const handleSearch = () => {
-    console.log("Hello");
-    let result = challanItems;
-    console.log(result);
-    const fromDateTime = fromDate ? new Date(
-      `${moment(fromDate).format('YYYY-MM-DD')} ${fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
-      }`) : null;
+  if (!challanItems || challanItems.length === 0) return;
 
-    const toDateTime = toDate
-      ? new Date(
-        `${moment(toDate).format('YYYY-MM-DD')} ${toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
+  let result = challanItems;
+
+  // Combine From Date + Time
+  const fromDateTime = fromDate
+    ? new Date(
+        `${moment(fromDate).format("YYYY-MM-DD")} ${
+          fromTime ? moment(fromTime).format("HH:mm:ss") : "00:00:00"
         }`
-      ) : null;
+      )
+    : null;
 
-    // Filter by date range
-    if (fromDateTime && toDateTime) {
-      result = result.filter((item) => {
-        const challanDate = new Date(item.CreatedDate);
-        return challanDate >= fromDateTime && challanDate <= toDateTime;
-      });
-    }
-    else if (fromDateTime && !toDateTime) {
-      result = result.filter((item) => {
-        const challanDate = new Date(item.CreatedDate);
-        return challanDate >= fromDateTime;
-      });
-    }
+  const toDateTime = toDate
+    ? new Date(
+        `${moment(toDate).format("YYYY-MM-DD")} ${
+          toTime ? moment(toTime).format("HH:mm:ss") : "23:59:59"
+        }`
+      )
+    : null;
 
-    // Filter by party
-    if (selectedParty) {
-      result = result.filter((item) => item.PartyID === challanData.Party);
-      // console.log(result.length);
-    }
+  // ===== Filter by Date Range =====
+  if (fromDateTime && toDateTime) {
+    result = result.filter((item) => {
+      const challanDate = new Date(item.CreatedDate);
+      return challanDate >= fromDateTime && challanDate <= toDateTime;
+    });
+  } else if (fromDateTime) {
+    result = result.filter(
+      (item) => new Date(item.CreatedDate) >= fromDateTime
+    );
+  } else if (toDateTime) {
+    result = result.filter((item) => new Date(item.CreatedDate) <= toDateTime);
+  }
 
-    // Filter by challan number (search input)
-    if (searchTerm.trim()) {
-      const term = searchTerm.trim().toLowerCase();
-      result = result.filter((item) =>
-        item.ChallanNo?.toLowerCase().includes(term)
-      );
-    }
+  // ===== Filter by Party (if selected) =====
+  if (selectedParty) {
+    result = result.filter((item) => item.PartyID === challanData.Party);
+  }
 
-    setFilteredData(result);
-  };
+  // ===== Filter by Challan No =====
+  let challanFiltered = result;
+  if (searchTerm.trim()) {
+    const term = searchTerm.trim().toLowerCase();
+    challanFiltered = challanFiltered.filter((item) =>
+      item.ChallanNo?.toLowerCase().includes(term)
+    );
+  }
+
+  // ===== Filter by Vehicle No =====
+  let finalFiltered = challanFiltered;
+  if (vehicleSearchTerm?.trim()) {
+    const vehicleTerm = vehicleSearchTerm.trim().toLowerCase();
+    finalFiltered = challanFiltered.filter((item) =>
+      item.VehicleNo?.toLowerCase().includes(vehicleTerm)
+    );
+  }
+
+  setFilteredData(finalFiltered);
+};
 
   // const selectCompactStyles: any = {
   //     control: (provided: any) => ({
@@ -2076,7 +2095,6 @@ const CreateChallan: React.FC = () => {
             <div className="relative lg:mt-8 mb-3">
               <div className=" py-3 employee-create-challan-card ">
                 <div className="row align-items-center g-3">
-
                   {/* ===== From / To Filter (col-4) ===== */}
                   <div className="col-md-6">
                     <div className="d-flex align-items-center justify-content-start flex-nowrap" style={{ gap: "16px", flexWrap: "nowrap" }}>
@@ -2144,7 +2162,6 @@ const CreateChallan: React.FC = () => {
                     </div>
                   </div>
 
-
                   {/* ===== Party Selector (col-5) ===== */}
                   <div className="col-md-4 d-flex align-items-center gap-2">
                     <label className="name-label employee-master-metric-label mb-0 name-label">Party:</label>
@@ -2209,8 +2226,8 @@ const CreateChallan: React.FC = () => {
                             <input
                               type="text"
                               placeholder="Search vehicles..."
-                              value={searchTerm}
-                              onChange={(e) => setSearchTerm(e.target.value)}
+                              value={vehicleSearchTerm}
+                              onChange={(e) => setVehicleSearchTerm(e.target.value)}
                               className="form-control form-control-sm challan"
                               style={{ borderRadius: "5px", }}
                             />
