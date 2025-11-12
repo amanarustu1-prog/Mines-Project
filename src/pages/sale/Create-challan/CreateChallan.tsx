@@ -2989,16 +2989,18 @@ const CreateChallan: React.FC = () => {
                                 </div>
                               ))}
                             </div>
-                            {/* Second-Row */}
-                            <div className="product-details-table mb-2">
-                              <div className="product-des-box product-details-form ">
-                                <div className="product-form-container ">
-                                  <div className="row g-3 ">
-                                    {/* Tare-Weight */}
-                                    <div className="col-2 mt-0" style={{ minWidth: 130 }}>
-                                      <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
-                                      <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
-                                    </div>
+
+                                                        {/* Second-Row */}
+                                                        <div className="product-details-table mb-2">
+                                                            <div className="product-des-box product-details-form ">
+                                                                <div className="product-form-container ">
+                                                                    <div className="row g-3 ">
+                                                                        {/* Tare-Weight */}
+                                                                        <div className="col-2 mt-0" style={{ minWidth: 130 }}>
+                                                                            <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
+                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                                                        </div>
+
                                     {/* Date/Time */}
                                     <div className="col-md-2 mt-0">
                                       <label className="MAINTABLE_LABEL name-label">Date/Time</label>
@@ -3146,11 +3148,33 @@ const CreateChallan: React.FC = () => {
         </div>
       </div>
 
-      <div className="print-area">
-        <div ref={printRef}>
-          <ChallanPrint itemId={editItemId}/>
-        </div>
-      </div>
+            <div className="print-area" style={{ display: 'none' }}>
+                <div ref={printRef}>
+                    <ChallanPrint
+                        challaNo={challanData.ChallanNo || ''}
+                        date={challanData.ChallanDate || ''}
+                        consName={challanData.Name || ''}
+                        address={challanData.address || ''}
+                        contact={challanData.OwnerMobile || ''}
+                        vehicle={challanData.VehicleNo || ''}
+                        product={challanData.ProductName1 || ''}
+                        rate={challanData.Rate1 || 0}
+                        netWeight={challanData.Netweight1 || 0}
+                        amount={challanData.Amount1 || 0}
+                        loading={challanData.LoadingAmt || 0}
+                        commision={challanData.CommisionAmt || 0}
+                        total={challanData.TotalAmt || 0}
+                        driverName={challanData.DriverName || ''}
+                        driverNo={challanData.DriverMobileNo?.toString() || ''}
+                        grossWeight={`${challanData.Grossweight1 || 0} KG ${challanData.Grossweightdate1 ? new Date(challanData.Grossweightdate1).toLocaleString() : ''}`}
+                        tareWeight={`${challanData.TareWeight || 0} KG`}
+                        netWeightKg={`${challanData.Netweight1 || 0}`}
+                        remarks={challanData.VehicleRemarks || ''}
+                        totalAmt={challanData.GTotal?.toFixed(2) || '0.00'}
+                    />
+                </div>
+            </div>
+
 
       <ConfirmModal show={showModal}
         handleClose={() => setShowModal(false)}
