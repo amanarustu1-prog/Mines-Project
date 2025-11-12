@@ -2071,69 +2071,76 @@ const CreateChallan: React.FC = () => {
         <div className="main-content-area ">
           <div className="main-content-wrapper mt-5 ">
             <div className="relative lg:mt-8 mb-3">
-              <div className="container py-3 employee-create-challan-card">
+              <div className=" py-3 employee-create-challan-card ">
                 <div className="row align-items-center g-3">
 
                   {/* ===== From / To Filter (col-4) ===== */}
                   <div className="col-md-6">
-                    <div
-                      className="d-flex align-items-center justify-content-start flex-nowrap"
-                      style={{ gap: "16px", flexWrap: "nowrap" }}
-                    >
+                    <div className="row g-2 align-items-center">
                       {/* From group */}
-                      <div className="d-flex align-items-center gap-2 flex-nowrap">
-                        <label className="mb-0 fw-semibold name-label ">From </label>
-                        <div className="d-flex gap-2 flex-nowrap">
-                          <DatePicker
-                            selected={fromDate}
-                            onChange={(date) => setFromDate(date)}
-                            className="form-control form-control-sm p-1 challan"
-                            dateFormat="MM/dd/yyyy"
-                            placeholderText="mm/dd/yyyy"
-
-                          />
-                          <DatePicker
-                            selected={fromTime}
-                            onChange={(date) => setFromTime(date)}
-                            showTimeSelect
-                            showTimeSelectOnly
-                            timeIntervals={15}
-                            timeCaption="Time"
-                            dateFormat="HH:mm"
-                            className="form-control form-control-sm p-1 challan"
-                            placeholderText="00:00"
-                            style={{ width: "50px", minWidth: "50px" }}
-                          />
+                      <div className="col-md-6 col-sm-12">
+                        <div className="row g-2 align-items-center flex-nowrap">
+                          <div className="col-auto">
+                            <label className="mb-0 fw-semibold name-label">From</label>
+                          </div>
+                          <div className="col">
+                            <DatePicker
+                              selected={fromDate}
+                              onChange={(date) => setFromDate(date)}
+                              className="form-control form-control-sm p-1 challan"
+                              dateFormat="MM/dd/yyyy"
+                              placeholderText="mm/dd/yyyy"
+                            />
+                          </div>
+                          <div className="col-auto" style={{ width: "80px" }}>
+                            <DatePicker
+                              selected={fromTime}
+                              onChange={(date) => setFromTime(date)}
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={15}
+                              timeCaption="Time"
+                              dateFormat="HH:mm"
+                              className="form-control form-control-sm p-1 challan"
+                              placeholderText="00:00"
+                            />
+                          </div>
                         </div>
                       </div>
 
                       {/* To group */}
-                      <div className="d-flex align-items-center gap-2 flex-nowrap">
-                        <label className="mb-0 fw-semibold name-label">To </label>
-                        <div className="d-flex gap-2 flex-nowrap">
-                          <DatePicker
-                            selected={toDate}
-                            onChange={(date) => setToDate(date)}
-                            className="form-control form-control-sm p-1 challan"
-                            dateFormat="MM/dd/yyyy"
-                            placeholderText="mm/dd/yyyy"
-                          />
-                          <DatePicker
-                            selected={toTime}
-                            onChange={(date) => setToTime(date)}
-                            showTimeSelect
-                            showTimeSelectOnly
-                            timeIntervals={15}
-                            timeCaption="Time"
-                            dateFormat="HH:mm"
-                            className="form-control form-control-sm p-1 challan"
-                            placeholderText="00:00"
-                            style={{ width: "80px", minWidth: "80px" }}
-                          />
+                      <div className="col-md-6 col-sm-12">
+                        <div className="row g-2 align-items-center flex-nowrap">
+                          <div className="col-auto">
+                            <label className="mb-0 fw-semibold name-label">To</label>
+                          </div>
+                          <div className="col">
+                            <DatePicker
+                              selected={toDate}
+                              onChange={(date) => setToDate(date)}
+                              className="form-control form-control-sm p-1 challan"
+                              dateFormat="MM/dd/yyyy"
+                              placeholderText="mm/dd/yyyy"
+                            />
+                          </div>
+                          <div className="col-auto" style={{ width: "80px" }}>
+                            <DatePicker
+                              selected={toTime}
+                              onChange={(date) => setToTime(date)}
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={15}
+                              timeCaption="Time"
+                              dateFormat="HH:mm"
+                              className="form-control form-control-sm p-1 challan"
+                              placeholderText="00:00"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
 
                   {/* ===== Party Selector (col-5) ===== */}
                   <div className="col-md-4 d-flex align-items-center gap-2">
@@ -2214,7 +2221,7 @@ const CreateChallan: React.FC = () => {
                       {/* Search button – col-2 */}
                       <div className="col-md-2 d-flex">
                         <button onClick={handleSearch}
-                          className="btn btn-sm  d-flex align-items-center justify-content-center"
+                          className="btn btn-sm py-1  d-flex align-items-center justify-content-center"
                           style={{ backgroundColor: "#495057", borderColor: "#ced4da", color: "#fff", }}>
                           Search
                         </button>
@@ -2225,7 +2232,7 @@ const CreateChallan: React.FC = () => {
                   <div className="col-md-4 d-flex justify-content-end">
                     {/* Export */}
                     <button type="button" onClick={exportToExcel}
-                      className="btn btn-sm btn-primary d-flex align-items-center gap-2 ms-2">
+                      className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2">
                       <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export
                     </button>
                   </div>
@@ -2990,16 +2997,16 @@ const CreateChallan: React.FC = () => {
                               ))}
                             </div>
 
-                                                        {/* Second-Row */}
-                                                        <div className="product-details-table mb-2">
-                                                            <div className="product-des-box product-details-form ">
-                                                                <div className="product-form-container ">
-                                                                    <div className="row g-3 ">
-                                                                        {/* Tare-Weight */}
-                                                                        <div className="col-2 mt-0" style={{ minWidth: 130 }}>
-                                                                            <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
-                                                                            <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
-                                                                        </div>
+                            {/* Second-Row */}
+                            <div className="product-details-table mb-2">
+                              <div className="product-des-box product-details-form ">
+                                <div className="product-form-container ">
+                                  <div className="row g-3 ">
+                                    {/* Tare-Weight */}
+                                    <div className="col-2 mt-0" style={{ minWidth: 130 }}>
+                                      <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
+                                      <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                    </div>
 
                                     {/* Date/Time */}
                                     <div className="col-md-2 mt-0">
@@ -3148,11 +3155,32 @@ const CreateChallan: React.FC = () => {
         </div>
       </div>
 
-            <div className="print-area" style={{ display: 'none' }}>
-                <div ref={printRef}>
-                    <ChallanPrint itemId={editItemId} />
-                </div>
-            </div>
+      <div className="print-area" style={{ display: 'none' }}>
+        <div ref={printRef}>
+          <ChallanPrint
+            challaNo={challanData.ChallanNo || ''}
+            date={challanData.ChallanDate || ''}
+            consName={challanData.Name || ''}
+            address={challanData.address || ''}
+            contact={challanData.OwnerMobile || ''}
+            vehicle={challanData.VehicleNo || ''}
+            product={challanData.ProductName1 || ''}
+            rate={challanData.Rate1 || 0}
+            netWeight={challanData.Netweight1 || 0}
+            amount={challanData.Amount1 || 0}
+            loading={challanData.LoadingAmt || 0}
+            commision={challanData.CommisionAmt || 0}
+            total={challanData.TotalAmt || 0}
+            driverName={challanData.DriverName || ''}
+            driverNo={challanData.DriverMobileNo?.toString() || ''}
+            grossWeight={`${challanData.Grossweight1 || 0} KG ${challanData.Grossweightdate1 ? new Date(challanData.Grossweightdate1).toLocaleString() : ''}`}
+            tareWeight={`${challanData.TareWeight || 0} KG`}
+            netWeightKg={`${challanData.Netweight1 || 0}`}
+            remarks={challanData.VehicleRemarks || ''}
+            totalAmt={challanData.GTotal?.toFixed(2) || '0.00'}
+          />
+        </div>
+      </div>
 
 
       <ConfirmModal show={showModal}

@@ -240,13 +240,13 @@ const PaymentVoucher = () => {
                 <div className="voucher-header">
                     <div className="header-left">
                         <h2>Accounting Voucher</h2>
-                        <div className="website-link">www.tallyprimebook.com</div>
+                        {/* <div className="website-link">www.tallyprimebook.com</div> */}
                     </div>
-                    <div className="header-actions">
+                    {/* <div className="header-actions">
                         <button className="close-btn" title="Close">
                             <FiX size={24} />
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="voucher-info-row">
@@ -270,7 +270,7 @@ const PaymentVoucher = () => {
                                             setErrors(newErrors);
                                         }
                                     }}
-                                    placeholder="Enter voucher no."
+                                    placeholder="voucher no."
                                 />
                                 {errors.voucherNo && (
                                     <div className="error-message">
