@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
-// import ChallanSlip from "./ChallanSlip";
 import './CreateChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
@@ -396,7 +395,9 @@ interface Vehicle {
 
 interface Party {
   PartyID: number,
-  Name: string
+  Name: string,
+  GSTNo: number,
+  Address: string
 }
 
 interface ProductName {
@@ -623,7 +624,7 @@ const CreateChallan: React.FC = () => {
           </button>
           {/*Challan Print */}
           <button
-            onClick={() => handleChallanPrint(row.ChallanID!)}
+            onClick={() => { handleChallanPrint(row.ChallanID!); setEditItemId(row.ChallanID!); }}
             className="material-name-btn-icon text-green-600 hover:text-green-800"
             title="Print"
           >
@@ -1655,7 +1656,7 @@ const CreateChallan: React.FC = () => {
       const response = await fetchPostData('State/GetDataDropDown_State', {
         CompanyId: Number(localStorage.getItem('companyID')),
       });
-      console.log(response);
+      // console.log(response);
 
       if (response && Array.isArray(response)) {
         setState(response);
@@ -1672,7 +1673,7 @@ const CreateChallan: React.FC = () => {
         StateId: stateID,
         CompanyId: Number(localStorage.getItem('companyID')),
       })
-      console.log(response);
+      // console.log(response);
       if (response && Array.isArray(response)) {
         setDistrict(response);
         setGSTDistrict(response);
@@ -2140,14 +2141,14 @@ const CreateChallan: React.FC = () => {
                     <div className="flex-grow-1">
                       <Select
                         placeholder="Select Party"
-                        value={ challanData.Party
-                            ? {
-                              value: challanData.Party,
-                              label:
-                                partyType.find((d) => d.PartyID === challanData.Party)
-                                  ?.Name || "",
-                            }
-                            : null
+                        value={challanData.Party
+                          ? {
+                            value: challanData.Party,
+                            label:
+                              partyType.find((d) => d.PartyID === challanData.Party)
+                                ?.Name || "",
+                          }
+                          : null
                         }
                         options={partyType.map((d) => ({
                           value: d.PartyID,
@@ -2299,7 +2300,7 @@ const CreateChallan: React.FC = () => {
                           className="flex items-center gap-2 px-2 py-1 mr-3 rounded-md text-white"
                           style={{ backgroundColor: "#212529" }}
                           onClick={() => {
-                            console.log("Print button clicked");
+                            // console.log("Print button clicked");
                             handlePrint();
                           }}
                         >
@@ -2324,7 +2325,7 @@ const CreateChallan: React.FC = () => {
                               Challan#
                             </label>
                             <div className="product-des-input d-flex gap-2 flex-grow-1">
-                              <input className='challan' type="text" id="product-desc-1" style={{ flex: 1 }} value={editItemId ? challanData.ChallanNo : "Auto Generated"} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} readOnly={true}/>
+                              <input className='challan' type="text" id="product-desc-1" style={{ flex: 1 }} value={editItemId ? challanData.ChallanNo : "Auto Generated"} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} readOnly={true} />
                               {/* <input className='challan' type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} /> */}
                               <input className='challan' type="text" id="date-pick-bano" style={{ flex: 1 }} readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
                               <input className='challan' type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
@@ -2742,16 +2743,14 @@ const CreateChallan: React.FC = () => {
                                           label += ` - ${p.Address}`;
                                         }
                                         return {
-                                          value: p.PartyID,
-                                          label,
+                                          value: p.Name,
+                                          label: label,
                                         };
                                       })}
 
                                       onChange={(selectedOption) => {
                                         if (selectedOption) {
-                                          const selectedParty = gstPartyType.find(
-                                            (p) => p.Name === selectedOption.value
-                                          );
+                                          const selectedParty = gstPartyType.find((p) => p.Name === selectedOption.value);
                                           if (selectedParty) {
                                             setChallanData((prev) => ({
                                               ...prev,
@@ -2774,6 +2773,8 @@ const CreateChallan: React.FC = () => {
                                             ...prev,
                                             Name: "",
                                             PartyGstName: "",
+                                            gstAddress: "",
+                                            GstNo: "",
                                           }));
                                         }
                                       }}
@@ -2876,7 +2877,7 @@ const CreateChallan: React.FC = () => {
                                           label: gstZipCode.find((z) => z.ZipCodeID === challanData.GstPinID)?.ZipCodeName,
                                         } : null
                                       }
-                                      options={ gstZipCode.map((z) => ({
+                                      options={gstZipCode.map((z) => ({
                                         value: z.ZipCodeID,
                                         label: z.ZipCodeName
                                       }))}
@@ -3031,11 +3032,6 @@ const CreateChallan: React.FC = () => {
                                       <label className="MAINTABLE_LABEL name-label">Vehicle Commision</label>
                                       <input className="challan" type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
                                     </div>
-                                    {/* Date-Time */}
-                                    {/* <div className="col-md-2 mt-0">
-                                                                            <label className="MAINTABLE_LABEL name-label">Financial Year</label>
-                                                                            <input type="text" id="SchemDes" readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
-                                                                        </div> */}
                                   </div>
                                 </div>
                               </div>
@@ -3128,30 +3124,6 @@ const CreateChallan: React.FC = () => {
                                       <label className="MAINTABLE_LABEL name-label">Grand Total</label>
                                       <input className="challan" type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
                                     </div>
-
-                                    {/* <div className="col-md-3 mt-0">
-                                                                            <label className="MAINTABLE_LABEL">Company Id</label>
-                                                                            <Select
-                                                                                value={dropdown}
-                                                                                onChange={(selectedOptions: any) => setDropdown(selectedOptions || [])}
-                                                                                options={options}
-                                                                                isMulti
-                                                                                isClearable
-                                                                                closeMenuOnSelect={false}
-                                                                                hideSelectedOptions={true}
-                                                                                placeholder="Select Company"
-                                                                                className="basic-multi-select"
-                                                                                styles={{
-                                                                                    ...multiValue,
-                                                                                    valueContainer: (provided) => ({
-                                                                                        ...provided,
-                                                                                        maxHeight: "60px",
-                                                                                        overflowY: "auto",
-                                                                                        flexWrap: "wrap",
-                                                                                    }),
-                                                                                }}
-                                                                            />
-                                                                        </div> */}
                                   </div>
                                 </div>
                               </div>
@@ -3171,19 +3143,7 @@ const CreateChallan: React.FC = () => {
 
       <div className="print-area">
         <div ref={slipRef}>
-          <ChallanSlip
-            challanNo={challanData.ChallanNo || "N/A"}
-            dateTime={
-              challanData.ChallanDate
-                ? moment(challanData.ChallanDate).format("DD/MM/YYYY HH:mm")
-                : moment().format("DD/MM/YYYY HH:mm")
-            }
-            vehicleNo={challanData.VehicleNo || "N/A"}
-            material={challanData.productDetails?.[0]?.name || "N/A"}
-            consignee={challanData.Name || "N/A"}
-            tareWeight={challanData.TareWeight || 0}
-            amount={`${challanData.paytype || "Cash"} (${challanData.Amount || "0"
-              })`}
+          <ChallanSlip itemId={editItemId}
           />
         </div>
       </div>
