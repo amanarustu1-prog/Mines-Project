@@ -25,24 +25,51 @@ const ChallanPrint: React.FC = () => {
     totalAmt: "38130.00",
   };
 
+  // 👉 Product rows – ab yahan define karo
+  const rows = [
+    {
+      id: 1,
+      product: data.product,
+      rate: data.rate,
+      netWeight: data.netWeight,
+      amount: data.amount,
+    },
+    {
+      id: 2,
+      product: data.product,
+      rate: data.rate,
+      netWeight: data.netWeight,
+      amount: data.amount,
+    },
+    {
+      id: 3,
+      product: data.product,
+      rate: data.rate,
+      netWeight: data.netWeight,
+      amount: data.amount,
+    },
+   
+  ];
+
   return (
     <div className="card my-3 challan-print-card py-4">
       <div className="card-body p-2 d-flex justify-content-center">
         <div className="challan-main">
-
           {/* ========= TOP HEADER ========= */}
           <div className="challan-header">
             <div className="challan-header-left">
-              <label className="challan-info-label" htmlFor="">Challa No :</label> {data.challaNo}
+              <label className="challan-info-label">Challa No :</label>{" "}
+              {data.challaNo}
             </div>
-            <div className="challan-header-center ">
+
+            <div className="challan-header-center">
               ॥ श्री गणेशाय नमः ॥
             </div>
 
             <div className="challan-header-right">
               <div className="challan-cash">CASH</div>
               <div className="challan-date">
-                <label className="challan-info-label" htmlFor="">Date :</label> {data.date}
+                <label className="challan-info-label">Date :</label> {data.date}
               </div>
             </div>
           </div>
@@ -52,7 +79,6 @@ const ChallanPrint: React.FC = () => {
             <table className="challan-info-table_print">
               <tbody>
                 {[
-                  // ["Challa", data.challaNo],
                   ["Cons. Nam", data.consName],
                   ["Adress", data.address],
                   ["Contact", data.contact || ""],
@@ -80,13 +106,15 @@ const ChallanPrint: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="text-center">1</td>
-                <td>{data.product}</td>
-                <td className="text-center">{data.rate}</td>
-                <td className="text-center">{data.netWeight}</td>
-                <td className="text-center">{data.amount}</td>
-              </tr>
+              {rows.map((row, index) => (
+                <tr key={row.id || index}>
+                  <td className="text-center">{index + 1}</td>
+                  <td>{row.product}</td>
+                  <td className="text-center">{row.rate}</td>
+                  <td className="text-center">{row.netWeight}</td>
+                  <td className="text-center">{row.amount}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
 
@@ -142,7 +170,9 @@ const ChallanPrint: React.FC = () => {
                       return (
                         <tr key={idx}>
                           <td className="challan-info-label">
-                            <label className="challan-info-label" htmlFor="">{label} :</label>
+                            <label className="challan-info-label">
+                              {label} :
+                            </label>
                           </td>
                           <td className="challan-info-value">
                             <div className="challan-total-box">
@@ -161,7 +191,9 @@ const ChallanPrint: React.FC = () => {
                     return (
                       <tr key={idx}>
                         <td className="challan-info-label">
-                          <label className="challan-info-label" htmlFor="">{label} :</label>
+                          <label className="challan-info-label">
+                            {label} :
+                          </label>
                         </td>
                         <td className="challan-info-value">{value}</td>
                       </tr>
@@ -170,7 +202,9 @@ const ChallanPrint: React.FC = () => {
 
                   <tr>
                     <td className="challan-info-label">
-                      <label className="challan-info-label" htmlFor="">Vehicle Rema</label> :
+                      <label className="challan-info-label">
+                        Vehicle Rema :
+                      </label>
                     </td>
                     <td className="challan-info-value">{data.remarks}</td>
                   </tr>

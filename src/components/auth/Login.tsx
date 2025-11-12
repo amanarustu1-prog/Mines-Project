@@ -1,4 +1,5 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
+import { SingleValue } from "react-select";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toastifySuccess, toastifyError } from "../../common/AlertMsg";
@@ -12,6 +13,10 @@ import { Encrypted_Id_Name, get_OTP } from "../Common/Utility";
 import { fetchPostData } from "../hooks/Api";
 import axios from "@/interceptors/axios";
 import { fetchIpAddress } from "@/redux/actions/Agency";
+import Select from "react-select";
+import { SelectInstance } from "react-select";
+
+
 const BASE_URL = import.meta.env.VITE_DOMAIN_URL_KEY;
 
 interface LoginResponse {
@@ -27,6 +32,8 @@ interface LoginResponse {
   name: string;
   companyID: number;
 }
+
+
 
 const Login = () => {
   const [company, setCompany] = useState("");
@@ -44,7 +51,7 @@ const Login = () => {
   const [passErr, setPassErr] = useState<string | boolean>(false);
   const [compErr, setCompErr] = useState<string | boolean>(false);
 
-  const myRef = useRef<HTMLSelectElement>(null);
+  const myRef = useRef<SelectInstance<CompanyOption> | null>(null);
   const userNameRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useAppDispatch();
@@ -66,11 +73,11 @@ const Login = () => {
     sessionStorage.setItem("UniqueUserID", Encrypted_Id_Name(uniUserId, "UForUniqueUserID"));
   };
 
-  const handleCopy = (e : any) => {
+  const handleCopy = (e: any) => {
     e.preventDefault();
   }
 
-  const[companies, setCompanies] = useState<{ CompanyID: number; CompanyName: string }[]>([]);
+  const [companies, setCompanies] = useState<{ CompanyID: number; CompanyName: string }[]>([]);
 
   const verify_User = async (e: any) => {
     e.preventDefault();
@@ -113,9 +120,9 @@ const Login = () => {
     }
     if (company === "") {
       toastifyError("Select Company !!");
-    } 
+    }
 
-    if(company && username && password){
+    if (company && username && password) {
       dispatch(loginUserApi(username, password, company)).then((res: any) => {
         InsertAccessOrRefreshToken();
         navigate("/dashboard-page");
@@ -125,114 +132,175 @@ const Login = () => {
     }
   };
 
+  type CompanyOption = {
+    value: string;
+    label: string;
+  };
+
+  const companyOptions: CompanyOption[] = companies.map((c) => ({
+    value: String(c.CompanyID),
+    label: c.CompanyName,
+  }));
+
+
+
+
+  const handleCompanyChange = (selectedOption: SingleValue<CompanyOption>) => {
+    const value = selectedOption?.value ?? "";
+    setCompany(value);
+    userNameRef.current?.focus();
+  };
+
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-10 px-4">
       {!showOtpModal && (
         <>
           {/* Heading */}
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-blue-600">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-slate-800 tracking-wide">
               Tiwari Mining Group
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mt-1">
               A name for Quality and Excellence
             </p>
           </div>
 
           {/* Card */}
-          <div className="mt-6 w-full max-w-sm m-auto bg-white rounded-xl shadow p-6">
-            <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
-              {/* Username */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Username
-                </label>
-                <input
-                  ref={userNameRef}
-                  type="text"
-                  onCut={handleCopy}
-                  onCopy={handleCopy}
-                  onPaste={handleCopy}
-                  autoComplete='off'
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                  placeholder="Enter username"
-                />
-              </div>
-              <p className="text-danger" style={{ fontSize: "13px", fontWeight: "400", marginTop: "0px", }}>{userErr}</p>
+          <div className="w-full max-w-sm mx-auto">
+            <div className="bg-white rounded-xl shadow-md border border-slate-200 px-6 py-6">
+              <h2 className="text-lg font-semibold text-slate-800 mb-4 text-center">
+                Sign in to your account
+              </h2>
 
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="relative">
+              <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
+                {/* Username */}
+                <div>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    Username
+                  </label>
                   <input
-                    type={showPassword ? "text" : "password"}
+                    ref={userNameRef}
+                    type="text"
                     onCut={handleCopy}
                     onCopy={handleCopy}
                     onPaste={handleCopy}
-                    autoComplete='off'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
-                    placeholder="Enter password"
-                    onFocus={verify_User}
+                    autoComplete="off"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-400"
+                    placeholder="Enter username"
                   />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
-                    {showPassword ? (
-                      <EyeSlashIcon className="h-5 w-5" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5" />
-                    )}
-                  </button>
+                  {userErr && (
+                    <p className="mt-1 text-xs text-red-500">{userErr}</p>
+                  )}
                 </div>
-              </div>
-              <p className="text-danger"style={{ fontSize: "13px", fontWeight: "400", marginTop: "0px",}}>{passErr}</p>
 
-              {/* Select Company */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Select Company
-                </label>
-                <select
-                  ref={myRef}
-                  value={company}
-                  onChange={(e) => { setCompany(e.target.value); userNameRef.current?.focus();
-                  // alert(e.target.value); 
-                }}
-                  className="mt-1 block w-full rounded-md border px-3 py-2 shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
+                {/* Password */}
+                <div>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      onCut={handleCopy}
+                      onCopy={handleCopy}
+                      onPaste={handleCopy}
+                      autoComplete="off"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-400"
+                      placeholder="Enter password"
+                      onFocus={verify_User}
+
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                    >
+                      {showPassword ? (
+                        <EyeSlashIcon className="h-5 w-5" />
+                      ) : (
+                        <EyeIcon className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                  {passErr && (
+                    <p className="mt-1 text-xs text-red-500">{passErr}</p>
+                  )}
+                </div>
+
+                {/* Select Company */}
+                <div>
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                    Select Company
+                  </label>
+                  <Select
+                    ref={myRef}
+                    value={companyOptions.find((opt) => opt.value === company) || null}
+                    onChange={handleCompanyChange}
+                    options={companyOptions}
+                    placeholder="-- Select Company --"
+                    isClearable
+                    classNamePrefix="react-select"
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        minHeight: 36,
+                        borderRadius: 6,
+                        borderColor: state.isFocused ? "#4f46e5" : "#cbd5e1",
+                        boxShadow: "none",
+                        "&:hover": {
+                          borderColor: "#4f46e5",
+                        },
+                        fontSize: "0.875rem", // text-sm
+                      }),
+                      valueContainer: (base) => ({
+                        ...base,
+                        padding: "0 8px",
+                      }),
+                      indicatorsContainer: (base) => ({
+                        ...base,
+                        paddingRight: 4,
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        fontSize: "0.875rem",
+                        zIndex: 50,
+                      }),
+                    }}
+                  />
+                  {compErr && (
+                    <p className="mt-1 text-xs text-red-500">{compErr}</p>
+                  )}
+                </div>
+
+                {/* Forgot password + Submit */}
+                <div className="flex items-center justify-between">
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="mt-2 w-full flex items-center justify-center gap-2 rounded-md bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <option value="">-- Select Company --</option>
-                  {companies.map((c) => (
-                    <option key={c.CompanyID} value={c.CompanyID}>
-                      {c.CompanyName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <p className="text-danger" style={{ fontSize: "13px", fontWeight: "400", marginTop: "0px", }}>{compErr}</p>
-
-              {/* Forgot password */}
-              <div className="flex justify-end items-center">
-                <Link
-                  to="/forgot-password"
-                  className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-
-              {/* Submit button */}
-              <button type="submit" disabled={loading} className="w-full flex items-center justify-center gap-2 rounded-md bg-indigo-600 py-2 text-white font-medium hover:bg-indigo-700 shadow disabled:opacity-50">
-                {loading ? "Logging in..." : "Log in"}
-              </button>
-            </form>
+                  {loading ? "Logging in..." : "Log in"}
+                </button>
+              </form>
+            </div>
           </div>
         </>
       )}
     </div>
+
   );
 };
 
