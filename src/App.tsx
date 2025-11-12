@@ -88,6 +88,7 @@ import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
 import Purchase from './pages/sale/Puchase/Puchase'
 import PartyRate from './pages/sale/Party-Rate/PartyRate'
 import MaterialRequestEntry from './pages/Inventory/material-request-entry/MaterialRequestEntry'
+import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher'
 import RequestApproval from './pages/Inventory/request-approval/RequestApproval'
 import RejectApprovedRequests from './pages/Inventory/reject-approved-requests/RejectApprovedRequests'
 import RequestQuotation from './pages/Inventory/request-quotation/RequestQuotation'
@@ -347,6 +348,7 @@ function App() {
 
         {/* Accounts */}
         <Route path="/ledger-group" element={<Ledger />} />
+        <Route path="/payment-voucher" element={<PaymentVoucher/>} />
 
         {/* List-Management */}
         {/* <Route path=":section/:page" element={<ListManagementRoute/>} /> */}
