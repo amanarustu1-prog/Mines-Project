@@ -85,19 +85,19 @@ const ChallanSlip: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                                     <div className="flex">
                                         <span className="w-28">Vehicle No</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {datas[0?.]} */}
+                                            {datas[0]?.VehicleNoID || 0}
                                         </span>
                                     </div>
                                     <div className="flex">
-                                        <span className="w-28">Consignee</span>
+                                        <span className="w-28">Party</span>
                                         <span className="font-semibold ml-1">
-                                            {/* ,{consignee} */}
+                                            {datas[0]?.PartyID || 0}
                                         </span>
                                     </div>
                                     <div className="flex">
                                         <span className="w-28">Amount</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {amount} */}
+                                            {datas[0]?.GTotal || 0}
                                         </span>
                                     </div>
                                 </div>
@@ -107,13 +107,13 @@ const ChallanSlip: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                                     <div className="flex">
                                         <span className="w-24">Material</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {material} */}
+                                            {/* {datas[0].} */}
                                         </span>
                                     </div>
                                     <div className="flex">
                                         <span className="w-24">Tare Weight</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {tareWeight} */}
+                                            {datas[0]?.TareWeight || 0}
                                         </span>
                                     </div>
                                 </div>

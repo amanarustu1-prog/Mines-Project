@@ -102,7 +102,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                   ["Cons. Nam", datas[0]?.PartyID || ""],
                   ["Address", datas[0]?.Address || ""],
                   ["Contact", datas[0]?.OwnerMobile || ""],
-                  ["Vehicle", datas[0]?.VehicleNo],
+                  ["Vehicle", datas[0]?.VehicleNoID || ""],
                 ].map(([label, value], idx) => (
                   <tr key={idx}>
                     <td className="challan-info-label">{label}</td>
