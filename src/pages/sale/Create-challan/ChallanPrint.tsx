@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ChallanPrint.css";
+import { fetchPostData } from "@/components/hooks/Api";
+import { getShowingDateText } from "@/common/DateFormat";
 
-const ChallanPrint: React.FC = () => {
+const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
+  const [datas, setDatas] = useState<any>({});
   const data = {
     challaNo: "B/2025-2026/6991",
     date: "11/08/2025 08:42:55",
@@ -120,20 +123,19 @@ const ChallanPrint: React.FC = () => {
 
           {/* ========= LOWER PART ========= */}
           <div className="challan-lower">
-            {/* LEFT – charges */}
             <div className="challan-charges">
               <table className="challan-info-table_print">
                 <tbody>
                   {[
-                    ["Loading", data.loading.toFixed(2)],
-                    ["Commosion", data.commision.toFixed(2)],
-                    ["Total", data.total.toFixed(2)],
-                    ["GST Amt.", "0.00"],
-                    ["Royality A", "0.00"],
-                    ["TP Amt", "0.00"],
-                    ["F Amt.", "0.00"],
-                    ["Round Amt", "0.00"],
-                    ["Total Amt.", data.totalAmt],
+                    ["Loading", datas[0]?.LoadingAmt || 0],
+                    ["Commosion", datas[0]?.CommisionAmt || 0],
+                    ["Total", datas[0]?.TotalAmt || 0],
+                    ["GST Amt.", datas[0]?.GSTAmt || 0],
+                    ["Royality A", datas[0]?.RoyaltyAmt || 0],
+                    ["TP Amt", datas[0]?.TPAmount || 0],
+                    ["F Amt.", datas[0]?.FreightAmt || 0],
+                    ["Round Amt", 0],
+                    ["Total Amt.", datas[0]?.GTotal || 0],
                   ].map(([label, value], idx) => (
                     <tr key={idx}>
                       <td className="challan-info-label">{label}</td>
@@ -152,19 +154,18 @@ const ChallanPrint: React.FC = () => {
               </table>
             </div>
 
-            {/* RIGHT – Driver / Weights / कुल राशि box */}
             <div className="challan-driver">
               <table className="challan-info-table_print">
                 <tbody>
                   {[
-                    ["Driver Nam", data.driverName],
-                    ["Driver#", data.driverNo],
-                    ["Gross Weig", data.grossWeight],
-                    ["Tare Weigh", data.tareWeight],
-                    ["Net Weight", data.netWeightKg],
-                    ["Less Weigh", "0"],
-                    ["GT Weight", data.netWeightKg],
-                    ["Total Amt.", ""],
+                    ["Driver Name", datas[0]?.DriverName || 0],
+                    ["Driver#", datas[0]?.DriverMobileNo || 0],
+                    ["Gross Weight", datas[0]?.Grossweight || 0],
+                    ["Tare Weight", datas[0]?.TareWeight || 0],
+                    ["Net Weight", datas[0]?.Netweight || 0],
+                    ["Less Weight", datas[0]?.Lessweight || 0],
+                    ["GT Weight", datas[0]?.GTWeight || 0],
+                    ["Total Amt.", datas[0]?.Amount || 0],
                   ].map(([label, value], idx) => {
                     if (idx === 7) {
                       return (
@@ -180,7 +181,7 @@ const ChallanPrint: React.FC = () => {
                                 कुल राशि
                               </span>
                               <span className="challan-total-box-amount">
-                                {data.totalAmt}
+                                {datas[0]?.Amount || 0}
                               </span>
                             </div>
                           </td>
@@ -206,7 +207,7 @@ const ChallanPrint: React.FC = () => {
                         Vehicle Rema :
                       </label>
                     </td>
-                    <td className="challan-info-value">{data.remarks}</td>
+                    <td className="challan-info-value">{datas[0]?.VehicleRemarks}</td>
                   </tr>
                 </tbody>
               </table>
