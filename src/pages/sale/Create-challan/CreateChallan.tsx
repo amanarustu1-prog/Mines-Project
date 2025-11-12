@@ -3166,30 +3166,6 @@ const CreateChallan: React.FC = () => {
           <ChallanPrint itemId={editItemId} />
         </div>
       </div>
-          <ChallanPrint
-            challaNo={challanData.ChallanNo || ''}
-            date={challanData.ChallanDate || ''}
-            consName={challanData.Name || ''}
-            address={challanData.address || ''}
-            contact={challanData.OwnerMobile || ''}
-            vehicle={challanData.VehicleNo || ''}
-            product={challanData.ProductName1 || ''}
-            rate={challanData.Rate1 || 0}
-            netWeight={challanData.Netweight1 || 0}
-            amount={challanData.Amount1 || 0}
-            loading={challanData.LoadingAmt || 0}
-            commision={challanData.CommisionAmt || 0}
-            total={challanData.TotalAmt || 0}
-            driverName={challanData.DriverName || ''}
-            driverNo={challanData.DriverMobileNo?.toString() || ''}
-            grossWeight={`${challanData.Grossweight1 || 0} KG ${challanData.Grossweightdate1 ? new Date(challanData.Grossweightdate1).toLocaleString() : ''}`}
-            tareWeight={`${challanData.TareWeight || 0} KG`}
-            netWeightKg={`${challanData.Netweight1 || 0}`}
-            remarks={challanData.VehicleRemarks || ''}
-            totalAmt={challanData.GTotal?.toFixed(2) || '0.00'}
-          />
-        </div>
-      </div>
 
 
       <ConfirmModal show={showModal}
