@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchPostData } from "@/components/hooks/Api";
 import { getShowingDateText } from "@/common/DateFormat";
-
+ 
 const printStyles = `
   @media print {
     @page {
@@ -17,38 +17,38 @@ const printStyles = `
     }
   }
 `;
-
+ 
 const ChallanSlip: React.FC<{ itemId: number | null }> = ({ itemId }) => {
     const [datas, setDatas] = useState<any>({});
-
+ 
     useEffect(() => {
         // console.log(itemId);
         if (itemId) {
             getSingleChallan();
         }
     }, [itemId]);
-
+ 
     const getSingleChallan = async () => {
         const response = await fetchPostData('Challan/GetSingleData_Challan', { ChallanID: itemId });
-        // console.log(response);
-
+        console.log(response);
+ 
         if (response && Array.isArray(response)) {
             setDatas(response);
         } else {
             setDatas({});
         }
     }
-
+ 
     const copies = [
         { title: "एल एन टी प्रति" },
         { title: "ऑफिस प्रति" },
         { title: "कस्टमर प्रति" },
     ];
-
+ 
     return (
         <div className="print-container bg-white">
             <style>{printStyles}</style>
-
+ 
             <div className="flex flex-col items-center px-4 py-4">
                 {copies.map((copy, i) => (
                     <div key={i} className="w-full max-w-3xl mb-6 border-0 print:mb-4" style={{ breakInside: "avoid" }}>
@@ -66,7 +66,7 @@ const ChallanSlip: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                                 </div>
                             </div>
                         </div>
-
+ 
                         {/* ===== Body (two-column layout) ===== */}
                         <div className="px-2 pt-1 text-[13px] leading-relaxed font-medium text-gray-900">
                             <div className="flex justify-between border-b border-black/30 pb-1 mb-1">
@@ -79,41 +79,41 @@ const ChallanSlip: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                                     <span className="font-semibold">{getShowingDateText(datas[0]?.ChallanDate)  || ''}</span>
                                 </div>
                             </div>
-
+ 
                             <div className="grid grid-cols-2 gap-x-16 pt-1">
                                 <div className="space-y-1">
                                     <div className="flex">
                                         <span className="w-28">Vehicle No</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {datas[0?.]} */}
+                                            {datas[0]?.VehicleNoID || 0}
                                         </span>
                                     </div>
                                     <div className="flex">
-                                        <span className="w-28">Consignee</span>
+                                        <span className="w-28">Party</span>
                                         <span className="font-semibold ml-1">
-                                            {/* ,{consignee} */}
+                                            {datas[0]?.PartyID || 0}
                                         </span>
                                     </div>
                                     <div className="flex">
                                         <span className="w-28">Amount</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {amount} */}
+                                            {datas[0]?.GTotal || 0}
                                         </span>
                                     </div>
                                 </div>
-
+ 
                                 {/* right column */}
                                 <div className="space-y-1">
                                     <div className="flex">
                                         <span className="w-24">Material</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {material} */}
+                                            {/* {datas[0].} */}
                                         </span>
                                     </div>
                                     <div className="flex">
                                         <span className="w-24">Tare Weight</span>
                                         <span className="font-semibold ml-1">
-                                            {/* {tareWeight} */}
+                                            {datas[0]?.TareWeight || 0}
                                         </span>
                                     </div>
                                 </div>
@@ -125,5 +125,5 @@ const ChallanSlip: React.FC<{ itemId: number | null }> = ({ itemId }) => {
         </div>
     );
 };
-
+ 
 export default ChallanSlip;

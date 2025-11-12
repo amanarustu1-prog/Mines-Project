@@ -4,6 +4,8 @@ import Select from 'react-select';
 import { FiPlus, FiTrash2, FiPrinter, FiSave, FiX, FiDollarSign, FiInfo, FiChevronDown, FiAlertCircle } from "react-icons/fi";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const PaymentVoucher = () => {
 
@@ -106,15 +108,15 @@ const PaymentVoucher = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!voucherNo.trim()) {
             newErrors.voucherNo = ' required';
         }
-        
+
         if (!selectedAccount) {
             newErrors.account = ' required';
         }
-        
+
         particulars.forEach((p, index) => {
             if (!p.name.trim()) {
                 newErrors[`particular-${p.id}-name`] = ' required';
@@ -124,11 +126,11 @@ const PaymentVoucher = () => {
                 newErrors[`particular-${p.id}-amount`] = 'required';
             }
         });
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-    
+
     const addParticular = () => {
         const newParticular = {
             id: Date.now(),
@@ -152,7 +154,7 @@ const PaymentVoucher = () => {
             delete newErrors[`particular-${id}-${field}`];
             setErrors(newErrors);
         }
-        
+
         setParticulars(
             particulars.map((p) => (p.id === id ? { ...p, [field]: value } : p))
         );
@@ -167,7 +169,7 @@ const PaymentVoucher = () => {
             .toFixed(2);
     };
 
-   
+
     const formatCurrency = (value) => {
         return parseFloat(value).toLocaleString('en-IN', {
             minimumFractionDigits: 2,
@@ -188,9 +190,9 @@ const PaymentVoucher = () => {
             toast.error('Please fix the form errors before saving');
             return;
         }
-        
+
         setIsSubmitting(true);
-        
+
         try {
             const voucherData = {
                 voucherNo,
@@ -205,13 +207,13 @@ const PaymentVoucher = () => {
                 status: 'draft',
                 createdAt: new Date().toISOString()
             };
-            
+
             console.log('Saving voucher:', voucherData);
-            
+
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
+
             toast.success('Voucher saved successfully!');
-            
+
         } catch (error) {
             console.error('Error saving voucher:', error);
             toast.error('Failed to save voucher. Please try again.');
@@ -220,7 +222,7 @@ const PaymentVoucher = () => {
         }
     };
 
-   
+
     const handleAmountBlur = (id, value) => {
         if (value && !isNaN(value.replace(/,/g, ''))) {
             updateParticular(id, 'amount', formatCurrency(value));
@@ -281,7 +283,7 @@ const PaymentVoucher = () => {
 
                     <div className="date-section">
                         <div className="date-input-container">
-                            <input
+                            <DatePicker
                                 type="date"
                                 className="date-input date-inputs"
                                 value={date}

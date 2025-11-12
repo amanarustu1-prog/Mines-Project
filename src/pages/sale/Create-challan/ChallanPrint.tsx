@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ChallanPrint.css";
 import { fetchPostData } from "@/components/hooks/Api";
 import { getShowingDateText } from "@/common/DateFormat";
-
+ 
 const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
   const [datas, setDatas] = useState<any>({});
   const data = {
@@ -27,7 +27,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
     remarks: "dumpper",
     totalAmt: "38130.00",
   };
-
+ 
   const rows = [
     {
       id: 1,
@@ -52,25 +52,25 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
     },
    
   ];
-
+ 
   useEffect(() => {
     // console.log(itemId);
     if(itemId){
       getSingleChallan();
     }
   }, [itemId]);
-
+ 
   const getSingleChallan = async () => {
     const response = await fetchPostData('Challan/GetSingleData_Challan',  { ChallanID: itemId });
     // console.log(response);
-
+ 
     if(response && Array.isArray(response)){
       setDatas(response);
     }else{
       setDatas({});
     }
   }
-
+ 
   return (
     <div className="card my-3 challan-print-card py-4">
       <div className="card-body p-2 d-flex justify-content-center">
@@ -81,11 +81,11 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
               <label className="challan-info-label">Challa No :</label>{" "}
               {datas[0]?.ChallanNo || ''}
             </div>
-
+ 
             <div className="challan-header-center">
               ॥ श्री गणेशाय नमः ॥
             </div>
-
+ 
             <div className="challan-header-right">
               <div className="challan-cash">CASH</div>
               <div className="challan-date">
@@ -93,7 +93,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
               </div>
             </div>
           </div>
-
+ 
           {/* ========= CHALLAN INFO ========= */}
           <div className="challan-info">
             <table className="challan-info-table_print">
@@ -102,7 +102,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                   ["Cons. Nam", datas[0]?.PartyID || ""],
                   ["Address", datas[0]?.Address || ""],
                   ["Contact", datas[0]?.OwnerMobile || ""],
-                  ["Vehicle", datas[0]?.VehicleNo],
+                  ["Vehicle", datas[0]?.VehicleNoID || ""],
                 ].map(([label, value], idx) => (
                   <tr key={idx}>
                     <td className="challan-info-label">{label}</td>
@@ -113,7 +113,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
               </tbody>
             </table>
           </div>
-
+ 
           {/* ========= PRODUCT TABLE ========= */}
           <table className="challan-product-table challan-info-table_print">
             <thead>
@@ -137,7 +137,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
               ))}
             </tbody>
           </table>
-
+ 
           {/* ========= LOWER PART ========= */}
           <div className="challan-lower">
             <div className="challan-charges">
@@ -170,7 +170,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                 </tbody>
               </table>
             </div>
-
+ 
             <div className="challan-driver">
               <table className="challan-info-table_print">
                 <tbody>
@@ -205,7 +205,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                         </tr>
                       );
                     }
-
+ 
                     return (
                       <tr key={idx}>
                         <td className="challan-info-label">
@@ -217,7 +217,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
                       </tr>
                     );
                   })}
-
+ 
                   <tr>
                     <td className="challan-info-label">
                       <label className="challan-info-label">
@@ -230,7 +230,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
               </table>
             </div>
           </div>
-
+ 
           {/* ========= FOOTER ========= */}
           <div className="challan-footer">
             <span>TP Challan Approved Si</span>
@@ -242,5 +242,5 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
     </div>
   );
 };
-
+ 
 export default ChallanPrint;
