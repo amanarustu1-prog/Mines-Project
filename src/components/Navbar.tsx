@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
@@ -956,14 +956,14 @@ const navigationItems: NavItem[] = [
             description: 'Mine site planning and development',
             badge: 'New'
           },
-           {
+          {
             title: 'Plant Grease Report',
             href: '/mining/planning',
             icon: MapPin,
             description: 'Mine site planning and development',
             badge: 'New'
           },
-           {
+          {
             title: 'Vehicle Service Report',
             href: '/mining/planning',
             icon: MapPin,
@@ -2474,6 +2474,84 @@ export function Navbar() {
   const [hoveredMoreItem, setHoveredMoreItem] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+
+  // 🔎 search state
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // ✅ flatten all routes from navigationItems + moreMenuItems
+  const allRoutes = useMemo(() => {
+    type Route = { title: string; href: string; description?: string };
+
+    const routes: Route[] = [];
+
+    const collectFromNav = (items: NavItem[]) => {
+      items.forEach((item) => {
+        if (item.href) {
+          routes.push({ title: item.title, href: item.href });
+        }
+
+        if (item.children) {
+          item.children.forEach((child) =>
+            routes.push({
+              title: child.title,
+              href: child.href,
+              description: child.description,
+            })
+          );
+        }
+
+        if (item.sections) {
+          item.sections.forEach((section) => {
+            section.items.forEach((sub) =>
+              routes.push({
+                title: sub.title,
+                href: sub.href,
+                description: sub.description,
+              })
+            );
+          });
+        }
+      });
+    };
+
+    collectFromNav(navigationItems);
+    collectFromNav(moreMenuItems);
+
+    return routes;
+  }, []);
+
+  const closeAllMenus = () => {
+    setOpenDropdown(null);
+    setUserMenuOpen(false);
+    setMoreMenuOpen(false);
+    setHoveredMoreItem(null);
+  };
+
+  const handleSearchNavigate = (value: string) => {
+    const q = value.trim().toLowerCase();
+    if (!q) return;
+
+    // simple match on title or description
+    const match = allRoutes.find((r) => {
+      if (r.title.toLowerCase().includes(q)) return true;
+      if (r.description && r.description.toLowerCase().includes(q)) return true;
+      return false;
+    });
+
+    if (match) {
+      navigate(match.href);
+      setSearchQuery("");
+      closeAllMenus();
+    }
+  };
+
+
+
+
+
   const isActiveLink = (href: string) => {
     // Only return true for exact path matches
     return pathname === href;
@@ -2516,13 +2594,6 @@ export function Navbar() {
     setHoveredMoreItem(null);
   };
 
-  const closeAllMenus = () => {
-    setOpenDropdown(null);
-    setUserMenuOpen(false);
-    setMoreMenuOpen(false);
-    setHoveredMoreItem(null);
-  };
-
   const [userMenusOpen, setUserMenusOpen] = useState(false);
   const toggleUserMenu = () => {
     setUserMenuOpen((prev) => !prev);
@@ -2533,40 +2604,37 @@ export function Navbar() {
   const dropdownRef1 = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as Node;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
 
-    // if click is outside both dropdown and button → close
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(target) &&
-      buttonRef.current &&
-      !buttonRef.current.contains(target)
-    ) {
-      setUserMenuOpen(false);
-    }
+      // if click is outside both dropdown and button → close
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(target)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+
+  const handleLogout = () => {
+    // console.log("Logout clicked 🚀");
+
+    dispatch(logoutUser());
+
+    // console.log("Storage after logout:");
+
+    navigate("/");
   };
-
-  document.addEventListener("click", handleClickOutside);
-  return () => {
-    document.removeEventListener("click", handleClickOutside);
-  };
-}, []);
-
-
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-const handleLogout = () => {
-  // console.log("Logout clicked 🚀");
-
-  dispatch(logoutUser());
-
-  // console.log("Storage after logout:");
-
-  navigate("/");
-};
 
 
   return (
@@ -2600,6 +2668,13 @@ const handleLogout = () => {
               </div>
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearchNavigate(searchQuery);
+                  }
+                }}
                 placeholder="Search operations, equipment, reports..."
                 className="w-full pl-12 pr-12 py-3 bg-gray-50/80 border border-gray-200/60 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-200 hover:bg-gray-50"
               />
@@ -2636,8 +2711,8 @@ const handleLogout = () => {
             {/* User Menu */}
             <div className="relative">
               <button
-                  ref={buttonRef}
-                  onClick={toggleUserMenu}
+                ref={buttonRef}
+                onClick={toggleUserMenu}
                 className="flex items-center space-x-2 p-1.5 hover:bg-gray-50 rounded-lg transition-all duration-200 group"
               >
                 <div className="hidden lg:flex flex-col text-right">
