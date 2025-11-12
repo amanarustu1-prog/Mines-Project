@@ -28,6 +28,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
     totalAmt: "38130.00",
   };
 
+  // 👉 Product rows – ab yahan define karo
   const rows = [
     {
       id: 1,
@@ -53,24 +54,6 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
    
   ];
 
-  useEffect(() => {
-    // console.log(itemId);
-    if(itemId){
-      getSingleChallan();
-    }
-  }, [itemId]);
-
-  const getSingleChallan = async () => {
-    const response = await fetchPostData('Challan/GetSingleData_Challan',  { ChallanID: itemId });
-    // console.log(response);
-
-    if(response && Array.isArray(response)){
-      setDatas(response);
-    }else{
-      setDatas({});
-    }
-  }
-
   return (
     <div className="card my-3 challan-print-card py-4">
       <div className="card-body p-2 d-flex justify-content-center">
@@ -79,7 +62,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
           <div className="challan-header">
             <div className="challan-header-left">
               <label className="challan-info-label">Challa No :</label>{" "}
-              {datas[0]?.ChallanNo || ''}
+              {data.challaNo}
             </div>
 
             <div className="challan-header-center">
@@ -89,7 +72,7 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
             <div className="challan-header-right">
               <div className="challan-cash">CASH</div>
               <div className="challan-date">
-                <label className="challan-info-label">Date :</label> {getShowingDateText(datas[0]?.ChallanDate)  || ''}
+                <label className="challan-info-label">Date :</label> {data.date}
               </div>
             </div>
           </div>
@@ -99,10 +82,10 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
             <table className="challan-info-table_print">
               <tbody>
                 {[
-                  ["Cons. Nam", datas[0]?.PartyID || ""],
-                  ["Address", datas[0]?.Address || ""],
-                  ["Contact", datas[0]?.OwnerMobile || ""],
-                  ["Vehicle", datas[0]?.VehicleNo],
+                  ["Cons. Nam", data.consName],
+                  ["Adress", data.address],
+                  ["Contact", data.contact || ""],
+                  ["Vehicle", data.vehicle],
                 ].map(([label, value], idx) => (
                   <tr key={idx}>
                     <td className="challan-info-label">{label}</td>
@@ -129,10 +112,10 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
               {rows.map((row, index) => (
                 <tr key={row.id || index}>
                   <td className="text-center">{index + 1}</td>
-                  <td>{row.ProductName1}</td>
-                  <td className="text-center">{row.Rate1}</td>
-                  <td className="text-center">{row.Netweight1}</td>
-                  <td className="text-center">{row.Amount1}</td>
+                  <td>{row.product}</td>
+                  <td className="text-center">{row.rate}</td>
+                  <td className="text-center">{row.netWeight}</td>
+                  <td className="text-center">{row.amount}</td>
                 </tr>
               ))}
             </tbody>

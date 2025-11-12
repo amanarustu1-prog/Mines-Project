@@ -466,7 +466,7 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Payment',
-            href: '/accounts/create-challan',
+            href: '/payment-voucher',
             icon: Receipt,
             description: 'Create new delivery challans and receipts'
 
