@@ -101,7 +101,7 @@ interface ChallanItem extends BaseProductFields {
   VehicleRemarks: string;
   Address: string;
   Productid: string;
-  IsGST: string;
+  IsGST: number;
   BillName: string;
   GstNo: string;
   State: string;
@@ -311,7 +311,7 @@ interface ChallanTableItem {
   VehicleRemarks: string;
   Address: string;
   Productid: string;
-  IsGST: string;
+  IsGST: number;
   BillName: string;
   GstNo: string;
   State: string;
@@ -492,6 +492,7 @@ const CreateChallan: React.FC = () => {
     DriverName: '',
     DriverMobileNo: 0,
     VehicleNoID: 0,
+    IsGST: 0,
 
     gstBill: false,
     GstNo: '',
@@ -611,6 +612,7 @@ const CreateChallan: React.FC = () => {
   };
 
   const Columns = [
+    // DONE
     {
       name: 'Actions',
       cell: (row: ChallanTableItem) => (
@@ -644,14 +646,14 @@ const CreateChallan: React.FC = () => {
         <span className="font-medium">{row.ChallanNo}</span>
       ),
     },
-    // {
-    //     name: 'Challan Module',
-    //     selector: (row: ChallanTableItem) => row.ChallanModule,
-    //     sortable: true,
-    //     cell: (row: ChallanTableItem) => (
-    //         <span className="font-medium">{row.ChallanModule}</span>
-    //     ),
-    // },
+    {
+        name: 'Challan Year',
+        selector: (row: ChallanTableItem) => row.financialYear,
+        sortable: true,
+        cell: (row: ChallanTableItem) => (
+            <span className="font-medium">{row.financialYear}</span>
+        ),
+    },
     {
       name: 'Challan Date',
       selector: (row: ChallanTableItem) => row.ChallanDate,
@@ -1858,8 +1860,9 @@ const CreateChallan: React.FC = () => {
   // });
 
   const handleSearch = () => {
+    console.log("Hello");
     let result = challanItems;
-
+    console.log(result);
     const fromDateTime = fromDate ? new Date(
       `${moment(fromDate).format('YYYY-MM-DD')} ${fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
       }`) : null;
@@ -1992,7 +1995,7 @@ const CreateChallan: React.FC = () => {
       "Driver Name": item.DriverName || "",
       "Driver Mobile No": item.DriverMobileNo || "",
 
-      "GST Bill": item.IsGST ? "Yes" : "No",
+      "GST Bill": item.IsGST ? 1 : 0,
       "GST No": item.GstNo || "",
       "GST Address": item.GstAddress || "",
       "GST State": item.GstState || "",
@@ -2076,7 +2079,7 @@ const CreateChallan: React.FC = () => {
 
                   {/* ===== From / To Filter (col-4) ===== */}
                   <div className="col-md-6">
-                    <div className="row g-2 align-items-center">
+                    <div className="d-flex align-items-center justify-content-start flex-nowrap" style={{ gap: "16px", flexWrap: "nowrap" }}>
                       {/* From group */}
                       <div className="col-md-6 col-sm-12">
                         <div className="row g-2 align-items-center flex-nowrap">
@@ -2148,14 +2151,11 @@ const CreateChallan: React.FC = () => {
                     <div className="flex-grow-1">
                       <Select
                         placeholder="Select Party"
-                        value={challanData.Party
-                          ? {
-                            value: challanData.Party,
-                            label:
-                              partyType.find((d) => d.PartyID === challanData.Party)
-                                ?.Name || "",
-                          }
-                          : null
+                        value={challanData.PartyID ?
+                          {
+                            value: challanData.PartyID,
+                            label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || "",
+                          } : null
                         }
                         options={partyType.map((d) => ({
                           value: d.PartyID,
@@ -2387,9 +2387,8 @@ const CreateChallan: React.FC = () => {
                                     <CreatableSelect
                                       className="w-full"
                                       placeholder="Select or Add Party"
-                                      value={
-                                        challanData.PartyID
-                                          ? {
+                                      value={ challanData.PartyID ?
+                                          {
                                             value: challanData.PartyID,
                                             label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
                                           }
@@ -2428,6 +2427,7 @@ const CreateChallan: React.FC = () => {
                                         }
                                       }}
                                       onCreateOption={(inputValue: number | string) => {
+                                        // console.log("HELLO"+inputValue);
                                         setChallanData(prev => ({
                                           ...prev,
                                           PartyID: 0,
@@ -2707,6 +2707,12 @@ const CreateChallan: React.FC = () => {
                                         className="form-check-input_gst-bill name-label"
                                         type="checkbox"
                                         id="gstBill"
+                                        onChange={(e) => {
+                                          setChallanData((prev) => ({
+                                            ...prev,
+                                            IsGST: e.target.checked ? 1 : 0
+                                          }))
+                                        }}
                                       />
                                       <label className="form-check-label fw-bold name-label" htmlFor="gstBill">
                                         GST Bill
@@ -3157,6 +3163,9 @@ const CreateChallan: React.FC = () => {
 
       <div className="print-area" style={{ display: 'none' }}>
         <div ref={printRef}>
+          <ChallanPrint itemId={editItemId} />
+        </div>
+      </div>
           <ChallanPrint
             challaNo={challanData.ChallanNo || ''}
             date={challanData.ChallanDate || ''}

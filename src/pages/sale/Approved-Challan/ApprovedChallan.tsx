@@ -1949,12 +1949,11 @@ export default function ApprovedChallan() {
                     <div className="main-content-wrapper mt-5 ">
                         {/* Header */}
                         <div className="approved-challan-header-info d-flex align-items-center employee-master-card p-2 margin_top">
-                            {/* Icon */}
+                            
                             <div className="approved-challan-header-icon me-3">
                                 <FiCheckCircle size={28} className="text-success" />
                             </div>
 
-                            {/* Title + Subtitle */}
                             <div>
                                 <h1 className="approved-challan-header-title mb-1">Approved Challans</h1>
                                 <p className="approved-challan-header-subtitle mb-0 text-muted">
@@ -2707,7 +2706,7 @@ export default function ApprovedChallan() {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 }
