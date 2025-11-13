@@ -2292,23 +2292,24 @@ const CreateChallan: React.FC = () => {
                         </button>
                       </div>
                       {/* Clear-button */}
-                      <div className="col-md-2 d-flex">
+                      <div className="col-md-1 d-flex">
                         <button onClick={clearData}
                           className="btn btn-sm py-1  d-flex align-items-center justify-content-center"
                           style={{ backgroundColor: "#495057", borderColor: "#ced4da", color: "#fff", }}>
                           Clear
                         </button>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="col-md-4 d-flex justify-content-end">
+                  <div className="col-md-1 d-flex justify-content-end">
                     {/* Export */}
                     <button type="button" onClick={exportToExcel}
                       className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2">
                       <i className="fa fa-file-excel-o" aria-hidden="true"></i> Export
                     </button>
                   </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -3251,8 +3252,7 @@ const CreateChallan: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
-        </div>
+          {/* </div> */}
       </main>
 
       <div className="print-area">
