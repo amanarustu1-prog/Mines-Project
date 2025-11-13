@@ -649,12 +649,12 @@ const CreateChallan: React.FC = () => {
       ),
     },
     {
-        name: 'Challan Year',
-        selector: (row: ChallanTableItem) => row.financialYear,
-        sortable: true,
-        cell: (row: ChallanTableItem) => (
-            <span className="font-medium">{row.financialYear}</span>
-        ),
+      name: 'Challan Year',
+      selector: (row: ChallanTableItem) => row.financialYear,
+      sortable: true,
+      cell: (row: ChallanTableItem) => (
+        <span className="font-medium">{row.financialYear}</span>
+      ),
     },
     {
       name: 'Challan Date',
@@ -1862,66 +1862,64 @@ const CreateChallan: React.FC = () => {
   // });
 
   const handleSearch = () => {
-  if (!challanItems || challanItems.length === 0) return;
+    if (!challanItems || challanItems.length === 0) return;
 
-  let result = challanItems;
+    let result = challanItems;
 
-  // Combine From Date + Time
-  const fromDateTime = fromDate
-    ? new Date(
-        `${moment(fromDate).format("YYYY-MM-DD")} ${
-          fromTime ? moment(fromTime).format("HH:mm:ss") : "00:00:00"
+    // Combine From Date + Time
+    const fromDateTime = fromDate
+      ? new Date(
+        `${moment(fromDate).format("YYYY-MM-DD")} ${fromTime ? moment(fromTime).format("HH:mm:ss") : "00:00:00"
         }`
       )
-    : null;
+      : null;
 
-  const toDateTime = toDate
-    ? new Date(
-        `${moment(toDate).format("YYYY-MM-DD")} ${
-          toTime ? moment(toTime).format("HH:mm:ss") : "23:59:59"
+    const toDateTime = toDate
+      ? new Date(
+        `${moment(toDate).format("YYYY-MM-DD")} ${toTime ? moment(toTime).format("HH:mm:ss") : "23:59:59"
         }`
       )
-    : null;
+      : null;
 
-  // ===== Filter by Date Range =====
-  if (fromDateTime && toDateTime) {
-    result = result.filter((item) => {
-      const challanDate = new Date(item.CreatedDate);
-      return challanDate >= fromDateTime && challanDate <= toDateTime;
-    });
-  } else if (fromDateTime) {
-    result = result.filter(
-      (item) => new Date(item.CreatedDate) >= fromDateTime
-    );
-  } else if (toDateTime) {
-    result = result.filter((item) => new Date(item.CreatedDate) <= toDateTime);
-  }
+    // ===== Filter by Date Range =====
+    if (fromDateTime && toDateTime) {
+      result = result.filter((item) => {
+        const challanDate = new Date(item.CreatedDate);
+        return challanDate >= fromDateTime && challanDate <= toDateTime;
+      });
+    } else if (fromDateTime) {
+      result = result.filter(
+        (item) => new Date(item.CreatedDate) >= fromDateTime
+      );
+    } else if (toDateTime) {
+      result = result.filter((item) => new Date(item.CreatedDate) <= toDateTime);
+    }
 
-  // ===== Filter by Party (if selected) =====
-  if (selectedParty) {
-    result = result.filter((item) => item.PartyID === challanData.Party);
-  }
+    // ===== Filter by Party (if selected) =====
+    if (selectedParty) {
+      result = result.filter((item) => item.PartyID === challanData.Party);
+    }
 
-  // ===== Filter by Challan No =====
-  let challanFiltered = result;
-  if (searchTerm.trim()) {
-    const term = searchTerm.trim().toLowerCase();
-    challanFiltered = challanFiltered.filter((item) =>
-      item.ChallanNo?.toLowerCase().includes(term)
-    );
-  }
+    // ===== Filter by Challan No =====
+    let challanFiltered = result;
+    if (searchTerm.trim()) {
+      const term = searchTerm.trim().toLowerCase();
+      challanFiltered = challanFiltered.filter((item) =>
+        item.ChallanNo?.toLowerCase().includes(term)
+      );
+    }
 
-  // ===== Filter by Vehicle No =====
-  let finalFiltered = challanFiltered;
-  if (vehicleSearchTerm?.trim()) {
-    const vehicleTerm = vehicleSearchTerm.trim().toLowerCase();
-    finalFiltered = challanFiltered.filter((item) =>
-      item.VehicleNo?.toLowerCase().includes(vehicleTerm)
-    );
-  }
+    // ===== Filter by Vehicle No =====
+    let finalFiltered = challanFiltered;
+    if (vehicleSearchTerm?.trim()) {
+      const vehicleTerm = vehicleSearchTerm.trim().toLowerCase();
+      finalFiltered = challanFiltered.filter((item) =>
+        item.VehicleNo?.toLowerCase().includes(vehicleTerm)
+      );
+    }
 
-  setFilteredData(finalFiltered);
-};
+    setFilteredData(finalFiltered);
+  };
 
   // const selectCompactStyles: any = {
   //     control: (provided: any) => ({
@@ -2097,7 +2095,7 @@ const CreateChallan: React.FC = () => {
                 <div className="row align-items-center g-3">
                   {/* ===== From / To Filter (col-4) ===== */}
                   <div className="col-md-6">
-                    <div className="d-flex align-items-center justify-content-start flex-nowrap" style={{ gap: "16px", flexWrap: "nowrap" }}>
+                    <div className="d-flex align-items-center justify-content-start flex-nowrap" style={{ gap: "8px", flexWrap: "nowrap" }}>
                       {/* From group */}
                       <div className="col-md-6 col-sm-12">
                         <div className="row g-2 align-items-center flex-nowrap">
@@ -2168,11 +2166,14 @@ const CreateChallan: React.FC = () => {
                     <div className="flex-grow-1">
                       <Select
                         placeholder="Select Party"
-                        value={challanData.PartyID ?
-                          {
-                            value: challanData.PartyID,
-                            label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || "",
-                          } : null
+                        value={
+                          challanData.PartyID
+                            ? {
+                              value: challanData.PartyID,
+                              label:
+                                partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || "",
+                            }
+                            : null
                         }
                         options={partyType.map((d) => ({
                           value: d.PartyID,
@@ -2181,10 +2182,12 @@ const CreateChallan: React.FC = () => {
                         onChange={(selectedOption) => {
                           const value = selectedOption?.value ?? null;
                           const label = selectedOption?.label ?? null;
+
                           setSelectedParty(label);
+
                           setChallanData((prev) => ({
                             ...prev,
-                            Party: value ?? 0,
+                            PartyID: value ?? 0,
                             Name: label ?? "",
                           }));
                         }}
@@ -2192,6 +2195,10 @@ const CreateChallan: React.FC = () => {
                         isSearchable
                         styles={selectCompactStyles}
                       />
+
+
+
+
                     </div>
                   </div>
                   {/* ===== Search + Export (col-8) ===== */}
@@ -2404,14 +2411,14 @@ const CreateChallan: React.FC = () => {
                                     <CreatableSelect
                                       className="w-full"
                                       placeholder="Select or Add Party"
-                                      value={ challanData.PartyID ?
-                                          {
-                                            value: challanData.PartyID,
-                                            label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
-                                          }
-                                          : challanData.PartyName
-                                            ? { value: challanData.PartyName, label: challanData.PartyName }
-                                            : null
+                                      value={challanData.PartyID ?
+                                        {
+                                          value: challanData.PartyID,
+                                          label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
+                                        }
+                                        : challanData.PartyName
+                                          ? { value: challanData.PartyName, label: challanData.PartyName }
+                                          : null
                                       }
                                       options={partyType.map((d) => ({
                                         value: d.PartyID,
