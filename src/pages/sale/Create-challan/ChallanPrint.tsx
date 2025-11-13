@@ -20,6 +20,10 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
 
     if (response && Array.isArray(response)) {
       setDatas(response);
+      const partyId = response[0]?.PartyID;
+      if (partyId) {
+      fetchParty(partyId);
+    }
     } else {
       setDatas({});
     }
@@ -40,22 +44,21 @@ const ChallanPrint: React.FC<{ itemId: number | null }> = ({ itemId }) => {
     }
   }
 
-  useEffect(() => {
-    fetchParty();
-  }, []);
-
-  // ------------dropdown------------
-  const fetchParty = async () => {
+  // ------------dropdown---------------
+  const fetchParty = async (partyId: number) => {
     try {
       const response = await fetchPostData('Party/GetDataDropDown_Party', { "CompanyId": 1 });
       console.log(response);
 
       if (response && Array.isArray(response)) {
-        const party = response.find((p) => p.PartyID === datas[0]?.PartyID)?.Name;
-        setParty(party);
+        const matchedParty = response.find((p) => p.PartyID === partyId);
+        if (matchedParty) {
+          setParty(matchedParty.Name);
+        }
       }
     }
-    catch{
+    catch(err){
+      console.log(err);
     }
   }
 
