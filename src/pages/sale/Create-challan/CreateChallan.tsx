@@ -78,7 +78,6 @@ interface ChallanItem extends BaseProductFields {
   ChallanDate: string;
   VoucherType: string;
   partyAddress: string;
-  // VehicleNo: string;
   vehicleType: string;
   PinID: number;
   DistrictID: number;
@@ -95,7 +94,7 @@ interface ChallanItem extends BaseProductFields {
   OwnerMobile: string;
   DriverName: string;
   DriverMobileNo: string;
-  VehicleNo: string;
+  VehicleNoID: number;
   VehicleTypeid: number;
   PartyTypeid: number;
   VehicleRemarks: string;
@@ -129,7 +128,7 @@ interface ChallanItem extends BaseProductFields {
   Grossdate: string;
   ExtraAmt: string;
   ExtraAmtType: string;
-  ProductId1: number;
+  ProductId: number;
   Status: string;
   status: 'Pending' | 'Approved' | 'Rejected';
   CreatedDate: string;
@@ -199,11 +198,10 @@ interface ChallanFormData {
   vehicleType: string;
   vehicleTypeid: number;
   partyTypeid: number;
-  VehicleNo: string;
+  VehicleNoID: number;
   VehicleRemarks: string;
   DriverName: string;
   DriverMobileNo: number;
-  VehicleNoID: number;
 
   // GST details
   gstBill: boolean;
@@ -224,7 +222,7 @@ interface ChallanFormData {
 
   // Product and weight details
   productDetails: ProductDetail[];
-  ProductId1: number,
+  ProductId: number,
   ProductName1: string,
   ProductName2: string,
   ProductName3: string,
@@ -288,7 +286,6 @@ interface ChallanTableItem {
   ChallanDate: string;
   VoucherType: string;
   partyAddress: string;
-  // VehicleNo: string;
   vehicleType: string;
   PinID: number;
   DistrictID: number;
@@ -305,7 +302,7 @@ interface ChallanTableItem {
   OwnerMobile: string;
   DriverName: string;
   DriverMobileNo: string;
-  VehicleNo: string;
+  VehicleNoID: number;
   VehicleTypeid: number;
   PartyTypeid: number;
   VehicleRemarks: string;
@@ -339,7 +336,7 @@ interface ChallanTableItem {
   Grossdate: string;
   ExtraAmt: string;
   ExtraAmtType: string;
-  ProductId1: number;
+  ProductId: number;
   Status: string;
   status: 'Pending' | 'Approved' | 'Rejected';
   CreatedDate: string;
@@ -425,7 +422,6 @@ interface VehicleNou {
   Description: string
 }
 
-
 const CreateChallan: React.FC = () => {
   const [activeTab, setActiveTab] = useState('challanOverview');
   const [showInput, setShowInput] = useState(false);
@@ -439,7 +435,6 @@ const CreateChallan: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState<ChallanTableItem[]>([]);
   const [vehicleSearchTerm, setVehicleSearchTerm] = useState('');
-
 
   // ----------- Custom ------------
   const [loading, setLoading] = useState(false);
@@ -489,7 +484,6 @@ const CreateChallan: React.FC = () => {
     AdvAmt: 0,
     vehicleType: '',
     vehicleTypeid: 0,
-    VehicleNo: '',
     VehicleRemarks: '',
     DriverName: '',
     DriverMobileNo: 0,
@@ -525,7 +519,7 @@ const CreateChallan: React.FC = () => {
       }
     ],
 
-    ProductId1: 0,
+    ProductId: 0,
     ProductName1: '',
     ProductName2: '',
     ProductName3: '',
@@ -557,6 +551,7 @@ const CreateChallan: React.FC = () => {
     Lessweight: 0,
     GTWeight: 0,
     VehicleCommision: 0,
+    Taredate: 0,
 
     Amount: 0,
     LoadingAmt: 0,
@@ -703,18 +698,26 @@ const CreateChallan: React.FC = () => {
     },
     {
       name: 'District',
-      selector: (row: ChallanTableItem) => row.DistrictID,
+      selector: (row: ChallanTableItem) => {
+        alert(row);
+        console.log(row);
+        const districts = district.find((d) => Number(d.DistrictID) === Number(row.DistrictID));
+        return districts?.DistrictName ?? row.DistrictID;
+      },
       sortable: true,
       cell: (row: ChallanTableItem) => (
-        <span className="font-medium">{row.DistrictID}</span>
+        <span className="font-medium">{district.find((d) => Number(d.DistrictID) === Number(row.DistrictID))?.DistrictName ?? row.DistrictID}</span>
       ),
     },
     {
       name: 'PIN ID',
-      selector: (row: ChallanTableItem) => row.PinID,
+      selector: (row: ChallanTableItem) => {
+        const zipCodes = zipCode.find((z) => Number(z.ZipCodeID) === Number(row.PinID));
+        return zipCodes?.ZipCodeName ?? row.PinID;
+      },
       sortable: true,
       cell: (row: ChallanTableItem) => (
-        <span className="font-medium">{row.PinID}</span>
+        <span className="font-medium">{zipCode.find((z) => Number(z.ZipCodeID) === Number(row.PinID))?.ZipCodeName ?? row.PinID}</span>
       ),
     },
     {
@@ -752,11 +755,13 @@ const CreateChallan: React.FC = () => {
     },
     {
       name: 'Vehicle No',
-      selector: (row: ChallanTableItem) => row.VehicleNo,
+      selector: (row: ChallanTableItem) => row.VehicleNoID,
       sortable: true,
-      cell: (row: ChallanTableItem) => (
-        <span className="text-sm text-gray-600">{row.VehicleNo}</span>
-      ),
+      cell: (row: ChallanTableItem) => {
+        // <span className="text-sm text-gray-600">{row.VehicleNoID}</span>
+        const vNo = vehicleNo.find((v) => Number(v.VehicleNumberID) === Number(row.VehicleNoID));
+        return <span className="font-mono text-sm">{vNo?.Description ?? row.VehicleNoID}</span>;
+      },
     },
     {
       name: 'DriverName',
@@ -1061,6 +1066,17 @@ const CreateChallan: React.FC = () => {
         <span className="text-right">{row.GTWeight}</span>
       ),
     },
+    {
+      name: 'Tare Date',
+      selector: (row: ChallanFormData) => row.Taredate,
+      sortable: true,
+      cell: (row: ChallanFormData) => (
+        <span className="text-right">
+          {row.Taredate ? moment(row.Taredate).format("DD/MM/YYYY HH:mm") : ""}
+        </span>
+      ),
+    },
+
     {
       name: 'Vehicle Commision',
       selector: (row: ChallanFormData) => row.VehicleCommision,
@@ -1462,7 +1478,7 @@ const CreateChallan: React.FC = () => {
         // === Vehicle Info ===
         AdvAmt: record.AdvAmt || 0,
         vehicleTypeid: record.VehicleTypeid || 0,
-        VehicleNo: record.VehicleNo || '',
+        VehicleNoID: record.VehicleNoID || '',
         VehicleRemarks: record.VehicleRemarks || '',
         DriverName: record.DriverName || '',
         DriverMobileNo: record.DriverMobileNo || '',
@@ -1479,7 +1495,7 @@ const CreateChallan: React.FC = () => {
         // === Product Details ===
         productDetails: [
           ...(record.ProductName1 ? [{
-            id: record.ProductId1 || 0,
+            id: record.ProductId || 0,
             name: record.ProductName1 || '',
             rate: Number(record.Rate1) || 0,
             grossWeight: Number(record.Grossweight1) || 0,
@@ -1598,7 +1614,7 @@ const CreateChallan: React.FC = () => {
       AdvAmt: 0,
       vehicleType: '',
       vehicleTypeid: 0,
-      VehicleNo: '',
+      VehicleNoID: '',
       VehicleRemarks: '',
       DriverName: '',
       DriverMobileNo: 0,
@@ -1849,7 +1865,7 @@ const CreateChallan: React.FC = () => {
   // const filteredHistory: any = challanHistory.filter(challan => {
   //     const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
   //         challan.Name.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.VehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
+  //         challan.VehicleNoID.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
   //         challan.DriverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
 
   //     const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
@@ -1914,12 +1930,31 @@ const CreateChallan: React.FC = () => {
     if (vehicleSearchTerm?.trim()) {
       const vehicleTerm = vehicleSearchTerm.trim().toLowerCase();
       finalFiltered = challanFiltered.filter((item) =>
-        item.VehicleNo?.toLowerCase().includes(vehicleTerm)
+        item.VehicleNoID?.toLowerCase().includes(vehicleTerm)
       );
     }
 
     setFilteredData(finalFiltered);
   };
+
+  const clearData = () => {
+    setFromDate(null);
+    setFromTime(null);
+    setToDate(null);
+    setToTime(null);
+    setSearchTerm('');
+    setSelectedParty(null);
+    setPartyType([]);
+    setVehicleSearchTerm('');
+
+    setChallanData((prev) => ({
+      ...prev,
+      PartyID: 0,
+      Name: ''
+    }))
+    fetchParty();
+    getChallanItem();
+  }
 
   // const selectCompactStyles: any = {
   //     control: (provided: any) => ({
@@ -2005,7 +2040,7 @@ const CreateChallan: React.FC = () => {
       "Email": item.Email || "",
       "Owner Mobile": item.OwnerMobile || "",
 
-      "Vehicle No": item.VehicleNo || "",
+      "Vehicle No": item.VehicleNoID || "",
       "Vehicle Type ID": item.VehicleTypeid || "",
       "Vehicle Remarks": item.VehicleRemarks || "",
       "Vehicle Commission": item.VehicleCommision || "",
@@ -2243,11 +2278,19 @@ const CreateChallan: React.FC = () => {
                       </div>
 
                       {/* Search button – col-2 */}
-                      <div className="col-md-2 d-flex">
+                      <div className="col-md-1 d-flex mr-7">
                         <button onClick={handleSearch}
                           className="btn btn-sm py-1  d-flex align-items-center justify-content-center"
                           style={{ backgroundColor: "#495057", borderColor: "#ced4da", color: "#fff", }}>
                           Search
+                        </button>
+                      </div>
+                      {/* Clear-button */}
+                      <div className="col-md-2 d-flex">
+                        <button onClick={clearData}
+                          className="btn btn-sm py-1  d-flex align-items-center justify-content-center"
+                          style={{ backgroundColor: "#495057", borderColor: "#ced4da", color: "#fff", }}>
+                          Clear
                         </button>
                       </div>
                     </div>
@@ -2646,8 +2689,8 @@ const CreateChallan: React.FC = () => {
                                               vehicleNo.find((v) => v.VehicleNumberID === challanData.VehicleNoID)
                                                 ?.Description || "",
                                           }
-                                          : challanData.VehicleNo
-                                            ? { value: challanData.VehicleNo, label: challanData.VehicleNo }
+                                          : challanData.VehicleNoID
+                                            ? { value: challanData.VehicleNoID, label: challanData.VehicleNoID }
                                             : null
                                       }
                                       options={vehicleNo.map((v) => ({
@@ -2663,14 +2706,12 @@ const CreateChallan: React.FC = () => {
                                           if (existingVehicle) {
                                             setChallanData((prev) => ({
                                               ...prev,
-                                              VehicleNoID: existingVehicle.VehicleNumberID,
-                                              VehicleNo: existingVehicle.Description,
+                                              VehicleNoID: existingVehicle.VehicleNumberID
                                             }));
                                           } else {
                                             setChallanData((prev) => ({
                                               ...prev,
                                               VehicleNoID: 0,
-                                              VehicleNo: selectedOption.label,
                                             }));
                                           }
                                         } else {
@@ -2678,7 +2719,6 @@ const CreateChallan: React.FC = () => {
                                           setChallanData((prev) => ({
                                             ...prev,
                                             VehicleNoID: 0,
-                                            VehicleNo: "",
                                           }));
                                         }
                                       }}
@@ -2686,7 +2726,6 @@ const CreateChallan: React.FC = () => {
                                         setChallanData((prev) => ({
                                           ...prev,
                                           VehicleNoID: 0,
-                                          VehicleNo: inputValue,
                                         }));
                                       }}
                                       isClearable
@@ -2945,22 +2984,29 @@ const CreateChallan: React.FC = () => {
                                         <label className="MAINTABLE_LABEL name-label">Product Name</label>
                                         <Select
                                           placeholder="Select Product"
-                                          value={challanData.ProductId1 ?
-                                            {
-                                              value: challanData.ProductId1,
-                                              label: productName.find((pn) => pn.ProductID === challanData.ProductId1)?.ProductName || ''
-                                            } : null
+                                          value={
+                                            product.ProductId
+                                              ? {
+                                                value: product.ProductId,
+                                                label: productName.find((pn) => pn.ProductID === product.ProductId)?.ProductName || "",
+                                              }
+                                              : null
                                           }
                                           options={productName.map((pn) => ({
                                             value: pn.ProductID,
-                                            label: pn.ProductName
+                                            label: pn.ProductName,
                                           }))}
-                                          onChange={(selectedOption) =>
-                                            setChallanData((prev) => ({
-                                              ...prev,
-                                              ProductId1: Number(selectedOption?.value ?? 0),
-                                            }))
-                                          }
+                                          onChange={(selectedOption) => {
+                                            const selectedProductId = Number(selectedOption?.value ?? 0);
+                                            const selectedProduct = productName.find((pn) => pn.ProductID === selectedProductId);
+
+                                            handleProductChange(index, "ProductId", selectedProductId);
+                                            handleProductChange(index, "name", selectedProduct?.ProductName ?? "");
+
+                                            if (selectedProduct?.Rate) {
+                                              handleProductChange(index, "rate", Number(selectedProduct.Rate));
+                                            }
+                                          }}
                                           styles={selectCompactStyles}
                                         />
                                       </div>
@@ -3026,7 +3072,6 @@ const CreateChallan: React.FC = () => {
                                 </div>
                               ))}
                             </div>
-
                             {/* Second-Row */}
                             <div className="product-details-table mb-2">
                               <div className="product-des-box product-details-form ">
@@ -3040,8 +3085,21 @@ const CreateChallan: React.FC = () => {
 
                                     {/* Date/Time */}
                                     <div className="col-md-2 mt-0">
-                                      <label className="MAINTABLE_LABEL name-label">Date/Time</label>
+                                      <label className="MAINTABLE_LABEL name-label">Tare Date/Time</label>
                                       <DatePicker
+                                        selected={
+                                          challanData.Taredate
+                                            ? moment(challanData.Taredate, "YYYY-MM-DD HH:mm:ss").toDate()
+                                            : null
+                                        }
+                                        onChange={(date: Date | null) => {
+                                          if (date) {
+                                            const formatted = moment(date).format("YYYY-MM-DD HH:mm:ss");
+                                            setChallanData((prev) => ({ ...prev, Taredate: formatted }));
+                                          } else {
+                                            setChallanData((prev) => ({ ...prev, Taredate: 0 }));
+                                          }
+                                        }}
                                         showTimeSelect
                                         timeIntervals={15}
                                         timeCaption="Time"
@@ -3049,6 +3107,8 @@ const CreateChallan: React.FC = () => {
                                         className="border rounded px-2 py-1 w-full challan"
                                       />
                                     </div>
+
+
                                     {/* Net-Weight */}
                                     <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                       <label className="MAINTABLE_LABEL name-label">Net Weight</label>
