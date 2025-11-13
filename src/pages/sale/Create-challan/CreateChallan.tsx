@@ -1252,7 +1252,7 @@ const CreateChallan: React.FC = () => {
       return true;
     } catch (error: any) {
       toastifyError(`Error adding material type: ${error.message}`);
-      return false;
+      return false; 
     }
   };
 
@@ -2127,26 +2127,26 @@ const CreateChallan: React.FC = () => {
           <div className="main-content-wrapper mt-5 ">
             <div className="relative lg:mt-8 mb-3">
               <div className=" py-3 employee-create-challan-card ">
-                <div className="row align-items-center g-3">
-                  {/* ===== From / To Filter (col-4) ===== */}
-                  <div className="col-md-6">
-                    <div className="d-flex align-items-center justify-content-start flex-nowrap" style={{ gap: "8px", flexWrap: "nowrap" }}>
-                      {/* From group */}
-                      <div className="col-md-6 col-sm-12">
-                        <div className="row g-2 align-items-center flex-nowrap">
-                          <div className="col-auto">
-                            <label className="mb-0 fw-semibold name-label">From</label>
+                <div className="row g-3 align-items-center">
+
+                  {/* ================== FROM / TO ================== */}
+                  <div className="col-md-7">
+                    <div className="row g-3">
+                      <div className="col-md-6">
+                        <div className="row  align-items-center">
+                          <div className="col-3 px-0">
+                            <label className="fw-semibold mb-0 name-label">From</label>
                           </div>
-                          <div className="col">
+                          <div className="col-6">
                             <DatePicker
                               selected={fromDate}
                               onChange={(date) => setFromDate(date)}
-                              className="form-control form-control-sm p-1 challan"
+                              className="form-control form-control-sm challan"
                               dateFormat="MM/dd/yyyy"
                               placeholderText="mm/dd/yyyy"
                             />
                           </div>
-                          <div className="col-auto" style={{ width: "80px" }}>
+                          <div className="col-3">
                             <DatePicker
                               selected={fromTime}
                               onChange={(date) => setFromTime(date)}
@@ -2155,29 +2155,30 @@ const CreateChallan: React.FC = () => {
                               timeIntervals={15}
                               timeCaption="Time"
                               dateFormat="HH:mm"
-                              className="form-control form-control-sm p-1 challan"
+                              className="form-control form-control-sm challan"
                               placeholderText="00:00"
                             />
                           </div>
                         </div>
                       </div>
 
-                      {/* To group */}
-                      <div className="col-md-6 col-sm-12">
-                        <div className="row g-2 align-items-center flex-nowrap">
-                          <div className="col-auto">
-                            <label className="mb-0 fw-semibold name-label">To</label>
+                      {/* ----- TO ----- */}
+                      <div className="col-md-6">
+                        <div className="row align-items-center">
+                          <div className="col-3 px-0">
+                            <label className="fw-semibold mb-0 name-label">To</label>
                           </div>
-                          <div className="col">
+                          <div className="col-6">
                             <DatePicker
                               selected={toDate}
                               onChange={(date) => setToDate(date)}
-                              className="form-control form-control-sm p-1 challan"
+                              className="form-control form-control-sm challan"
                               dateFormat="MM/dd/yyyy"
                               placeholderText="mm/dd/yyyy"
                             />
                           </div>
-                          <div className="col-auto" style={{ width: "80px" }}>
+
+                          <div className="col-3">
                             <DatePicker
                               selected={toTime}
                               onChange={(date) => setToTime(date)}
@@ -2186,85 +2187,88 @@ const CreateChallan: React.FC = () => {
                               timeIntervals={15}
                               timeCaption="Time"
                               dateFormat="HH:mm"
-                              className="form-control form-control-sm p-1 challan"
+                              className="form-control form-control-sm challan"
                               placeholderText="00:00"
                             />
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* ===== Party Selector (col-5) ===== */}
-                  <div className="col-md-4 d-flex align-items-center gap-2">
-                    <label className="name-label employee-master-metric-label mb-0 name-label">Party:</label>
-                    <div className="flex-grow-1">
-                      <Select
-                        placeholder="Select Party"
-                        value={
-                          challanData.PartyID
-                            ? {
-                              value: challanData.PartyID,
-                              label:
-                                partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || "",
-                            }
-                            : null
-                        }
-                        options={partyType.map((d) => ({
-                          value: d.PartyID,
-                          label: d.Name,
-                        }))}
-                        onChange={(selectedOption) => {
-                          const value = selectedOption?.value ?? null;
-                          const label = selectedOption?.label ?? null;
-
-                          setSelectedParty(label);
-
-                          setChallanData((prev) => ({
-                            ...prev,
-                            PartyID: value ?? 0,
-                            Name: label ?? "",
-                          }));
-                        }}
-                        isClearable
-                        isSearchable
-                        styles={selectCompactStyles}
-                      />
-
-
-
 
                     </div>
                   </div>
-                  {/* ===== Search + Export (col-8) ===== */}
-                  <div className="col-md-8">
-                    <div className="row g-2 align-items-center">
-                      {/* Challan search – col-5 */}
-                      <div className="col-md-4">
-                        <div className="d-flex align-items-center gap-2">
-                          <label className="name-label employee-master-metric-label mb-0 flex-shrink-0">
-                            Challan
-                          </label>
-                          <div className="position-relative flex-grow-1">
+
+                  {/* ================== PARTY ================== */}
+                  <div className="col-md-4">
+                    <div className="row  align-items-center">
+
+                      <div className="col-3 px-0">
+                        <label className="fw-semibold mb-0 name-label">Party:</label>
+                      </div>
+
+                      <div className="col-9">
+                        <Select
+                          placeholder="Select Party"
+                          value={
+                            challanData.PartyID
+                              ? {
+                                value: challanData.PartyID,
+                                label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || "",
+                              }
+                              : null
+                          }
+                          options={partyType.map((d) => ({
+                            value: d.PartyID,
+                            label: d.Name,
+                          }))}
+                          onChange={(selectedOption) => {
+                            const value = selectedOption?.value ?? null;
+                            const label = selectedOption?.label ?? null;
+
+                            setSelectedParty(label);
+
+                            setChallanData((prev) => ({
+                              ...prev,
+                              PartyID: value ?? 0,
+                              Name: label ?? "",
+                            }));
+                          }}
+                          isClearable
+                          isSearchable
+                          styles={selectCompactStyles}
+                        />
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {/* ================== SEARCH / VEHICLE / EXPORT ================== */}
+                  <div className="col-md-7">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="row align-items-center">
+                          <div className="col-3 px-0">
+                            <label className="mb-0 fw-semibold name-label">Challan</label>
+                          </div>
+                          <div className="col-9">
                             <input
                               type="text"
                               placeholder="Search challans..."
                               value={searchTerm}
                               onChange={(e) => setSearchTerm(e.target.value)}
-                              className="form-control form-control-sm challan pe-5"
+                              className="form-control form-control-sm challan"
                               style={{ borderRadius: "5px", }}
                             />
                           </div>
                         </div>
                       </div>
 
-                      {/* Vehicle search – col-5 */}
-                      <div className="col-md-4    ">
-                        <div className="d-flex align-items-center gap-2">
-                          <label className="name-label employee-master-metric-label mb-0 flex-shrink-0">
-                            Vehicle
-                          </label>
-                          <div className="flex-grow-1">
+                      {/* Vehicle Search */}
+                      <div className="col-md-6">
+                        <div className="row align-items-center">
+                          <div className="col-3 px-0">
+                            <label className="mb-0 fw-semibold name-label">Vehicle</label>
+                          </div>
+                          <div className="col-9">
                             <input
                               type="text"
                               placeholder="Search vehicles..."
@@ -2276,6 +2280,8 @@ const CreateChallan: React.FC = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
 
                       {/* Search button – col-2 */}
                       <div className="col-md-1 d-flex mr-7">
@@ -2454,47 +2460,56 @@ const CreateChallan: React.FC = () => {
                                     <CreatableSelect
                                       className="w-full"
                                       placeholder="Select or Add Party"
-                                      value={challanData.PartyID ?
-                                        {
-                                          value: challanData.PartyID,
-                                          label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Name || '',
-                                        }
-                                        : challanData.PartyName
-                                          ? { value: challanData.PartyName, label: challanData.PartyName }
-                                          : null
-                                      }
-                                      options={partyType.map((d) => ({
-                                        value: d.PartyID,
-                                        label: d.Address ? `${d.Name} (${d.Address})` : d.Name,
-                                      }))}
-                                      onChange={(selectedOption) => {
-                                        if (selectedOption) {
-                                          const selectedParty = partyType.find(p => p.PartyID === selectedOption.value);
-                                          if (selectedParty) {
-                                            setChallanData(prev => ({
-                                              ...prev,
-                                              PartyID: selectedParty.PartyID,
-                                              PartyName: selectedParty.Name,
-                                              address: selectedParty.Address || "",
-                                            }));
-                                          } else {
-                                            setChallanData(prev => ({
-                                              ...prev,
-                                              PartyID: 0,
-                                              PartyName: selectedOption.label,
-                                              address: "",
-                                            }));
+
+                                      value={
+                                        challanData.PartyID
+                                          ? {
+                                            value: `${challanData.PartyID}:${challanData.PartyName}`,
+                                            label:
+                                              partyType.find((d) => d.PartyID === challanData.PartyID)?.Address
+                                                ? `${challanData.PartyName} (${partyType.find((d) => d.PartyID === challanData.PartyID)?.Address})`
+                                                : challanData.PartyName
                                           }
+                                          : challanData.PartyName
+                                            ? {
+                                              value: `0:${challanData.PartyName}`,
+                                              label: challanData.PartyName
+                                            }
+                                            : null
+                                      }
+
+                                      options={partyType.map((d) => ({
+                                        value: `${d.PartyID}:${d.Name}:${d.Address || ""}`,  // ⭐ UNIQUE VALUE
+                                        label: d.Address ? `${d.Name} - ${d.Address}` : d.Name,
+                                      }))}
+
+                                      onChange={(selectedOption) => {
+                                        if (!selectedOption) {
+                                          setChallanData(prev => ({ ...prev, PartyID: 0, PartyName: "", address: "" }));
+                                          return;
+                                        }
+
+                                        const [id] = selectedOption.value.split(":");
+
+                                        if (Number(id) > 0) {
+                                          const selectedParty = partyType.find(p => p.PartyID === Number(id));
+                                          setChallanData(prev => ({
+                                            ...prev,
+                                            PartyID: selectedParty.PartyID,
+                                            PartyName: selectedParty.Name,
+                                            address: selectedParty.Address || "",
+                                          }));
                                         } else {
                                           setChallanData(prev => ({
                                             ...prev,
                                             PartyID: 0,
-                                            PartyName: "",
+                                            PartyName: selectedOption.label,
+                                            address: "",
                                           }));
                                         }
                                       }}
-                                      onCreateOption={(inputValue: number | string) => {
-                                        // console.log("HELLO"+inputValue);
+
+                                      onCreateOption={(inputValue) => {
                                         setChallanData(prev => ({
                                           ...prev,
                                           PartyID: 0,
@@ -2502,10 +2517,12 @@ const CreateChallan: React.FC = () => {
                                           address: "",
                                         }));
                                       }}
+
                                       isClearable
                                       isSearchable
                                       styles={selectCompactStyles}
                                     />
+
                                   </div>
                                   {/* Address */}
                                   <div className="single-info-block col-xl-2">
