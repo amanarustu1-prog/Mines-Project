@@ -961,6 +961,8 @@ GOBAL CSS START
   font-weight: 500 !important;
   color: #111827 !important;
   text-align: right !important;
+  display: flex !important;
+  justify-content: end !important;
 }
 
 .single-info-block {
