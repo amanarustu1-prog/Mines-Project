@@ -240,7 +240,7 @@ GOBAL CSS START
 .form-block {
   padding: 8px 10px;
   border-radius: 6px;
- box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   background-image: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
   display: flex;
   flex-direction: column;
@@ -297,7 +297,7 @@ GOBAL CSS START
   padding: 10px;
   border-radius: 6px;
   padding-top: 15px !important;
- box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   background-color: #ffffff;
 }
 
@@ -961,8 +961,14 @@ GOBAL CSS START
   font-weight: 500 !important;
   color: #111827 !important;
   text-align: right !important;
+
+}
+
+.label_search {
   display: flex !important;
   justify-content: end !important;
+  align-items: center !important;
+
 }
 
 .single-info-block {
@@ -994,7 +1000,8 @@ input.challan:focus {
 /* 🔹 Common “challan” styling — input, select, datepicker सभी के लिए */
 .challan,
 .react-datepicker__input-container input.challan {
-  border: 1px solid #84b3f8 !important;     /* ✅ 1px border */
+  border: 1px solid #84b3f8 !important;
+  /* ✅ 1px border */
   border-radius: 4px;
   height: 32px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -1016,7 +1023,8 @@ input.challan:focus {
 
 /* fallback — अगर datepicker में class न लगी हो */
 .react-datepicker__input-container input {
-  border: 1px solid #ced4da !important;  /* ✅ अब 1px */
+  border: 1px solid #ced4da !important;
+  /* ✅ अब 1px */
   border-radius: 4px !important;
   height: 32px !important;
   padding: 0 8px !important;
@@ -1030,6 +1038,7 @@ input.challan:focus {
   box-shadow: 0 0 0 1px #2684ff !important;
   outline: none !important;
 }
+
 .react-datepicker-wrapper {
   width: 100% !important;
 }
@@ -1053,8 +1062,8 @@ input.challan:focus {
     background: #ffffff !important;
   }
 
- 
-} 
+
+}
 
 
 .print-area {
@@ -1065,11 +1074,10 @@ input.challan:focus {
 @media print {
   .print-area {
     display: block;
-    
+
   }
 }
 
-.product-des-box{
+.product-des-box {
   margin-bottom: 12px;
 }
-
