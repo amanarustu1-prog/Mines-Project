@@ -2301,6 +2301,7 @@ const CreateChallan: React.FC = () => {
                           Clear
                         </button>
                       </div>
+                      </div>
 
                       <div className="col-md-3 d-flex justify-content-end">
                         {/* Export */}
