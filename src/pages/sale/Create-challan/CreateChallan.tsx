@@ -2122,18 +2122,18 @@ const CreateChallan: React.FC = () => {
 
   return (
     <>
-      <main className="dashboard-main ">
+      <main className="dashboard-main">
         <div className="main-content-area ">
           <div className="main-content-wrapper mt-5 ">
             <div className="relative lg:mt-8 mb-3">
               <div className=" py-3 employee-create-challan-card ">
                 <div className="row g-3 align-items-center">
-
                   {/* ================== FROM / TO ================== */}
                   <div className="col-md-7">
                     <div className="row g-3">
+                      {/* ------FROM------ */}
                       <div className="col-md-6">
-                        <div className="row  align-items-center">
+                        <div className="row align-items-center">
                           <div className="col-3 px-0">
                             <label className="fw-semibold mb-0 name-label label_search">From</label>
                           </div>
@@ -2193,14 +2193,12 @@ const CreateChallan: React.FC = () => {
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
 
                   {/* ================== PARTY ================== */}
                   <div className="col-md-4">
-                    <div className="row  align-items-center">
-
+                    <div className="row align-items-center">
                       <div className="col-3 px-0">
                         <label className="fw-semibold mb-0 name-label label_search">Party:</label>
                       </div>
@@ -2241,7 +2239,7 @@ const CreateChallan: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* ================== SEARCH / VEHICLE / EXPORT ================== */}
+                  {/* ================== CHALLAN / VEHICLE ================== */}
                   <div className="col-md-7">
                     <div className="row">
                       <div className="col-md-6">
@@ -2283,6 +2281,7 @@ const CreateChallan: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* ================== SEARCH / CLEAR / EXPORT ================== */}
                   <div className='col-md-5'>
                     <div className="row justify-content-between">
                       {/* Search button – col-2 */}
@@ -2308,11 +2307,8 @@ const CreateChallan: React.FC = () => {
                         </button>
                       </div>
                     </div>
-
-
                   </div>
                 </div>
-
               </div>
             </div>
             <div className="employee-master-space-y-2">
@@ -2350,15 +2346,10 @@ const CreateChallan: React.FC = () => {
                     }
                   />
                 </div>
-
-
               </div>
             </div>
           </div>
         </div>
-
-
-
 
         {isModalOpen && (
           <div className="modal-overlay">
@@ -3284,7 +3275,7 @@ const CreateChallan: React.FC = () => {
             deleteMaterialName(selectedId);
           }
           setShowModal(false);
-        }} />
+      }} />
     </>
   );
 }

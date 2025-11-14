@@ -1,37 +1,148 @@
-/* ===== Approved Challan Header ===== */
-.approved-challan-header-info {
-  display: flex;
-  align-items: center;
+.dashboard-main{
+  background-color: antiquewhite;
+}
+
+.dashboard-main input[type="number"],
+.dashboard-main input[type="text"],
+.dashboard-main textarea{
+  border: '1px solid #FF6C0C';
+  border-radius: 2px;
+  padding: 3px 10px;
+  display: block;
   background: #fff;
-  padding: 12px 18px;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 3px 0px;
+  width: 100%;
+  box-shadow: 0px 1px 0.5px rgba(0, 0, 0, 0.04);
 }
 
-.approved-challan-header-icon {
-  background: #e9fbee; 
-  border-radius: 50%;
-  padding: 10px;
+.dashboard-main input[type="datetime-local"],
+.dashboard-main input[type="date"],
+.dashboard-main input[type="time"],
+.dashboard-main input[type="number"],
+.dashboard-main input[type="email"],
+.dashboard-main input[type="password"],
+.dashboard-main input[type="checkbox"],
+.dashboard-main input[type="radio"],
+.dashboard-main textarea,
+.dashboard-main select {
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  padding: 3px 10px !important;
+  display: block;
+  background: #fff;
+  width: 100%;
+  box-shadow: 0px 1px 0.5px rgba(0, 0, 0, 0.04);
+}
+
+.main-content-area{
+  flex: 1;
+}
+
+.main-content-wrapper{
+  padding: 7px 10px;
+  max-width: 1340px;
+  margin: auto;
+}
+
+.employee-create-challan-card{
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s box-shadow 0.2s;
+  border: 1px solid #e5e7eb;
+}
+
+
+
+/* What is the Use of Bottom-Code */
+.name-label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #111827 !important;
+  text-align: right !important;
+}
+
+.label_search {
+  display: flex !important;
+  justify-content: end !important;
+  align-items: center !important;
+}
+
+.challan,
+.react-datepicker__input-container input.challan {
+  border: 1px solid #84b3f8 !important;
+  border-radius: 4px;
+  height: 32px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 0 8px;
+  font-size: 14px;
+  width: 100%;
+  background-color: #fff;
+}
+
+.challan:focus,
+.react-datepicker__input-container input.challan:focus {
+  border-color: #2684ff;
+  box-shadow: 0 0 0 1px #2684ff;
+  outline: none;
+}
+
+.react-datepicker__input-container input {
+  border: 1px solid #ced4da !important;
+  border-radius: 4px !important;
+  height: 32px !important;
+  padding: 0 8px !important;
+  font-size: 14px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.react-datepicker__input-container input:focus {
+  border-color: #2684ff !important;
+  box-shadow: 0 0 0 1px #2684ff !important;
+  outline: none !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100% !important;
+}
+
+.employee-master-card {
+  border-radius: 0.5rem;
+  border: none;
+  background: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.employee-master-card-header {
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.employee-master-report-card .employee-master-button {
+  width: 100%;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.employee-master-card-content {
+  padding: 1.5rem;
+}
+
+/* CSS We can use */
+.header-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #495057;
+  border-color: #ced4da;
+  color: #fff;
+}
+
+.export-btn{
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.approved-challan-header-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #198754; 
-}
-
-.approved-challan-header-subtitle {
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
-
-.approved-challan-header-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0;
+  gap: 2;
 }
