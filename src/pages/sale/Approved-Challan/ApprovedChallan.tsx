@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './ApprovedChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiCheckCircle, FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
@@ -19,6 +19,8 @@ import * as XLSX from 'xlsx';
 import moment from 'moment';
 import { previousDay } from 'date-fns';
 import ConfirmModal from '@/common/ConfirmModal';
+import ChallanPrint from '../Create-challan/ChallanPrint';
+import { useReactToPrint } from 'react-to-print';
 
 // Icon components
 
@@ -554,6 +556,17 @@ export default function ApprovedChallan() {
         setIsModalOpen(false);
     };
 
+
+    const printRef = useRef<HTMLDivElement>(null);
+
+    const handleChallanPrint = useReactToPrint({
+        contentRef: printRef,
+        pageStyle: `
+           @page { size: A4 portrait; margin: 10mm; }
+           body { -webkit-print-color-adjust: exact; }
+         `,
+    });
+
     const Columns = [
         {
             name: 'Actions',
@@ -565,6 +578,13 @@ export default function ApprovedChallan() {
 
                     <button onClick={() => { setEditItemId(row.ChallanID!); handleOpenModal(); }} className="material-name-btn-icon" title="Edit">
                         <Edit3 className="material-name-icon-sm" />
+                    </button>
+                    <button
+                        onClick={() => { handleChallanPrint() }}
+                        className="material-name-btn-icon text-green-600 hover:text-green-800"
+                        title="Print"
+                    >
+                        <FiPrinter className="material-name-icon-sm" />
                     </button>
                 </div>
             ),
@@ -1949,7 +1969,7 @@ export default function ApprovedChallan() {
                     <div className="main-content-wrapper mt-5 ">
                         {/* Header */}
                         <div className="approved-challan-header-info d-flex align-items-center employee-master-card p-2 margin_top">
-                            
+
                             <div className="approved-challan-header-icon me-3">
                                 <FiCheckCircle size={28} className="text-success" />
                             </div>
@@ -2697,6 +2717,12 @@ export default function ApprovedChallan() {
                         )}
                     </div>
                 </div>
+
+                <div className="print-area" style={{ display: 'none' }}>
+                    <div ref={printRef}>
+                        <ChallanPrint itemId={editItemId} />
+                    </div>
+                </div>
             </main>
 
             <ConfirmModal show={showModal}
@@ -2706,7 +2732,7 @@ export default function ApprovedChallan() {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </>
     );
 }

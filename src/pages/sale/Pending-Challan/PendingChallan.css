@@ -374,3 +374,16 @@
 .badge {
   font-size: 13px;
 }
+
+.print-area {
+  display: none;
+}
+
+
+@media print {
+  .print-area {
+    display: block;
+
+  }
+}
+

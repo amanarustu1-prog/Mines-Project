@@ -35,3 +35,16 @@
   color: #1f2937;
   margin: 0;
 }
+
+
+.print-area {
+  display: none;
+}
+
+
+@media print {
+  .print-area {
+    display: block;
+
+  }
+}
