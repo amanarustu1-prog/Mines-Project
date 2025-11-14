@@ -2294,15 +2294,12 @@ const CreateChallan: React.FC = () => {
                         </button>
 
                         {/* Clear-button */}
-
                         <button onClick={clearData}
                           className="btn btn-sm py-1  d-flex align-items-center justify-content-center"
                           style={{ backgroundColor: "#495057", borderColor: "#ced4da", color: "#fff", }}>
                           Clear
                         </button>
                       </div>
-                      </div>
-
                       <div className="col-md-3 d-flex justify-content-end">
                         {/* Export */}
                         <button type="button" onClick={exportToExcel}
@@ -2311,54 +2308,57 @@ const CreateChallan: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                  </div>
 
+
+                  </div>
                 </div>
+
               </div>
+            </div>
+            <div className="employee-master-space-y-2">
+              {/* Employee List Table */}
+              <div className="employee-master-card">
+                <div className="employee-master-card-header mt-2 flex justify-end">
+                  <button className="employee-master-button employee-master-button-primary employee-master-button-sm"
+                    onClick={() => {
+                      setEditItemId(null);
+                      resetForm();
+                      handleOpenModal()
+                    }}>
+                    <PlusIcon /> Add Challan
+                  </button>
+                </div>
+                <div className="employee-master-card-content" style={{ padding: '0' }}>
+                  <DataTable
+                    columns={resizeableColumns}
+                    data={filteredData}
+                    pagination
+                    paginationPerPage={10}
+                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                    highlightOnHover
+                    customStyles={customStyles}
+                    striped
+                    responsive
+                    noDataComponent={
+                      <div className="text-center py-8 text-gray-500">
+                        <p>
+                          {
+                            searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
+                          }
+                        </p>
+                      </div>
+                    }
+                  />
+                </div>
 
+
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="employee-master-space-y-2">
-          {/* Employee List Table */}
-          <div className="employee-master-card">
-            <div className="employee-master-card-header mt-2 flex justify-end">
-              <button className="employee-master-button employee-master-button-primary employee-master-button-sm"
-                onClick={() => {
-                  setEditItemId(null);
-                  resetForm();
-                  handleOpenModal()
-                }}>
-                <PlusIcon /> Add Challan
-              </button>
-            </div>
-            <div className="employee-master-card-content" style={{ padding: '0' }}>
-              <DataTable
-                columns={resizeableColumns}
-                data={filteredData}
-                pagination
-                paginationPerPage={10}
-                paginationRowsPerPageOptions={[5, 10, 20, 50]}
-                highlightOnHover
-                customStyles={customStyles}
-                striped
-                responsive
-                noDataComponent={
-                  <div className="text-center py-8 text-gray-500">
-                    <p>
-                      {
-                        searchTerm || selectedParty || fromDate || toDate === null ? 'No challan records found' : ''
-                      }
-                    </p>
-                  </div>
-                }
-              />
-            </div>
 
 
-          </div>
-        </div>
 
         {isModalOpen && (
           <div className="modal-overlay">
