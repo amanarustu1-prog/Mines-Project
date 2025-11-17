@@ -1,4 +1,4 @@
-.dashboard-main{
+/* .dashboard-main{
   background-color: antiquewhite;
 }
 
@@ -50,12 +50,12 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s box-shadow 0.2s;
   border: 1px solid #e5e7eb;
-}
+} */
 
 
 
 /* What is the Use of Bottom-Code */
-.name-label {
+/* .name-label {
   font-size: 13px !important;
   font-weight: 500 !important;
   color: #111827 !important;
@@ -129,10 +129,10 @@
 
 .employee-master-card-content {
   padding: 1.5rem;
-}
+} */
 
 /* CSS We can use */
-.header-button{
+/* .header-button{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -145,4 +145,41 @@
   display: flex;
   align-items: center;
   gap: 2;
+} */
+
+.approved-challan-header-info {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 3px 0px;
+}
+
+.approved-challan-header-icon {
+  background: #e9fbee; 
+  border-radius: 50%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.approved-challan-header-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #198754; 
+}
+
+.approved-challan-header-subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+
+.approved-challan-header-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
 }
