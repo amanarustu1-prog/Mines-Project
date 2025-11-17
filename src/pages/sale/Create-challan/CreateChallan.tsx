@@ -2330,7 +2330,7 @@ const CreateChallan: React.FC = () => {
                     data={filteredData}
                     pagination
                     paginationPerPage={10}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
+                    paginationRowsPerPageOptions={[5, 10, 20, 50]}          
                     highlightOnHover
                     customStyles={customStyles}
                     striped
@@ -3266,7 +3266,6 @@ const CreateChallan: React.FC = () => {
           <ChallanPrint itemId={editItemId} />
         </div>
       </div>
-
 
       <ConfirmModal show={showModal}
         handleClose={() => setShowModal(false)}
