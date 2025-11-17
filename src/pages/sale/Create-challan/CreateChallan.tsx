@@ -51,13 +51,13 @@ const Search = ({ className }: { className?: string }) => (
 
 // Base interface for common product fields
 interface BaseProductFields {
-  id: string;
+  id: number;
   rate: number;
-  grossWeight: number;
-  netWeight: number;
-  lessWeight: number;
-  gtWeight: number;
-  amount: number;
+  grossWeight: string;
+  netWeight: string;
+  lessWeight: string;
+  gtWeight: string;
+  amount: string;
   ChallanDate: string;
   product: string;
 }
@@ -106,27 +106,27 @@ interface ChallanItem extends BaseProductFields {
   Stateid: number;
   GstAddress: string;
   //   : string;
-  Amount: string;
-  LoadingAmt: string;
-  CommisionAmt: string;
-  TotalAmt: string;
-  GSTAmt: string;
-  RoyaltyAmt: string;
-  TPAmount: string;
-  FreightAmt: string;
-  GTotal: string;
-  Grossweight: string;
-  Netweight: string;
-  Lessweight: string;
-  GTWeight: string;
-  financialYear: string;
+  Amount: number;
+  LoadingAmt: number;
+  CommisionAmt: number;
+  TotalAmt: number;
+  GSTAmt: number;
+  RoyaltyAmt: number;
+  TPAmount: number;
+  FreightAmt: number;
+  GTotal: number;
+  Grossweight: number;
+  Netweight: number;
+  Lessweight: number;
+  GTWeight: number;
+  financialYear: number;
   paytype: 'Cash' | 'Credit';
   Email: string;
   StatusReason: string;
-  Taredate: string;
-  Grossdate: string;
-  ExtraAmt: string;
-  ExtraAmtType: string;
+  Taredate: number;
+  Grossdate: number;
+  ExtraAmt: number;
+  ExtraAmtType: number;
   ProductId: number;
   Status: string;
   status: 'Pending' | 'Approved' | 'Rejected';
@@ -139,8 +139,8 @@ interface ChallanItem extends BaseProductFields {
   Rate: number;
   // Product and weight details
   productDetails: ProductDetail[];
-  ProductName2: string,
-  ProductName3: string,
+  ProductName2: number,
+  ProductName3: number,
   Rate1: number,
   Rate2: number,
   Rate3: number,
@@ -159,9 +159,9 @@ interface ChallanItem extends BaseProductFields {
   Amount1: number,
   Amount2: number,
   Amount3: number,
-  Grossweightdate1: string,
-  Grossweightdate2: string,
-  Grossweightdate3: string,
+  Grossweightdate1: number,
+  Grossweightdate2: number,
+  Grossweightdate3: number,
 }
 
 // ProductDetail is used in the form data
@@ -221,49 +221,49 @@ interface ChallanFormData {
 
   // Product and weight details
   productDetails: ProductDetail[];
-  ProductId: number,
+  ProductId: string,
   ProductName1: string,
   ProductName2: string,
   ProductName3: string,
-  Rate1: number,
-  Rate2: number,
-  Rate3: number,
-  Grossweight1: number,
-  Grossweight2: number,
-  Grossweight3: number,
-  Netweight1: number,
-  Netweight2: number,
-  Netweight3: number,
-  Lessweight1: number,
-  Lessweight2: number,
-  Lessweight3: number,
-  GTWeight1: number,
-  GTWeight2: number,
-  GTWeight3: number,
-  Amount1: number,
-  Amount2: number,
-  Amount3: number,
+  Rate1: string,
+  Rate2: string,
+  Rate3: string,
+  Grossweight1: string,
+  Grossweight2: string,
+  Grossweight3: string,
+  Netweight1: string,
+  Netweight2: string,
+  Netweight3: string,
+  Lessweight1: string,
+  Lessweight2: string,
+  Lessweight3: string,
+  GTWeight1: string,
+  GTWeight2: string,
+  GTWeight3: string,
+  Amount1: string,
+  Amount2: string,
+  Amount3: string,
   Grossweightdate1: string,
   Grossweightdate2: string,
   Grossweightdate3: string,
 
   // Amount details
-  Amount: number;
-  LoadingAmt: number;
-  CommisionAmt: number;
-  TotalAmt: number;
-  GSTAmt: number;
-  RoyaltyAmt: number;
-  TPAmount: number;
-  FreightAmt: number;
-  extraAmt: number;
-  grandTotal: number;
+  Amount: string;
+  LoadingAmt: string;
+  CommisionAmt: string;
+  TotalAmt: string;
+  GSTAmt: string;
+  RoyaltyAmt: string;
+  TPAmount: string;
+  FreightAmt: string;
+  extraAmt: string;
+  grandTotal: string;
   TareWeight: number;
-  Netweight: number;
-  Lessweight: number;
-  GTotal: number;
-  VehicleCommision: number;
-  GTWeight: number;
+  Netweight: string;
+  Lessweight: string;
+  GTotal: string;
+  VehicleCommision: string;
+  GTWeight: string;
 
   // Status field
   status?: 'Active' | 'Inactive' | 'Pending' | 'Approved' | 'Rejected';
@@ -280,7 +280,6 @@ interface ChallanTableItem {
   GstPinID: number;
   partyTypeid: any;
   ChallanID: number;
-  ChallanModule: string;
   id: string;
   ChallanNo: string;
   ChallanDate: string;
@@ -315,22 +314,22 @@ interface ChallanTableItem {
   Stateid: number;
   GstAddress: string;
   //   : string;
-  Amount: string;
-  LoadingAmt: string;
-  CommisionAmt: string;
-  TotalAmt: string;
-  GSTAmt: string;
-  RoyaltyAmt: string;
-  TPAmount: string;
-  FreightAmt: string;
-  GTotal: string;
-  Grossweight: string;
-  Netweight: string;
-  Lessweight: string;
-  GTWeight: string;
-  financialYear: string;
+  Amount: number;
+  LoadingAmt: number;
+  CommisionAmt: number;
+  TotalAmt: number;
+  GSTAmt: number;
+  RoyaltyAmt: number;
+  TPAmount: number;
+  FreightAmt: number;
+  GTotal: number;
+  Grossweight: number;
+  Netweight: number;
+  Lessweight: number;
+  GTWeight: number;
+  financialYear: number;
   paytype: 'Cash' | 'Credit';
-  Email: string;
+  Email: number;
   StatusReason: string;
   Taredate: string;
   Grossdate: string;
@@ -348,9 +347,9 @@ interface ChallanTableItem {
   Rate: number;
   // Product and weight details
   productDetails: ProductDetail[];
-  ProductName1: string;
-  ProductName2: string,
-  ProductName3: string,
+  ProductName1: number;
+  ProductName2: number,
+  ProductName3: number,
   Rate1: number,
   Rate2: number,
   Rate3: number,
@@ -369,9 +368,9 @@ interface ChallanTableItem {
   Amount1: number,
   Amount2: number,
   Amount3: number,
-  Grossweightdate1: string,
-  Grossweightdate2: string,
-  Grossweightdate3: string,
+  Grossweightdate1: number,
+  Grossweightdate2: number,
+  Grossweightdate3: number,
 }
 
 interface State {
@@ -508,61 +507,61 @@ const CreateChallan: React.FC = () => {
       {
         id: '',
         name: '',
-        ProductId: 0,
-        rate: 0,
-        grossWeight: 0,
-        netWeight: 0,
-        lessWeight: 0,
-        gtWeight: 0,
-        amount: 0,
-        ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        ProductId: '',
+        rate: '',
+        grossWeight: '',
+        netWeight: '',
+        lessWeight: '',
+        gtWeight: '',
+        amount: '',
+        ChallanDate: '',
       }
     ],
 
-    ProductId: 0,
+    ProductId: '',
     ProductName1: '',
     ProductName2: '',
     ProductName3: '',
-    Rate1: 0,
-    Rate2: 0,
-    Rate3: 0,
-    Grossweight1: 0,
-    Grossweight2: 0,
-    Grossweight3: 0,
-    Netweight1: 0,
-    Netweight2: 0,
-    Netweight3: 0,
-    Lessweight1: 0,
-    Lessweight2: 0,
-    Lessweight3: 0,
-    GTWeight1: 0,
-    GTWeight2: 0,
-    GTWeight3: 0,
-    Amount1: 0,
-    Amount2: 0,
-    Amount3: 0,
+    Rate1: '',
+    Rate2: '',
+    Rate3: '',
+    Grossweight1: '',
+    Grossweight2: '',
+    Grossweight3: '',
+    Netweight1: '',
+    Netweight2: '',
+    Netweight3: '',
+    Lessweight1: '',
+    Lessweight2: '',
+    Lessweight3: '',
+    GTWeight1: '',
+    GTWeight2: '',
+    GTWeight3: '',
+    Amount1: '',
+    Amount2: '',
+    Amount3: '',
     Grossweightdate1: '',
     Grossweightdate2: '',
     Grossweightdate3: '',
 
     TareWeight: 0,
     financialYear: '',
-    Netweight: 0,
-    Lessweight: 0,
-    GTWeight: 0,
-    VehicleCommision: 0,
-    Taredate: 0,
+    Netweight: '',
+    Lessweight: '',
+    GTWeight: '',
+    VehicleCommision: '',
+    Taredate: '',
 
-    Amount: 0,
-    LoadingAmt: 0,
-    CommisionAmt: 0,
-    TotalAmt: 0,
-    GSTAmt: 0,
-    RoyaltyAmt: 0,
-    TPAmount: 0,
-    FreightAmt: 0,
-    extraAmt: 0,
-    GTotal: 0,
+    Amount: '',
+    LoadingAmt: '',
+    CommisionAmt: '',
+    TotalAmt: '',
+    GSTAmt: '',
+    RoyaltyAmt: '',
+    TPAmount: '',
+    FreightAmt: '',
+    extraAmt: '',
+    GTotal: '',
 
     //Added-Fields
     // IsCompleted: "",
@@ -595,12 +594,12 @@ const CreateChallan: React.FC = () => {
   const blankProduct = {
     id: '',
     name: '',
-    rate: 0,
-    grossWeight: 0,
-    netWeight: 0,
-    lessWeight: 0,
-    gtWeight: 0,
-    amount: 0,
+    rate: '',
+    grossWeight: '',
+    netWeight: '',
+    lessWeight: '',
+    gtWeight: '',
+    amount: '',
     ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
   };
 
@@ -1213,11 +1212,11 @@ const CreateChallan: React.FC = () => {
         const i = index + 1;
         acc[`ProductName${i}`] = product.name || '';
         acc[`Rate${i}`] = product.rate || 0;
-        acc[`Grossweight${i}`] = product.grossWeight || 0;
-        acc[`Netweight${i}`] = product.netWeight || 0;
-        acc[`Lessweight${i}`] = product.lessWeight || 0;
-        acc[`GTWeight${i}`] = product.gtWeight || 0;
-        acc[`Amount${i}`] = product.amount || 0;
+        acc[`Grossweight${i}`] = product.grossWeight ||'';
+        acc[`Netweight${i}`] = product.netWeight ||'';
+        acc[`Lessweight${i}`] = product.lessWeight ||'';
+        acc[`GTWeight${i}`] = product.gtWeight ||'';
+        acc[`Amount${i}`] = product.amount ||'';
         acc[`Grossweightdate${i}`] = product.ChallanDate || null;
         return acc;
       }, {});
@@ -1246,7 +1245,6 @@ const CreateChallan: React.FC = () => {
       if (response) {
         toastifySuccess("Challan is added successfully");
         await getChallanItem();
-        await fetchCounts();
         return true;
       } else {
         throw new Error('Invalid response from server');
@@ -1324,7 +1322,6 @@ const CreateChallan: React.FC = () => {
       if (response) {
         toastifySuccess('Material name deleted successfully');
         await getChallanItem();
-        await fetchCounts();
         return true;
       }
       return false;
@@ -1337,32 +1334,8 @@ const CreateChallan: React.FC = () => {
     }
   };
 
-  const fetchCounts = async () => {
-    try {
-      const payload = {
-        CompanyId: Number(localStorage.getItem("companyID")),
-        IsForApproval: '1',
-        CreatedDatefrom: '',
-        CreatedDateTo: '',
-        IsRejetc: '1'
-      }
-      const [isPending, isApproved, isRejected] = await Promise.all([
-        fetch_Post_Data('Challan/GetData_Challan', payload),
-        fetch_Post_Data('Challan/GetData_Challan', payload),
-        fetch_Post_Data('Challan/GetData_Challan', payload),
-      ]);
-
-      setpendingChallan(Array.isArray(isPending?.Data) ? isPending.Data.length : 0);
-      setapprovedChallan(Array.isArray(isApproved?.Data) ? isApproved.Data.length : 0);
-      setrejectedChallan(Array.isArray(isRejected?.Data) ? isRejected.Data.length : 0);
-    } catch (err) {
-      toastifyError("Error fetching counts");
-    }
-  };
-
   useEffect(() => {
     getChallanItem();
-    fetchCounts();
   }, [filter]);
 
   useEffect(() => {
@@ -1378,65 +1351,81 @@ const CreateChallan: React.FC = () => {
     if (challanData.productDetails.length >= 3) return;
 
     const newRow = {
-      id: '',
-      name: '',
-      ProductName1: '',
-      rate: 0,
-      grossWeight: 0,
-      netWeight: 0,
-      lessWeight: 0,
-      gtWeight: 0,
-      amount: 0,
-      ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-      ChallanID: 0
-    }
+      id: null,
+      name: null,
+      ProductId: null,
+      rate: null,
+      grossWeight: null,
+      netWeight: null,
+      lessWeight: null,
+      gtWeight: null,
+      amount: null,
+      ChallanDate: null,
+    };
+
     setChallanData((prev) => ({
       ...prev,
       productDetails: [...prev.productDetails, newRow]
     }))
   }
 
-  const handleProductChange = (index: number, field: string, value: any) => {
-    setChallanData((prev) => {
-      const updatedProducts = [...prev.productDetails];
-      updatedProducts[index] = {
-        ...updatedProducts[index],
-        [field]: value,
-      };
+ const handleProductChange = (index: number, field: string, value: any) => {
+  setChallanData((prev) => {
+    const updatedProducts = [...prev.productDetails];
 
-      // Auto-calculate GT Weight and Amount
-      if (['rate', 'netWeight', 'lessWeight'].includes(field)) {
-        const rate = Number(updatedProducts[index].rate) || 0;
-        const netWeight = Number(updatedProducts[index].netWeight) || 0;
-        const lessWeight = Number(updatedProducts[index].lessWeight) || 0;
+    const treatedValue =
+      value === '' ? null :
+      isNaN(Number(value)) ? value : Number(value); // preserve null
 
-        const gtWeight = netWeight - lessWeight;
-        const amount = gtWeight * rate;
+    updatedProducts[index][field] = treatedValue;
 
-        updatedProducts[index].gtWeight = gtWeight;
-        updatedProducts[index].amount = amount;
-      }
+    // Only calculate if both valid numbers
+    if (['netWeight', 'lessWeight', 'rate'].includes(field)) {
+      const rate = updatedProducts[index].rate ?? null;
+      const netWeight = updatedProducts[index].netWeight ?? null;
+      const lessWeight = updatedProducts[index].lessWeight ?? null;
 
-      return { ...prev, productDetails: updatedProducts };
-    });
-  };
-
-  const handleSaveChallan = async () => {
-
-    if (editItemId) {
-      const success = await updateChallan(challanData, editItemId);
-      if (success) {
-        setEditItemId(null);
-        handleCloseModal();
-        resetForm();
-      }
-    } else {
-      const success = await insertChallan(challanData);
-      if (success) {
-        handleCloseModal();
-        resetForm();
+      if (rate !== null && netWeight !== null && lessWeight !== null) {
+        updatedProducts[index].gtWeight = netWeight - lessWeight;
+        updatedProducts[index].amount = (netWeight - lessWeight) * rate;
+      } else {
+        updatedProducts[index].gtWeight = null;
+        updatedProducts[index].amount = null;
       }
     }
+
+    return { ...prev, productDetails: updatedProducts };
+  });
+ };
+
+  const handleSaveChallan = async () => {
+  const cleanedData = {
+    ...challanData,
+    productDetails: challanData.productDetails
+      .filter(p => p.ProductId !== null) // Ignore if no product selected
+      .map(p => ({
+        ...p,
+        rate: p.rate ?? null,
+        netWeight: p.netWeight ?? null,
+        lessWeight: p.lessWeight ?? null,
+        gtWeight: p.gtWeight ?? null,
+        amount: p.amount ?? null,
+      }))
+  };
+
+  if (editItemId) {
+    const success = await updateChallan(cleanedData, editItemId);
+    if (success) {
+      resetForm();
+      handleCloseModal();
+    }
+  } else {
+    const success = await insertChallan(cleanedData);
+    if (success) {
+      resetForm();
+      handleCloseModal();
+    }
+  }
   };
 
   useEffect(() => {
@@ -1532,30 +1521,6 @@ const CreateChallan: React.FC = () => {
             ChallanDate: record.Grossweightdate3 || moment().format('YYYY-MM-DD HH:mm:ss'),
           }] : []),
         ],
-        //   ProductName1: record.ProductName1,
-        //   ProductName2: record.ProductName2,
-        //   ProductName3: record.ProductName3,
-        //   Rate1: record.Rate1,
-        //   Rate2: record.Rate2,
-        //   Rate3: record.Rate3,
-        //   Grossweight1: record.Grossweight1,
-        //   Grossweight2: record.Grossweight2,
-        //   Grossweight3: record.Grossweight3,
-        //   Netweight1: record.Netweight1,
-        //   Netweight2: record.Netweight2,
-        //   Netweight3: record.Netweight3,
-        //   Lessweight1: record.Lessweight1,
-        //   Lessweight2: record.Lessweight2,
-        //   Lessweight3: record.Lessweight3,
-        //   GTWeight1: record.GTWeight1,
-        //   GTWeight2: record.GTWeight2,
-        //   GTWeight3: record.GTWeight3,
-        //   Amount1: record.Amount1,
-        //   Amount2: record.Amount2,
-        //   Amount3: record.Amount3,
-        //   Grossweightdate1: record.Grossweightdate1,
-        //   Grossweightdate2: record.Grossweightdate2,
-        //   Grossweightdate3: record.Grossweightdate3,
 
         // === Weight Section (flattened) ===
         TareWeight: Number(record.TareWeight) || 0,
@@ -1609,14 +1574,14 @@ const CreateChallan: React.FC = () => {
       State: '',
       Stateid: 0,
       district: 0,
-      PinID: '',
+      PinID: 0,
       OwnerMobile: '',
       Email: '',
 
       AdvAmt: 0,
       vehicleType: '',
       vehicleTypeid: 0,
-      VehicleNoID: '',
+      VehicleNoID: 0,
       VehicleRemarks: '',
       DriverName: '',
       DriverMobileNo: 0,
@@ -1628,7 +1593,7 @@ const CreateChallan: React.FC = () => {
       gstAddress: '',
       GstState: 0,
       GstDistrict: 0,
-      GstPinID: '',
+      GstPinID: 0,
 
       endUser: true,
       dealer: false,
@@ -1637,38 +1602,38 @@ const CreateChallan: React.FC = () => {
 
       productDetails: [
         {
-          id: '',
+          id: 0,
           name: '',
           // ProductName1: '',
           rate: 0,
-          grossWeight: 0,
-          netWeight: 0,
-          lessWeight: 0,
-          gtWeight: 0,
-          amount: 0,
+          grossWeight: '',
+          netWeight: '',
+          lessWeight: '',
+          gtWeight: '',
+          amount: '',
           ChallanDate: moment().format('YYYY-MM-DD HH:mm:'),
-          ChallanID: 0
+          ChallanID: ''
         }
       ],
       weightDetails: {
         TareWeight: 0,
         ChallanDate: '',
-        netWeight: 0,
-        lessWeight: 0,
-        GTWeight: 0,
-        VehicleCommision: 0,
+        netWeight: '',
+        lessWeight: '',
+        GTWeight: '',
+        VehicleCommision: '',
       },
 
-      amount: 0,
-      loading: 0,
-      commission: 0,
-      total: 0,
-      gstAmount: 0,
-      royalty: 0,
-      TPAmount: 0,
-      freightAmt: 0,
-      extraAmt: 0,
-      grandTotal: 0,
+      amount: '',
+      loading: '',
+      commission: '',
+      total: '',
+      gstAmount: '',
+      royalty: '',
+      TPAmount: '',
+      freightAmt: '',
+      extraAmt: '',
+      grandTotal: '',
     });
   };
 
@@ -1829,56 +1794,6 @@ const CreateChallan: React.FC = () => {
     fetchTPAmount();
   }, []);
 
-  // useEffect(() => {
-  //     const fetchDropDown = async () => {
-  //         try {
-  //             const payload = { EmployeeID: localStorage.getItem("employeeID") };
-  //             const response = await fetchPostData('Users/GetData_Company', payload);
-  //             // console.log(response);
-  //             if (response) {
-  //                 const data = response;
-  //                 setDropdownOptions(Array.isArray(data) ? data : []);
-  //             } else {
-  //                 toastifyError("Failed to load Dropdown.")
-  //             }
-  //         } catch (error: any) {
-  //             toastifyError("Error fetching Dropdown");
-  //         }
-  //     }
-  //     fetchDropDown();
-  // }, []);
-
-  const options = dropdownOptions.map(opt => ({
-    value: opt.CompanyID,
-    label: opt.CompanyName
-  }));
-
-  // Filter states for history
-  const [historyFilters, setHistoryFilters] = useState({
-    searchTerm: '',
-    dateFrom: '',
-    dateTo: '',
-    status: '',
-    paytype: '',
-    Name: ''
-  });
-
-  // Filtered history data
-  // const filteredHistory: any = challanHistory.filter(challan => {
-  //     const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.Name.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.VehicleNoID.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.DriverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
-
-  //     const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
-  //     const matchesDateTo = !historyFilters.dateTo || challan.date <= historyFilters.dateTo;
-  //     const matchesStatus = !historyFilters.status || challan.status === historyFilters.status;
-  //     const matchesPaymentType = !historyFilters.paytype || challan.paytype === historyFilters.paytype;
-  //     const matchesConsignee = !historyFilters.Name || challan.Name.toLowerCase().includes(historyFilters.Name.toLowerCase());
-
-  //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
-  // });
-
   const handleSearch = () => {
     if (!challanItems || challanItems.length === 0) return;
 
@@ -1958,32 +1873,6 @@ const CreateChallan: React.FC = () => {
     getChallanItem();
   }
 
-  // const selectCompactStyles: any = {
-  //     control: (provided: any) => ({
-  //         ...provided,
-  //         minHeight: "33px",
-  //         height: "33px",
-  //         fontSize: "14px",
-  //         padding: "0 2px",
-  //     }),
-  //     valueContainer: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  //     indicatorsContainer: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  //     dropdownIndicator: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  //     clearIndicator: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  // };
-
   const selectCompactStyles: any = {
     control: (provided: any, state: any) => ({
       ...provided,
@@ -1994,7 +1883,7 @@ const CreateChallan: React.FC = () => {
       borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", // ✅ Default light blue border
       boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
       "&:hover": {
-        borderColor: "#6ea8ff", // Hover पर थोड़ा गहरा blue
+        borderColor: "#6ea8ff", 
       },
     }),
     valueContainer: (provided: any) => ({
@@ -3037,18 +2926,12 @@ const CreateChallan: React.FC = () => {
                                   {/* Gross Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Gross Weight</label>
-                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="text" readOnly />
                                   </div>
                                   {/* Date/Time */}
                                   <div className="col-md-2 mt-0">
                                     <label className="MAINTABLE_LABEL name-label">Date/Time</label>
                                     <DatePicker 
-                                      selected={moment(product.ChallanDate, 'YYYY-MM-DD HH:mm:ss').toDate()} 
-                                      onChange={(date: Date | null) => {
-                                        if (date) {
-                                          const formatted = moment(date).format('YYYY-MM-DD HH:mm:ss'); handleProductChange(index, 'ChallanDate', formatted);
-                                        }
-                                      }}
                                       readOnly
                                       showTimeSelect
                                       timeIntervals={15}
@@ -3060,22 +2943,22 @@ const CreateChallan: React.FC = () => {
                                   {/* Net Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Net Weight</label>
-                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="text" readOnly  />
                                   </div>
                                   {/* Less Weight */}
                                   <div className="col mt-0" style={{ minWidth: 150 }}>
                                     <label className="MAINTABLE_LABEL name-label">Less Weight</label>
-                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="text" readOnly />
                                   </div>
                                   {/* GT Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">GT Weight</label>
-                                    <input className="challan challan-prod-readOnly" type="number" value={product.gtWeight} readOnly />
+                                    <input className="challan challan-prod-readOnly" type="text" readOnly />
                                   </div>
                                   {/* Amount */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Amount</label>
-                                    <input className="challan challan-prod-readOnly" type="number" value={product.amount} readOnly />
+                                    <input className="challan challan-prod-readOnly" type="number" readOnly />
                                   </div>
 
 
@@ -3133,22 +3016,22 @@ const CreateChallan: React.FC = () => {
                                 {/* Net-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Net Weight</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.Netweight} onChange={(e) => setChallanData({ ...challanData, Netweight: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* Less-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Less Weight</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value), GTWeight: (challanData.Netweight -  Number(e.target.value)) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* GT-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Total GT Weight</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.GTWeight} onChange={(e) => setChallanData({ ...challanData, GTWeight: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes"/>
                                 </div>
                                 {/* Vehicle-Commision */}
                                 <div className="col-1 mt-0" style={{ minWidth: 150 }}>
                                   <label className="MAINTABLE_LABEL name-label">Vehicle Commision</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.VehicleCommision} onChange={(e) => setChallanData({ ...challanData, VehicleCommision: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                               </div>
                             </div>
@@ -3192,17 +3075,17 @@ const CreateChallan: React.FC = () => {
                                 {/* Commission-Amount */}
                                 <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Commission Amt</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.CommisionAmt} onChange={(e) => setChallanData({ ...challanData, CommisionAmt: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* GT-Amount */}
                                 <div className="col-md-1 col-sm-6 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">GT Amount</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.GSTAmt} onChange={(e) => setChallanData({ ...challanData, GSTAmt: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* Royality-Amount */}
                                 <div className="col-md-1 mt-0" style={{ minWidth: 150 }}>
                                   <label className="MAINTABLE_LABEL name-label">Royalty Amount</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.RoyaltyAmt} onChange={(e) => setChallanData({ ...challanData, RoyaltyAmt: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* TP-Amount */}
                                 <div className="col-md-2 mt-0">
@@ -3235,12 +3118,12 @@ const CreateChallan: React.FC = () => {
                                 {/* Freight-Amount */}
                                 <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Freight Amount</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.FreightAmt} onChange={(e) => setChallanData({ ...challanData, FreightAmt: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* Grand-Total */}
                                 <div className="col-md-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Grand Total</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                               </div>
                             </div>
@@ -3255,7 +3138,6 @@ const CreateChallan: React.FC = () => {
             </div>
           </div>
         )}
-
       </main>
 
       <div className="print-area">
