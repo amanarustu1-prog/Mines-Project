@@ -25,7 +25,6 @@ import ChallanSlip from './ChallanSlip';
 import ChallanPrint from './ChallanPrint';
 
 // Icon components
-
 const UsersIcon = ({ style }: { style?: React.CSSProperties }) => (
   <svg className="employee-master-icon" style={style} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -264,6 +263,7 @@ interface ChallanFormData {
   Lessweight: number;
   GTotal: number;
   VehicleCommision: number;
+  GTWeight: number;
 
   // Status field
   status?: 'Active' | 'Inactive' | 'Pending' | 'Approved' | 'Rejected';
@@ -565,8 +565,8 @@ const CreateChallan: React.FC = () => {
     GTotal: 0,
 
     //Added-Fields
-    IsCompleted: "",
-    IsForApproval: 1
+    // IsCompleted: "",
+    // IsPending: 1
   });
   const [challanItems, setChallanItems] = useState<ChallanItem[]>([]);
 
@@ -1224,6 +1224,8 @@ const CreateChallan: React.FC = () => {
       const payload = {
         ...challanData,
         ...flatProducts,
+        IsCompleted: "",
+        IsPending: 1,
         CompanyId: dropdown.map(opt => opt.value).toString() || localStorage.getItem("companyID"),
       };
       //   console.log(payload);
@@ -2330,7 +2332,7 @@ const CreateChallan: React.FC = () => {
                     data={filteredData}
                     pagination
                     paginationPerPage={10}
-                    paginationRowsPerPageOptions={[5, 10, 20, 50]}          
+                    paginationRowsPerPageOptions={[5, 10, 20, 50]}
                     highlightOnHover
                     customStyles={customStyles}
                     striped
@@ -3030,47 +3032,50 @@ const CreateChallan: React.FC = () => {
                                   {/* Rate */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Rate</label>
-                                    <input className="challan" type="number" value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value))} />
                                   </div>
                                   {/* Gross Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Gross Weight</label>
-                                    <input className="challan" type="number" value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
                                   </div>
                                   {/* Date/Time */}
                                   <div className="col-md-2 mt-0">
                                     <label className="MAINTABLE_LABEL name-label">Date/Time</label>
-                                    <DatePicker selected={moment(product.ChallanDate, 'YYYY-MM-DD HH:mm:ss').toDate()} onChange={(date: Date | null) => {
-                                      if (date) {
-                                        const formatted = moment(date).format('YYYY-MM-DD HH:mm:ss'); handleProductChange(index, 'ChallanDate', formatted);
-                                      }
-                                    }}
+                                    <DatePicker 
+                                      selected={moment(product.ChallanDate, 'YYYY-MM-DD HH:mm:ss').toDate()} 
+                                      onChange={(date: Date | null) => {
+                                        if (date) {
+                                          const formatted = moment(date).format('YYYY-MM-DD HH:mm:ss'); handleProductChange(index, 'ChallanDate', formatted);
+                                        }
+                                      }}
+                                      readOnly
                                       showTimeSelect
                                       timeIntervals={15}
                                       timeCaption="Time"
                                       dateFormat="dd/MM/yyyy HH:mm"
-                                      className="border rounded px-2 py-1 w-full challan"
+                                      className="border rounded px-2 py-1 w-full challan challan-prod-readOnly"
                                     />
                                   </div>
                                   {/* Net Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Net Weight</label>
-                                    <input className="challan" type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
                                   </div>
                                   {/* Less Weight */}
                                   <div className="col mt-0" style={{ minWidth: 150 }}>
                                     <label className="MAINTABLE_LABEL name-label">Less Weight</label>
-                                    <input className="challan" type="number" value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.lessWeight} onChange={(e) => handleProductChange(index, 'lessWeight', Number(e.target.value))} />
                                   </div>
                                   {/* GT Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">GT Weight</label>
-                                    <input className="challan" type="number" value={product.gtWeight} readOnly />
+                                    <input className="challan challan-prod-readOnly" type="number" value={product.gtWeight} readOnly />
                                   </div>
                                   {/* Amount */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Amount</label>
-                                    <input className="challan" type="number" value={product.amount} readOnly />
+                                    <input className="challan challan-prod-readOnly" type="number" value={product.amount} readOnly />
                                   </div>
 
 
@@ -3097,7 +3102,7 @@ const CreateChallan: React.FC = () => {
                                 {/* Tare-Weight */}
                                 <div className="col-2 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                  <input className="challan"  type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value), Netweight: Number(e.target.value), GTWeight: Number(e.target.value) })} />
                                 </div>
 
                                 {/* Date/Time */}
@@ -3125,7 +3130,6 @@ const CreateChallan: React.FC = () => {
                                   />
                                 </div>
 
-
                                 {/* Net-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Net Weight</label>
@@ -3134,7 +3138,7 @@ const CreateChallan: React.FC = () => {
                                 {/* Less-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Less Weight</label>
-                                  <input className="challan" type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" value={challanData.Lessweight} onChange={(e) => setChallanData({ ...challanData, Lessweight: Number(e.target.value), GTWeight: (challanData.Netweight -  Number(e.target.value)) })} />
                                 </div>
                                 {/* GT-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
@@ -3274,7 +3278,7 @@ const CreateChallan: React.FC = () => {
             deleteMaterialName(selectedId);
           }
           setShowModal(false);
-      }} />
+        }} />
     </>
   );
 }

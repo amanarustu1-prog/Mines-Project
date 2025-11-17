@@ -1104,7 +1104,7 @@ export default function CreateChallan() {
       setLoading(true);
       const payload = {
         CompanyId: Number(localStorage.getItem("companyID")),
-        IsForApproval: '1',
+        IsPending: 1,
         CreatedDatefrom: '',
         CreatedDateTo: '',
         IsReject: ''
@@ -1160,7 +1160,6 @@ export default function CreateChallan() {
       if (response) {
         toastifySuccess("Challan is added successfully");
         await getChallanItem();
-        await fetchCounts();
         return true;
       } else {
         throw new Error('Invalid response from server');
@@ -1239,7 +1238,6 @@ export default function CreateChallan() {
       if (response) {
         toastifySuccess('Material name deleted successfully');
         await getChallanItem();
-        await fetchCounts();
         return true;
       }
       return false;
@@ -1252,32 +1250,8 @@ export default function CreateChallan() {
     }
   };
 
-  const fetchCounts = async () => {
-    try {
-      const payload = {
-        CompanyId: Number(localStorage.getItem("companyID")),
-        IsForApproval: '1',
-        CreatedDatefrom: '',
-        CreatedDateTo: '',
-        IsRejetc: '1'
-      }
-      const [isPending, isApproved, isRejected] = await Promise.all([
-        fetch_Post_Data('Challan/GetData_Challan', payload),
-        fetch_Post_Data('Challan/GetData_Challan', payload),
-        fetch_Post_Data('Challan/GetData_Challan', payload),
-      ]);
-
-      setpendingChallan(Array.isArray(isPending?.Data) ? isPending.Data.length : 0);
-      setapprovedChallan(Array.isArray(isApproved?.Data) ? isApproved.Data.length : 0);
-      setrejectedChallan(Array.isArray(isRejected?.Data) ? isRejected.Data.length : 0);
-    } catch (err) {
-      toastifyError("Error fetching counts");
-    }
-  };
-
   useEffect(() => {
     getChallanItem();
-    fetchCounts();
   }, [filter]);
 
   useEffect(() => {
@@ -1320,16 +1294,19 @@ export default function CreateChallan() {
       };
 
       // Auto-calculate GT Weight and Amount
-      if (['rate', 'netWeight', 'lessWeight'].includes(field)) {
+      if (['grossWeight','rate', 'netWeight', 'lessWeight'].includes(field)) {
         const rate = Number(updatedProducts[index].rate) || 0;
         const netWeight = Number(updatedProducts[index].netWeight) || 0;
         const lessWeight = Number(updatedProducts[index].lessWeight) || 0;
+        const grossWeight = Number(updatedProducts[index].grossWeight) || 0;
 
         const gtWeight = netWeight - lessWeight;
         const amount = gtWeight * rate;
+        const actualWeight = challanData.Netweight - grossWeight;
 
         updatedProducts[index].gtWeight = gtWeight;
         updatedProducts[index].amount = amount;
+        updatedProducts[index].netWeight = actualWeight;
       }
 
       return { ...prev, productDetails: updatedProducts };
@@ -1359,7 +1336,7 @@ export default function CreateChallan() {
   };
 
   useEffect(() => {
-    if (editItemId && dropdownOptions.length > 0) {
+    if (editItemId) {
       getSingleChallan();
     }
   }, [editItemId, dropdownOptions]);
@@ -1684,126 +1661,6 @@ export default function CreateChallan() {
     fetchProductName();
   }, []);
 
-  // useEffect(() => {
-  //     const fetchDropDown = async () => {
-  //         try {
-  //             const payload = { EmployeeID: localStorage.getItem("employeeID") };
-  //             const response = await fetchPostData('Users/GetData_Company', payload);
-  //             // console.log(response);
-  //             if (response) {
-  //                 const data = response;
-  //                 setDropdownOptions(Array.isArray(data) ? data : []);
-  //             } else {
-  //                 toastifyError("Failed to load Dropdown.")
-  //             }
-  //         } catch (error: any) {
-  //             toastifyError("Error fetching Dropdown");
-  //         }
-  //     }
-  //     fetchDropDown();
-  // }, []);
-
-  const options = dropdownOptions.map(opt => ({
-    value: opt.CompanyID,
-    label: opt.CompanyName
-  }));
-
-  // Filter states for history
-  const [historyFilters, setHistoryFilters] = useState({
-    searchTerm: '',
-    dateFrom: '',
-    dateTo: '',
-    status: '',
-    paytype: '',
-    Name: ''
-  });
-
-  // Filtered history data
-  // const filteredHistory: any = challanHistory.filter(challan => {
-  //     const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.Name.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.VehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-  //         challan.DriverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
-
-  //     const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
-  //     const matchesDateTo = !historyFilters.dateTo || challan.date <= historyFilters.dateTo;
-  //     const matchesStatus = !historyFilters.status || challan.status === historyFilters.status;
-  //     const matchesPaymentType = !historyFilters.paytype || challan.paytype === historyFilters.paytype;
-  //     const matchesConsignee = !historyFilters.Name || challan.Name.toLowerCase().includes(historyFilters.Name.toLowerCase());
-
-  //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
-  // });
-
-  const handleSearch = () => {
-    let result = challanItems;
-
-    const fromDateTime = fromDate ? new Date(
-      `${moment(fromDate).format('YYYY-MM-DD')} ${fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
-      }`) : null;
-
-    const toDateTime = toDate
-      ? new Date(
-        `${moment(toDate).format('YYYY-MM-DD')} ${toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
-        }`
-      ) : null;
-
-    // Filter by date range
-    if (fromDateTime && toDateTime) {
-      result = result.filter((item) => {
-        const challanDate = new Date(item.CreatedDate);
-        return challanDate >= fromDateTime && challanDate <= toDateTime;
-      });
-    }
-    else if (fromDateTime && !toDateTime) {
-      result = result.filter((item) => {
-        const challanDate = new Date(item.CreatedDate);
-        return challanDate >= fromDateTime;
-      });
-    }
-
-    // Filter by party
-    if (selectedParty) {
-      result = result.filter((item) => item.PartyID === challanData.Party);
-      // console.log(result.length);
-    }
-
-    // Filter by challan number (search input)
-    if (searchTerm.trim()) {
-      const term = searchTerm.trim().toLowerCase();
-      result = result.filter((item) =>
-        item.ChallanNo?.toLowerCase().includes(term)
-      );
-    }
-
-    setFilteredData(result);
-  };
-
-  // const selectCompactStyles: any = {
-  //     control: (provided: any) => ({
-  //         ...provided,
-  //         minHeight: "33px",
-  //         height: "33px",
-  //         fontSize: "14px",
-  //         padding: "0 2px",
-  //     }),
-  //     valueContainer: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  //     indicatorsContainer: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  //     dropdownIndicator: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  //     clearIndicator: (provided: any) => ({
-  //         ...provided,
-  //         padding: "0 6px",
-  //     }),
-  // };
-
   const selectCompactStyles: any = {
     control: (provided: any, state: any) => ({
       ...provided,
@@ -1839,108 +1696,6 @@ export default function CreateChallan() {
     ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
   }));
 
-  //Download-Excel_File
-  const exportToExcel = () => {
-    const filteredDataNew = challanItems.map((item) => ({
-      "Challan ID": item.ChallanID,
-      "Challan No": item.ChallanNo,
-      "Challan Module": item.ChallanModule,
-      "Challan Date": item.ChallanDate,
-      "Financial Year": item.financialYear,
-      "Voucher Type": item.VoucherType || "",
-      "Pay Type": item.paytype || "",
-      "Advance Amount": item.AdvAmt || 0,
-
-      "Party Name": item.Name || "",
-      "Party ID": item.PartyID || "",
-      "Party Type ID": item.partyTypeid || "",
-      "Address": item.Address || item.address || "",
-      "State": item.State || "",
-      "State ID": item.StateID || "",
-      "District ID": item.DistrictID || "",
-      "Pin ID": item.PinID || "",
-      "Email": item.Email || "",
-      "Owner Mobile": item.OwnerMobile || "",
-
-      "Vehicle No": item.VehicleNo || "",
-      "Vehicle Type ID": item.VehicleTypeid || "",
-      "Vehicle Remarks": item.VehicleRemarks || "",
-      "Vehicle Commission": item.VehicleCommision || "",
-      "Driver Name": item.DriverName || "",
-      "Driver Mobile No": item.DriverMobileNo || "",
-
-      "GST Bill": item.IsGST ? "Yes" : "No",
-      "GST No": item.GstNo || "",
-      "GST Address": item.GstAddress || "",
-      "GST State": item.GstState || "",
-      "GST District ID": item.GstDistrictID || "",
-      "GST Pin ID": item.GstPinID || "",
-      "Bill Name": item.BillName || "",
-
-      "Gross Weight": item.Grossweight || "",
-      "Tare Weight": item.TareWeight || "",
-      "Net Weight": item.Netweight || "",
-      "Less Weight": item.Lessweight || "",
-      "GT Weight": item.GTWeight || "",
-
-      "Rate": item.Rate || "",
-      "Amount": item.Amount || "",
-      "Loading Amount": item.LoadingAmt || "",
-      "Commission Amount": item.CommisionAmt || "",
-      "Total Amount": item.TotalAmt || "",
-      "GST Amount": item.GSTAmt || "",
-      "Royalty Amount": item.RoyaltyAmt || "",
-      "TP Amount": item.TPAmount || "",
-      "Freight Amount": item.FreightAmt || "",
-      "Extra Amount": item.ExtraAmt || "",
-      "Grand Total": item.GTotal || "",
-
-      // 🧾 Product 1
-      "Product Name 1": item.ProductName1 || "",
-      "Rate 1": item.Rate1 || "",
-      "Gross Weight 1": item.Grossweight1 || "",
-      "Gross Weight Date 1": item.Grossweightdate1 || "",
-      "Net Weight 1": item.Netweight1 || "",
-      "Less Weight 1": item.Lessweight1 || "",
-      "GT Weight 1": item.GTWeight1 || "",
-      "Amount 1": item.Amount1 || "",
-
-      // 🧾 Product 2
-      "Product Name 2": item.ProductName2 || "",
-      "Rate 2": item.Rate2 || "",
-      "Gross Weight 2": item.Grossweight2 || "",
-      "Gross Weight Date 2": item.Grossweightdate2 || "",
-      "Net Weight 2": item.Netweight2 || "",
-      "Less Weight 2": item.Lessweight2 || "",
-      "GT Weight 2": item.GTWeight2 || "",
-      "Amount 2": item.Amount2 || "",
-
-      // 🧾 Product 3
-      "Product Name 3": item.ProductName3 || "",
-      "Rate 3": item.Rate3 || "",
-      "Gross Weight 3": item.Grossweight3 || "",
-      "Gross Weight Date 3": item.Grossweightdate3 || "",
-      "Net Weight 3": item.Netweight3 || "",
-      "Less Weight 3": item.Lessweight3 || "",
-      "GT Weight 3": item.GTWeight3 || "",
-      "Amount 3": item.Amount3 || "",
-
-      "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
-      "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
-      "Company ID": item.Companyid || "",
-    }));
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(filteredDataNew);
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'data.xlsx';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
 
   return (
     <>
@@ -2492,7 +2247,7 @@ export default function CreateChallan() {
                                       {/* Gross Weight */}
                                       <div className="col mt-0" style={{ minWidth: 130 }}>
                                         <label className="MAINTABLE_LABEL name-label">Gross Weight</label>
-                                        <input className="challan" type="number" value={product.grossWeight} onChange={(e) => handleProductChange(index, 'grossWeight', Number(e.target.value))} />
+                                        <input className="challan" type="number" value={product.grossWeight} onChange={(e) =>  handleProductChange(index, 'grossWeight', Number(e.target.value)) } />
                                       </div>
                                       {/* Date/Time */}
                                       <div className="col-md-2 mt-0">
@@ -2512,7 +2267,7 @@ export default function CreateChallan() {
                                       {/* Net Weight */}
                                       <div className="col mt-0" style={{ minWidth: 130 }}>
                                         <label className="MAINTABLE_LABEL name-label">Net Weight</label>
-                                        <input className="challan" type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', Number(e.target.value))} />
+                                        <input className="challan" type="number" value={product.netWeight} onChange={(e) => handleProductChange(index, 'netWeight', (product.grossWeight - (Number(e.target.value))) )} />
                                       </div>
                                       {/* Less Weight */}
                                       <div className="col mt-0" style={{ minWidth: 150 }}>
@@ -2660,7 +2415,7 @@ export default function CreateChallan() {
                                       <input className="challan" type="number" id="SchemDes" value={challanData.GTotal} onChange={(e) => setChallanData({ ...challanData, GTotal: Number(e.target.value) })} />
                                     </div>
 
-                                   
+
                                   </div>
                                 </div>
                               </div>
