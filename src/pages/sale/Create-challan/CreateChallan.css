@@ -9,9 +9,6 @@ GOBAL CSS START
 
 
 
-
-
-
 /* site header start hare  */
 
 .site-header {
@@ -960,14 +957,12 @@ GOBAL CSS START
   font-weight: 500 !important;
   color: #111827 !important;
   text-align: right !important;
-
 }
 
 .label_search {
   display: flex !important;
   justify-content: end !important;
   align-items: center !important;
-
 }
 
 .single-info-block {
