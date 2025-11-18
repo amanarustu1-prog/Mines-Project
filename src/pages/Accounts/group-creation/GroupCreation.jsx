@@ -6,6 +6,7 @@ import DataTable from 'react-data-table-component';
 import { customStyles } from '@/common/Utility';
 import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
+import { Edit3, Trash2 } from 'lucide-react';
 
 const GroupCreation = () => {
   const [form, setForm] = useState({
@@ -147,13 +148,17 @@ const GroupCreation = () => {
     { name: 'Cash', selector: row => (row.Iscash ? 'Yes' : 'No'), sortable: true },
     { name: 'Sale', selector: row => (row.IsSale ? 'Yes' : 'No'), sortable: true },
     { name: 'Purchase', selector: row => (row.IsPurchase ? 'Yes' : 'No'), sortable: true },
-    { name: 'Active', selector: row => (row.IsActive !== undefined ? (row.IsActive ? 'Yes' : 'No') : (row.isActive ? 'Yes' : 'No')), sortable: true },
     {
       name: 'Actions',
       cell: (row) => (
         <div className="d-flex gap-2">
-          <button className="btn btn-sm btn-outline-primary" onClick={() => onEdit(row)}>Edit</button>
-          <button className="btn btn-sm btn-outline-danger" onClick={() => onDelete(row)}>Delete</button>
+          <button  className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
+            <Trash2 className="material-name-icon-sm" />
+          </button>
+
+          <button  className="material-name-btn-icon" title="Edit">
+            <Edit3 className="material-name-icon-sm" />
+          </button>
         </div>
       )
     }
@@ -255,7 +260,7 @@ const GroupCreation = () => {
               <label className="ledger-management-label">Group Name *</label>
               <input
                 type="text"
-                className={`ledger-management-input w-100 ${errors.groupName ? 'is-invalid' : ''}`}
+                className={`form-control form-control-sm challan w-100 ${errors.groupName ? 'is-invalid' : ''}`}
                 value={form.groupName}
                 onChange={(e) => handleChange('groupName', e.target.value)}
               />
@@ -346,7 +351,7 @@ const GroupCreation = () => {
             </div>
           </div>
 
-          <div className="row">
+          {/* <div className="row">
             <div className="col-md-6 mb-3">
               <label className="ledger-management-label">Company Id *</label>
               <input
@@ -373,14 +378,14 @@ const GroupCreation = () => {
                 </label>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Description */}
           <div className="row">
             <div className="col-md-12 mb-3">
               <label className="ledger-management-label">Description *</label>
               <textarea
-                className="ledger-management-textarea w-100"
+                className="ledger-management-textarea challan w-100"
                 rows={3}
                 value={form.description}
                 onChange={(e) => handleChange('description', e.target.value)}
