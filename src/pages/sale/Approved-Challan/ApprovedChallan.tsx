@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import './ApprovedChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
@@ -2707,7 +2706,7 @@ export default function ApprovedChallan() {
                         deleteMaterialName(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </>
     );
 }
@@ -2717,7 +2716,7 @@ export default function ApprovedChallan() {
 // import "./ApprovedChallan.css";
 // import DatePicker from 'react-datepicker';
 // import Select from 'react-select';
-// import { PlusIcon } from 'lucide-react';
+// import { PlusIcon, Rows } from 'lucide-react';
 // import DataTable from 'react-data-table-component';
 // import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 // import { fetchPostData } from '@/components/hooks/Api';
@@ -2733,35 +2732,74 @@ export default function ApprovedChallan() {
 
 //     //Second-section
 //     PartyID: number;
+//     PartyName: string;
 //     Address: string;
 //     Stateid: number;
+//     StateName: string;
 //     DistrictID: number;
+//     DistrictName: string;
 //     PinID: number;
+//     PinName: string;
 //     OwnerMobile: number;
 //     Email: string;
+
+//     //Third-Section
+//     AdvAmt: number;
+//     VehicleTypeid: number;
+//     VehicleNoID: number;
+//     VehicleName: number;
+//     VehicleTypeName: string;
+//     DriverName: string;
+//     DriverMobileNo: number;
+//     VehicleRemarks: string;
+
+//     //Fourth-Section
+//     IsGST: number;
+//     GstNo: number;
+//     Name: string; //GST-PartyID
+//     GstAddress: string;
+//     GstState: number;
+//     GstStateName: string;
+//     GstDistrictID: number;
+//     GstDistrictName: string;
+//     GstPinID: number;
+//     GstPinName: string;
+
+//     //Fifth-Section
+
 // }
 
 // // Dropdowns-Interface
-// interface Party{
+// interface Party {
 //     PartyID: number;
 //     Name: string;
 //     Address: string;
 //     GSTNo: string;
 // }
 
-// interface State{
+// interface State {
 //     ID: number;
 //     Description: string;
 // }
 
-// interface District{
+// interface District {
 //     DistrictID: number;
 //     DistrictName: string;
 // }
 
-// interface ZipCode{
+// interface ZipCode {
 //     ZipCodeID: number;
 //     ZipCodeName: string;
+// }
+
+// interface VehicleType {
+//     VehicleTypeID: number;
+//     Description: string;
+// }
+
+// interface VehicleNo {
+//     VehicleNumberID: number;
+//     Description: string;
 // }
 
 // const ApprovedChallan = () => {
@@ -2781,6 +2819,8 @@ export default function ApprovedChallan() {
 //     const [gstDistrict, setGSTDistrict] = useState<District[]>([]);
 //     const [zipCode, setZipCode] = useState<ZipCode[]>([]);
 //     const [gstZipCode, setGSTZipCode] = useState<ZipCode[]>([]);
+//     const [vehicleType, setVehicleType] = useState<VehicleType[]>([]);
+//     const [vehicleNo, setvehicleNo] = useState<VehicleNo[]>();
 
 //     //----Not-Known-----
 //     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -2789,7 +2829,7 @@ export default function ApprovedChallan() {
 
 //     // -----------Get-Data------------
 //     const getChallanItem = async () => {
-//         try{
+//         try {
 //             setLoading(true);
 //             const payload = {
 //                 CompanyId: Number(localStorage.getItem('companyID')),
@@ -2799,13 +2839,13 @@ export default function ApprovedChallan() {
 //                 ISCompleted: ''
 //             }
 //             const response = await fetchPostData('Challan/GetData_Challan', payload);
-//             // console.log(response);
-//             if(response){
+//             console.log(response);
+//             if (response) {
 //                 setChallanData(response);
 //             }
-//         }catch(err){
+//         } catch (err) {
 //             toastifyError("Error to get the Data");
-//         }finally{
+//         } finally {
 //             setLoading(false);
 //         }
 //     }
@@ -2815,73 +2855,106 @@ export default function ApprovedChallan() {
 //     }, []);
 
 //     //--------Dropdowns-------
-//     const dropDownPayload = {CompanyId: localStorage.getItem('companyID')};
+//     const dropDownPayload = { CompanyId: localStorage.getItem('companyID') };
 
 //     const fetchPartyType = async () => {
-//         try{
+//         try {
 //             const response = await fetchPostData('Party/GetDataDropDown_Party', dropDownPayload);
 //             console.log(response);
 
-//             if(response && Array.isArray(response)){
+//             if (response && Array.isArray(response)) {
 //                 setParty(response);
 //                 setGSTParty(response);
-//             }else{
+//             } else {
 //                 setParty([]);
 //                 setGSTParty([]);
 //             }
-//         }catch{
+//         } catch {
 //             toastifyError("Error Fetching a Party Data.");
 //         }
 //     }
 
 //     const fetchState = async () => {
-//         try{
+//         try {
 //             const response = await fetchPostData('State/GetDataDropDown_State', dropDownPayload);
 //             console.log(response);
 
-//             if(response && Array.isArray(response)){
+//             if (response && Array.isArray(response)) {
 //                 setState(response);
 //                 setGSTState(response);
-//             }else{
+//             } else {
 //                 setState([]);
 //                 setGSTState([]);
 //             }
-//         }catch{
+//         } catch {
 //             toastifyError('Error Fetching a State Data.');
 //         }
 //     }
 
 //     const fetchDistrict = async (stateID: number | string) => {
 //         try {
-//           const response = await fetchPostData('District/GetDataDropDown_District', {
-//             StateId: stateID,
-//             CompanyId: Number(localStorage.getItem('companyID')),
-//           })
-//           // console.log(response);
-//           if (response && Array.isArray(response)) {
-//             setDistrict(response);
-//             setGSTDistrict(response);
-//           } else {
-//             setDistrict([]);
-//           }
+//             const response = await fetchPostData('District/GetDataDropDown_District', {
+//                 StateId: stateID,
+//                 CompanyId: Number(localStorage.getItem('companyID')),
+//             })
+//             // console.log(response);
+//             if (response && Array.isArray(response)) {
+//                 setDistrict(response);
+//                 setGSTDistrict(response);
+//             } else {
+//                 setDistrict([]);
+//             }
 //         } catch {
-//           toastifyError('Error fetching District');
+//             toastifyError('Error fetching District');
 //         }
 //     }
 
 //     const fetchZipCode = async (id: number | string) => {
 //         const response = await fetchPostData('ZipCode/GetDataDropDown_ZipCode', {
-//           CompanyId: Number(localStorage.getItem('companyID')),
-//           DistrictId: id
+//             CompanyId: Number(localStorage.getItem('companyID')),
+//             DistrictId: id
 //         })
 //         // console.log(response);
 //         if (response && Array.isArray(response)) {
-//           setZipCode(response);
-//           setGSTZipCode(response);
+//             setZipCode(response);
+//             setGSTZipCode(response);
 //         }
 //         else {
-//           setZipCode([]);
-//           setGSTZipCode([]);
+//             setZipCode([]);
+//             setGSTZipCode([]);
+//         }
+//     }
+
+//     const fetchVehicleType = async () => {
+//         try {
+//             const response = await fetchPostData('VehicleType/GetDataDropDown_VehicleType', dropDownPayload);
+//             console.log(response);
+
+//             if (response && Array.isArray(response)) {
+//                 setVehicleType(response);
+//             } else {
+//                 setVehicleType([]);
+//             }
+//         } catch {
+//             toastifyError('Error Fetching a Vehicle Type.');
+//         }
+//     }
+
+//     const fetchVehicleNo = async (vehicleNo: string | number) => {
+//         try {
+//             const response = await fetchPostData('VehicleNumber/GetDataDropDown_VehicleNumber', {
+//                 CompanyId: Number(localStorage.getItem('companyID')),
+//                 VehicleTypeID: vehicleNo
+//             });
+//             console.log(response);
+
+//             if (response && Array.isArray(response)) {
+//                 setvehicleNo(response);
+//             } else {
+//                 setvehicleNo([]);
+//             }
+//         } catch {
+//             toastifyError('Error Fetching a Vehicle No.');
 //         }
 //     }
 
@@ -2890,6 +2963,8 @@ export default function ApprovedChallan() {
 //         fetchState();
 //         fetchDistrict(1);
 //         fetchZipCode(1);
+//         fetchVehicleType();
+//         fetchVehicleNo(1);
 //     }, []);
 
 //     const Columns = [
@@ -2903,7 +2978,7 @@ export default function ApprovedChallan() {
 //             )
 //         },
 //         {
-//             name: 'Challan-Year', 
+//             name: 'Challan-Year',
 //             selector: (row: challanDatas) => row.financialYear,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
@@ -2931,10 +3006,10 @@ export default function ApprovedChallan() {
 //             name: 'Party',
 //             selector: (row: challanDatas) => row.PartyID,
 //             sortable: true,
-//             cell: (row: challanDatas) => {
-//                 const pName = party.find((p) => Number(p.PartyID) === Number(row.PartyID))?.Name ?? "-";
-//                 return <span className="font-medium">{pName}</span>
-//             }
+//             cell: (row: challanDatas) => (
+//                 // const pName = party.find((p) => Number(p.PartyID) === Number(row.PartyID))?.Name ?? "-";
+//                 <span className="font-medium">{row.PartyName}</span>
+//             )
 //         },
 //         {
 //             name: 'Address',
@@ -2948,28 +3023,26 @@ export default function ApprovedChallan() {
 //             name: 'State',
 //             selector: (row: challanDatas) => row.Stateid,
 //             sortable: true,
-//             cell: (row: challanDatas) => {
-//                 const getStateName = state.find(s => s.ID === row.Stateid)?.Description ?? "-";
-//                 return <span className="font-medium">{getStateName}</span>
-//             }
+//             cell: (row: challanDatas) => (
+//                 // const getStateName = state.find(s => s.ID === row.Stateid)?.Description ?? "-";
+//                 <span className="font-medium">{row.StateName}</span>
+//             )
 //         },
 //         {
 //             name: 'District',
 //             selector: (row: challanDatas) => row.DistrictID,
 //             sortable: true,
-//             cell: (row: challanDatas) => {
-//                 const getDistrictName = district.find(d => d.DistrictID === row.DistrictID)?.DistrictName ?? "-";
-//                 return <span className="font-medium">{ getDistrictName }</span>
-//             }
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.DistrictName}</span>
+//             )
 //         },
 //         {
-//             name: 'Zip-Code',
+//             name: 'Pin-Id',
 //             selector: (row: challanDatas) => row.PinID,
 //             sortable: true,
-//             cell: (row: challanDatas) => {
-//                 const getZipName = zipCode.find(z => z.ZipCodeID === row.PinID)?.ZipCodeName ?? "-";
-//                 return <span className="font-medium">{ getZipName }</span>
-//             }
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.PinName}</span>
+//             )
 //         },
 //         {
 //             name: 'Contact',
@@ -2990,11 +3063,165 @@ export default function ApprovedChallan() {
 
 //         //Third-Section
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row ,
+//             name: 'Advance Amount',
+//             selector: (row: challanDatas) => row.AdvAmt,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{}</span>
+//                 <span className="font-medium">{row.AdvAmt}</span>
+//             )
+//         },
+//         {
+//             name: 'Vehicle-Type',
+//             selector: (row: challanDatas) => row.VehicleTypeid,
+//             sortable: true,
+//             cell: (row: challanDatas) => {
+//                 return <span className="font-medium">{row.VehicleTypeName}</span>
+//             }
+//         },
+//         {
+//             name: 'Vehicle Number',
+//             selector: (row: challanDatas) => row.VehicleName,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.VehicleName}</span>
+//             )
+//         },
+//         {
+//             name: 'Driver Name',
+//             selector: (row: challanDatas) => row.DriverName,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.DriverName}</span>
+//             )
+//         },
+//         {
+//             name: 'Driver Number',
+//             selector: (row: challanDatas) => row.DriverMobileNo,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.DriverMobileNo}</span>
+//             )
+//         },
+//         {
+//             name: 'Vehicle-Remark',
+//             selector: (row: challanDatas) => row.VehicleRemarks,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.VehicleRemarks}</span>
+//             )
+//         },
+
+//         //Fourth-Section
+//         {
+//             name: 'Is-GST',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: 'GstNo',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: 'GST Party',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: 'GST Address',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: 'GST State',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: 'GST District',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: 'GST Pin-Id',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
+//             )
+//         },
+//         {
+//             name: '',
+//             selector: (row: challanDatas) => row,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{ }</span>
 //             )
 //         }
 //     ];

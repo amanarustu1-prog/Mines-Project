@@ -1075,3 +1075,7 @@ input.challan:focus {
 .product-des-box {
   margin-bottom: 12px;
 }
+
+.challan-prod-readOnly{
+  background-color: #e9eaec!important;
+}
