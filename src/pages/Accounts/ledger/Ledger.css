@@ -835,3 +835,7 @@
 .ledger-management-tab-content {
     animation: fadeIn 0.2s ease-in-out;
 }
+
+.GroupCreation_header {
+    margin-top: 5.5rem;
+}

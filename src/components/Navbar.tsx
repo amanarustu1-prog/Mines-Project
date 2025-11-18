@@ -439,6 +439,12 @@ const navigationItems: NavItem[] = [
             description: 'Create new sales orders and quotes'
           },
           {
+            title: 'Ledger Creation',
+            href: '/group-creation',
+            icon: Briefcase,
+            description: 'Create new sales orders and quotes'
+          },
+          {
             title: 'Ledger Master',
             href: '/accounts/sales-dashboard',
             icon: TrendingUp,

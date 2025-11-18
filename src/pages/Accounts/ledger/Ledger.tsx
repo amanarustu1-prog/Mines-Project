@@ -590,6 +590,7 @@ const Ledger: React.FC = () => {
 
 
 
+
     const renderCreateForm = () => (
         <div className="ledger-management-tab-content">
             <div className="ledger-entry-form">
