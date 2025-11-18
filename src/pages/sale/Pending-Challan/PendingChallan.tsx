@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../Pending-Challan/PendingChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiPackage, FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
@@ -19,6 +19,8 @@ import * as XLSX from 'xlsx';
 import moment from 'moment';
 import { previousDay } from 'date-fns';
 import ConfirmModal from '@/common/ConfirmModal';
+import { useReactToPrint } from 'react-to-print';
+import ChallanPrint from '../Create-challan/ChallanPrint';
 
 // Icon components
 
@@ -554,6 +556,17 @@ export default function CreateChallan() {
     setIsModalOpen(false);
   };
 
+
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handleChallanPrint = useReactToPrint({
+    contentRef: printRef,
+    pageStyle: `
+       @page { size: A4 portrait; margin: 10mm; }
+       body { -webkit-print-color-adjust: exact; }
+     `,
+  });
+
   const Columns = [
     {
       name: 'Actions',
@@ -565,6 +578,13 @@ export default function CreateChallan() {
 
           <button onClick={() => { setEditItemId(row.ChallanID!); handleOpenModal(); }} className="material-name-btn-icon" title="Edit">
             <Edit3 className="material-name-icon-sm" />
+          </button>
+          <button
+            onClick={() => { handleChallanPrint() }}
+            className="material-name-btn-icon text-green-600 hover:text-green-800"
+            title="Print"
+          >
+            <FiPrinter className="material-name-icon-sm" />
           </button>
         </div>
       ),
@@ -1711,7 +1731,7 @@ export default function CreateChallan() {
 
               {/* Title + Subtitle */}
               <div>
-                <h1 className="pending-challan-header-title mb-1">Pending Challans</h1>
+                <h1 className="pending-challan-header-title mb-1">Pending Challan</h1>
                 <p className="pending-challan-header-subtitle mb-0 text-muted">
                   Track, manage, and process challans across all vehicles and clients
                 </p>
@@ -2431,7 +2451,16 @@ export default function CreateChallan() {
             )}
           </div>
         </div>
+        <div className="print-area" style={{ display: 'none' }}>
+          <div ref={printRef}>
+            <ChallanPrint itemId={editItemId} />
+          </div>
+        </div>
+
       </main>
+
+
+
 
       <ConfirmModal show={showModal}
         handleClose={() => setShowModal(false)}
