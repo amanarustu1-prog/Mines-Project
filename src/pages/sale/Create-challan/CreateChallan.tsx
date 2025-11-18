@@ -51,15 +51,15 @@ const Search = ({ className }: { className?: string }) => (
 
 // Base interface for common product fields
 interface BaseProductFields {
-  id: number;
-  rate: number;
+  id: string;
+  rate: string;
   grossWeight: string;
   netWeight: string;
   lessWeight: string;
   gtWeight: string;
   amount: string;
-  ChallanDate: string;
   product: string;
+  Grossweightdate: string
 }
 
 // ChallanItem is used in the form State
@@ -105,7 +105,6 @@ interface ChallanItem extends BaseProductFields {
   State: string;
   Stateid: number;
   GstAddress: string;
-  //   : string;
   Amount: number;
   LoadingAmt: number;
   CommisionAmt: number;
@@ -514,7 +513,7 @@ const CreateChallan: React.FC = () => {
         lessWeight: '',
         gtWeight: '',
         amount: '',
-        ChallanDate: '',
+        Grossweightdate: ""
       }
     ],
 
@@ -600,7 +599,7 @@ const CreateChallan: React.FC = () => {
     lessWeight: '',
     gtWeight: '',
     amount: '',
-    ChallanDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+    Grossweightdate: '',
   };
 
   const handleCloseModal = () => {
@@ -895,10 +894,10 @@ const CreateChallan: React.FC = () => {
     },
     {
       name: 'Date/Time1',
-      selector: (row: ChallanFormData) => row.ChallanDate,
+      selector: (row: ChallanFormData) => row.Grossweightdate1,
       sortable: true,
       cell: (row: ChallanFormData) => (
-        <span className="text-right">{getShowingDateText(row.ChallanDate)}</span>
+        <span className="text-right">{getShowingDateText(row.Grossweightdate1)}</span>
       ),
     },
 
@@ -961,10 +960,10 @@ const CreateChallan: React.FC = () => {
     },
     {
       name: 'Date/Time2',
-      selector: (row: ChallanFormData) => row.ChallanDate,
+      selector: (row: ChallanFormData) => row.Grossweightdate2,
       sortable: true,
       cell: (row: ChallanFormData) => (
-        <span className="text-right">{getShowingDateText(row.ChallanDate)}</span>
+        <span className="text-right">{getShowingDateText(row.Grossweightdate2)}</span>
       ),
     },
     //Prod-3
@@ -1026,10 +1025,10 @@ const CreateChallan: React.FC = () => {
     },
     {
       name: 'Date/Time3',
-      selector: (row: ChallanFormData) => row.ChallanDate,
+      selector: (row: ChallanFormData) => row.Grossweightdate3,
       sortable: true,
       cell: (row: ChallanFormData) => (
-        <span className="text-right">{getShowingDateText(row.ChallanDate)}</span>
+        <span className="text-right">{getShowingDateText(row.Grossweightdate3)}</span>
       ),
     },
 
@@ -1092,8 +1091,6 @@ const CreateChallan: React.FC = () => {
         <span className="text-right">{row.financialYear}</span>
       ),
     },
-
-
     {
       name: 'Amount',
       selector: (row: ChallanTableItem) => row.Amount,
@@ -1211,13 +1208,13 @@ const CreateChallan: React.FC = () => {
       const flatProducts = challanData.productDetails.reduce<Record<string, any>>((acc, product, index) => {
         const i = index + 1;
         acc[`ProductName${i}`] = product.name || '';
-        acc[`Rate${i}`] = product.rate || 0;
+        acc[`Rate${i}`] = product.rate || '';
         acc[`Grossweight${i}`] = product.grossWeight ||'';
         acc[`Netweight${i}`] = product.netWeight ||'';
         acc[`Lessweight${i}`] = product.lessWeight ||'';
         acc[`GTWeight${i}`] = product.gtWeight ||'';
         acc[`Amount${i}`] = product.amount ||'';
-        acc[`Grossweightdate${i}`] = product.ChallanDate || null;
+        acc[`Grossweightdate${i}`] =  null;
         return acc;
       }, {});
       const payload = {
@@ -1268,7 +1265,7 @@ const CreateChallan: React.FC = () => {
         acc[`Lessweight${i}`] = product.lessWeight || 0;
         acc[`GTWeight${i}`] = product.gtWeight || 0;
         acc[`Amount${i}`] = product.amount || 0;
-        acc[`Grossweightdate${i}`] = product.ChallanDate || null;
+        acc[`Grossweightdate${i}`] =  null;
         return acc;
       }, {});
       const payload = {
@@ -1360,7 +1357,7 @@ const CreateChallan: React.FC = () => {
       lessWeight: null,
       gtWeight: null,
       amount: null,
-      ChallanDate: null,
+      Grossweightdate: null,
     };
 
     setChallanData((prev) => ({
@@ -1369,7 +1366,7 @@ const CreateChallan: React.FC = () => {
     }))
   }
 
- const handleProductChange = (index: number, field: string, value: any) => {
+  const handleProductChange = (index: number, field: string, value: any) => {
   setChallanData((prev) => {
     const updatedProducts = [...prev.productDetails];
 
@@ -1385,18 +1382,18 @@ const CreateChallan: React.FC = () => {
       const netWeight = updatedProducts[index].netWeight ?? null;
       const lessWeight = updatedProducts[index].lessWeight ?? null;
 
-      if (rate !== null && netWeight !== null && lessWeight !== null) {
-        updatedProducts[index].gtWeight = netWeight - lessWeight;
-        updatedProducts[index].amount = (netWeight - lessWeight) * rate;
-      } else {
-        updatedProducts[index].gtWeight = null;
-        updatedProducts[index].amount = null;
-      }
+      // if (rate !== null && netWeight !== null && lessWeight !== null) {
+      //   updatedProducts[index].gtWeight = netWeight - lessWeight;
+      //   updatedProducts[index].amount = (netWeight - lessWeight) * rate;
+      // } else {
+      //   updatedProducts[index].gtWeight = null;
+      //   updatedProducts[index].amount = null;
+      // }
     }
 
     return { ...prev, productDetails: updatedProducts };
   });
- };
+  };
 
   const handleSaveChallan = async () => {
   const cleanedData = {
@@ -1449,7 +1446,7 @@ const CreateChallan: React.FC = () => {
         ChallanID: record.ChallanID || 0,
         financialYear: record.financialYear || '2025-2026',
         autoGenerated: true,
-        ChallanDate: moment(record.CreatedDate || new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        Grossweightdate: null,
         paytype: (() => {
           const p = String(record.paytype || '').toLowerCase();
           return p === 'credit' ? 'Credit' : 'Cash';
@@ -1494,7 +1491,7 @@ const CreateChallan: React.FC = () => {
             lessWeight: Number(record.Lessweight1) || 0,
             gtWeight: Number(record.GTWeight1) || 0,
             amount: Number(record.Amount1) || 0,
-            ChallanDate: record.Grossweightdate1 || moment().format('YYYY-MM-DD HH:mm:ss'),
+            Grossweightdate1: record.Grossweightdate1 || moment().format('YYYY-MM-DD HH:mm:ss'),
           }] : []),
 
           ...(record.ProductName2 ? [{
@@ -1506,7 +1503,7 @@ const CreateChallan: React.FC = () => {
             lessWeight: Number(record.Lessweight2) || 0,
             gtWeight: Number(record.GTWeight2) || 0,
             amount: Number(record.Amount2) || 0,
-            ChallanDate: record.Grossweightdate2 || moment().format('YYYY-MM-DD HH:mm:ss'),
+            Grossweightdate2: record.Grossweightdate2 || moment().format('YYYY-MM-DD HH:mm:ss'),
           }] : []),
 
           ...(record.ProductName3 ? [{
@@ -1518,7 +1515,7 @@ const CreateChallan: React.FC = () => {
             lessWeight: Number(record.Lessweight3) || 0,
             gtWeight: Number(record.GTWeight3) || 0,
             amount: Number(record.Amount3) || 0,
-            ChallanDate: record.Grossweightdate3 || moment().format('YYYY-MM-DD HH:mm:ss'),
+            Grossweightdate3: record.Grossweightdate3 || moment().format('YYYY-MM-DD HH:mm:ss'),
           }] : []),
         ],
 
@@ -1611,7 +1608,7 @@ const CreateChallan: React.FC = () => {
           lessWeight: '',
           gtWeight: '',
           amount: '',
-          ChallanDate: moment().format('YYYY-MM-DD HH:mm:'),
+          Grossweightdate: "",
           ChallanID: ''
         }
       ],
@@ -2921,7 +2918,7 @@ const CreateChallan: React.FC = () => {
                                   {/* Rate */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Rate</label>
-                                    <input className="challan challan-prod-readOnly" type="number" readOnly value={product.rate} onChange={(e) => handleProductChange(index, 'rate', Number(e.target.value))} />
+                                    <input className="challan challan-prod-readOnly" type="number" readOnly />
                                   </div>
                                   {/* Gross Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
@@ -2961,7 +2958,6 @@ const CreateChallan: React.FC = () => {
                                     <input className="challan challan-prod-readOnly" type="number" readOnly />
                                   </div>
 
-
                                   {/* Add Button (only on last row, max 3 rows) */}
                                   {index === challanData.productDetails.length - 1 && challanData.productDetails.length < 3 && (
                                     <div className="col">
@@ -2985,7 +2981,7 @@ const CreateChallan: React.FC = () => {
                                 {/* Tare-Weight */}
                                 <div className="col-2 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
-                                  <input className="challan"  type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value), Netweight: Number(e.target.value), GTWeight: Number(e.target.value) })} />
+                                  <input className="challan"  type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
                                 </div>
 
                                 {/* Date/Time */}
