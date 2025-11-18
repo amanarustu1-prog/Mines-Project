@@ -82,6 +82,7 @@ import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 // import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 import Ledger from './pages/Accounts/ledger/Ledger'
+import GroupCreation from './pages/Accounts/group-creation/GroupCreation'
 import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
 import ApprovedChallan from './pages/sale/Approved-Challan/ApprovedChallan';
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
@@ -349,6 +350,7 @@ function App() {
         {/* Accounts */}
         <Route path="/ledger-group" element={<Ledger />} />
         <Route path="/payment-voucher" element={<PaymentVoucher/>} />
+        <Route path="/group-creation" element={<GroupCreation/>} />
 
         {/* List-Management */}
         {/* <Route path=":section/:page" element={<ListManagementRoute/>} /> */}
