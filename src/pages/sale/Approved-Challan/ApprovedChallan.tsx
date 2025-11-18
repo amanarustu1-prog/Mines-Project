@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './ApprovedChallan.css';
 import { CheckCircleIcon, ClockIcon, Edit3Icon, PlusIcon, TrendingUpIcon } from 'lucide-react';
 import { FiCheckCircle, FiPrinter, FiSave, FiSearch } from 'react-icons/fi';
@@ -555,7 +555,6 @@ export default function ApprovedChallan() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-
 
     const printRef = useRef<HTMLDivElement>(null);
 
@@ -1704,126 +1703,6 @@ export default function ApprovedChallan() {
         fetchProductName();
     }, []);
 
-    // useEffect(() => {
-    //     const fetchDropDown = async () => {
-    //         try {
-    //             const payload = { EmployeeID: localStorage.getItem("employeeID") };
-    //             const response = await fetchPostData('Users/GetData_Company', payload);
-    //             // console.log(response);
-    //             if (response) {
-    //                 const data = response;
-    //                 setDropdownOptions(Array.isArray(data) ? data : []);
-    //             } else {
-    //                 toastifyError("Failed to load Dropdown.")
-    //             }
-    //         } catch (error: any) {
-    //             toastifyError("Error fetching Dropdown");
-    //         }
-    //     }
-    //     fetchDropDown();
-    // }, []);
-
-    const options = dropdownOptions.map(opt => ({
-        value: opt.CompanyID,
-        label: opt.CompanyName
-    }));
-
-    // Filter states for history
-    const [historyFilters, setHistoryFilters] = useState({
-        searchTerm: '',
-        dateFrom: '',
-        dateTo: '',
-        status: '',
-        paytype: '',
-        Name: ''
-    });
-
-    // Filtered history data
-    // const filteredHistory: any = challanHistory.filter(challan => {
-    //     const matchesSearch = challan.challanNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-    //         challan.Name.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-    //         challan.VehicleNo.toLowerCase().includes(historyFilters.searchTerm.toLowerCase()) ||
-    //         challan.DriverName.toLowerCase().includes(historyFilters.searchTerm.toLowerCase());
-
-    //     const matchesDateFrom = !historyFilters.dateFrom || challan.date >= historyFilters.dateFrom;
-    //     const matchesDateTo = !historyFilters.dateTo || challan.date <= historyFilters.dateTo;
-    //     const matchesStatus = !historyFilters.status || challan.status === historyFilters.status;
-    //     const matchesPaymentType = !historyFilters.paytype || challan.paytype === historyFilters.paytype;
-    //     const matchesConsignee = !historyFilters.Name || challan.Name.toLowerCase().includes(historyFilters.Name.toLowerCase());
-
-    //     return matchesSearch && matchesDateFrom && matchesDateTo && matchesStatus && matchesPaymentType && matchesConsignee;
-    // });
-
-    const handleSearch = () => {
-        let result = challanItems;
-
-        const fromDateTime = fromDate ? new Date(
-            `${moment(fromDate).format('YYYY-MM-DD')} ${fromTime ? moment(fromTime).format('HH:mm:ss') : '00:00:00'
-            }`) : null;
-
-        const toDateTime = toDate
-            ? new Date(
-                `${moment(toDate).format('YYYY-MM-DD')} ${toTime ? moment(toTime).format('HH:mm:ss') : '23:59:59'
-                }`
-            ) : null;
-
-        // Filter by date range
-        if (fromDateTime && toDateTime) {
-            result = result.filter((item) => {
-                const challanDate = new Date(item.CreatedDate);
-                return challanDate >= fromDateTime && challanDate <= toDateTime;
-            });
-        }
-        else if (fromDateTime && !toDateTime) {
-            result = result.filter((item) => {
-                const challanDate = new Date(item.CreatedDate);
-                return challanDate >= fromDateTime;
-            });
-        }
-
-        // Filter by party
-        if (selectedParty) {
-            result = result.filter((item) => item.PartyID === challanData.Party);
-            // console.log(result.length);
-        }
-
-        // Filter by challan number (search input)
-        if (searchTerm.trim()) {
-            const term = searchTerm.trim().toLowerCase();
-            result = result.filter((item) =>
-                item.ChallanNo?.toLowerCase().includes(term)
-            );
-        }
-
-        setFilteredData(result);
-    };
-
-    // const selectCompactStyles: any = {
-    //     control: (provided: any) => ({
-    //         ...provided,
-    //         minHeight: "33px",
-    //         height: "33px",
-    //         fontSize: "14px",
-    //         padding: "0 2px",
-    //     }),
-    //     valueContainer: (provided: any) => ({
-    //         ...provided,
-    //         padding: "0 6px",
-    //     }),
-    //     indicatorsContainer: (provided: any) => ({
-    //         ...provided,
-    //         padding: "0 6px",
-    //     }),
-    //     dropdownIndicator: (provided: any) => ({
-    //         ...provided,
-    //         padding: "0 6px",
-    //     }),
-    //     clearIndicator: (provided: any) => ({
-    //         ...provided,
-    //         padding: "0 6px",
-    //     }),
-    // };
-
     const selectCompactStyles: any = {
         control: (provided: any, state: any) => ({
             ...provided,
@@ -1858,109 +1737,6 @@ export default function ApprovedChallan() {
     const resizeableColumns = useResizableColumns(Columns).map(col => ({
         ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
-
-    //Download-Excel_File
-    const exportToExcel = () => {
-        const filteredDataNew = challanItems.map((item) => ({
-            "Challan ID": item.ChallanID,
-            "Challan No": item.ChallanNo,
-            "Challan Module": item.ChallanModule,
-            "Challan Date": item.ChallanDate,
-            "Financial Year": item.financialYear,
-            "Voucher Type": item.VoucherType || "",
-            "Pay Type": item.paytype || "",
-            "Advance Amount": item.AdvAmt || 0,
-
-            "Party Name": item.Name || "",
-            "Party ID": item.PartyID || "",
-            "Party Type ID": item.partyTypeid || "",
-            "Address": item.Address || item.address || "",
-            "State": item.State || "",
-            "State ID": item.StateID || "",
-            "District ID": item.DistrictID || "",
-            "Pin ID": item.PinID || "",
-            "Email": item.Email || "",
-            "Owner Mobile": item.OwnerMobile || "",
-
-            "Vehicle No": item.VehicleNo || "",
-            "Vehicle Type ID": item.VehicleTypeid || "",
-            "Vehicle Remarks": item.VehicleRemarks || "",
-            "Vehicle Commission": item.VehicleCommision || "",
-            "Driver Name": item.DriverName || "",
-            "Driver Mobile No": item.DriverMobileNo || "",
-
-            "GST Bill": item.IsGST ? "Yes" : "No",
-            "GST No": item.GstNo || "",
-            "GST Address": item.GstAddress || "",
-            "GST State": item.GstState || "",
-            "GST District ID": item.GstDistrictID || "",
-            "GST Pin ID": item.GstPinID || "",
-            "Bill Name": item.BillName || "",
-
-            "Gross Weight": item.Grossweight || "",
-            "Tare Weight": item.TareWeight || "",
-            "Net Weight": item.Netweight || "",
-            "Less Weight": item.Lessweight || "",
-            "GT Weight": item.GTWeight || "",
-
-            "Rate": item.Rate || "",
-            "Amount": item.Amount || "",
-            "Loading Amount": item.LoadingAmt || "",
-            "Commission Amount": item.CommisionAmt || "",
-            "Total Amount": item.TotalAmt || "",
-            "GST Amount": item.GSTAmt || "",
-            "Royalty Amount": item.RoyaltyAmt || "",
-            "TP Amount": item.TPAmount || "",
-            "Freight Amount": item.FreightAmt || "",
-            "Extra Amount": item.ExtraAmt || "",
-            "Grand Total": item.GTotal || "",
-
-            // 🧾 Product 1
-            "Product Name 1": item.ProductName1 || "",
-            "Rate 1": item.Rate1 || "",
-            "Gross Weight 1": item.Grossweight1 || "",
-            "Gross Weight Date 1": item.Grossweightdate1 || "",
-            "Net Weight 1": item.Netweight1 || "",
-            "Less Weight 1": item.Lessweight1 || "",
-            "GT Weight 1": item.GTWeight1 || "",
-            "Amount 1": item.Amount1 || "",
-
-            // 🧾 Product 2
-            "Product Name 2": item.ProductName2 || "",
-            "Rate 2": item.Rate2 || "",
-            "Gross Weight 2": item.Grossweight2 || "",
-            "Gross Weight Date 2": item.Grossweightdate2 || "",
-            "Net Weight 2": item.Netweight2 || "",
-            "Less Weight 2": item.Lessweight2 || "",
-            "GT Weight 2": item.GTWeight2 || "",
-            "Amount 2": item.Amount2 || "",
-
-            // 🧾 Product 3
-            "Product Name 3": item.ProductName3 || "",
-            "Rate 3": item.Rate3 || "",
-            "Gross Weight 3": item.Grossweight3 || "",
-            "Gross Weight Date 3": item.Grossweightdate3 || "",
-            "Net Weight 3": item.Netweight3 || "",
-            "Less Weight 3": item.Lessweight3 || "",
-            "GT Weight 3": item.GTWeight3 || "",
-            "Amount 3": item.Amount3 || "",
-
-            "Created Date": item.CreatedDate ? getShowingDateText(item.CreatedDate) : "",
-            "Last Modified": item.UpdatedDate ? getShowingDateText(item.UpdatedDate) : "",
-            "Company ID": item.Companyid || "",
-        }));
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(filteredDataNew);
-        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'data.xlsx';
-        a.click();
-        window.URL.revokeObjectURL(url);
-    }
 
     return (
         <>
