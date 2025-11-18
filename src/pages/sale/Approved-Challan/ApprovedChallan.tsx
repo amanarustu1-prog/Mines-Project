@@ -19,6 +19,8 @@ import * as XLSX from 'xlsx';
 import moment from 'moment';
 import { previousDay } from 'date-fns';
 import ConfirmModal from '@/common/ConfirmModal';
+import ChallanPrint from '../Create-challan/ChallanPrint';
+import { useReactToPrint } from 'react-to-print';
 
 // Icon components
 
@@ -554,6 +556,17 @@ export default function ApprovedChallan() {
         setIsModalOpen(false);
     };
 
+
+    const printRef = useRef<HTMLDivElement>(null);
+
+    const handleChallanPrint = useReactToPrint({
+        contentRef: printRef,
+        pageStyle: `
+           @page { size: A4 portrait; margin: 10mm; }
+           body { -webkit-print-color-adjust: exact; }
+         `,
+    });
+
     const Columns = [
         {
             name: 'Actions',
@@ -565,6 +578,13 @@ export default function ApprovedChallan() {
 
                     <button onClick={() => { setEditItemId(row.ChallanID!); handleOpenModal(); }} className="material-name-btn-icon" title="Edit">
                         <Edit3 className="material-name-icon-sm" />
+                    </button>
+                    <button
+                        onClick={() => { handleChallanPrint() }}
+                        className="material-name-btn-icon text-green-600 hover:text-green-800"
+                        title="Print"
+                    >
+                        <FiPrinter className="material-name-icon-sm" />
                     </button>
                 </div>
             ),
@@ -2695,6 +2715,12 @@ export default function ApprovedChallan() {
                                 </div>
                             </div>
                         )}
+                    </div>
+                </div>
+
+                <div className="print-area" style={{ display: 'none' }}>
+                    <div ref={printRef}>
+                        <ChallanPrint itemId={editItemId} />
                     </div>
                 </div>
             </main>
