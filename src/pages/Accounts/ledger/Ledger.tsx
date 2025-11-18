@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Ledger.css';
+import DataTable from "react-data-table-component";
+import Select from 'react-select';
+import { customStyles } from '@/common/Utility';
 
 // ==================== Icon Components ====================
 const BookOpen = ({ className }: { className?: string }) => (
@@ -124,13 +127,14 @@ interface LedgerAccount {
 // ==================== Main Component ====================
 const Ledger: React.FC = () => {
     // ==================== State Variables ====================
-    const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
     const [ledgerAccounts, setLedgerAccounts] = useState<LedgerAccount[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterGroup, setFilterGroup] = useState('all');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [editingAccount, setEditingAccount] = useState<LedgerAccount | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
+    const [showDetailForm, setShowDetailForm] = useState(false);
+    // const [isFocused, setIsFocused] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState<Partial<LedgerAccount>>({
@@ -388,7 +392,7 @@ const Ledger: React.FC = () => {
         }
 
         handleReset();
-        setActiveTab('list');
+        setShowDetailForm(false);
     };
 
     const handleReset = () => {
@@ -425,7 +429,7 @@ const Ledger: React.FC = () => {
     const handleEdit = (account: LedgerAccount) => {
         setFormData(account);
         setEditingAccount(account);
-        setActiveTab('create');
+        setShowDetailForm(true);
     };
 
     const handleDelete = (id: string) => {
@@ -460,404 +464,361 @@ const Ledger: React.FC = () => {
         }).format(amount);
     };
 
-    // ==================== Render Functions ====================
+
+    const selectCompactStyles: any = {
+        control: (provided: any, state: any) => ({
+            ...provided,
+            minHeight: "33px",
+            height: "33px",
+            fontSize: "14px",
+            padding: "0 2px",
+            borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", // ✅ Default light blue border
+            boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+            "&:hover": {
+                borderColor: "#6ea8ff",
+            },
+        }),
+        valueContainer: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        indicatorsContainer: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        dropdownIndicator: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        clearIndicator: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+    };
+
+
+    const columns = [
+        {
+            name: "Ledger Name",
+            selector: row => row.ledgerName,
+            sortable: true,
+            cell: row => (
+                <div>
+                    <div className="ledger-management-font-medium">{row.ledgerName}</div>
+                    {row.aliasName && (
+                        <div className="ledger-management-text-sm ledger-management-text-gray-500">
+                            {row.aliasName}
+                        </div>
+                    )}
+                </div>
+            )
+        },
+        {
+            name: "Group",
+            selector: row => row.ledgerGroup,
+            sortable: true,
+        },
+        {
+            name: "Opening Balance",
+            sortable: true,
+            cell: row => (
+                <span className={row.balanceType === "Dr" ? "debit" : "credit"}>
+                    {formatCurrency(row.openingBalance)} {row.balanceType}
+                </span>
+            )
+        },
+        {
+            name: "Current Balance",
+            sortable: true,
+            cell: row => (
+                <span className={row.balanceType === "Dr" ? "debit" : "credit"}>
+                    {formatCurrency(row.currentBalance)} {row.balanceType}
+                </span>
+            )
+        },
+        {
+            name: "GST Type",
+            sortable: true,
+            cell: row => (
+                <span className="ledger-management-badge ledger-management-badge-secondary">
+                    {row.gstRegistrationType}
+                </span>
+            )
+        },
+        {
+            name: "Status",
+            sortable: true,
+            cell: row => (
+                <span
+                    className={`ledger-management-badge ${row.isActive
+                        ? "ledger-management-badge-success"
+                        : "ledger-management-badge-error"
+                        }`}
+                >
+                    {row.isActive ? "Active" : "Inactive"}
+                </span>
+            )
+        },
+        {
+            name: "Actions",
+            cell: row => (
+                <div className="ledger-management-flex ledger-management-gap-2">
+                    <button
+                        onClick={() => handleEdit(row)}
+                        className="ledger-management-btn-icon"
+                        title="Edit"
+                    >
+                        <Edit className="ledger-management-icon-sm" />
+                    </button>
+
+                    <button className="ledger-management-btn-icon" title="View Details">
+                        <Eye className="ledger-management-icon-sm" />
+                    </button>
+
+                    <button
+                        onClick={() => setShowDeleteModal(row.id)}
+                        className="ledger-management-btn-icon ledger-management-btn-icon-danger"
+                        title="Delete"
+                    >
+                        <Trash2 className="ledger-management-icon-sm" />
+                    </button>
+                </div>
+            )
+        }
+    ];
+
+
+
+
     const renderCreateForm = () => (
         <div className="ledger-management-tab-content">
-            <div className="ledger-management-section-header">
-                <div>
-                    <h2 className="ledger-management-section-title">
-                        {editingAccount ? 'Edit Ledger Account' : 'Create New Ledger Account'}
-                    </h2>
-                    <p className="ledger-management-section-subtitle">
-                        {editingAccount ? 'Update the ledger account details' : 'Add a new ledger account to your chart of accounts'}
-                    </p>
-                </div>
-                {editingAccount && (
-                    <button
-                        onClick={handleReset}
-                        className="ledger-management-btn ledger-management-btn-secondary"
-                    >
-                        <ArrowLeft className="ledger-management-icon" />
-                        Back to Create
-                    </button>
-                )}
-            </div>
-
             <div className="ledger-entry-form">
-                {/* Basic Information */}
-                <div className="ledger-management-form-group">
-                    <h3>Basic Information</h3>
-                    <div className="ledger-management-form-row">
-                        <div>
-                            <label className="ledger-management-label">
-                                Ledger Name <span style={{ color: 'red' }}>*</span>
-                            </label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.ledgerName || ''}
-                                onChange={(e) => handleInputChange('ledgerName', e.target.value)}
-                                placeholder="Enter ledger name"
-                            />
-                            {errors.ledgerName && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.ledgerName}
-                                </div>
-                            )}
-                        </div>
 
-                        <div>
-                            <label className="ledger-management-label">
-                                Ledger Group <span style={{ color: 'red' }}>*</span>
-                            </label>
-                            <select
-                                className="ledger-management-select"
-                                value={formData.ledgerGroup || ''}
-                                onChange={(e) => handleInputChange('ledgerGroup', e.target.value)}
-                            >
-                                <option value="">Select Ledger Group</option>
-                                {ledgerGroups.map(group => (
-                                    <option key={group} value={group}>{group}</option>
-                                ))}
-                            </select>
-                            {errors.ledgerGroup && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.ledgerGroup}
-                                </div>
-                            )}
-                        </div>
+                {/* ---------------- TOP SECTION ---------------- */}
+                <div className="row mb-2">
 
-                        <div>
-                            <label className="ledger-management-label">Alias Name</label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.aliasName || ''}
-                                onChange={(e) => handleInputChange('aliasName', e.target.value)}
-                                placeholder="Enter alias name (optional)"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Opening Balance */}
-                <div className="ledger-management-form-group">
-                    <h3>Opening Balance</h3>
-                    <div className="ledger-management-form-row">
-                        <div>
-                            <label className="ledger-management-label">Opening Balance</label>
-                            <input
-                                type="number"
-                                className="ledger-management-input"
-                                value={formData.openingBalance || 0}
-                                onChange={(e) => handleInputChange('openingBalance', parseFloat(e.target.value) || 0)}
-                                placeholder="0.00"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">Balance Type</label>
-                            <select
-                                className="ledger-management-select"
-                                value={formData.balanceType || 'Dr'}
-                                onChange={(e) => handleInputChange('balanceType', e.target.value)}
-                            >
-                                <option value="Dr">Debit (Dr)</option>
-                                <option value="Cr">Credit (Cr)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">As On Date</label>
-                            <input
-                                type="date"
-                                className="ledger-management-input"
-                                value={formData.asOnDate || ''}
-                                onChange={(e) => handleInputChange('asOnDate', e.target.value)}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* GST Information */}
-                <div className="ledger-management-form-group">
-                    <h3>GST Information</h3>
-                    <div className="ledger-management-form-row">
-                        <div>
-                            <label className="ledger-management-label">GST Registration Type</label>
-                            <select
-                                className="ledger-management-select"
-                                value={formData.gstRegistrationType || 'Unregistered'}
-                                onChange={(e) => handleInputChange('gstRegistrationType', e.target.value)}
-                            >
-                                {gstRegistrationTypes.map(type => (
-                                    <option key={type} value={type}>{type}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">
-                                GSTIN
-                                {formData.gstRegistrationType !== 'Unregistered' && <span style={{ color: 'red' }}>*</span>}
-                            </label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.gstin || ''}
-                                onChange={(e) => handleInputChange('gstin', e.target.value.toUpperCase())}
-                                placeholder="Enter GSTIN"
-                                maxLength={15}
-                                disabled={formData.gstRegistrationType === 'Unregistered'}
-                            />
-                            {errors.gstin && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.gstin}
-                                </div>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">PAN Number</label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.panNo || ''}
-                                onChange={(e) => handleInputChange('panNo', e.target.value.toUpperCase())}
-                                placeholder="Enter PAN"
-                                maxLength={10}
-                            />
-                            {errors.panNo && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.panNo}
-                                </div>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">HSN/SAC Code</label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.hsnSacCode || ''}
-                                onChange={(e) => handleInputChange('hsnSacCode', e.target.value)}
-                                placeholder="Enter HSN/SAC code"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* TDS Information */}
-                <div className="ledger-management-form-group">
-                    <h3>TDS Information</h3>
-                    <div className="ledger-management-form-row">
-                        <div>
-                            <label className="ledger-management-label">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.tdsApplicable || false}
-                                    onChange={(e) => handleInputChange('tdsApplicable', e.target.checked)}
-                                    style={{ marginRight: '0.5rem' }}
-                                />
-                                TDS Applicable
-                            </label>
-                        </div>
-
-                        {formData.tdsApplicable && (
-                            <>
-                                <div>
-                                    <label className="ledger-management-label">TDS Section</label>
-                                    <select
-                                        className="ledger-management-select"
-                                        value={formData.tdsSection || ''}
-                                        onChange={(e) => handleTdsChange(e.target.value)}
-                                    >
-                                        <option value="">Select TDS Section</option>
-                                        {tdsSettings.map(tds => (
-                                            <option key={tds.section} value={tds.section}>
-                                                {tds.section} - {tds.description}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="ledger-management-label">TDS Rate (%)</label>
-                                    <input
-                                        type="number"
-                                        className="ledger-management-input"
-                                        value={formData.tdsRate || 0}
-                                        onChange={(e) => handleInputChange('tdsRate', parseFloat(e.target.value) || 0)}
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        max="100"
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-
-                {/* Contact Information */}
-                <div className="ledger-management-form-group">
-                    <h3>Contact Information</h3>
-                    <div className="ledger-management-form-row">
-                        <div>
-                            <label className="ledger-management-label">Address</label>
-                            <textarea
-                                className="ledger-management-textarea"
-                                value={formData.address || ''}
-                                onChange={(e) => handleInputChange('address', e.target.value)}
-                                placeholder="Enter address"
-                                rows={3}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">State</label>
-                            <select
-                                className="ledger-management-select"
-                                value={formData.state || ''}
-                                onChange={(e) => handleInputChange('state', e.target.value)}
-                            >
-                                <option value="">Select State</option>
-                                {indianStates.map(state => (
-                                    <option key={state} value={state}>{state}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">City</label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.city || ''}
-                                onChange={(e) => handleInputChange('city', e.target.value)}
-                                placeholder="Enter city"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">Pincode</label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.pincode || ''}
-                                onChange={(e) => handleInputChange('pincode', e.target.value)}
-                                placeholder="Enter pincode"
-                                maxLength={6}
-                            />
-                            {errors.pincode && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.pincode}
-                                </div>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">Mobile</label>
-                            <input
-                                type="text"
-                                className="ledger-management-input"
-                                value={formData.mobile || ''}
-                                onChange={(e) => handleInputChange('mobile', e.target.value)}
-                                placeholder="Enter mobile number"
-                                maxLength={10}
-                            />
-                            {errors.mobile && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.mobile}
-                                </div>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="ledger-management-label">Email</label>
-                            <input
-                                type="email"
-                                className="ledger-management-input"
-                                value={formData.email || ''}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                placeholder="Enter email address"
-                            />
-                            {errors.email && (
-                                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                                    {errors.email}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bank Information */}
-                {formData.ledgerGroup === 'Bank A/c' && (
-                    <div className="ledger-management-form-group">
-                        <h3>Bank Information</h3>
-                        <div className="ledger-management-form-row">
-                            <div>
-                                <label className="ledger-management-label">Bank Name</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input"
-                                    value={formData.bankName || ''}
-                                    onChange={(e) => handleInputChange('bankName', e.target.value)}
-                                    placeholder="Enter bank name"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="ledger-management-label">Account Number</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input"
-                                    value={formData.accountNo || ''}
-                                    onChange={(e) => handleInputChange('accountNo', e.target.value)}
-                                    placeholder="Enter account number"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="ledger-management-label">IFSC Code</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input"
-                                    value={formData.ifscCode || ''}
-                                    onChange={(e) => handleInputChange('ifscCode', e.target.value.toUpperCase())}
-                                    placeholder="Enter IFSC code"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="ledger-management-label">Branch</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input"
-                                    value={formData.branch || ''}
-                                    onChange={(e) => handleInputChange('branch', e.target.value)}
-                                    placeholder="Enter branch name"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Status */}
-                <div className="ledger-management-form-group">
-                    <label className="ledger-management-label">
+                    {/* Ledger Name */}
+                    <div className="col-md-6 mb-3">
+                        <label className="ledger-management-label">Ledger Name *</label>
                         <input
-                            type="checkbox"
-                            checked={formData.isActive || false}
-                            onChange={(e) => handleInputChange('isActive', e.target.checked)}
-                            style={{ marginRight: '0.5rem' }}
+                            type="text"
+                            className="ledger-management-input w-100"
+                            value={formData.ledgerName || ""}
+                            onChange={(e) => handleInputChange("ledgerName", e.target.value)}
+
                         />
-                        Active
-                    </label>
+
+
+                    </div>
+
+                    {/* Under */}
+                    <div className="col-md-6 mb-3">
+                        <label className="ledger-management-label">Under *</label>
+                        <Select
+                            className="w-100"
+                            placeholder="Select Ledger Group"
+                            value={
+                                formData.ledgerGroup
+                                    ? { label: formData.ledgerGroup, value: formData.ledgerGroup }
+                                    : null
+                            }
+                            onChange={(selected) =>
+                                handleInputChange("ledgerGroup", selected ? selected.value : "")
+                            }
+                            options={ledgerGroups.map((grp) => ({
+                                label: grp,
+                                value: grp,
+                            }))}
+                            isClearable
+                        />
+
+                    </div>
                 </div>
 
-                {/* Form Actions */}
-                <div className="ledger-management-flex ledger-management-justify-between ledger-management-gap-3 ledger-management-mt-4">
+                {/* ---------------- MIDDLE SECTION: TWO COLUMNS ---------------- */}
+                <div className="row">
+
+                    {/* -------- LEFT: BANK ACCOUNT DETAILS -------- */}
+                    <div className="col-md-6">
+
+                        <h4 className="mb-3">Bank Account Details</h4>
+
+                        <div className="row">
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">A/c Holder's Name :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.accountHolder || ""}
+                                    onChange={(e) => handleInputChange("accountHolder", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">A/c No. :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.accountNo || ""}
+                                    onChange={(e) => handleInputChange("accountNo", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">IFSC Code :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.ifscCode || ""}
+                                    onChange={(e) => handleInputChange("ifscCode", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Bank Name :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.bankName || ""}
+                                    onChange={(e) => handleInputChange("bankName", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Branch :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.branch || ""}
+                                    onChange={(e) => handleInputChange("branch", e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* -------- RIGHT: MAILING + TAX DETAILS -------- */}
+                    <div className="col-md-6">
+
+                        {/* MAILING DETAILS */}
+                        <h4 className="mb-3">Mailing Details</h4>
+
+                        <div className="row">
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Name :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.name || ""}
+                                    onChange={(e) => handleInputChange("name", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Address :</label>
+                                <textarea
+                                    className="ledger-management-textarea w-100"
+                                    rows={2}
+                                    value={formData.address || ""}
+                                    onChange={(e) => handleInputChange("address", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">State :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.state || ""}
+                                    onChange={(e) => handleInputChange("state", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Pincode :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.pincode || ""}
+                                    onChange={(e) => handleInputChange("pincode", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Mobile No :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.mobile || ""}
+                                    onChange={(e) => handleInputChange("mobile", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Email :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.email || ""}
+                                    onChange={(e) => handleInputChange("email", e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {/* TAX REGISTRATION */}
+                        <h4 className="mt-2 mb-2">Tax Registration Details</h4>
+
+                        <div className="row">
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">Registration Type :</label>
+                                <Select
+                                    className="w-100"
+                                    placeholder="Select Registration Type"
+                                    value={
+                                        formData.gstRegistrationType
+                                            ? { label: formData.gstRegistrationType, value: formData.gstRegistrationType }
+                                            : null
+                                    }
+                                    onChange={(selected) =>
+                                        handleInputChange("gstRegistrationType", selected ? selected.value : "")
+                                    }
+                                    options={gstRegistrationTypes.map((type) => ({
+                                        label: type,
+                                        value: type,
+                                    }))}
+                                    isClearable
+                                    isSearchable
+                                />
+
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">GSTIN :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.gstin || ""}
+                                    onChange={(e) => handleInputChange("gstin", e.target.value)}
+                                />
+                            </div>
+
+                            <div className="col-md-12 mb-3">
+                                <label className="ledger-management-label">PAN No :</label>
+                                <input
+                                    type="text"
+                                    className="ledger-management-input w-100"
+                                    value={formData.panNo || ""}
+                                    onChange={(e) => handleInputChange("panNo", e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* ---------------- ACTION BUTTONS ---------------- */}
+                <div className="d-flex justify-content-between mt-2">
                     <button
                         onClick={handleReset}
                         className="ledger-management-btn ledger-management-btn-secondary"
@@ -871,152 +832,15 @@ const Ledger: React.FC = () => {
                         className="ledger-management-btn ledger-management-btn-primary"
                     >
                         <Save className="ledger-management-icon" />
-                        {editingAccount ? 'Update Account' : 'Save Account'}
+                        {editingAccount ? "Update Account" : "Save Account"}
                     </button>
                 </div>
+
             </div>
+
         </div>
     );
 
-    const renderAccountsList = () => (
-        <div className="ledger-management-tab-content">
-            <div className="ledger-management-section-header">
-                <div>
-                    <h2 className="ledger-management-section-title">Ledger Accounts</h2>
-                    <p className="ledger-management-section-subtitle">
-                        Manage all your ledger accounts ({filteredAccounts.length} accounts)
-                    </p>
-                </div>
-                <button
-                    onClick={() => setActiveTab('create')}
-                    className="ledger-management-btn ledger-management-btn-primary"
-                >
-                    <Plus className="ledger-management-icon" />
-                    Add New Account
-                </button>
-            </div>
-
-            {/* Filters */}
-            <div className="ledger-management-filters">
-                <div className="ledger-management-search-container">
-                    <Search className="ledger-management-search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Search accounts..."
-                        className="ledger-management-search-input"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-
-                <select
-                    className="ledger-management-select"
-                    value={filterGroup}
-                    onChange={(e) => setFilterGroup(e.target.value)}
-                >
-                    <option value="all">All Groups</option>
-                    {ledgerGroups.map(group => (
-                        <option key={group} value={group}>{group}</option>
-                    ))}
-                </select>
-
-                <button className="ledger-management-btn-icon">
-                    <Filter className="ledger-management-icon" />
-                </button>
-
-                <button className="ledger-management-btn-icon">
-                    <Download className="ledger-management-icon" />
-                </button>
-            </div>
-
-            {/* Accounts Table */}
-            <div className="ledger-management-table-container">
-                <table className="ledger-management-table">
-                    <thead>
-                        <tr>
-                            <th>Ledger Name</th>
-                            <th>Group</th>
-                            <th>Opening Balance</th>
-                            <th>Current Balance</th>
-                            <th>GST Type</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredAccounts.map(account => (
-                            <tr key={account.id}>
-                                <td>
-                                    <div>
-                                        <div className="ledger-management-font-medium">{account.ledgerName}</div>
-                                        {account.aliasName && (
-                                            <div className="ledger-management-text-sm ledger-management-text-gray-500">
-                                                {account.aliasName}
-                                            </div>
-                                        )}
-                                    </div>
-                                </td>
-                                <td>{account.ledgerGroup}</td>
-                                <td>
-                                    <span className={account.balanceType === 'Dr' ? 'debit' : 'credit'}>
-                                        {formatCurrency(account.openingBalance)} {account.balanceType}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span className={account.balanceType === 'Dr' ? 'debit' : 'credit'}>
-                                        {formatCurrency(account.currentBalance)} {account.balanceType}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span className="ledger-management-badge ledger-management-badge-secondary">
-                                        {account.gstRegistrationType}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span className={`ledger-management-badge ${account.isActive ? 'ledger-management-badge-success' : 'ledger-management-badge-error'
-                                        }`}>
-                                        {account.isActive ? 'Active' : 'Inactive'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className="ledger-management-flex ledger-management-gap-2">
-                                        <button
-                                            onClick={() => handleEdit(account)}
-                                            className="ledger-management-btn-icon"
-                                            title="Edit"
-                                        >
-                                            <Edit className="ledger-management-icon-sm" />
-                                        </button>
-
-                                        <button
-                                            className="ledger-management-btn-icon"
-                                            title="View Details"
-                                        >
-                                            <Eye className="ledger-management-icon-sm" />
-                                        </button>
-
-                                        <button
-                                            onClick={() => setShowDeleteModal(account.id)}
-                                            className="ledger-management-btn-icon ledger-management-btn-icon-danger"
-                                            title="Delete"
-                                        >
-                                            <Trash2 className="ledger-management-icon-sm" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {filteredAccounts.length === 0 && (
-                    <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                        No accounts found matching your criteria.
-                    </div>
-                )}
-            </div>
-        </div>
-    );
 
     return (
         <div className="ledger-management">
@@ -1039,86 +863,99 @@ const Ledger: React.FC = () => {
                             Export
                         </button>
                         <button
-                            onClick={() => setActiveTab('create')}
+                            onClick={() => setShowDetailForm(true)}
                             className="ledger-management-btn ledger-management-btn-primary"
                         >
                             <Plus className="ledger-management-icon" />
-                            New Account
+                            Add New Account
                         </button>
                     </div>
                 </div>
             </header>
 
-            {/* Main Content */}
-            <main className="ledger-management-main">
-                {/* Tabs */}
-                <div className="ledger-management-tabs">
-                    <div className="ledger-management-tabs-container">
-                        <div className="ledger-management-tabs-nav">
-                            <div className="ledger-management-tabs-list">
-                                <button
-                                    onClick={() => setActiveTab('create')}
-                                    className={`ledger-management-tab ${activeTab === 'create' ? 'active' : ''}`}
-                                >
-                                    <Plus className="ledger-management-tab-icon" />
-                                    {editingAccount ? 'Edit Account' : 'Create Account'}
-                                </button>
+            {/* Create/Edit Modal */}
+            {showDetailForm && (
+                <>
+                    <div className="modal fade show d-block" tabIndex={-1} role="dialog">
+                        <div className="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title">{editingAccount ? 'Edit Ledger Account' : 'Create New Ledger Account'}</h3>
+                                    <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowDetailForm(false)}></button>
+                                </div>
+                                <div className="modal-body">
+                                    {renderCreateForm()}
+                                </div>
 
-                                <button
-                                    onClick={() => setActiveTab('list')}
-                                    className={`ledger-management-tab ${activeTab === 'list' ? 'active' : ''}`}
-                                >
-                                    <List className="ledger-management-tab-icon" />
-                                    Accounts List
-                                </button>
                             </div>
                         </div>
                     </div>
+                    <div className="modal-backdrop fade show"></div>
+                </>
+            )}
+
+            {/* Main Content */}
+            <main className="ledger-management-main">
+
+                <div className="ledger-management-tab-content">
+                    {/* Filters */}
+
+                    <div className="row g-3 mb-2 align-items-center mt-1">
+                        {/* Group Name */}
+                        <div className="col-lg-1 text-right">
+                            <label className="form-label mb-0 ">Group Name</label>
+                        </div>
+                        <div className='col-lg-4'>
+                            <input
+                                type="text"
+                                placeholder="Group Nmae"
+                                className="form-control form-control-sm challan"
+                                style={{ borderRadius: "5px" }}
+                            />
+                        </div>
+
+                        {/* Under */}
+                        <div className="col-lg-1 text-right">
+                            <label className="form-label mb-0 ">Under</label>
+                        </div>
+                        <div className='col-lg-4'>
+                            <Select
+                                placeholder="Select..."
+                                isClearable
+                                isSearchable
+                                styles={selectCompactStyles}
+                            />
+                        </div>
+
+
+                        {/* Add more filters here in col-md-4 / col-md-3 etc */}
+
+                    </div>
+
+
+
+                    {/* Accounts Table */}
+                    <div className="ledger-management-table-container ">
+                        <DataTable
+                            columns={columns}
+                            data={filteredAccounts}
+                            pagination
+                            highlightOnHover
+                            striped
+                            noDataComponent="No accounts found matching your criteria."
+                            customStyles={customStyles}
+                        />
+                    </div>
+
+
+
                 </div>
 
-                {/* Tab Content */}
-                <div className="ledger-management-content">
-                    {activeTab === 'create' && renderCreateForm()}
-                    {activeTab === 'list' && renderAccountsList()}
-                </div>
+
+
             </main>
 
-            {/* Delete Confirmation Modal */}
-            {showDeleteModal && (
-                <div className="ledger-management-modal-overlay">
-                    <div className="ledger-management-modal">
-                        <div className="ledger-management-modal-header">
-                            <h3 className="ledger-management-modal-title">Confirm Delete</h3>
-                            <button
-                                onClick={() => setShowDeleteModal(null)}
-                                className="ledger-management-modal-close"
-                            >
-                                <X className="ledger-management-icon" />
-                            </button>
-                        </div>
 
-                        <div className="ledger-management-modal-content">
-                            <p>Are you sure you want to delete this ledger account? This action cannot be undone.</p>
-                        </div>
-
-                        <div className="ledger-management-modal-footer">
-                            <button
-                                onClick={() => setShowDeleteModal(null)}
-                                className="ledger-management-btn ledger-management-btn-secondary"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={() => handleDelete(showDeleteModal)}
-                                className="ledger-management-btn ledger-management-btn-primary"
-                                style={{ backgroundColor: '#dc2626' }}
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
