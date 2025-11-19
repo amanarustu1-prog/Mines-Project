@@ -543,7 +543,7 @@ const Ledger: React.FC = () => {
                 {/* ---------------- TOP SECTION ---------------- */}
                 <div className="row mb-2">
                     {/* Ledger Name */}
-                    <div className="col-md-6 mb-3">
+                    <div className="col-md-6 mb-3" style={{ paddingRight: "2rem" }}>
                         <label className="ledger-management-label">Ledger Name *</label>
                         <input
                             type="text"
@@ -635,7 +635,8 @@ const Ledger: React.FC = () => {
                     {/*-- MAILING DETAILS + TAX REGISTRATION --*/}
                     <div className="col-md-6">
                         {/* MAILING DETAILS */}
-                        <h4 className="mb-3">Mailing Details</h4>
+                        <h4 className="section-heading mb-3">Mailing Details</h4>
+
                         <div className="row">
                             {/* Name */}
                             <div className="col-md-12 mb-3">
@@ -671,7 +672,8 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">Pincode :</label>
                                 <input
                                     type="text"
-                                    className="ledger-management-input w-100"
+                                    className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Pincode"
                                     value={formData.pincode || ""}
                                     onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
                                 />
@@ -699,7 +701,8 @@ const Ledger: React.FC = () => {
                         </div>
 
                         {/* TAX REGISTRATION */}
-                        <h4 className="mt-2 mb-2">Tax Registration Details</h4>
+                        <h4 className="section-heading mt-2 mb-2">Tax Registration Details</h4>
+
                         <div className="row">
                             {/* Registration Type */}
                             <div className="col-md-12 mb-3">
@@ -708,6 +711,7 @@ const Ledger: React.FC = () => {
                                     value={formData.gstregistrationtype || ""}
                                     onChange={(e) => setFormData({ ...formData, gstregistrationtype: e.target.value })}
                                 />
+
                             </div>
 
                             {/* GST-No */}
