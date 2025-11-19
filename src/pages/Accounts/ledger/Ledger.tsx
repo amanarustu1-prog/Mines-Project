@@ -565,6 +565,7 @@ const Ledger: React.FC = () => {
                         <input
                             type="text"
                             className="ledger-management-input w-100 challan"
+                            placeholder="Enter Ledger Name"
                             value={formData.ledgerName || ""}
                             onChange={(e) => handleInputChange("ledgerName", e.target.value)}
 
@@ -608,6 +609,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter A/c Holder's Name"
                                     value={formData.accountHolder || ""}
                                     onChange={(e) => handleInputChange("accountHolder", e.target.value)}
                                 />
@@ -618,6 +620,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter A/c No."
                                     value={formData.accountNo || ""}
                                     onChange={(e) => handleInputChange("accountNo", e.target.value)}
                                 />
@@ -628,6 +631,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter IFSC Code"
                                     value={formData.ifscCode || ""}
                                     onChange={(e) => handleInputChange("ifscCode", e.target.value)}
                                 />
@@ -638,6 +642,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Bank Name"
                                     value={formData.bankName || ""}
                                     onChange={(e) => handleInputChange("bankName", e.target.value)}
                                 />
@@ -648,6 +653,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Branch"
                                     value={formData.branch || ""}
                                     onChange={(e) => handleInputChange("branch", e.target.value)}
                                 />
@@ -667,6 +673,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Name"
                                     value={formData.name || ""}
                                     onChange={(e) => handleInputChange("name", e.target.value)}
                                 />
@@ -676,6 +683,7 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">Address :</label>
                                 <textarea
                                     className="ledger-management-textarea w-100 challan"
+                                    placeholder="Enter Address"
                                     rows={2}
                                     value={formData.address || ""}
                                     onChange={(e) => handleInputChange("address", e.target.value)}
@@ -687,6 +695,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter State"
                                     value={formData.state || ""}
                                     onChange={(e) => handleInputChange("state", e.target.value)}
                                 />
@@ -697,6 +706,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Pincode"
                                     value={formData.pincode || ""}
                                     onChange={(e) => handleInputChange("pincode", e.target.value)}
                                 />
@@ -707,6 +717,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Mobile No"
                                     value={formData.mobile || ""}
                                     onChange={(e) => handleInputChange("mobile", e.target.value)}
                                 />
@@ -717,6 +728,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter Email"
                                     value={formData.email || ""}
                                     onChange={(e) => handleInputChange("email", e.target.value)}
                                 />
@@ -748,7 +760,7 @@ const Ledger: React.FC = () => {
                                     isSearchable
                                     styles={selectCompactStyles}
                                 />
-                                
+
                             </div>
 
                             <div className="col-md-12 mb-3">
@@ -756,6 +768,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter GSTIN"
                                     value={formData.gstin || ""}
                                     onChange={(e) => handleInputChange("gstin", e.target.value)}
                                 />
@@ -766,6 +779,7 @@ const Ledger: React.FC = () => {
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100 challan"
+                                    placeholder="Enter PAN No"
                                     value={formData.panNo || ""}
                                     onChange={(e) => handleInputChange("panNo", e.target.value)}
                                 />
