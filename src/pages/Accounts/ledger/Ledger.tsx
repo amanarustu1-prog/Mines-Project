@@ -18,18 +18,6 @@ const Plus = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const List = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-    </svg>
-);
-
-const Search = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-    </svg>
-);
-
 const Edit = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -59,26 +47,6 @@ const Download = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const Filter = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-    </svg>
-);
-
-const X = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-);
-
-const Save = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-    </svg>
-);
-
 const RotateCcw = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1 4v6h6" />
@@ -86,9 +54,10 @@ const RotateCcw = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const ArrowLeft = ({ className }: { className?: string }) => (
+const Save = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 12H5m7-7l-7 7 7 7" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
     </svg>
 );
 
@@ -464,7 +433,6 @@ const Ledger: React.FC = () => {
         }).format(amount);
     };
 
-
     const selectCompactStyles: any = {
         control: (provided: any, state: any) => ({
             ...provided,
@@ -496,13 +464,12 @@ const Ledger: React.FC = () => {
         }),
     };
 
-
     const columns = [
         {
             name: "Ledger Name",
-            selector: row => row.ledgerName,
+            selector: (row: LedgerAccount) => row.ledgerName,
             sortable: true,
-            cell: row => (
+            cell: (row: LedgerAccount) => (
                 <div>
                     <div className="ledger-management-font-medium">{row.ledgerName}</div>
                     {row.aliasName && (
@@ -515,13 +482,13 @@ const Ledger: React.FC = () => {
         },
         {
             name: "Group",
-            selector: row => row.ledgerGroup,
+            selector: (row: LedgerAccount) => row.ledgerGroup,
             sortable: true,
         },
         {
             name: "Opening Balance",
             sortable: true,
-            cell: row => (
+            cell: (row: LedgerAccount) => (
                 <span className={row.balanceType === "Dr" ? "debit" : "credit"}>
                     {formatCurrency(row.openingBalance)} {row.balanceType}
                 </span>
@@ -530,7 +497,7 @@ const Ledger: React.FC = () => {
         {
             name: "Current Balance",
             sortable: true,
-            cell: row => (
+            cell: (row: LedgerAccount) => (
                 <span className={row.balanceType === "Dr" ? "debit" : "credit"}>
                     {formatCurrency(row.currentBalance)} {row.balanceType}
                 </span>
@@ -539,7 +506,7 @@ const Ledger: React.FC = () => {
         {
             name: "GST Type",
             sortable: true,
-            cell: row => (
+            cell: (row: LedgerAccount) => (
                 <span className="ledger-management-badge ledger-management-badge-secondary">
                     {row.gstRegistrationType}
                 </span>
@@ -548,7 +515,7 @@ const Ledger: React.FC = () => {
         {
             name: "Status",
             sortable: true,
-            cell: row => (
+            cell: (row: LedgerAccount) => (
                 <span
                     className={`ledger-management-badge ${row.isActive
                         ? "ledger-management-badge-success"
@@ -561,7 +528,7 @@ const Ledger: React.FC = () => {
         },
         {
             name: "Actions",
-            cell: row => (
+            cell: (row: LedgerAccount) => (
                 <div className="ledger-management-flex ledger-management-gap-2">
                     <button
                         onClick={() => handleEdit(row)}
@@ -587,17 +554,11 @@ const Ledger: React.FC = () => {
         }
     ];
 
-
-
-
-
     const renderCreateForm = () => (
         <div className="ledger-management-tab-content">
             <div className="ledger-entry-form">
-
                 {/* ---------------- TOP SECTION ---------------- */}
                 <div className="row mb-2">
-
                     {/* Ledger Name */}
                     <div className="col-md-6 mb-3">
                         <label className="ledger-management-label">Ledger Name *</label>
@@ -608,8 +569,6 @@ const Ledger: React.FC = () => {
                             onChange={(e) => handleInputChange("ledgerName", e.target.value)}
 
                         />
-
-
                     </div>
 
                     {/* Under */}
@@ -632,18 +591,14 @@ const Ledger: React.FC = () => {
                             }))}
                             isClearable
                         />
-
                     </div>
                 </div>
 
                 {/* ---------------- MIDDLE SECTION: TWO COLUMNS ---------------- */}
                 <div className="row">
-
                     {/* -------- LEFT: BANK ACCOUNT DETAILS -------- */}
                     <div className="col-md-6">
-
                         <h4 className="mb-3">Bank Account Details</h4>
-
                         <div className="row">
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">A/c Holder's Name :</label>
@@ -695,15 +650,12 @@ const Ledger: React.FC = () => {
                                 />
                             </div>
                         </div>
-
                     </div>
 
                     {/* -------- RIGHT: MAILING + TAX DETAILS -------- */}
                     <div className="col-md-6">
-
                         {/* MAILING DETAILS */}
                         <h4 className="mb-3">Mailing Details</h4>
-
                         <div className="row">
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Name :</label>
@@ -768,7 +720,6 @@ const Ledger: React.FC = () => {
 
                         {/* TAX REGISTRATION */}
                         <h4 className="mt-2 mb-2">Tax Registration Details</h4>
-
                         <div className="row">
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Registration Type :</label>
@@ -790,7 +741,6 @@ const Ledger: React.FC = () => {
                                     isClearable
                                     isSearchable
                                 />
-
                             </div>
 
                             <div className="col-md-12 mb-3">
@@ -813,35 +763,24 @@ const Ledger: React.FC = () => {
                                 />
                             </div>
                         </div>
-
                     </div>
-
                 </div>
 
                 {/* ---------------- ACTION BUTTONS ---------------- */}
                 <div className="d-flex justify-content-between mt-2">
-                    <button
-                        onClick={handleReset}
-                        className="ledger-management-btn ledger-management-btn-secondary"
-                    >
+                    <button onClick={handleReset} className="ledger-management-btn ledger-management-btn-secondary">
                         <RotateCcw className="ledger-management-icon" />
                         Reset
                     </button>
 
-                    <button
-                        onClick={handleSave}
-                        className="ledger-management-btn ledger-management-btn-primary"
-                    >
+                    <button onClick={handleSave} className="ledger-management-btn ledger-management-btn-primary">
                         <Save className="ledger-management-icon" />
                         {editingAccount ? "Update Account" : "Save Account"}
                     </button>
                 </div>
-
             </div>
-
         </div>
     );
-
 
     return (
         <div className="ledger-management">
@@ -863,10 +802,7 @@ const Ledger: React.FC = () => {
                             <Download className="ledger-management-icon" />
                             Export
                         </button>
-                        <button
-                            onClick={() => setShowDetailForm(true)}
-                            className="ledger-management-btn ledger-management-btn-primary"
-                        >
+                        <button onClick={() => setShowDetailForm(true)} className="ledger-management-btn ledger-management-btn-primary">
                             <Plus className="ledger-management-icon" />
                             Add New Account
                         </button>
@@ -897,10 +833,8 @@ const Ledger: React.FC = () => {
 
             {/* Main Content */}
             <main className="ledger-management-main">
-
                 <div className="ledger-management-tab-content">
                     {/* Filters */}
-
                     <div className="row g-3 mb-2 align-items-center mt-1">
                         {/* Group Name */}
                         <div className="col-lg-1 text-right">
@@ -909,7 +843,7 @@ const Ledger: React.FC = () => {
                         <div className='col-lg-4'>
                             <input
                                 type="text"
-                                placeholder="Group Nmae"
+                                placeholder="Group Name"
                                 className="form-control form-control-sm challan"
                                 style={{ borderRadius: "5px" }}
                             />
@@ -927,13 +861,8 @@ const Ledger: React.FC = () => {
                                 styles={selectCompactStyles}
                             />
                         </div>
-
-
                         {/* Add more filters here in col-md-4 / col-md-3 etc */}
-
                     </div>
-
-
 
                     {/* Accounts Table */}
                     <div className="ledger-management-table-container ">
@@ -947,16 +876,8 @@ const Ledger: React.FC = () => {
                             customStyles={customStyles}
                         />
                     </div>
-
-
-
                 </div>
-
-
-
             </main>
-
-
         </div>
     );
 };
