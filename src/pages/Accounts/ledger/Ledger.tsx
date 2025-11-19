@@ -3,8 +3,13 @@ import './Ledger.css';
 import DataTable from "react-data-table-component";
 import Select from 'react-select';
 import { customStyles } from '@/common/Utility';
+import { fetchPostData } from '@/components/hooks/Api';
+import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
+import ConfirmModal from '@/common/ConfirmModal';
+import { getShowingDateText } from '@/common/DateFormat';
 
-// ==================== Icon Components ====================
+//==================== Icon Components ====================
 const BookOpen = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -63,39 +68,67 @@ const Save = ({ className }: { className?: string }) => (
 
 // ==================== Interfaces ====================
 interface LedgerAccount {
-    id: string;
-    ledgerName: string;
-    ledgerGroup: string;
-    aliasName?: string;
-    openingBalance: number;
-    balanceType: 'Dr' | 'Cr';
-    currentBalance: number;
-    asOnDate: string;
-    gstRegistrationType: 'Regular' | 'Composition' | 'Unregistered';
-    gstin?: string;
-    panNo?: string;
-    hsnSacCode?: string;
-    tdsApplicable: boolean;
-    tdsSection?: string;
-    tdsRate?: number;
-    address?: string;
-    state?: string;
-    city?: string;
-    pincode?: string;
-    mobile?: string;
-    email?: string;
-    bankName?: string;
-    accountNo?: string;
-    ifscCode?: string;
-    branch?: string;
+    //Top-Fields
+    LedgerID: number
+    LedgerName: string;
+    AccountGroup: string;
+    AccountGroupId: number;
+
+    // Mailing-Details
+    Name: string;
+    Address: string;
+    StateID: number;
+    State: string;
+    pincode: number;
+    MobileNo: number;
+    email: string;
+
+    // Tax-Registration-Details
+    gstregistrationtype: string;
+    gstno: string;
+    panNo: string;
+
+    // Bank-Account-Details
+    bankaccountholder: string;
+    bankAcNo: number;
+    bankifsc: string;
+    bankname: string;
+    bankbranch: string;
     isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
+    CreatedDate: string;
+    UpdatedDate: string;
 }
 
-// ==================== Main Component ====================
+interface LedgerData {
+    //Top-Fields
+    LedgerID: number;
+    LedgerName: string;
+    AccountGroup: string;
+    AccountGroupId: number;
+
+    // Mailing-Details
+    Name: string;
+    Address: string;
+    StateID: number;
+    State: string;
+    pincode: number;
+    MobileNo: number;
+    email: string;
+
+    // Tax-Registration-Details
+    gstregistrationtype: string;
+    gstno: string;
+    panNo: string;
+
+    // Bank-Account-Details
+    bankaccountholder: string;
+    bankAcNo: number;
+    bankifsc: string;
+    bankname: string;
+    bankbranch: string;
+}
+
 const Ledger: React.FC = () => {
-    // ==================== State Variables ====================
     const [ledgerAccounts, setLedgerAccounts] = useState<LedgerAccount[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterGroup, setFilterGroup] = useState('all');
@@ -103,335 +136,375 @@ const Ledger: React.FC = () => {
     const [editingAccount, setEditingAccount] = useState<LedgerAccount | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
     const [showDetailForm, setShowDetailForm] = useState(false);
-    // const [isFocused, setIsFocused] = useState(false);
+    // New-State
+    const [ledgerData, setLedgerData] = useState<LedgerData[]>([]);
+    const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [formData, setFormData] = useState<LedgerAccount>({
+        //Top-Fields
+        LedgerID: 0,
+        LedgerName: '',
+        AccountGroup: '',
+        AccountGroupId: 0,
 
-    // Form state
-    const [formData, setFormData] = useState<Partial<LedgerAccount>>({
-        ledgerName: '',
-        ledgerGroup: '',
-        aliasName: '',
-        openingBalance: 0,
-        balanceType: 'Dr',
-        asOnDate: new Date().toISOString().split('T')[0],
-        gstRegistrationType: 'Unregistered',
-        gstin: '',
-        panNo: '',
-        hsnSacCode: '',
-        tdsApplicable: false,
-        tdsSection: '',
-        tdsRate: 0,
-        address: '',
-        state: '',
-        city: '',
-        pincode: '',
-        mobile: '',
+        // Mailing-Details
+        Name: '',
+        Address: '',
+        StateID: 0,
+        State: '',
+        pincode: 0,
+        MobileNo: 0,
         email: '',
-        bankName: '',
-        accountNo: '',
-        ifscCode: '',
-        branch: '',
-        isActive: true
+
+        // Tax-Registration-Details
+        gstregistrationtype: '',
+        gstno: '',
+        panNo: '',
+
+        // Bank-Account-Details
+        bankaccountholder: '',
+        bankAcNo: 0,
+        bankifsc: '',
+        bankname: '',
+        bankbranch: '',
+        isActive: true,
+        CreatedDate: '',
+        UpdatedDate: ''
     });
 
-    // ==================== Sample Data ====================
-    useEffect(() => {
-        const sampleData: LedgerAccount[] = [
-            {
-                id: '1',
-                ledgerName: 'Cash in Hand',
-                ledgerGroup: 'Cash A/c',
-                openingBalance: 50000,
-                balanceType: 'Dr',
-                currentBalance: 75000,
-                asOnDate: '2024-01-01',
-                gstRegistrationType: 'Unregistered',
-                tdsApplicable: false,
-                isActive: true,
-                createdAt: '2024-01-01T00:00:00Z',
-                updatedAt: '2024-01-01T00:00:00Z'
-            },
-            {
-                id: '2',
-                ledgerName: 'State Bank of India',
-                ledgerGroup: 'Bank A/c',
-                openingBalance: 100000,
-                balanceType: 'Dr',
-                currentBalance: 125000,
-                asOnDate: '2024-01-01',
-                gstRegistrationType: 'Unregistered',
-                tdsApplicable: false,
-                bankName: 'State Bank of India',
-                accountNo: '1234567890',
-                ifscCode: 'SBIN0001234',
-                branch: 'Main Branch',
-                isActive: true,
-                createdAt: '2024-01-01T00:00:00Z',
-                updatedAt: '2024-01-01T00:00:00Z'
-            },
-            {
-                id: '3',
-                ledgerName: 'ABC Construction Co.',
-                ledgerGroup: 'Sundry Debtors',
-                openingBalance: 25000,
-                balanceType: 'Dr',
-                currentBalance: 30000,
-                asOnDate: '2024-01-01',
-                gstRegistrationType: 'Regular',
-                gstin: '27ABCDE1234F1Z5',
-                panNo: 'ABCDE1234F',
-                mobile: '9876543210',
-                email: 'info@abcconstruction.com',
-                address: '123 Business Street',
-                city: 'Mumbai',
-                state: 'Maharashtra',
-                pincode: '400001',
-                tdsApplicable: true,
-                tdsSection: '194C',
-                tdsRate: 2,
-                isActive: true,
-                createdAt: '2024-01-01T00:00:00Z',
-                updatedAt: '2024-01-01T00:00:00Z'
-            },
-            {
-                id: '4',
-                ledgerName: 'XYZ Suppliers Pvt Ltd',
-                ledgerGroup: 'Sundry Creditors',
-                openingBalance: 15000,
-                balanceType: 'Cr',
-                currentBalance: 20000,
-                asOnDate: '2024-01-01',
-                gstRegistrationType: 'Regular',
-                gstin: '27XYZAB1234G1Z6',
-                panNo: 'XYZAB1234G',
-                mobile: '9876543211',
-                email: 'sales@xyzsuppliers.com',
-                address: '456 Industrial Area',
-                city: 'Pune',
-                state: 'Maharashtra',
-                pincode: '411001',
-                tdsApplicable: false,
-                isActive: true,
-                createdAt: '2024-01-01T00:00:00Z',
-                updatedAt: '2024-01-01T00:00:00Z'
+    // ===================TODO-Func====================
+    const fetchGetData = async () => {
+        try {
+            const payload = { CompanyId: 1, IsActive: 1 };
+            const response = await fetchPostData('AccountingLedger/GetData_AccountingLedger', payload);
+            console.log(response);
+            if (response && Array.isArray(response)) {
+                setLedgerData(response);
+            } else {
+                setLedgerData([]);
             }
-        ];
-        setLedgerAccounts(sampleData);
+        } catch {
+            toastifyError("Error fetching the Data");
+        }
+    }
+
+    const fetchInsertData = async (formData: any) => {
+        try {
+            const response = await fetchPostData('AccountingLedger/Insert_AccountingLedger', {
+                ...formData,
+                CompanyId: localStorage.getItem('companyID')
+            });
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item Added successfully");
+                await fetchGetData();
+                return true;
+            } else {
+                toastifyError("Item is not Inserted");
+                return false;
+            }
+        } catch {
+            toastifyError("Error in inserting a Data.");
+            return false;
+        }
+    }
+
+    const fetchUpdateData = async (formData: LedgerData, id: number) => {
+        try {
+            const response = await fetchPostData('AccountingLedger/Update_AccountingLedger', {
+                ...formData,
+                LedgerID: id,
+                CompanyId: localStorage.getItem('companyID')
+            });
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item Updated Successfully");
+                await fetchGetData();
+                return true;
+            } else {
+                toastifyError("Item is not Updated");
+                return false;
+            }
+        } catch {
+            toastifyError("Error in Updating a Data.");
+            return false;
+        }
+    }
+
+    const fetchDeleteData = async (Id: number) => {
+        try {
+            const response = fetchPostData('AccountingLedger/Delete_AccountingLedger', {
+                "LedgerID": Id,
+                "IsActive": 1
+            });
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item is deleted successfully.");
+                await fetchGetData();
+                return true;
+            } else {
+                toastifyError("Item is not Deleted");
+                return false;
+            }
+        }
+        catch {
+            toastifySuccess("Error in Deleting a Item");
+        }
+    }
+
+    const fetchSingleData = async (Id: number) => {
+        try {
+            const response = await fetchPostData('AccountingLedger/GetSingleData_AccountingLedger', {
+                "LedgerID": Id
+            });
+            // console.log(response);
+            if (response) {
+                const record = response[0];
+                // console.log(record);
+                setFormData({
+                    //Top-Fields
+                    LedgerID: record.LedgerID,
+                    LedgerName: record.LedgerName,
+                    AccountGroup: record.AccountGroup,
+                    AccountGroupId: record.AccountGroupId,
+
+                    // Mailing-Details
+                    Name: record.Name,
+                    Address: record.Address,
+                    StateID: record.StateID,
+                    State: record.State,
+                    pincode: record.pincode,
+                    MobileNo: record.MobileNo,
+                    email: record.email,
+
+                    // Tax-Registration-Details
+                    gstregistrationtype: record.gstregistrationtype,
+                    gstno: record.gstno,
+                    panNo: record.panNo,
+
+                    // Bank-Account-Details
+                    bankaccountholder: record.bankaccountholder,
+                    bankAcNo: record.bankAcNo,
+                    bankifsc: record.bankifsc,
+                    bankname: record.bankname,
+                    bankbranch: record.bankbranch,
+                    isActive: true,
+                    CreatedDate: record.CreatedDate,
+                    UpdatedDate: record.UpdatedDate
+                })
+            }
+        } catch {
+            toastifyError("Error in getting a Single Data");
+        }
+    }
+
+    useEffect(() => {
+        console.log(editItemId + "Single called");
+        if (editItemId) {
+            fetchSingleData(editItemId);
+        }
+    }, [editItemId]);
+
+    useEffect(() => {
+        fetchGetData();
     }, []);
 
-    // ==================== Constants ====================
-    const ledgerGroups = [
-        'Cash A/c',
-        'Bank A/c',
-        'Sundry Debtors',
-        'Sundry Creditors',
-        'Sales Account',
-        'Purchase Account',
-        'Direct Expenses',
-        'Indirect Expenses',
-        'Direct Income',
-        'Indirect Income',
-        'Fixed Assets',
-        'Current Assets',
-        'Current Liabilities',
-        'Capital Account',
-        'Loans & Advances'
+    const Columns = [
+        {
+            name: "Ledger Name",
+            selector: (row: LedgerData) => row.LedgerName,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <div>
+                    <div className="ledger-management-font-medium">{row.LedgerName}</div>
+                </div>
+            )
+        },
+        {
+            name: "Accounting Group",
+            selector: (row: LedgerData) => row.AccountGroupId,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.LedgerData}</span>
+            )
+        },
+
+        // Mailing-Details
+        {
+            name: "Name",
+            selector: (row: LedgerData) => row.Name,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.Name}</span>
+            )
+        },
+        {
+            name: "Address",
+            selector: (row: LedgerData) => row.Address,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.Address}</span>
+            )
+        },
+        {
+            name: "State",
+            selector: (row: LedgerData) => row.State,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.State}</span>
+            )
+        },
+        {
+            name: "PinCode",
+            selector: (row: LedgerData) => row.pincode,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.pincode}</span>
+            )
+        },
+        {
+            name: "Mobile-No",
+            selector: (row: LedgerData) => row.MobileNo,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.MobileNo}</span>
+            )
+        },
+        {
+            name: "Email",
+            selector: (row: LedgerData) => row.email,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.email}</span>
+            )
+        },
+
+        // Tax-Registration-Details
+        {
+            name: "Registration-Type",
+            selector: (row: LedgerData) => row.gstregistrationtype,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.gstregistrationtype}</span>
+            )
+        },
+        {
+            name: "GST No",
+            selector: (row: LedgerData) => row.gstno,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.gstno}</span>
+            )
+        },
+        {
+            name: "PAN No",
+            selector: (row: LedgerData) => row.panNo,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.panNo}</span>
+            )
+        },
+
+        // Bank-Account-Details
+        {
+            name: "A/c Holder Name",
+            selector: (row: LedgerData) => row.bankaccountholder,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.bankaccountholder}</span>
+            )
+        },
+        {
+            name: "Account No",
+            selector: (row: LedgerData) => row.bankAcNo,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.bankAcNo}</span>
+            )
+        },
+        {
+            name: "IFSC Code",
+            selector: (row: LedgerData) => row.bankifsc,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.bankifsc}</span>
+            )
+        },
+        {
+            name: "Bank Name",
+            selector: (row: LedgerData) => row.bankname,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.bankname}</span>
+            )
+        },
+        {
+            name: "Branch",
+            selector: (row: LedgerData) => row.bankbranch,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.bankbranch}</span>
+            )
+        },
+
+        //Dates
+        {
+            name: 'CreatedDate',
+            selector: (row: LedgerAccount) => getShowingDateText(row.CreatedDate),
+            sortable: true
+        },
+        {
+            name: 'UpdatedDate',
+            selector: (row: LedgerAccount) => getShowingDateText(row.UpdatedDate),
+            sortable: true
+        },
+
+        // Actions
+        {
+            name: "Actions",
+            cell: (row: LedgerAccount) => (
+                <div className="ledger-management-flex ledger-management-gap-2">
+                    <button onClick={() => { setEditItemId(row.LedgerID); setShowDetailForm(true); }} className="ledger-management-btn-icon" title="Edit">
+                        <Edit className="ledger-management-icon-sm" />
+                    </button>
+
+                    {/* <button className="ledger-management-btn-icon" title="View Details">
+                        <Eye className="ledger-management-icon-sm" />
+                    </button> */}
+
+                    <button onClick={() => { setSelectedId(row.LedgerID); setShowModal(true) }} className="ledger-management-btn-icon ledger-management-btn-icon-danger" title="Delete">
+                        <Trash2 className="ledger-management-icon-sm" />
+                    </button>
+                </div>
+            )
+        }
     ];
 
-    const gstRegistrationTypes = [
-        'Regular',
-        'Composition',
-        'Unregistered'
-    ];
+    const resizeableColumns = useResizableColumns(Columns).map(col => ({
+        ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+    }));
 
-    const indianStates = [
-        'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-        'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-        'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-        'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-        'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-        'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
-        'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
-    ];
+    const handleInsertAndUpdate = async () => {
+        if (editItemId) {
+            const success = await fetchUpdateData(formData, editItemId);
 
-    const tdsSettings = [
-        { section: '194C', description: 'Payment to Contractors', rate: 2 },
-        { section: '194I', description: 'Payment of Rent', rate: 10 },
-        { section: '194J', description: 'Professional Services', rate: 10 },
-        { section: '194H', description: 'Commission or Brokerage', rate: 5 }
-    ];
-
-    // ==================== Helper Functions ====================
-    const handleInputChange = (field: string, value: any) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-
-        // Clear error when user starts typing
-        if (errors[field]) {
-            setErrors(prev => ({
-                ...prev,
-                [field]: ''
-            }));
+            if (success) {
+                // resetdata();
+                setShowDetailForm(false);
+                // return;
+            }
         }
-    };
-
-    const validateForm = (): boolean => {
-        const newErrors: { [key: string]: string } = {};
-
-        if (!formData.ledgerName?.trim()) {
-            newErrors.ledgerName = 'Ledger name is required';
+        if (!editItemId) {
+            const success = await fetchInsertData(formData);
+            if (success) setShowDetailForm(false);
         }
+    }
 
-        if (!formData.ledgerGroup) {
-            newErrors.ledgerGroup = 'Ledger group is required';
-        }
-
-        if (formData.gstRegistrationType !== 'Unregistered' && !formData.gstin?.trim()) {
-            newErrors.gstin = 'GSTIN is required for registered taxpayers';
-        }
-
-        if (formData.gstin && formData.gstin.length !== 15) {
-            newErrors.gstin = 'GSTIN must be 15 characters long';
-        }
-
-        if (formData.panNo && formData.panNo.length !== 10) {
-            newErrors.panNo = 'PAN must be 10 characters long';
-        }
-
-        if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Invalid email format';
-        }
-
-        if (formData.mobile && !/^\d{10}$/.test(formData.mobile)) {
-            newErrors.mobile = 'Mobile number must be 10 digits';
-        }
-
-        if (formData.pincode && !/^\d{6}$/.test(formData.pincode)) {
-            newErrors.pincode = 'Pincode must be 6 digits';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSave = () => {
-        if (!validateForm()) return;
-
-        const newAccount: LedgerAccount = {
-            id: editingAccount ? editingAccount.id : Date.now().toString(),
-            ledgerName: formData.ledgerName!,
-            ledgerGroup: formData.ledgerGroup!,
-            aliasName: formData.aliasName,
-            openingBalance: formData.openingBalance || 0,
-            balanceType: formData.balanceType!,
-            currentBalance: formData.openingBalance || 0,
-            asOnDate: formData.asOnDate!,
-            gstRegistrationType: formData.gstRegistrationType!,
-            gstin: formData.gstin,
-            panNo: formData.panNo,
-            hsnSacCode: formData.hsnSacCode,
-            tdsApplicable: formData.tdsApplicable!,
-            tdsSection: formData.tdsSection,
-            tdsRate: formData.tdsRate,
-            address: formData.address,
-            state: formData.state,
-            city: formData.city,
-            pincode: formData.pincode,
-            mobile: formData.mobile,
-            email: formData.email,
-            bankName: formData.bankName,
-            accountNo: formData.accountNo,
-            ifscCode: formData.ifscCode,
-            branch: formData.branch,
-            isActive: formData.isActive!,
-            createdAt: editingAccount ? editingAccount.createdAt : new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        };
-
-        if (editingAccount) {
-            setLedgerAccounts(prev =>
-                prev.map(account =>
-                    account.id === editingAccount.id ? newAccount : account
-                )
-            );
-            setEditingAccount(null);
-        } else {
-            setLedgerAccounts(prev => [...prev, newAccount]);
-        }
-
-        handleReset();
-        setShowDetailForm(false);
-    };
-
-    const handleReset = () => {
-        setFormData({
-            ledgerName: '',
-            ledgerGroup: '',
-            aliasName: '',
-            openingBalance: 0,
-            balanceType: 'Dr',
-            asOnDate: new Date().toISOString().split('T')[0],
-            gstRegistrationType: 'Unregistered',
-            gstin: '',
-            panNo: '',
-            hsnSacCode: '',
-            tdsApplicable: false,
-            tdsSection: '',
-            tdsRate: 0,
-            address: '',
-            state: '',
-            city: '',
-            pincode: '',
-            mobile: '',
-            email: '',
-            bankName: '',
-            accountNo: '',
-            ifscCode: '',
-            branch: '',
-            isActive: true
-        });
-        setErrors({});
-        setEditingAccount(null);
-    };
-
-    const handleEdit = (account: LedgerAccount) => {
-        setFormData(account);
-        setEditingAccount(account);
-        setShowDetailForm(true);
-    };
-
-    const handleDelete = (id: string) => {
-        setLedgerAccounts(prev => prev.filter(account => account.id !== id));
-        setShowDeleteModal(null);
-    };
-
-    const handleTdsChange = (sectionCode: string) => {
-        const tdsData = tdsSettings.find(tds => tds.section === sectionCode);
-        setFormData(prev => ({
-            ...prev,
-            tdsSection: sectionCode,
-            tdsRate: tdsData?.rate || 0
-        }));
-    };
-
-    // Filter ledger accounts based on search and group filter
-    const filteredAccounts = ledgerAccounts.filter(account => {
-        const matchesSearch = account.ledgerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            account.ledgerGroup.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (account.aliasName && account.aliasName.toLowerCase().includes(searchTerm.toLowerCase()));
-
-        const matchesGroup = filterGroup === 'all' || account.ledgerGroup === filterGroup;
-
-        return matchesSearch && matchesGroup;
-    });
-
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR'
-        }).format(amount);
-    };
+    const handleReset = () => { }
 
     const selectCompactStyles: any = {
         control: (provided: any, state: any) => ({
@@ -464,96 +537,6 @@ const Ledger: React.FC = () => {
         }),
     };
 
-    const columns = [
-        {
-            name: "Ledger Name",
-            selector: (row: LedgerAccount) => row.ledgerName,
-            sortable: true,
-            cell: (row: LedgerAccount) => (
-                <div>
-                    <div className="ledger-management-font-medium">{row.ledgerName}</div>
-                    {row.aliasName && (
-                        <div className="ledger-management-text-sm ledger-management-text-gray-500">
-                            {row.aliasName}
-                        </div>
-                    )}
-                </div>
-            )
-        },
-        {
-            name: "Group",
-            selector: (row: LedgerAccount) => row.ledgerGroup,
-            sortable: true,
-        },
-        {
-            name: "Opening Balance",
-            sortable: true,
-            cell: (row: LedgerAccount) => (
-                <span className={row.balanceType === "Dr" ? "debit" : "credit"}>
-                    {formatCurrency(row.openingBalance)} {row.balanceType}
-                </span>
-            )
-        },
-        {
-            name: "Current Balance",
-            sortable: true,
-            cell: (row: LedgerAccount) => (
-                <span className={row.balanceType === "Dr" ? "debit" : "credit"}>
-                    {formatCurrency(row.currentBalance)} {row.balanceType}
-                </span>
-            )
-        },
-        {
-            name: "GST Type",
-            sortable: true,
-            cell: (row: LedgerAccount) => (
-                <span className="ledger-management-badge ledger-management-badge-secondary">
-                    {row.gstRegistrationType}
-                </span>
-            )
-        },
-        {
-            name: "Status",
-            sortable: true,
-            cell: (row: LedgerAccount) => (
-                <span
-                    className={`ledger-management-badge ${row.isActive
-                        ? "ledger-management-badge-success"
-                        : "ledger-management-badge-error"
-                        }`}
-                >
-                    {row.isActive ? "Active" : "Inactive"}
-                </span>
-            )
-        },
-        {
-            name: "Actions",
-            cell: (row: LedgerAccount) => (
-                <div className="ledger-management-flex ledger-management-gap-2">
-                    <button
-                        onClick={() => handleEdit(row)}
-                        className="ledger-management-btn-icon"
-                        title="Edit"
-                    >
-                        <Edit className="ledger-management-icon-sm" />
-                    </button>
-
-                    <button className="ledger-management-btn-icon" title="View Details">
-                        <Eye className="ledger-management-icon-sm" />
-                    </button>
-
-                    <button
-                        onClick={() => setShowDeleteModal(row.id)}
-                        className="ledger-management-btn-icon ledger-management-btn-icon-danger"
-                        title="Delete"
-                    >
-                        <Trash2 className="ledger-management-icon-sm" />
-                    </button>
-                </div>
-            )
-        }
-    ];
-
     const renderCreateForm = () => (
         <div className="ledger-management-tab-content">
             <div className="ledger-entry-form">
@@ -565,17 +548,15 @@ const Ledger: React.FC = () => {
                         <input
                             type="text"
                             className="ledger-management-input w-100"
-                            value={formData.ledgerName || ""}
-                            onChange={(e) => handleInputChange("ledgerName", e.target.value)}
-
+                            value={formData.LedgerName || ""}
+                            onChange={(e) => setFormData({ ...formData, LedgerName: e.target.value })}
                         />
                     </div>
 
-                    {/* Under */}
+                    {/* Accounting Group */}
                     <div className="col-md-6 mb-3">
-                        <label className="ledger-management-label">Under *</label>
-                        <Select
-                            className="w-100"
+                        <label className="ledger-management-label">Accounting Group *</label>
+                        {/* <Select className="w-100"
                             placeholder="Select Ledger Group"
                             value={
                                 formData.ledgerGroup
@@ -590,130 +571,129 @@ const Ledger: React.FC = () => {
                                 value: grp,
                             }))}
                             isClearable
-                        />
+                        /> */}
                     </div>
                 </div>
 
-                {/* ---------------- MIDDLE SECTION: TWO COLUMNS ---------------- */}
                 <div className="row">
-                    {/* -------- LEFT: BANK ACCOUNT DETAILS -------- */}
+                    {/* -- BANK ACCOUNT DETAILS -- */}
                     <div className="col-md-6">
                         <h4 className="mb-3">Bank Account Details</h4>
                         <div className="row">
+                            {/* Account Holder-Name */}
                             <div className="col-md-12 mb-3">
-                                <label className="ledger-management-label">A/c Holder's Name :</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input w-100"
-                                    value={formData.accountHolder || ""}
-                                    onChange={(e) => handleInputChange("accountHolder", e.target.value)}
+                                <label className="ledger-management-label">Account Holder's Name :</label>
+                                <input type="text" className="ledger-management-input w-100"
+                                    value={formData.bankaccountholder || ""}
+                                    onChange={(e) => setFormData({ ...formData, bankaccountholder: e.target.value })}
                                 />
                             </div>
 
+                            {/* Account-No */}
                             <div className="col-md-12 mb-3">
-                                <label className="ledger-management-label">A/c No. :</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input w-100"
-                                    value={formData.accountNo || ""}
-                                    onChange={(e) => handleInputChange("accountNo", e.target.value)}
+                                <label className="ledger-management-label">Account No. :</label>
+                                <input type="text" className="ledger-management-input w-100"
+                                    value={formData.bankAcNo || ""}
+                                    onChange={(e) => setFormData({ ...formData, bankAcNo: Number(e.target.value) })}
                                 />
                             </div>
 
+                            {/* IFSC Code */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">IFSC Code :</label>
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100"
-                                    value={formData.ifscCode || ""}
-                                    onChange={(e) => handleInputChange("ifscCode", e.target.value)}
+                                    value={formData.bankifsc || ""}
+                                    onChange={(e) => setFormData({ ...formData, bankifsc: e.target.value })}
                                 />
                             </div>
 
+                            {/* Bank-Name */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Bank Name :</label>
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100"
-                                    value={formData.bankName || ""}
-                                    onChange={(e) => handleInputChange("bankName", e.target.value)}
+                                    value={formData.bankname || ""}
+                                    onChange={(e) => setFormData({ ...formData, bankname: e.target.value })}
                                 />
                             </div>
 
+                            {/* Bank-Branch */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Branch :</label>
-                                <input
-                                    type="text"
+                                <input type="text"
                                     className="ledger-management-input w-100"
-                                    value={formData.branch || ""}
-                                    onChange={(e) => handleInputChange("branch", e.target.value)}
+                                    value={formData.bankbranch || ""}
+                                    onChange={(e) => setFormData({ ...formData, bankbranch: e.target.value })}
                                 />
                             </div>
                         </div>
                     </div>
 
-                    {/* -------- RIGHT: MAILING + TAX DETAILS -------- */}
+                    {/*-- MAILING DETAILS + TAX REGISTRATION --*/}
                     <div className="col-md-6">
                         {/* MAILING DETAILS */}
                         <h4 className="mb-3">Mailing Details</h4>
                         <div className="row">
+                            {/* Name */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Name :</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input w-100"
-                                    value={formData.name || ""}
-                                    onChange={(e) => handleInputChange("name", e.target.value)}
+                                <input type="text" className="ledger-management-input w-100"
+                                    value={formData.Name || ""}
+                                    onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
                                 />
                             </div>
 
+                            {/* Address */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Address :</label>
-                                <textarea
-                                    className="ledger-management-textarea w-100"
-                                    rows={2}
-                                    value={formData.address || ""}
-                                    onChange={(e) => handleInputChange("address", e.target.value)}
+                                <textarea className="ledger-management-textarea w-100" rows={2}
+                                    value={formData.Address || ""}
+                                    onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
                                 />
                             </div>
 
+                            {/* State */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">State :</label>
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100"
-                                    value={formData.state || ""}
-                                    onChange={(e) => handleInputChange("state", e.target.value)}
+                                    value={formData.State || ""}
+                                    onChange={(e) => setFormData({ ...formData, State: e.target.value })}
                                 />
                             </div>
 
+                            {/* Pincode */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Pincode :</label>
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100"
                                     value={formData.pincode || ""}
-                                    onChange={(e) => handleInputChange("pincode", e.target.value)}
+                                    onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
                                 />
                             </div>
 
+                            {/* Mobile-No */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Mobile No :</label>
                                 <input
                                     type="text"
                                     className="ledger-management-input w-100"
-                                    value={formData.mobile || ""}
-                                    onChange={(e) => handleInputChange("mobile", e.target.value)}
+                                    value={formData.MobileNo || ""}
+                                    onChange={(e) => setFormData({ ...formData, MobileNo: Number(e.target.value) })}
                                 />
                             </div>
 
+                            {/* Email */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Email :</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100"
                                     value={formData.email || ""}
-                                    onChange={(e) => handleInputChange("email", e.target.value)}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
                             </div>
                         </div>
@@ -721,45 +701,30 @@ const Ledger: React.FC = () => {
                         {/* TAX REGISTRATION */}
                         <h4 className="mt-2 mb-2">Tax Registration Details</h4>
                         <div className="row">
+                            {/* Registration Type */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Registration Type :</label>
-                                <Select
-                                    className="w-100"
-                                    placeholder="Select Registration Type"
-                                    value={
-                                        formData.gstRegistrationType
-                                            ? { label: formData.gstRegistrationType, value: formData.gstRegistrationType }
-                                            : null
-                                    }
-                                    onChange={(selected) =>
-                                        handleInputChange("gstRegistrationType", selected ? selected.value : "")
-                                    }
-                                    options={gstRegistrationTypes.map((type) => ({
-                                        label: type,
-                                        value: type,
-                                    }))}
-                                    isClearable
-                                    isSearchable
+                                <input type="text" className="ledger-management-input w-100"
+                                    value={formData.gstregistrationtype || ""}
+                                    onChange={(e) => setFormData({ ...formData, gstregistrationtype: e.target.value })}
                                 />
                             </div>
 
+                            {/* GST-No */}
                             <div className="col-md-12 mb-3">
-                                <label className="ledger-management-label">GSTIN :</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input w-100"
-                                    value={formData.gstin || ""}
-                                    onChange={(e) => handleInputChange("gstin", e.target.value)}
+                                <label className="ledger-management-label">GST No :</label>
+                                <input type="text" className="ledger-management-input w-100"
+                                    value={formData.gstno || ""}
+                                    onChange={(e) => setFormData({ ...formData, gstno: e.target.value })}
                                 />
                             </div>
 
+                            {/* PAN No */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">PAN No :</label>
-                                <input
-                                    type="text"
-                                    className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100"
                                     value={formData.panNo || ""}
-                                    onChange={(e) => handleInputChange("panNo", e.target.value)}
+                                    onChange={(e) => setFormData({ ...formData, panNo: e.target.value })}
                                 />
                             </div>
                         </div>
@@ -773,9 +738,9 @@ const Ledger: React.FC = () => {
                         Reset
                     </button>
 
-                    <button onClick={handleSave} className="ledger-management-btn ledger-management-btn-primary">
+                    <button onClick={handleInsertAndUpdate} className="ledger-management-btn ledger-management-btn-primary">
                         <Save className="ledger-management-icon" />
-                        {editingAccount ? "Update Account" : "Save Account"}
+                        {editItemId ? "Update Account" : "Save Account"}
                     </button>
                 </div>
             </div>
@@ -867,8 +832,8 @@ const Ledger: React.FC = () => {
                     {/* Accounts Table */}
                     <div className="ledger-management-table-container ">
                         <DataTable
-                            columns={columns}
-                            data={filteredAccounts}
+                            columns={resizeableColumns}
+                            data={ledgerData}
                             pagination
                             highlightOnHover
                             striped
@@ -878,6 +843,15 @@ const Ledger: React.FC = () => {
                     </div>
                 </div>
             </main>
+
+            <ConfirmModal show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleConfirm={() => {
+                    if (selectedId !== null) {
+                        fetchDeleteData(selectedId);
+                    }
+                    setShowModal(false);
+                }} />
         </div>
     );
 };
