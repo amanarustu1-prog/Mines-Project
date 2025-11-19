@@ -33,7 +33,7 @@ const useResizableColumns = (columns: TableColumn<any>[]) => {
 
   const resizableColumns = columns.map((col) => {
     const colName = col.name as string;
-    const width = colWidths[colName] || 150;
+    const width = colWidths[colName] || 160;
 
     return {
       ...col,
