@@ -303,7 +303,6 @@ const Ledger: React.FC = () => {
     }
 
     useEffect(() => {
-        // console.log(editItemId + "Single called");
         if (editItemId) {
             fetchSingleData(editItemId);
         }
