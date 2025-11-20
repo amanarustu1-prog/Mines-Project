@@ -39,28 +39,6 @@ const Trash2 = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const Eye = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-);
-
-const Download = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-    </svg>
-);
-
-const RotateCcw = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1 4v6h6" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
-    </svg>
-);
-
 const Save = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -238,7 +216,7 @@ const Ledger: React.FC = () => {
 
     const fetchDeleteData = async (Id: number) => {
         try {
-            const response = fetchPostData('AccountingLedger/Delete_AccountingLedger', {
+            const response = await fetchPostData('AccountingLedger/Delete_AccountingLedger', {
                 "LedgerID": Id,
                 "IsActive": 1
             });
@@ -501,8 +479,6 @@ const Ledger: React.FC = () => {
         }
     }
 
-
-
     const selectCompactStyles: any = {
         control: (provided: any, state: any) => ({
             ...provided,
@@ -510,7 +486,7 @@ const Ledger: React.FC = () => {
             height: "33px",
             fontSize: "14px",
             padding: "0 2px",
-            borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", // ✅ Default light blue border
+            borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
             boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
             "&:hover": {
                 borderColor: "#6ea8ff",
@@ -560,14 +536,14 @@ const Ledger: React.FC = () => {
             Name: '',
             Address: '',
             State: '',
-            pincode: '',
-            MobileNo: '',
+            pincode: 0,
+            MobileNo: 0,
             email: '',
             gstregistrationtype: '',
             gstno: '',
             panNo: '',
             bankaccountholder: '',
-            bankAcNo: '',
+            bankAcNo: 0,
             bankifsc: '',
             bankname: '',
             bankbranch: '',
@@ -971,7 +947,7 @@ const Ledger: React.FC = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </div>
     );
 };
