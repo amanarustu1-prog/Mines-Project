@@ -6,11 +6,27 @@ import DataTable from 'react-data-table-component';
 import { customStyles, requiredColorStyles } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
-import { Edit3, Trash2 } from 'lucide-react';
+import { Interface } from 'readline';
 import { getShowingDateText } from '@/common/DateFormat';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import ConfirmModal from '@/common/ConfirmModal';
 import { StylesConfig } from "react-select";
+
+
+//==================== Icon Components ====================
+const Edit = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+  </svg>
+);
+
+const Trash2 = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+  </svg>
+);
 
 interface AccountGroups {
   GroupID: number;
@@ -25,6 +41,11 @@ interface AccountGroups {
   UpdatedDate: string;
 }
 
+interface Groups {
+  GroupID: number;
+  Description: string;
+}
+
 const GroupCreation = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -32,6 +53,7 @@ const GroupCreation = () => {
   const [groups, setGroups] = useState<AccountGroups[]>([]);
   const [editItemId, setEditItemId] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [accountGroup, setAccountGroup] = useState<Groups[]>([]);
   const [showModal, setShowModal] = useState(false);
 
   const [form, setForm] = useState({
@@ -137,44 +159,76 @@ const GroupCreation = () => {
     }
   }
 
-  const fetchUpdateData = async (form: AccountGroups, Id: number): Promise<boolean> => {
+  const fetchUpdateData = async (form: AccountGroups, Id: number) => {
     try {
       const response = await fetchPostData('AccountingGroups/Update_AccountingGroups', {
         ...form,
         GroupID: Id,
-        IsBank: form.IsBank ? 1 : 0,
-        Iscash: form.Iscash ? 1 : 0,
-        IsSale: form.IsSale ? 1 : 0,
-        IsPurchase: form.IsPurchase ? 1 : 0,
         CompanyId: localStorage.getItem('companyID')
       });
+      // console.log(response);
+
       if (response) {
-        toastifySuccess("Item Updated successfully");
+        toastifySuccess("Item Updated Successfully");
         await fetchGetData();
         return true;
+      } else {
+        toastifyError("Item is not Updated");
+        return false;
       }
-      toastifyError("Item is not Updated");
-      return false;
     } catch {
-      toastifyError("Error in updating Data.");
+      toastifyError("Error in Updating a Data.");
       return false;
     }
   }
 
   const fetchDeleteData = async (Id: number) => {
     try {
-      const response = await fetchPostData('AccountingGroups/Delete_AccountingGroups', {
-        GroupID: Id,
-        CompanyId: localStorage.getItem('companyID')
+      const response = fetchPostData('AccountingGroups/Delete_AccountingGroups', {
+        "GroupID": Id,
+        "IsActive": 0
       });
+      // console.log(response);
+
       if (response) {
-        toastifySuccess("Item Deleted successfully");
+        toastifySuccess("Item is deleted successfully.");
         await fetchGetData();
+        return true;
       } else {
         toastifyError("Item is not Deleted");
+        return false;
       }
-    } catch {
-      toastifyError("Error in deleting Data.");
+    }
+    catch {
+      toastifySuccess("Error in Deleting a Item");
+    }
+  }
+
+  const fetchSingleData = async (Id: number) => {
+    try {
+      const response = await fetchPostData('AccountingGroups/GetSingleData_AccountingGroups', {
+        "GroupID": Id
+      })
+      console.log(response);
+
+      if (response) {
+        const record = response[0];
+        setForm({
+          GroupID: record.GroupID,
+          Description: record.Description,
+          parent: record.parent,
+          primary_group: record.primary_group,
+          IsBank: record.IsBank,
+          Iscash: record.Iscash,
+          IsSale: record.IsSale,
+          IsPurchase: record.IsPurchase,
+          CreatedDate: record.CreatedDate,
+          UpdatedDate: record.UpdatedDate
+        })
+      }
+    }
+    catch {
+      toastifyError("Error in getting a Single Data");
     }
   }
 
@@ -194,8 +248,33 @@ const GroupCreation = () => {
     }
   }
 
+  // =================== DropDown ====================
+  const fetchAccountGroup = async () => {
+    try {
+      const response = await fetchPostData('AccountingGroups/GetDataDropDown_AccountingGroups', {
+        CompanyId: 1
+      })
+      // console.log(response);
+      if (response && Array.isArray(response)) {
+        setAccountGroup(response);
+      } else {
+        setAccountGroup([]);
+      }
+    }
+    catch {
+      toastifyError("Error in getting a Account Group");
+    }
+  }
+
+  useEffect(() => {
+    if (editItemId) {
+      fetchSingleData(editItemId);
+    }
+  }, [editItemId]);
+
   useEffect(() => {
     fetchGetData();
+    fetchAccountGroup();
   }, []);
 
   const Columns = [
@@ -265,17 +344,24 @@ const GroupCreation = () => {
       name: 'Actions',
       cell: (row: AccountGroups) => (
         <div className="d-flex gap-2">
-          <button onClick={() => { setEditItemId(row.GroupID) }} className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
-            <Trash2 className="material-name-icon-sm" />
+          <button onClick={() => { setEditItemId(row.GroupID); }} className="material-name-btn-icon" title="Edit">
+            <Edit className="material-name-icon-sm" />
           </button>
 
-          <button onClick={() => { setSelectedId(row.GroupID); }} className="material-name-btn-icon" title="Edit">
-            <Edit3 className="material-name-icon-sm" />
+          <button onClick={() => { setSelectedId(row.GroupID); setShowModal(true); }} className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
+            <Trash2 className="material-name-icon-sm" />
           </button>
         </div>
       )
     }
   ];
+
+  const handleChange = (field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value ? "1" : "0"
+    }))
+  }
 
   const resizeableColumns = useResizableColumns(Columns).map(col => ({
     ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
@@ -333,8 +419,11 @@ const GroupCreation = () => {
                 styles={selectCompactStyles}
                 placeholder="Select"
                 value={{ label: form.IsBank ? 'Yes' : 'No', value: form.IsBank }}
-                onChange={(opt) => handleChange('IsBank', opt ? !!opt.value : false)}
-                options={[{ label: 'Yes', value: true }, { label: 'No', value: false }]}
+                onChange={(opt) => handleChange('IsBank', opt?.value)}
+                options={[
+                  { label: 'Yes', value: 1 }, 
+                  { label: 'No', value: 0 }
+                ]}
                 isClearable={false}
               />
             </div>
@@ -375,20 +464,6 @@ const GroupCreation = () => {
               />
             </div>
           </div>
-
-          {/* Description */}
-          {/* <div className="row">
-            <div className="col-md-12 mb-3">
-              <label className="ledger-management-label">Description *</label>
-              <textarea className="ledger-management-textarea challan w-100" rows={3}
-                value={form.description}
-                onChange={(e) => handleChange('description', e.target.value)}
-              />
-              {errors.description ? (
-                <div className="invalid-feedback d-block">{errors.description}</div>
-              ) : null}
-            </div>
-          </div> */}
 
           {/* Actions */}
           <div className="d-flex gap-2">
