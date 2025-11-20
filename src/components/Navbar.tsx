@@ -434,13 +434,13 @@ const navigationItems: NavItem[] = [
         items: [
           {
             title: 'Ledger Group',
-            href: '/ledger-group',
+            href: '/group-creation',
             icon: Briefcase,
             description: 'Create new sales orders and quotes'
           },
           {
             title: 'Ledger Creation',
-            href: '/group-creation',
+            href: '/ledger-group',
             icon: Briefcase,
             description: 'Create new sales orders and quotes'
           },

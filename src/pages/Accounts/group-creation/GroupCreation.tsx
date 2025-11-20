@@ -3,13 +3,14 @@ import Select from 'react-select';
 import '../ledger/Ledger.css';
 import { FiPlusCircle } from "react-icons/fi";
 import DataTable from 'react-data-table-component';
-import { customStyles } from '@/common/Utility';
-import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
+import { customStyles, requiredColorStyles } from '@/common/Utility';
+import { fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
 import { Interface } from 'readline';
 import { getShowingDateText } from '@/common/DateFormat';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import ConfirmModal from '@/common/ConfirmModal';
+import { StylesConfig } from "react-select";
 
 
 //==================== Icon Components ====================
@@ -32,10 +33,10 @@ interface AccountGroups {
   Description: string;
   parent: string;
   primary_group: string;
-  IsBank: number;
-  Iscash: number;
-  IsSale: number;
-  IsPurchase: number;
+  IsBank: boolean;
+  Iscash: boolean;
+  IsSale: boolean;
+  IsPurchase: boolean;
   CreatedDate: string;
   UpdatedDate: string;
 }
@@ -47,7 +48,7 @@ interface Groups {
 
 const GroupCreation = () => {
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState<AccountGroups[]>([]);
   const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -60,30 +61,51 @@ const GroupCreation = () => {
     Description: '',
     parent: '',
     primary_group: '',
-    IsBank: 0,
-    Iscash: 0,
-    IsSale: 0,
-    IsPurchase: 0,
+    IsBank: false,
+    Iscash: false,
+    IsSale: false,
+    IsPurchase: false,
     CreatedDate: '',
     UpdatedDate: ''
   });
 
-  const selectCompactStyles = {
+  const handleChange = (key: keyof typeof form, value: any) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const selectCompactStyles: StylesConfig<any> = {
     control: (provided, state) => ({
       ...provided,
-      minHeight: '33px',
-      height: '33px',
-      fontSize: '14px',
-      padding: '0 2px',
-      borderColor: state.isFocused ? '#6ea8ff' : '#84b3f8',
-      boxShadow: state.isFocused ? '0 0 0 1px #84b3f8' : 'none',
-      '&:hover': { borderColor: '#6ea8ff' },
+      minHeight: "33px",
+      height: "33px",
+      fontSize: "14px",
+      padding: "0 2px",
+      borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
+      boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+      "&:hover": { borderColor: "#6ea8ff" },
     }),
-    valueContainer: (provided) => ({ ...provided, padding: '0 6px' }),
-    indicatorsContainer: (provided) => ({ ...provided, padding: '0 6px' }),
-    dropdownIndicator: (provided) => ({ ...provided, padding: '0 6px' }),
-    clearIndicator: (provided) => ({ ...provided, padding: '0 6px' }),
+
+    valueContainer: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+
+    indicatorsContainer: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+
+    clearIndicator: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
   };
+
 
   // ===================TODO-Func====================
   const fetchGetData = async () => {
@@ -93,17 +115,32 @@ const GroupCreation = () => {
     });
 
     if (response && Array.isArray(response)) {
-      setGroups(response)
+      const mapped: AccountGroups[] = response.map((row: any) => ({
+        GroupID: Number(row.GroupID) || 0,
+        Description: row.Description ?? '',
+        parent: row.parent ?? '',
+        primary_group: row.primary_group ?? '',
+        IsBank: !!row.IsBank,
+        Iscash: !!row.Iscash,
+        IsSale: !!row.IsSale,
+        IsPurchase: !!row.IsPurchase,
+        CreatedDate: row.CreatedDate ?? '',
+        UpdatedDate: row.UpdatedDate ?? ''
+      }));
+      setGroups(mapped);
     } else {
       setGroups([]);
     }
-    // console.log(response);
   }
 
   const fetchInsertData = async (form: AccountGroups) => {
     try {
       const response = await fetchPostData('AccountingGroups/Insert_AccountingGroups', {
         ...form,
+        IsBank: form.IsBank ? 1 : 0,
+        Iscash: form.Iscash ? 1 : 0,
+        IsSale: form.IsSale ? 1 : 0,
+        IsPurchase: form.IsPurchase ? 1 : 0,
         CompanyId: localStorage.getItem('companyID')
       });
       // console.log(response);
@@ -262,7 +299,7 @@ const GroupCreation = () => {
       selector: (row: AccountGroups) => row.IsBank,
       sortable: true,
       cell: (row: AccountGroups) => (
-        <span>{row.IsBank}</span>
+        <span>{row.IsBank ? 'Yes' : 'No'}</span>
       )
     },
     {
@@ -270,15 +307,15 @@ const GroupCreation = () => {
       selector: (row: AccountGroups) => row.Iscash,
       sortable: true,
       cell: (row: AccountGroups) => (
-        <span>{row.Iscash}</span>
+        <span>{row.Iscash ? 'Yes' : 'No'}</span>
       )
     },
     {
       name: 'Is-Sale',
-      selector: (row: AccountGroups) => row.Iscash,
+      selector: (row: AccountGroups) => row.IsSale,
       sortable: true,
       cell: (row: AccountGroups) => (
-        <span>{row.Iscash}</span>
+        <span>{row.IsSale ? 'Yes' : 'No'}</span>
       )
     },
     {
@@ -286,7 +323,7 @@ const GroupCreation = () => {
       selector: (row: AccountGroups) => row.IsPurchase,
       sortable: true,
       cell: (row: AccountGroups) => (
-        <span>{row.IsPurchase}</span>
+        <span>{row.IsPurchase ? 'Yes' : 'No'}</span>
       )
     },
 
@@ -351,21 +388,21 @@ const GroupCreation = () => {
           {/* Basic Details */}
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label className="ledger-management-label">Group Name *</label>
-              <input type="text" className="form-control form-control-sm challan w-100"
+              <label className="ledger-management-label">Group Name <span className="text-danger">*</span></label>
+              <input type="text" className="form-control form-control-sm challan w-100 requiredColor"
                 value={form.Description}
                 onChange={(e) => setForm({ ...form, Description: e.target.value })}
               />
             </div>
 
             <div className="col-md-6 mb-3">
-              <label className="ledger-management-label">Under{form.primary_group ? '' : '*'} </label>
+              <label className="ledger-management-label">Under {!form.primary_group && (<span className="text-danger"> *</span>)}</label>
               <Select
                 classNamePrefix="select"
-                styles={selectCompactStyles}
                 placeholder="Select parent group"
                 isClearable
-                isDisabled={form.primary_group}
+                isDisabled={!!form.primary_group}
+                styles={requiredColorStyles}
               />
               {(!form.primary_group && errors.parent) ? (
                 <div className="invalid-feedback d-block">{errors.parent}</div>

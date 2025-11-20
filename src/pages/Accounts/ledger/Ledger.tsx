@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Ledger.css';
 import DataTable from "react-data-table-component";
 import Select from 'react-select';
-import { customStyles } from '@/common/Utility';
+import { customStyles, requiredColorStyles } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
@@ -532,6 +532,15 @@ const Ledger: React.FC = () => {
         }),
     };
 
+
+
+    const ledgerGroups = [
+        "Assets",
+        "Liabilities",
+        "Expenses",
+        "Income"
+    ];
+
     const renderCreateForm = () => (
         <div className="ledger-management-tab-content">
             <div className="ledger-entry-form">
@@ -539,10 +548,10 @@ const Ledger: React.FC = () => {
                 <div className="row mb-2">
                     {/* Ledger Name */}
                     <div className="col-md-6 mb-3" style={{ paddingRight: "2rem" }}>
-                        <label className="ledger-management-label">Ledger Name *</label>
+                        <label className="ledger-management-label">Ledger Name <span className="text-danger">*</span></label>
                         <input
                             type="text"
-                            className="ledger-management-input w-100"
+                            className="ledger-management-input w-100 challan requiredColor"
                             value={formData.LedgerName || ""}
                             onChange={(e) => setFormData({ ...formData, LedgerName: e.target.value })}
                         />
@@ -550,8 +559,9 @@ const Ledger: React.FC = () => {
 
                     {/* Accounting Group */}
                     <div className="col-md-6 mb-3">
-                        <label className="ledger-management-label">Accounting Group *</label>
-                        {/* <Select className="w-100"
+                        <label className="ledger-management-label">Accounting Group  <span className="text-danger">*</span></label>
+                        <Select
+                            className="w-100 requiredColor"
                             placeholder="Select Ledger Group"
                             value={
                                 formData.ledgerGroup
@@ -566,19 +576,21 @@ const Ledger: React.FC = () => {
                                 value: grp,
                             }))}
                             isClearable
-                        /> */}
+                            styles={requiredColorStyles}
+                        />
+
                     </div>
                 </div>
 
                 <div className="row">
                     {/* -- BANK ACCOUNT DETAILS -- */}
-                    <div className="col-md-6">
-                        <h4 className="mb-3">Bank Account Details</h4>
+                    <div className="col-md-6" style={{ borderRight: "1px solid #ccc", borderTop: "1px solid #ccc", paddingRight: "2rem" }}>
+                        <h4 className="mb-3 section-heading  pt-2 ">Bank Account Details</h4>
                         <div className="row">
                             {/* Account Holder-Name */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Account Holder's Name :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan challan"
                                     value={formData.bankaccountholder || ""}
                                     onChange={(e) => setFormData({ ...formData, bankaccountholder: e.target.value })}
                                 />
@@ -587,7 +599,7 @@ const Ledger: React.FC = () => {
                             {/* Account-No */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Account No. :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan"
                                     value={formData.bankAcNo || ""}
                                     onChange={(e) => setFormData({ ...formData, bankAcNo: Number(e.target.value) })}
                                 />
@@ -598,7 +610,7 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">IFSC Code :</label>
                                 <input
                                     type="text"
-                                    className="ledger-management-input w-100"
+                                    className="ledger-management-input w-100 challan"
                                     value={formData.bankifsc || ""}
                                     onChange={(e) => setFormData({ ...formData, bankifsc: e.target.value })}
                                 />
@@ -609,7 +621,7 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">Bank Name :</label>
                                 <input
                                     type="text"
-                                    className="ledger-management-input w-100"
+                                    className="ledger-management-input w-100 challan"
                                     value={formData.bankname || ""}
                                     onChange={(e) => setFormData({ ...formData, bankname: e.target.value })}
                                 />
@@ -619,7 +631,7 @@ const Ledger: React.FC = () => {
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Branch :</label>
                                 <input type="text"
-                                    className="ledger-management-input w-100"
+                                    className="ledger-management-input w-100 challan"
                                     value={formData.bankbranch || ""}
                                     onChange={(e) => setFormData({ ...formData, bankbranch: e.target.value })}
                                 />
@@ -628,15 +640,15 @@ const Ledger: React.FC = () => {
                     </div>
 
                     {/*-- MAILING DETAILS + TAX REGISTRATION --*/}
-                    <div className="col-md-6">
+                    <div className="col-md-6" style={{ borderTop: "1px solid #ccc", paddingLeft: "2rem" }}>
                         {/* MAILING DETAILS */}
-                        <h4 className="section-heading mb-3">Mailing Details</h4>
+                        <h4 className="section-heading mb-3 pt-2">Mailing Details</h4>
 
                         <div className="row">
                             {/* Name */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Name :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan"
                                     value={formData.Name || ""}
                                     onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
                                 />
@@ -645,7 +657,7 @@ const Ledger: React.FC = () => {
                             {/* Address */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Address :</label>
-                                <textarea className="ledger-management-textarea w-100" rows={2}
+                                <textarea className="ledger-management-textarea w-100 challan" rows={2}
                                     value={formData.Address || ""}
                                     onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
                                 />
@@ -656,7 +668,7 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">State :</label>
                                 <input
                                     type="text"
-                                    className="ledger-management-input w-100"
+                                    className="ledger-management-input w-100 challan"
                                     value={formData.State || ""}
                                     onChange={(e) => setFormData({ ...formData, State: e.target.value })}
                                 />
@@ -679,7 +691,7 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">Mobile No :</label>
                                 <input
                                     type="text"
-                                    className="ledger-management-input w-100"
+                                    className="ledger-management-input w-100 challan"
                                     value={formData.MobileNo || ""}
                                     onChange={(e) => setFormData({ ...formData, MobileNo: Number(e.target.value) })}
                                 />
@@ -688,7 +700,7 @@ const Ledger: React.FC = () => {
                             {/* Email */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Email :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan"
                                     value={formData.email || ""}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
@@ -702,7 +714,7 @@ const Ledger: React.FC = () => {
                             {/* Registration Type */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">Registration Type :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan"
                                     value={formData.gstregistrationtype || ""}
                                     onChange={(e) => setFormData({ ...formData, gstregistrationtype: e.target.value })}
                                 />
@@ -712,7 +724,7 @@ const Ledger: React.FC = () => {
                             {/* GST-No */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">GST No :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan"
                                     value={formData.gstno || ""}
                                     onChange={(e) => setFormData({ ...formData, gstno: e.target.value })}
                                 />
@@ -721,7 +733,7 @@ const Ledger: React.FC = () => {
                             {/* PAN No */}
                             <div className="col-md-12 mb-3">
                                 <label className="ledger-management-label">PAN No :</label>
-                                <input type="text" className="ledger-management-input w-100"
+                                <input type="text" className="ledger-management-input w-100 challan"
                                     value={formData.panNo || ""}
                                     onChange={(e) => setFormData({ ...formData, panNo: e.target.value })}
                                 />
@@ -796,7 +808,7 @@ const Ledger: React.FC = () => {
             )}
 
             {/* Main Content */}
-            <main className="ledger-management-main">
+            <main className="ledger-management-main" style={{ padding: "0.85rem" }}>
                 <div className="ledger-management-tab-content">
                     {/* Filters */}
                     <div className="row g-3 mb-2 align-items-center mt-1">
@@ -829,7 +841,7 @@ const Ledger: React.FC = () => {
                     </div>
 
                     {/* Accounts Table */}
-                    <div className="ledger-management-table-container ">
+                    <div className="ledger-management-table-container" >
                         <DataTable
                             columns={resizeableColumns}
                             data={ledgerData}
@@ -850,7 +862,7 @@ const Ledger: React.FC = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </div>
     );
 };
