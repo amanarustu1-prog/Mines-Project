@@ -164,3 +164,37 @@ export const multiValue = {
     maxHeight: "36px",
   }),
 };
+
+
+export const requiredColorStyles: any = {
+  control: (provided: any, state: any) => ({
+    ...provided,
+    minHeight: "33px",
+    height: "33px",
+    fontSize: "14px",
+    padding: "0 2px",
+    borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", 
+    boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+    backgroundColor: "#ffe2a8",
+    "&:hover": {
+      borderColor: "#6ea8ff",
+    },
+  }),
+  valueContainer: (provided: any) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
+  indicatorsContainer: (provided: any) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
+  dropdownIndicator: (provided: any) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
+  clearIndicator: (provided: any) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
+};
+
