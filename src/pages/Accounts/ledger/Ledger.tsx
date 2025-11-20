@@ -8,6 +8,8 @@ import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import ConfirmModal from '@/common/ConfirmModal';
 import { getShowingDateText } from '@/common/DateFormat';
+import * as XLSX from 'xlsx';
+import { FaFileExcel } from 'react-icons/fa';
 
 //==================== Icon Components ====================
 const BookOpen = ({ className }: { className?: string }) => (
@@ -499,7 +501,7 @@ const Ledger: React.FC = () => {
         }
     }
 
-    const handleReset = () => { }
+
 
     const selectCompactStyles: any = {
         control: (provided: any, state: any) => ({
@@ -532,6 +534,50 @@ const Ledger: React.FC = () => {
         }),
     };
 
+    const filteredData = ledgerData.filter((item: LedgerData) => {
+        const term = searchTerm.toLowerCase();
+
+        return (
+            item.LedgerName?.toLowerCase().includes(term) ||
+            item.Name?.toLowerCase().includes(term) ||
+            item.Address?.toLowerCase().includes(term) ||
+            item.State?.toLowerCase().includes(term) ||
+            item.MobileNo?.toLowerCase().includes(term) ||
+            item.email?.toLowerCase().includes(term) ||
+            item.gstno?.toLowerCase().includes(term) ||
+            item.bankname?.toLowerCase().includes(term) ||
+            item.bankbranch?.toLowerCase().includes(term)
+        );
+    });
+
+
+    const handleReset = () => {
+        setFormData({
+            LedgerID: 0,
+            LedgerName: '',
+            AccountGroup: '',
+            AccountGroupId: 0,
+            Name: '',
+            Address: '',
+            State: '',
+            pincode: '',
+            MobileNo: '',
+            email: '',
+            gstregistrationtype: '',
+            gstno: '',
+            panNo: '',
+            bankaccountholder: '',
+            bankAcNo: '',
+            bankifsc: '',
+            bankname: '',
+            bankbranch: '',
+            CreatedDate: '',
+            UpdatedDate: ''
+        });
+        setEditItemId(null);
+    };
+
+
 
 
     const ledgerGroups = [
@@ -540,6 +586,44 @@ const Ledger: React.FC = () => {
         "Expenses",
         "Income"
     ];
+
+
+    const exportToExcel = () => {
+        const rows = (filteredData.length ? filteredData : ledgerData).map((item: LedgerData) => ({
+            "Ledger ID": item.LedgerID,
+            "Ledger Name": item.LedgerName,
+            "Account Group": item.AccountGroup,
+            "Account Group ID": item.AccountGroupId,
+            "Name": item.Name,
+            "Address": item.Address,
+            "State": item.State,
+            "Pincode": item.pincode,
+            "Mobile No": item.MobileNo,
+            "Email": item.email,
+            "Registration Type": item.gstregistrationtype,
+            "GST No": item.gstno,
+            "PAN No": item.panNo,
+            "A/c Holder Name": item.bankaccountholder,
+            "Account No": item.bankAcNo,
+            "IFSC Code": item.bankifsc,
+            "Bank Name": item.bankname,
+            "Branch": item.bankbranch,
+        }));
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(rows);
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([wbout], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "ledger.xlsx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
 
     const renderCreateForm = () => (
         <div className="ledger-management-tab-content">
@@ -758,10 +842,7 @@ const Ledger: React.FC = () => {
 
                 {/* ---------------- ACTION BUTTONS ---------------- */}
                 <div className="d-flex justify-content-between mt-2">
-                    <button onClick={handleReset} className="ledger-management-btn ledger-management-btn-secondary">
-                        <RotateCcw className="ledger-management-icon" />
-                        Reset
-                    </button>
+                    <button className="btn btn-outline-secondary text-white" style={{ backgroundColor: "#6c757d", borderColor: "#6c757d" }} onClick={handleReset}>Reset</button>
 
                     <button onClick={handleInsertAndUpdate} className="ledger-management-btn ledger-management-btn-primary">
                         <Save className="ledger-management-icon" />
@@ -788,9 +869,12 @@ const Ledger: React.FC = () => {
                     </div>
 
                     <div className="ledger-management-header-actions">
-                        <button className="ledger-management-btn ledger-management-btn-secondary">
-                            <Download className="ledger-management-icon" />
-                            Export
+                        <button
+                            type="button"
+                            onClick={exportToExcel}
+                            className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2"
+                        >
+                            <FaFileExcel size={14} /> Export
                         </button>
                         <button onClick={() => setShowDetailForm(true)} className="ledger-management-btn ledger-management-btn-primary">
                             <Plus className="ledger-management-icon" />
@@ -827,10 +911,10 @@ const Ledger: React.FC = () => {
                     {/* Filters */}
                     <div className="row g-3 mb-2 align-items-center mt-1">
                         {/* Group Name */}
-                        <div className="col-lg-1 text-right">
+                        <div className="col-lg-1 text-right mt-0    ">
                             <label className="form-label mb-0 ">Group Name</label>
                         </div>
-                        <div className='col-lg-4'>
+                        <div className='col-lg-3 mt-0'>
                             <input
                                 type="text"
                                 placeholder="Group Name"
@@ -840,15 +924,26 @@ const Ledger: React.FC = () => {
                         </div>
 
                         {/* Under */}
-                        <div className="col-lg-1 text-right">
+                        <div className="col-lg-1 text-right mt-0">
                             <label className="form-label mb-0 ">Under</label>
                         </div>
-                        <div className='col-lg-4'>
+                        <div className='col-lg-3 mt-0'>
                             <Select
                                 placeholder="Select..."
                                 isClearable
                                 isSearchable
                                 styles={requiredColorStyles}
+                            />
+                        </div>
+                        <div className='col-lg-2 mt-0'></div>
+                        <div className='col-lg-2 mt-0'>
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                className="form-control form-control-sm challan"
+                                style={{ borderRadius: "5px" }}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
                         {/* Add more filters here in col-md-4 / col-md-3 etc */}
@@ -858,7 +953,7 @@ const Ledger: React.FC = () => {
                     <div className="ledger-management-table-container" >
                         <DataTable
                             columns={resizeableColumns}
-                            data={ledgerData}
+                            data={filteredData}
                             pagination
                             highlightOnHover
                             striped
