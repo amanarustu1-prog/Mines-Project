@@ -12,6 +12,10 @@ import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import ConfirmModal from '@/common/ConfirmModal';
 import { StylesConfig } from "react-select";
 import { Space_Not_Allow } from '@/common/validation';
+import * as XLSX from 'xlsx';
+import { FaFileExcel } from 'react-icons/fa';
+
+
 
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
@@ -48,6 +52,7 @@ interface Groups {
 
 const GroupCreation = () => {
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState<AccountGroups[]>([]);
   const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -58,6 +63,7 @@ const GroupCreation = () => {
     Description: '',
     Parent: ''
   })
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [form, setForm] = useState({
     GroupID: 0,
@@ -71,6 +77,8 @@ const GroupCreation = () => {
     CreatedDate: '',
     UpdatedDate: ''
   });
+
+
 
   const selectCompactStyles: StylesConfig<any> = {
     control: (provided, state) => ({
@@ -374,6 +382,22 @@ const GroupCreation = () => {
   }));
 
   const resetData = async () => {
+
+  const filteredData = groups.filter((item: AccountGroups) => {
+    const term = searchTerm.toLowerCase();
+
+    return (
+      item.Description?.toLowerCase().includes(term) ||
+      item.parent?.toLowerCase().includes(term) ||
+      item.primary_group?.toLowerCase().includes(term) ||
+      item.IsBank?.toString().toLowerCase().includes(term) ||
+      item.Iscash?.toString().toLowerCase().includes(term) ||
+      item.IsSale?.toString().toLowerCase().includes(term) ||
+      item.IsPurchase?.toString().toLowerCase().includes(term)
+    );
+  });
+
+  const handleReset = () => {
     setForm({
       GroupID: 0,
       Description: '',
@@ -406,6 +430,37 @@ const GroupCreation = () => {
 
     setError(newErrors);
     return isValid;
+  };
+
+
+
+  const exportToExcel = () => {
+    // search lagaya hoga to filteredData, warna pura groups
+    const rows = (filteredData.length ? filteredData : groups).map((item: AccountGroups) => ({
+      "Group ID": item.GroupID,
+      "Description": item.Description,
+      "Parent": item.parent,
+      "Primary Group": item.primary_group,
+      "Is Bank": item.IsBank,
+      "Is Cash": item.Iscash,
+      "Is Sale": item.IsSale,
+      "Is Purchase": item.IsPurchase,
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([wbout], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "groups.xlsx";
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -479,6 +534,8 @@ const GroupCreation = () => {
                 options={[
                   { label: 'Yes', value: true },
                   { label: 'No', value: false }
+                  { label: 'Yes', value: 1 },
+                  { label: 'No', value: 0 }
                 ]}
                 isClearable={false}
               />
@@ -541,6 +598,7 @@ const GroupCreation = () => {
             <button className="btn btn-outline-secondary" onClick={resetData}>
               Reset
             </button>
+            <button className="btn btn-outline-secondary text-white" style={{ backgroundColor: "#6c757d", borderColor: "#6c757d" }} onClick={handleReset}>Reset</button>
           </div>
         </div>
       </div>
@@ -548,27 +606,55 @@ const GroupCreation = () => {
       {/* Data-Table */}
       <div className="card mt-3">
         <div className="card-body">
+
+          {/* Search + Export Row */}
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-3">
+
+            <input
+              type="text"
+              placeholder="Search..."
+              className="form-control form-control-sm challan"
+              style={{ width: "200px", borderRadius: "5px" }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <button
+              type="button"
+              onClick={exportToExcel}
+              className="btn btn-sm btn-primary py-1 d-flex px-2 align-items-center gap-2"
+            >
+              <FaFileExcel size={14} /> Export
+            </button>
+          </div>
+
+          {/* Data Table */}
           <DataTable
             columns={resizeableColumns}
-            data={groups}
+            data={filteredData}
             pagination
             highlightOnHover
             striped
             customStyles={customStyles}
             progressPending={loading}
           />
+
         </div>
       </div>
 
-      <ConfirmModal show={showModal}
+
+      <ConfirmModal
+        show={showModal}
         handleClose={() => setShowModal(false)}
         handleConfirm={() => {
           if (selectedId !== null) {
             fetchDeleteData(selectedId);
           }
           setShowModal(false);
-        }} />
+        }}
+      />
     </div>
+
   );
 };
 
