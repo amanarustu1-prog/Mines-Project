@@ -971,7 +971,7 @@ const Ledger: React.FC = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </div>
     );
 };
