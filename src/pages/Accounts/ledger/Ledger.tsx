@@ -532,8 +532,6 @@ const Ledger: React.FC = () => {
         }),
     };
 
-
-
     const ledgerGroups = [
         "Assets",
         "Liabilities",
@@ -862,7 +860,7 @@ const Ledger: React.FC = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </div>
     );
 };
