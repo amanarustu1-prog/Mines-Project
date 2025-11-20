@@ -26,7 +26,6 @@ interface AccountGroups {
 }
 
 const GroupCreation = () => {
-
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState<AccountGroups[]>([]);
@@ -83,7 +82,7 @@ const GroupCreation = () => {
       padding: "0 6px",
     }),
   };
-
+  
 
   // ===================TODO-Func====================
   const fetchGetData = async () => {
