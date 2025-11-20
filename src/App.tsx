@@ -82,7 +82,7 @@ import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 // import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
 import Ledger from './pages/Accounts/ledger/Ledger'
-import GroupCreation from './pages/Accounts/group-creation/GroupCreation'
+import GroupCreation from './pages/Accounts/group-creation/GroupCreation';
 import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
 import ApprovedChallan from './pages/sale/Approved-Challan/ApprovedChallan';
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'

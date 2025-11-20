@@ -1,0 +1,361 @@
+import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
+import '../ledger/Ledger.css';
+import { FiPlusCircle } from "react-icons/fi";
+import DataTable from 'react-data-table-component';
+import { customStyles } from '@/common/Utility';
+import { fetch_Post_Data, fetchPostData } from '@/components/hooks/Api';
+import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
+import { Edit3, Trash2 } from 'lucide-react';
+import { Interface } from 'readline';
+import { getShowingDateText } from '@/common/DateFormat';
+import useResizableColumns from '@/components/customHooks/UseResizableColumns';
+import ConfirmModal from '@/common/ConfirmModal';
+
+interface AccountGroups {
+  GroupID: number;
+  Description: string;
+  parent: string;
+  primary_group: string;
+  IsBank: number;
+  Iscash: number;
+  IsSale: number;
+  IsPurchase: number;
+  CreatedDate: string;
+  UpdatedDate: string;
+}
+
+const GroupCreation = () => {
+
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [groups, setGroups] = useState<AccountGroups[]>([]);
+  const [editItemId, setEditItemId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const [form, setForm] = useState({
+    GroupID: 0,
+    Description: '',
+    parent: '',
+    primary_group: '',
+    IsBank: 0,
+    Iscash: 0,
+    IsSale: 0,
+    IsPurchase: 0,
+    CreatedDate: '',
+    UpdatedDate: ''
+  });
+
+  const selectCompactStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      minHeight: '33px',
+      height: '33px',
+      fontSize: '14px',
+      padding: '0 2px',
+      borderColor: state.isFocused ? '#6ea8ff' : '#84b3f8',
+      boxShadow: state.isFocused ? '0 0 0 1px #84b3f8' : 'none',
+      '&:hover': { borderColor: '#6ea8ff' },
+    }),
+    valueContainer: (provided) => ({ ...provided, padding: '0 6px' }),
+    indicatorsContainer: (provided) => ({ ...provided, padding: '0 6px' }),
+    dropdownIndicator: (provided) => ({ ...provided, padding: '0 6px' }),
+    clearIndicator: (provided) => ({ ...provided, padding: '0 6px' }),
+  };
+
+  // ===================TODO-Func====================
+  const fetchGetData = async () => {
+    const response = await fetchPostData('AccountingGroups/GetData_AccountingGroups', {
+      "CompanyId": 1,
+      "IsActive": 1
+    });
+
+    if (response && Array.isArray(response)) {
+      setGroups(response)
+    } else {
+      setGroups([]);
+    }
+    // console.log(response);
+  }
+
+  const fetchInsertData = async (form: AccountGroups) => {
+    try {
+      const response = await fetchPostData('AccountingGroups/Insert_AccountingGroups', {
+        ...form,
+        CompanyId: localStorage.getItem('companyID')
+      });
+      // console.log(response);
+
+      if (response) {
+        toastifySuccess("Item Added successfully");
+        await fetchGetData();
+        return true;
+      } else {
+        toastifyError("Item is not Inserted");
+        return false;
+      }
+    } catch {
+      toastifyError("Error in inserting a Data.");
+      return false;
+    }
+  }
+
+  const fetchUpdateData = (form: AccountGroups, Id: number) => { }
+
+  const fetchDeleteData = async (Id: number) => {
+
+  }
+
+  const handleInsertAndUpdate = async () => {
+    if (editItemId) {
+      const success = await fetchUpdateData(form, editItemId);
+
+      if (success) {
+        // resetData();
+      }
+    }
+    if (!editItemId) {
+      const success = await fetchInsertData(form);
+      if (success) {
+        // resetData();
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchGetData();
+  }, []);
+
+  const Columns = [
+    {
+      name: 'Group Name',
+      selector: (row: AccountGroups) => row.Description,
+      sortable: true,
+      cell: (row: AccountGroups) => (
+        <span>{row.Description}</span>
+      )
+    },
+    {
+      name: 'Under',
+      selector: (row: AccountGroups) => row.parent,
+      sortable: true,
+      cell: (row: AccountGroups) => (
+        <span></span>
+      )
+    },
+    {
+      name: 'Is-Bank',
+      selector: (row: AccountGroups) => row.IsBank,
+      sortable: true,
+      cell: (row: AccountGroups) => (
+        <span>{row.IsBank}</span>
+      )
+    },
+    {
+      name: 'Is-Cash',
+      selector: (row: AccountGroups) => row.Iscash,
+      sortable: true,
+      cell: (row: AccountGroups) => (
+        <span>{row.Iscash}</span>
+      )
+    },
+    {
+      name: 'Is-Sale',
+      selector: (row: AccountGroups) => row.Iscash,
+      sortable: true,
+      cell: (row: AccountGroups) => (
+        <span>{row.Iscash}</span>
+      )
+    },
+    {
+      name: 'Is-Purchase',
+      selector: (row: AccountGroups) => row.IsPurchase,
+      sortable: true,
+      cell: (row: AccountGroups) => (
+        <span>{row.IsPurchase}</span>
+      )
+    },
+
+    // Dates
+    {
+      name: 'CreatedDate',
+      selector: (row: AccountGroups) => getShowingDateText(row.CreatedDate),
+      sortable: true,
+    },
+    {
+      name: 'UpdatedDate',
+      selector: (row: AccountGroups) => getShowingDateText(row.UpdatedDate),
+      sortable: true,
+    },
+
+    //Actions
+    {
+      name: 'Actions',
+      cell: (row: AccountGroups) => (
+        <div className="d-flex gap-2">
+          <button onClick={() => { setEditItemId(row.GroupID) }} className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
+            <Trash2 className="material-name-icon-sm" />
+          </button>
+
+          <button onClick={() => { setSelectedId(row.GroupID); }} className="material-name-btn-icon" title="Edit">
+            <Edit3 className="material-name-icon-sm" />
+          </button>
+        </div>
+      )
+    }
+  ];
+
+  const resizeableColumns = useResizableColumns(Columns).map(col => ({
+    ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
+  }));
+
+  return (
+    <div className="container-fluid">
+      <header className="ledger-management-header GroupCreation_header mb-3">
+        <div className="ledger-management-header-content">
+          <div className="ledger-management-title-section">
+            <FiPlusCircle size={30} />
+            <div>
+              <h1 className="ledger-management-title">
+                Group Creation
+              </h1>
+              <p className="ledger-management-subtitle">Create and manage account groups</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="card">
+        <div className="card-body">
+          {/* Basic Details */}
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label className="ledger-management-label">Group Name *</label>
+              <input type="text" className="form-control form-control-sm challan w-100"
+                value={form.Description}
+                onChange={(e) => setForm({ ...form, Description: e.target.value })}
+              />
+            </div>
+
+            <div className="col-md-6 mb-3">
+              <label className="ledger-management-label">Under{form.primary_group ? '' : '*'} </label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select parent group"
+                isClearable
+                isDisabled={form.primary_group}
+              />
+              {(!form.primary_group && errors.parent) ? (
+                <div className="invalid-feedback d-block">{errors.parent}</div>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Settings */}
+          <div className="row">
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Bank</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.IsBank ? 'Yes' : 'No', value: form.IsBank }}
+                onChange={(opt) => handleChange('IsBank', opt ? !!opt.value : false)}
+                options={[{ label: 'Yes', value: true }, { label: 'No', value: false }]}
+                isClearable={false}
+              />
+            </div>
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Cash</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.Iscash ? 'Yes' : 'No', value: form.Iscash }}
+                onChange={(opt) => handleChange('Iscash', opt ? !!opt.value : false)}
+                options={[{ label: 'Yes', value: true }, { label: 'No', value: false }]}
+                isClearable={false}
+              />
+            </div>
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Sale</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.IsSale ? 'Yes' : 'No', value: form.IsSale }}
+                onChange={(opt) => handleChange('IsSale', opt ? !!opt.value : false)}
+                options={[{ label: 'Yes', value: true }, { label: 'No', value: false }]}
+                isClearable={false}
+              />
+            </div>
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Purchase</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.IsPurchase ? 'Yes' : 'No', value: form.IsPurchase }}
+                onChange={(opt) => handleChange('IsPurchase', opt ? !!opt.value : false)}
+                options={[{ label: 'Yes', value: true }, { label: 'No', value: false }]}
+                isClearable={false}
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          {/* <div className="row">
+            <div className="col-md-12 mb-3">
+              <label className="ledger-management-label">Description *</label>
+              <textarea className="ledger-management-textarea challan w-100" rows={3}
+                value={form.description}
+                onChange={(e) => handleChange('description', e.target.value)}
+              />
+              {errors.description ? (
+                <div className="invalid-feedback d-block">{errors.description}</div>
+              ) : null}
+            </div>
+          </div> */}
+
+          {/* Actions */}
+          <div className="d-flex gap-2">
+            <button className="btn btn-primary d-flex align-items-center gap-1" onClick={handleInsertAndUpdate}>
+              {editItemId ? "Update" : "Save"}
+            </button>
+            <button className="btn btn-outline-secondary">
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card mt-3">
+        <div className="card-body">
+          <DataTable
+            columns={resizeableColumns}
+            data={groups}
+            pagination
+            highlightOnHover
+            striped
+            customStyles={customStyles}
+            progressPending={loading}
+          />
+        </div>
+      </div>
+
+      <ConfirmModal show={showModal}
+        handleClose={() => setShowModal(false)}
+        handleConfirm={() => {
+          if (selectedId !== null) {
+            fetchDeleteData(selectedId);
+          }
+          setShowModal(false);
+        }} />
+    </div>
+  );
+};
+
+export default GroupCreation;
+

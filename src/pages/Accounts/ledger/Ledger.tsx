@@ -178,7 +178,7 @@ const Ledger: React.FC = () => {
         try {
             const payload = { CompanyId: 1, IsActive: 1 };
             const response = await fetchPostData('AccountingLedger/GetData_AccountingLedger', payload);
-            console.log(response);
+            // console.log(response);
             if (response && Array.isArray(response)) {
                 setLedgerData(response);
             } else {
@@ -303,7 +303,7 @@ const Ledger: React.FC = () => {
     }
 
     useEffect(() => {
-        console.log(editItemId + "Single called");
+        // console.log(editItemId + "Single called");
         if (editItemId) {
             fetchSingleData(editItemId);
         }
@@ -471,10 +471,6 @@ const Ledger: React.FC = () => {
                     <button onClick={() => { setEditItemId(row.LedgerID); setShowDetailForm(true); }} className="ledger-management-btn-icon" title="Edit">
                         <Edit className="ledger-management-icon-sm" />
                     </button>
-
-                    {/* <button className="ledger-management-btn-icon" title="View Details">
-                        <Eye className="ledger-management-icon-sm" />
-                    </button> */}
 
                     <button onClick={() => { setSelectedId(row.LedgerID); setShowModal(true) }} className="ledger-management-btn-icon ledger-management-btn-icon-danger" title="Delete">
                         <Trash2 className="ledger-management-icon-sm" />
@@ -855,7 +851,7 @@ const Ledger: React.FC = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-                }} />
+            }} />
         </div>
     );
 };
