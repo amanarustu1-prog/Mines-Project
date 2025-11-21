@@ -6,7 +6,6 @@ import DataTable from 'react-data-table-component';
 import { customStyles, requiredColorStyles } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
-import { Interface } from 'readline';
 import { getShowingDateText } from '@/common/DateFormat';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import ConfirmModal from '@/common/ConfirmModal';
@@ -14,8 +13,6 @@ import { StylesConfig } from "react-select";
 import { Space_Not_Allow } from '@/common/validation';
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
-
-
 
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
@@ -77,8 +74,6 @@ const GroupCreation = () => {
     CreatedDate: '',
     UpdatedDate: ''
   });
-
-
 
   const selectCompactStyles: StylesConfig<any> = {
     control: (provided, state) => ({
@@ -245,13 +240,13 @@ const GroupCreation = () => {
     if (editItemId) {
       const success = await fetchUpdateData(form, editItemId);
       if (success) {
-        resetData();
+        handleReset();
       }
     }
     if (!editItemId) {
       const success = await fetchInsertData(form);
       if (success) {
-        resetData();
+        handleReset();
       }
     }
   }
@@ -381,7 +376,7 @@ const GroupCreation = () => {
     ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
   }));
 
-  const resetData = async () => {
+  // const handleReset = async () => {
 
   const filteredData = groups.filter((item: AccountGroups) => {
     const term = searchTerm.toLowerCase();
@@ -432,10 +427,7 @@ const GroupCreation = () => {
     return isValid;
   };
 
-
-
   const exportToExcel = () => {
-    // search lagaya hoga to filteredData, warna pura groups
     const rows = (filteredData.length ? filteredData : groups).map((item: AccountGroups) => ({
       "Group ID": item.GroupID,
       "Description": item.Description,
@@ -534,8 +526,6 @@ const GroupCreation = () => {
                 options={[
                   { label: 'Yes', value: true },
                   { label: 'No', value: false }
-                  { label: 'Yes', value: 1 },
-                  { label: 'No', value: 0 }
                 ]}
                 isClearable={false}
               />
@@ -595,10 +585,9 @@ const GroupCreation = () => {
             <button className="btn btn-primary d-flex align-items-center gap-1" onClick={handleInsertAndUpdate}>
               {editItemId ? "Update" : "Save"}
             </button>
-            <button className="btn btn-outline-secondary" onClick={resetData}>
+            <button className="btn btn-outline-secondary text-white" style={{ backgroundColor: "#6c757d", borderColor: "#6c757d" }} onClick={handleReset}>
               Reset
             </button>
-            <button className="btn btn-outline-secondary text-white" style={{ backgroundColor: "#6c757d", borderColor: "#6c757d" }} onClick={handleReset}>Reset</button>
           </div>
         </div>
       </div>
@@ -609,7 +598,6 @@ const GroupCreation = () => {
 
           {/* Search + Export Row */}
           <div className="d-flex justify-content-end align-items-center gap-3 mb-3">
-
             <input
               type="text"
               placeholder="Search..."
@@ -638,10 +626,8 @@ const GroupCreation = () => {
             customStyles={customStyles}
             progressPending={loading}
           />
-
         </div>
       </div>
-
 
       <ConfirmModal
         show={showModal}
