@@ -382,30 +382,30 @@ const Ledger: React.FC = () => {
             else {
                 setZipCode([]);
             }
-        }catch{
+        } catch {
             toastifyError("Error fetching Zip Code");
         }
     }
 
     const fetchBankName = async () => {
-        try{
+        try {
             const response = await fetchPostData('Bank/GetDataDropDown_Bank', {
                 CompanyId: 1
             });
             console.log(response);
 
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setBank(response);
-            }else{
+            } else {
                 setBank([]);
             }
         }
-        catch{
+        catch {
             toastifyError("Error fetching Bank name")
         }
     }
 
-    
+
 
     useEffect(() => {
         if (editItemId) {
@@ -705,37 +705,47 @@ const Ledger: React.FC = () => {
                     {/* Ledger Name */}
                     <div className="col-md-6 mb-2 mt-1" style={{ paddingRight: "2rem" }}>
                         <label className="ledger-management-label">Ledger Name <span className="text-danger">*</span></label>
-                        <input type="text" placeholder="Enter Ledger Name"
+                        <input
+                            type="text"
+                            placeholder="Enter Ledger Name"
                             className="ledger-management-input w-100 challan requiredColor"
-                            value={formData.Name || ""}
-                            onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
+                            value={formData.LedgerName || ""}
+                            onChange={(e) => setFormData({ ...formData, LedgerName: e.target.value })}
                         />
                     </div>
 
-                    {/* Accounting Group */}
-                    <div className="col-md-6 mb-3">
-                        <label className="ledger-management-label">Accounting Group <span className="text-danger">*</span></label>
-                        <Select
-                            className="w-100 requiredColor"
-                            placeholder="Select Ledger Group"
-                            value={formData.AccountGroupId ? {
-                                value: formData.AccountGroupId,
-                                label: accountGroup.find((a) => a.GroupID === Number(formData.AccountGroupId))?.Description
-                            } : null}
-                            options={accountGroup.map((a) => ({
-                                value: a.GroupID,
-                                label: a.Description
-                            }))}
-                            onChange={(opt) => setFormData((prev) => ({
-                                ...prev,
-                                AccountGroup: opt?.label,
-                                AccountGroupId: opt?.value
-                            }))}
-                            isClearable
-                            styles={requiredColorStyles}
-                        />
-                    </div>
+                    <div className='col-md-6 mb-2'></div>
                 </div>
+
+                <div className="row">
+                    {/* -- BANK ACCOUNT DETAILS -- */}
+                    <div className="col-md-6" style={{ borderRight: "1px solid #ccc", borderTop: "1px solid #ccc", paddingRight: "2rem" }}>
+                        {/* Accounting Group */}
+                        <div className='row'>
+                            <div className="col-md-12  mb-1 mt-1">
+                                <label className="ledger-management-label">Accounting Group  <span className="text-danger">*</span></label>
+                                <Select
+                                    className="w-100 requiredColor"
+                                    placeholder="Select Ledger Group"
+                                    value={
+                                        formData.ledgerGroup
+                                            ? { label: formData.ledgerGroup, value: formData.ledgerGroup }
+                                            : null
+                                    }
+                                    onChange={(selected) =>
+                                        handleInputChange("ledgerGroup", selected ? selected.value : "")
+                                    }
+                                    options={ledgerGroups.map((grp) => ({
+                                        label: grp,
+                                        value: grp,
+                                    }))}
+                                    isClearable
+                                    styles={requiredColorStyles}
+                                />
+
+                            </div>
+                        </div>
+                        <h4 className="mb-1 section-heading  pt-2 ">Bank Account Details</h4>
 
                         <div className="row">
                             {/* Account Holder-Name */}
@@ -800,7 +810,7 @@ const Ledger: React.FC = () => {
                         {/* MAILING DETAILS */}
                         <h4 className="section-heading mb-1 pt-2">Mailing Details</h4>
 
-                        <div className="row">   
+                        <div className="row">
                             {/* Name */}
                             <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Name :</label>
@@ -824,79 +834,24 @@ const Ledger: React.FC = () => {
                             {/* State */}
                             <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">State :</label>
-                                <Select
-                                    className="w-100"
-                                    placeholder="Select State"
-                                    value={formData.StateID ? {
-                                        value: formData.StateID,
-                                        label: state.find((a) => a.ID === Number(formData.StateID))?.Description
-                                    } : null}
-                                    options={state.map((a) => ({
-                                        value: a.ID,
-                                        label: a.Description
-                                    }))}
-                                    onChange={(opt) => {
-                                        const stateId = opt?.value;
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            State: opt?.label,
-                                            StateID: Number(opt?.value)
-                                        }))
-                                        if (stateId) fetchDistrict(stateId)
-                                    }}
-                                    isClearable
-                                    styles={requiredColorStyles}
-                                />
-                            </div>
-
-                            {/* District */}
-                            <div className="col-md-12 mb-3">
-                                <label className="ledger-management-label">District </label>
-                                <Select
-                                    className="w-100"
-                                    placeholder="Select District"
-                                    value={formData.DistrictID ? {
-                                        value: formData.DistrictID,
-                                        label: district.find((a) => a.DistrictID === Number(formData.DistrictID))?.DistrictName
-                                    } : null}
-                                    options={district.map((a) => ({
-                                        value: a.DistrictID,
-                                        label: a.DistrictName
-                                    }))}
-                                    onChange={(opt) => {
-                                        const districtId = opt?.value;
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            District: opt?.label,
-                                            DistrictID: opt?.value
-                                        }))
-                                        if (districtId) fetchZipCode(districtId);
-                                    }}
-                                    isClearable
-                                    styles={requiredColorStyles}
+                                <input
+                                    type="text"
+                                    placeholder="Enter State"
+                                    className="ledger-management-input w-100 challan"
+                                    value={formData.State || ""}
+                                    onChange={(e) => setFormData({ ...formData, State: e.target.value })}
                                 />
                             </div>
 
                             {/* Pincode */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Pincode :</label>
-                                <Select
-                                    className="w-100"
-                                    placeholder="Select Pincode"
-                                    value={formData.pincode ? {
-                                        value: formData.pincode,
-                                        label: zipCode.find((a) => a.ZipCodeID === Number(formData.pincode))?.ZipCodeName
-                                    } : null}
-                                    options={zipCode.map((a) => ({
-                                        value: a.ZipCodeID,
-                                        label: a.ZipCodeName
-                                    }))}
-                                    onChange={(opt) => setFormData((prev) => ({
-                                        ...prev,
-                                        pincode: opt?.value
-                                    }))}
-                                    isClearable
-                                    styles={requiredColorStyles}
+                                <input
+                                    type="text"
+                                    placeholder="Enter Pincode"
+                                    className="ledger-management-input w-100 challan"
+                                    value={formData.pincode || ""}
+                                    onChange={(e) => setFormData({ ...formData, pincode: Number(e.target.value) })}
                                 />
                             </div>
 
@@ -924,7 +879,8 @@ const Ledger: React.FC = () => {
                         </div>
 
                         {/* TAX REGISTRATION */}
-                        <h4 className="section-heading mt-2 mb-2">Tax Registration Details</h4>
+                        <h4 className="section-heading mt-2 mb-1">Tax Registration Details</h4>
+
                         <div className="row">
                             {/* Registration Type */}
                             <div className="col-md-12 mb-1 ">
