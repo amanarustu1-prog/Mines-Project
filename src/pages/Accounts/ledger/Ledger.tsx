@@ -50,17 +50,15 @@ const Save = ({ className }: { className?: string }) => (
 interface LedgerAccount {
     //Top-Fields
     LedgerID: number
-    Name: string;
+    LedgerName: string;
     AccountGroup: string;
     AccountGroupId: number;
 
     // Mailing-Details
-    MailingName: string;
+    Name: string;
     Address: string;
     StateID: number;
     State: string;
-    District: string;
-    DistrictID: number;
     pincode: number;
     MobileNo: number;
     email: string;
@@ -84,17 +82,15 @@ interface LedgerAccount {
 interface LedgerData {
     //Top-Fields
     LedgerID: number;
-    Name: string;
+    LedgerName: string;
     AccountGroup: string;
     AccountGroupId: number;
 
     // Mailing-Details
-    MailingName: string;
+    Name: string;
     Address: string;
     StateID: number;
     State: string;
-    District: string;
-    DistrictID: number;
     pincode: number;
     MobileNo: number;
     email: string;
@@ -112,31 +108,6 @@ interface LedgerData {
     bankbranch: string;
 }
 
-interface Groups {
-    GroupID: number;
-    Description: string;
-}
-
-interface State {
-    ID: number;
-    Description: string;
-}
-
-interface District {
-    DistrictID: number;
-    DistrictName: string;
-}
-
-interface ZIPCode {
-    ZipCodeID: number,
-    ZipCodeName: string
-}
-
-interface Bank {
-    ID: number;
-    BankName: string;
-}
-
 const Ledger: React.FC = () => {
     const [ledgerAccounts, setLedgerAccounts] = useState<LedgerAccount[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -150,26 +121,18 @@ const Ledger: React.FC = () => {
     const [editItemId, setEditItemId] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [accountGroup, setAccountGroup] = useState<Groups[]>([]);
-    const [state, setState] = useState<State[]>([]);
-    const [district, setDistrict] = useState<District[]>([]);
-    const [zipCode, setZipCode] = useState<ZIPCode[]>([]);
-    const [bank, setBank] = useState<Bank[]>([]);
     const [formData, setFormData] = useState<LedgerAccount>({
         //Top-Fields
         LedgerID: 0,
-        Name: '',
+        LedgerName: '',
         AccountGroup: '',
         AccountGroupId: 0,
 
         // Mailing-Details
-
-        MailingName: '',
+        Name: '',
         Address: '',
         StateID: 0,
         State: '',
-        DistrictID: 0,
-        District: '',
         pincode: 0,
         MobileNo: 0,
         email: '',
@@ -285,12 +248,12 @@ const Ledger: React.FC = () => {
                 setFormData({
                     //Top-Fields
                     LedgerID: record.LedgerID,
-                    Name: record.Name,
+                    LedgerName: record.LedgerName,
                     AccountGroup: record.AccountGroup,
                     AccountGroupId: record.AccountGroupId,
 
                     // Mailing-Details
-                    MailingName: record.MailingName,
+                    Name: record.Name,
                     Address: record.Address,
                     StateID: record.StateID,
                     State: record.State,
@@ -319,94 +282,6 @@ const Ledger: React.FC = () => {
         }
     }
 
-    // =================== DropDown ====================
-    const fetchAccountGroup = async () => {
-        try {
-            const response = await fetchPostData('AccountingGroups/GetDataDropDown_AccountingGroups', {
-                CompanyId: 1
-            })
-            // console.log(response);
-            if (response && Array.isArray(response)) {
-                setAccountGroup(response);
-            } else {
-                setAccountGroup([]);
-            }
-        }
-        catch {
-            toastifyError("Error in getting a Account Group");
-        }
-    }
-
-    const fetchState = async () => {
-        try {
-            const response = await fetchPostData('State/GetDataDropDown_State', {
-                CompanyId: Number(localStorage.getItem('companyID')),
-            });
-            // console.log(response);
-
-            if (response && Array.isArray(response)) {
-                setState(response);
-            }
-        } catch {
-            toastifyError('Error fetching States');
-        }
-    }
-
-    const fetchDistrict = async (stateID: number | string) => {
-        try {
-            const response = await fetchPostData('District/GetDataDropDown_District', {
-                StateId: stateID,
-                CompanyId: Number(localStorage.getItem('companyID')),
-            })
-            // console.log(response);
-            if (response && Array.isArray(response)) {
-                setDistrict(response);
-            } else {
-                setDistrict([]);
-            }
-        } catch {
-            toastifyError('Error fetching District');
-        }
-    }
-
-    const fetchZipCode = async (districtId: number | string) => {
-        try {
-            const response = await fetchPostData('ZipCode/GetDataDropDown_ZipCode', {
-                CompanyId: Number(localStorage.getItem('companyID')),
-                DistrictId: districtId
-            })
-            // console.log(response);
-            if (response && Array.isArray(response)) {
-                setZipCode(response);
-            }
-            else {
-                setZipCode([]);
-            }
-        } catch {
-            toastifyError("Error fetching Zip Code");
-        }
-    }
-
-    const fetchBankName = async () => {
-        try {
-            const response = await fetchPostData('Bank/GetDataDropDown_Bank', {
-                CompanyId: 1
-            });
-            console.log(response);
-
-            if (response && Array.isArray(response)) {
-                setBank(response);
-            } else {
-                setBank([]);
-            }
-        }
-        catch {
-            toastifyError("Error fetching Bank name")
-        }
-    }
-
-
-
     useEffect(() => {
         if (editItemId) {
             fetchSingleData(editItemId);
@@ -415,28 +290,25 @@ const Ledger: React.FC = () => {
 
     useEffect(() => {
         fetchGetData();
-        fetchAccountGroup();
-        fetchState();
-        fetchBankName();
     }, []);
 
     const Columns = [
         {
             name: "Ledger Name",
-            selector: (row: LedgerData) => row.Name,
+            selector: (row: LedgerData) => row.LedgerName,
             sortable: true,
             cell: (row: LedgerData) => (
                 <div>
-                    <div className="ledger-management-font-medium">{row.MailingName}</div>
+                    <div className="ledger-management-font-medium">{row.LedgerName}</div>
                 </div>
             )
         },
         {
             name: "Accounting Group",
-            selector: (row: LedgerData) => row.AccountGroup,
+            selector: (row: LedgerData) => row.AccountGroupId,
             sortable: true,
             cell: (row: LedgerData) => (
-                <span>{row.AccountGroup}</span>
+                <span>{row.LedgerData}</span>
             )
         },
 
@@ -466,24 +338,12 @@ const Ledger: React.FC = () => {
             )
         },
         {
-            name: "District",
-            selector: (row: LedgerData) => row.District,
+            name: "PinCode",
+            selector: (row: LedgerData) => row.pincode,
             sortable: true,
             cell: (row: LedgerData) => (
-                <span>{row.District}</span>
+                <span>{row.pincode}</span>
             )
-        },
-        {
-            name: "PinCode",
-            selector: (row: LedgerData) => {
-                const pincode = zipCode.find((p) => p.ZipCodeID === Number(row.pincode));
-                return pincode?.ZipCodeName;
-            },
-            sortable: true,
-            cell: (row: LedgerData) => {
-                const pinCode = zipCode.find((p) => p.ZipCodeID === Number(row.pincode));
-                return <span>{pinCode?.ZipCodeName}</span>
-            }
         },
         {
             name: "Mobile-No",
@@ -619,14 +479,46 @@ const Ledger: React.FC = () => {
         }
     }
 
+    const selectCompactStyles: any = {
+        control: (provided: any, state: any) => ({
+            ...provided,
+            minHeight: "33px",
+            height: "33px",
+            fontSize: "14px",
+            padding: "0 2px",
+            borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
+            boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+            "&:hover": {
+                borderColor: "#6ea8ff",
+            },
+        }),
+        valueContainer: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        indicatorsContainer: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        dropdownIndicator: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+        clearIndicator: (provided: any) => ({
+            ...provided,
+            padding: "0 6px",
+        }),
+    };
+
     const filteredData = ledgerData.filter((item: LedgerData) => {
         const term = searchTerm.toLowerCase();
 
         return (
-            item.Name?.toLowerCase().includes(term) ||
+            item.LedgerName?.toLowerCase().includes(term) ||
             item.Name?.toLowerCase().includes(term) ||
             item.Address?.toLowerCase().includes(term) ||
             item.State?.toLowerCase().includes(term) ||
+            item.MobileNo?.toLowerCase().includes(term) ||
             item.email?.toLowerCase().includes(term) ||
             item.gstno?.toLowerCase().includes(term) ||
             item.bankname?.toLowerCase().includes(term) ||
@@ -634,13 +526,14 @@ const Ledger: React.FC = () => {
         );
     });
 
+
     const handleReset = () => {
         setFormData({
             LedgerID: 0,
-            Name: '',
+            LedgerName: '',
             AccountGroup: '',
             AccountGroupId: 0,
-            MailingName: '',
+            Name: '',
             Address: '',
             State: '',
             pincode: 0,
@@ -660,10 +553,21 @@ const Ledger: React.FC = () => {
         setEditItemId(null);
     };
 
+
+
+
+    const ledgerGroups = [
+        "Assets",
+        "Liabilities",
+        "Expenses",
+        "Income"
+    ];
+
+
     const exportToExcel = () => {
         const rows = (filteredData.length ? filteredData : ledgerData).map((item: LedgerData) => ({
             "Ledger ID": item.LedgerID,
-            "Ledger Name": item.Name,
+            "Ledger Name": item.LedgerName,
             "Account Group": item.AccountGroup,
             "Account Group ID": item.AccountGroupId,
             "Name": item.Name,
@@ -967,7 +871,11 @@ const Ledger: React.FC = () => {
                     </div>
 
                     <div className="ledger-management-header-actions">
-                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2">
+                        <button
+                            type="button"
+                            onClick={exportToExcel}
+                            className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2"
+                        >
                             <FaFileExcel size={14} /> Export
                         </button>
                         <button onClick={() => setShowDetailForm(true)} className="ledger-management-btn ledger-management-btn-primary">
@@ -991,6 +899,7 @@ const Ledger: React.FC = () => {
                                 <div className="modal-body py-1">
                                     {renderCreateForm()}
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -1002,52 +911,18 @@ const Ledger: React.FC = () => {
             <main className="ledger-management-main" style={{ padding: "0.85rem" }}>
                 <div className="ledger-management-tab-content">
                     {/* Filters */}
-                    <div className="row g-3 mb-2 align-items-center mt-1">
-                        {/* Group Name */}
-                        <div className="col-lg-1 text-right mt-0    ">
-                            <label className="form-label mb-0 ">Group Name</label>
-                        </div>
-                        <div className='col-lg-3 mt-0'>
-                            <input type="text" placeholder="Group Name"
-                                className="form-control form-control-sm challan requiredColor"
-                                style={{ borderRadius: "5px" }}
-                            />
-                        </div>
-
-                        {/* Under */}
-                        <div className="col-lg-1 text-right mt-0">
-                            <label className="form-label mb-0 ">Under</label>
-                        </div>
-                        <div className='col-lg-3 mt-0'>
-                            <Select
-                                className="w-100 requiredColor"
-                                placeholder="Select Ledger Group"
-                                value={formData.AccountGroupId ? {
-                                    value: formData.AccountGroupId,
-                                    label: accountGroup.find((a) => a.GroupID === Number(formData.AccountGroupId))?.Description
-                                } : null}
-                                options={accountGroup.map((a) => ({
-                                    value: a.GroupID,
-                                    label: a.Description
-                                }))}
-                                onChange={(opt) => setFormData((prev) => ({
-                                    ...prev,
-                                    AccountGroup: opt?.label,
-                                    AccountGroupId: opt?.value
-                                }))}
-                                isClearable
-                                styles={requiredColorStyles}
-                            />
-                        </div>
-                        <div className='col-lg-2 mt-0'></div>
+                    <div className="row g-3 mb-2 align-items-center justify-content-end mt-1">
                         <div className='col-lg-2 mt-0'>
-                            <input type="text" placeholder="Search..."
+                            <input
+                                type="text"
+                                placeholder="Search..."
                                 className="form-control form-control-sm challan"
                                 style={{ borderRadius: "5px" }}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
+                        {/* Add more filters here in col-md-4 / col-md-3 etc */}
                     </div>
 
                     {/* Accounts Table */}
