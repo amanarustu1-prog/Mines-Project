@@ -3078,6 +3078,7 @@ export function Navbar() {
                         <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 py-2 mb-2 border-b border-gray-50">
                           More Options
                         </div>
+
                         <div className="space-y-1">
                           {moreMenuItems.map((item) => (
                             <div
@@ -3187,6 +3188,7 @@ export function Navbar() {
                             </div>
                           ))}
                         </div>
+                        
                       </div>
                     </div>
                   )}
@@ -3487,6 +3489,7 @@ export function Navbar() {
                   </div>
                 ))}
               </div>
+              
 
               {/* Mobile User Section */}
               <div className="mt-6 pt-4 border-t border-gray-100">
