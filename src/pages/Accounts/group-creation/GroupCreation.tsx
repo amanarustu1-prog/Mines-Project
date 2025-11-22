@@ -6,15 +6,12 @@ import DataTable from 'react-data-table-component';
 import { customStyles, requiredColorStyles } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
 import { toastifyError, toastifySuccess } from '@/common/AlertMsg';
-import { Interface } from 'readline';
 import { getShowingDateText } from '@/common/DateFormat';
 import useResizableColumns from '@/components/customHooks/UseResizableColumns';
 import ConfirmModal from '@/common/ConfirmModal';
 import { StylesConfig } from "react-select";
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
-
-
 
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
@@ -71,8 +68,6 @@ const GroupCreation = () => {
     CreatedDate: '',
     UpdatedDate: ''
   });
-
-
 
   const selectCompactStyles: StylesConfig<any> = {
     control: (provided, state) => ({
@@ -238,13 +233,21 @@ const GroupCreation = () => {
       const success = await fetchUpdateData(form, editItemId);
 
       if (success) {
+<<<<<<< HEAD
         // resetData();
+=======
+        handleReset();
+>>>>>>> d07df2aa26008ccb3526a76bf18d712320ce026b
       }
     }
     if (!editItemId) {
       const success = await fetchInsertData(form);
       if (success) {
+<<<<<<< HEAD
         // resetData();
+=======
+        handleReset();
+>>>>>>> d07df2aa26008ccb3526a76bf18d712320ce026b
       }
     }
   }
@@ -368,6 +371,10 @@ const GroupCreation = () => {
     ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
   }));
 
+<<<<<<< HEAD
+=======
+  // const handleReset = async () => {
+>>>>>>> d07df2aa26008ccb3526a76bf18d712320ce026b
 
   const filteredData = groups.filter((item: AccountGroups) => {
     const term = searchTerm.toLowerCase();
@@ -399,10 +406,7 @@ const GroupCreation = () => {
     setEditItemId(null);
   };
 
-
-
   const exportToExcel = () => {
-    // search lagaya hoga to filteredData, warna pura groups
     const rows = (filteredData.length ? filteredData : groups).map((item: AccountGroups) => ({
       "Group ID": item.GroupID,
       "Description": item.Description,
@@ -480,6 +484,7 @@ const GroupCreation = () => {
 
           </div>
 
+<<<<<<< HEAD
           {/* Settings */}
           <div className='row mt-2'>
             <div className='col-lg-12'>
@@ -566,11 +571,89 @@ const GroupCreation = () => {
 
 
 
+=======
+          {/* Options */}
+          <div className="row">
+            {/* Bank */}
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Bank</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.IsBank ? 'Yes' : 'No', value: form.IsBank }}
+                onChange={(opt) => handleChange('IsBank', opt?.value ?? false)}
+                options={[
+                  { label: 'Yes', value: true },
+                  { label: 'No', value: false }
+                ]}
+                isClearable={false}
+              />
+            </div>
+            {/* Cash */}
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Cash</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.Iscash ? 'Yes' : 'No', value: form.Iscash }}
+                onChange={(opt) => handleChange('Iscash', opt?.value ?? false)}
+                options={[
+                  { label: 'Yes', value: true },
+                  { label: 'No', value: false }
+                ]}
+                isClearable={false}
+              />
+            </div>
+            {/* Sale */}
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Sale</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.IsSale ? 'Yes' : 'No', value: form.IsSale }}
+                onChange={(opt) => handleChange('IsSale', opt?.value ?? false)}
+                options={[
+                  { label: 'Yes', value: true },
+                  { label: 'No', value: false }
+                ]}
+                isClearable={false}
+              />
+            </div>
+            {/* Purchase */}
+            <div className="col-md-3 mb-3">
+              <label className="ledger-management-label">Purchase</label>
+              <Select
+                classNamePrefix="select"
+                styles={selectCompactStyles}
+                placeholder="Select"
+                value={{ label: form.IsPurchase ? 'Yes' : 'No', value: form.IsPurchase }}
+                onChange={(opt) => handleChange('IsPurchase', opt?.value ?? false)}
+                options={[
+                  { label: 'Yes', value: true },
+                  { label: 'No', value: false }
+                ]}
+                isClearable={false}
+              />
+>>>>>>> d07df2aa26008ccb3526a76bf18d712320ce026b
             </div>
           </div>
 
           {/* Actions */}
+<<<<<<< HEAD
 
+=======
+          <div className="d-flex gap-2">
+            <button className="btn btn-primary d-flex align-items-center gap-1" onClick={handleInsertAndUpdate}>
+              {editItemId ? "Update" : "Save"}
+            </button>
+            <button className="btn btn-outline-secondary text-white" style={{ backgroundColor: "#6c757d", borderColor: "#6c757d" }} onClick={handleReset}>
+              Reset
+            </button>
+          </div>
+>>>>>>> d07df2aa26008ccb3526a76bf18d712320ce026b
         </div>
       </div>
 
@@ -578,8 +661,12 @@ const GroupCreation = () => {
         <div className="card-body py-2">
 
           {/* Search + Export Row */}
+<<<<<<< HEAD
           <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
 
+=======
+          <div className="d-flex justify-content-end align-items-center gap-3 mb-3">
+>>>>>>> d07df2aa26008ccb3526a76bf18d712320ce026b
             <input
               type="text"
               placeholder="Search..."
@@ -608,10 +695,8 @@ const GroupCreation = () => {
             customStyles={customStyles}
             progressPending={loading}
           />
-
         </div>
       </div>
-
 
       <ConfirmModal
         show={showModal}
