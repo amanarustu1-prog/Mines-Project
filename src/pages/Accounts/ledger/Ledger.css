@@ -601,8 +601,8 @@
     border-radius: 0.5rem;
     background: white;
     font-size: 0.875rem;
-    resize: vertical;
-    min-height: 80px;
+    /* resize: vertical; */
+    min-height: 40px;
 }
 
 .ledger-management-textarea:focus {
@@ -616,11 +616,11 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
-    margin-bottom: 0.5rem;
+    /* margin-bottom: 0.5rem; */
 }
 
 .ledger-management-form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 5px;
 }
 
 .ledger-management-form-row {
@@ -840,9 +840,9 @@
     margin-top: 5.5rem;
 }
 .section-heading {
-  font-weight: 600;
+  font-weight: 500;
   border-bottom: 2px solid #000;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   display: inline-block;  
 }
 
