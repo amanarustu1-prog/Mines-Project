@@ -607,7 +607,7 @@ const Ledger: React.FC = () => {
                 {/* ---------------- TOP SECTION ---------------- */}
                 <div className="row">
                     {/* Ledger Name */}
-                    <div className="col-md-6 mb-2" style={{ paddingRight: "2rem" }}>
+                    <div className="col-md-6 mb-2 mt-1" style={{ paddingRight: "2rem" }}>
                         <label className="ledger-management-label">Ledger Name <span className="text-danger">*</span></label>
                         <input
                             type="text"
@@ -619,17 +619,14 @@ const Ledger: React.FC = () => {
                     </div>
 
                     <div className='col-md-6 mb-2'></div>
-
-
                 </div>
 
                 <div className="row">
-
                     {/* -- BANK ACCOUNT DETAILS -- */}
                     <div className="col-md-6" style={{ borderRight: "1px solid #ccc", borderTop: "1px solid #ccc", paddingRight: "2rem" }}>
                         {/* Accounting Group */}
                         <div className='row'>
-                            <div className="col-md-12  mb-1">
+                            <div className="col-md-12  mb-1 mt-1">
                                 <label className="ledger-management-label">Accounting Group  <span className="text-danger">*</span></label>
                                 <Select
                                     className="w-100 requiredColor"
@@ -729,7 +726,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Address */}
-                            <div className="col-md-12 mb-1">
+                            <div className="col-md-12 ">
                                 <label className="ledger-management-label">Address :</label>
                                 <textarea className="ledger-management-textarea w-100 challan" rows={2}
                                     placeholder="Enter Address"
@@ -790,7 +787,7 @@ const Ledger: React.FC = () => {
 
                         <div className="row">
                             {/* Registration Type */}
-                            <div className="col-md-12 mb-1">
+                            <div className="col-md-12 mb-1 ">
                                 <label className="ledger-management-label">Registration Type :</label>
                                 <Select
                                     classNamePrefix="select"
