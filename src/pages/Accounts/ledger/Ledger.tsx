@@ -714,7 +714,7 @@ const Ledger: React.FC = () => {
                         {/* MAILING DETAILS */}
                         <h4 className="section-heading mb-1 pt-2">Mailing Details</h4>
 
-                        <div className="row">
+                        <div className="row">   
                             {/* Name */}
                             <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Name :</label>
