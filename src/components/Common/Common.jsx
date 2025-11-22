@@ -1,3 +1,3 @@
-export const getNameById = (state, row) => {
-    const id = state.find((d) => d.)
-}
+// export const getNameById = (state, row) => {
+//     const id = state.find((d) => d.)
+// }
