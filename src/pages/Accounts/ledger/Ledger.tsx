@@ -629,9 +629,9 @@ const Ledger: React.FC = () => {
         <div className="ledger-management-tab-content">
             <div className="ledger-entry-form">
                 {/* ---------------- TOP SECTION ---------------- */}
-                <div className="row mb-2">
+                <div className="row">
                     {/* Ledger Name */}
-                    <div className="col-md-6 mb-3" style={{ paddingRight: "2rem" }}>
+                    <div className="col-md-6 mb-2" style={{ paddingRight: "2rem" }}>
                         <label className="ledger-management-label">Ledger Name <span className="text-danger">*</span></label>
                         <input
                             type="text"
@@ -642,38 +642,45 @@ const Ledger: React.FC = () => {
                         />
                     </div>
 
-                    {/* Accounting Group */}
-                    <div className="col-md-6 mb-3">
-                        <label className="ledger-management-label">Accounting Group  <span className="text-danger">*</span></label>
-                        <Select
-                            className="w-100 requiredColor"
-                            placeholder="Select Ledger Group"
-                            value={
-                                formData.ledgerGroup
-                                    ? { label: formData.ledgerGroup, value: formData.ledgerGroup }
-                                    : null
-                            }
-                            onChange={(selected) =>
-                                handleInputChange("ledgerGroup", selected ? selected.value : "")
-                            }
-                            options={ledgerGroups.map((grp) => ({
-                                label: grp,
-                                value: grp,
-                            }))}
-                            isClearable
-                            styles={requiredColorStyles}
-                        />
+                    <div className='col-md-6 mb-2'></div>
 
-                    </div>
+
                 </div>
 
                 <div className="row">
+
                     {/* -- BANK ACCOUNT DETAILS -- */}
                     <div className="col-md-6" style={{ borderRight: "1px solid #ccc", borderTop: "1px solid #ccc", paddingRight: "2rem" }}>
-                        <h4 className="mb-3 section-heading  pt-2 ">Bank Account Details</h4>
+                        {/* Accounting Group */}
+                        <div className='row'>
+                            <div className="col-md-12  mb-1">
+                                <label className="ledger-management-label">Accounting Group  <span className="text-danger">*</span></label>
+                                <Select
+                                    className="w-100 requiredColor"
+                                    placeholder="Select Ledger Group"
+                                    value={
+                                        formData.ledgerGroup
+                                            ? { label: formData.ledgerGroup, value: formData.ledgerGroup }
+                                            : null
+                                    }
+                                    onChange={(selected) =>
+                                        handleInputChange("ledgerGroup", selected ? selected.value : "")
+                                    }
+                                    options={ledgerGroups.map((grp) => ({
+                                        label: grp,
+                                        value: grp,
+                                    }))}
+                                    isClearable
+                                    styles={requiredColorStyles}
+                                />
+
+                            </div>
+                        </div>
+                        <h4 className="mb-1 section-heading  pt-2 ">Bank Account Details</h4>
+
                         <div className="row">
                             {/* Account Holder-Name */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Account Holder's Name :</label>
                                 <input type="text" className="ledger-management-input w-100 challan challan"
                                     placeholder="Enter Account Holder's Name"
@@ -683,7 +690,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Account-No */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Account No. :</label>
                                 <input type="text" className="ledger-management-input w-100 challan"
                                     placeholder="Enter Account No."
@@ -693,7 +700,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* IFSC Code */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">IFSC Code :</label>
                                 <input
                                     type="text"
@@ -705,7 +712,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Bank-Name */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Bank Name :</label>
                                 <input
                                     type="text"
@@ -717,7 +724,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Bank-Branch */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Branch :</label>
                                 <input type="text"
                                     placeholder="Enter Branch"
@@ -732,11 +739,11 @@ const Ledger: React.FC = () => {
                     {/*-- MAILING DETAILS + TAX REGISTRATION --*/}
                     <div className="col-md-6" style={{ borderTop: "1px solid #ccc", paddingLeft: "2rem" }}>
                         {/* MAILING DETAILS */}
-                        <h4 className="section-heading mb-3 pt-2">Mailing Details</h4>
+                        <h4 className="section-heading mb-1 pt-2">Mailing Details</h4>
 
                         <div className="row">
                             {/* Name */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Name :</label>
                                 <input type="text" className="ledger-management-input w-100 challan"
                                     placeholder="Enter Name"
@@ -746,7 +753,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Address */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Address :</label>
                                 <textarea className="ledger-management-textarea w-100 challan" rows={2}
                                     placeholder="Enter Address"
@@ -756,7 +763,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* State */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">State :</label>
                                 <input
                                     type="text"
@@ -768,7 +775,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Pincode */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Pincode :</label>
                                 <input
                                     type="text"
@@ -780,7 +787,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Mobile-No */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Mobile No :</label>
                                 <input
                                     type="text"
@@ -792,7 +799,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* Email */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Email :</label>
                                 <input type="text" className="ledger-management-input w-100 challan"
                                     placeholder="Enter Email"
@@ -803,22 +810,44 @@ const Ledger: React.FC = () => {
                         </div>
 
                         {/* TAX REGISTRATION */}
-                        <h4 className="section-heading mt-2 mb-2">Tax Registration Details</h4>
+                        <h4 className="section-heading mt-2 mb-1">Tax Registration Details</h4>
 
                         <div className="row">
                             {/* Registration Type */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Registration Type :</label>
-                                <input type="text" className="ledger-management-input w-100 challan"
+                                <Select
+                                    classNamePrefix="select"
                                     placeholder="Enter Registration Type"
-                                    value={formData.gstregistrationtype || ""}
-                                    onChange={(e) => setFormData({ ...formData, gstregistrationtype: e.target.value })}
+                                    value={
+                                        formData.gstregistrationtype
+                                            ? { label: formData.gstregistrationtype, value: formData.gstregistrationtype }
+                                            : null
+                                    }
+                                    onChange={(opt) =>
+                                        setFormData({
+                                            ...formData,
+                                            gstregistrationtype: opt ? opt.value : ""
+                                        })
+                                    }
+                                    options={[
+                                        { label: "Registered", value: "Registered" },
+                                        { label: "Unregistered", value: "Unregistered" },
+                                        { label: "Composition", value: "Composition" },
+                                        { label: "Consumer", value: "Consumer" },
+                                        { label: "Input Service Distributor", value: "ISD" },
+                                        { label: "E-commerce Operator", value: "ECO" },
+                                    ]}
+                                    isClearable={true}
+                                    menuPlacement="top"
+                                    styles={selectCompactStyles}
                                 />
+
 
                             </div>
 
                             {/* GST-No */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">GST No :</label>
                                 <input type="text" className="ledger-management-input w-100 challan"
                                     placeholder="Enter GST No"
@@ -828,7 +857,7 @@ const Ledger: React.FC = () => {
                             </div>
 
                             {/* PAN No */}
-                            <div className="col-md-12 mb-3">
+                            <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">PAN No :</label>
                                 <input type="text" className="ledger-management-input w-100 challan"
                                     placeholder="Enter PAN No"
@@ -894,7 +923,7 @@ const Ledger: React.FC = () => {
                                     <h3 className="modal-title">{editingAccount ? 'Edit Ledger Account' : 'Create New Ledger Account'}</h3>
                                     <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowDetailForm(false)}></button>
                                 </div>
-                                <div className="modal-body">
+                                <div className="modal-body py-1">
                                     {renderCreateForm()}
                                 </div>
 
@@ -909,33 +938,7 @@ const Ledger: React.FC = () => {
             <main className="ledger-management-main" style={{ padding: "0.85rem" }}>
                 <div className="ledger-management-tab-content">
                     {/* Filters */}
-                    <div className="row g-3 mb-2 align-items-center mt-1">
-                        {/* Group Name */}
-                        <div className="col-lg-1 text-right mt-0    ">
-                            <label className="form-label mb-0 ">Group Name</label>
-                        </div>
-                        <div className='col-lg-3 mt-0'>
-                            <input
-                                type="text"
-                                placeholder="Group Name"
-                                className="form-control form-control-sm challan requiredColor"
-                                style={{ borderRadius: "5px" }}
-                            />
-                        </div>
-
-                        {/* Under */}
-                        <div className="col-lg-1 text-right mt-0">
-                            <label className="form-label mb-0 ">Under</label>
-                        </div>
-                        <div className='col-lg-3 mt-0'>
-                            <Select
-                                placeholder="Select..."
-                                isClearable
-                                isSearchable
-                                styles={requiredColorStyles}
-                            />
-                        </div>
-                        <div className='col-lg-2 mt-0'></div>
+                    <div className="row g-3 mb-2 align-items-center justify-content-end mt-1">
                         <div className='col-lg-2 mt-0'>
                             <input
                                 type="text"
@@ -971,7 +974,7 @@ const Ledger: React.FC = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-            }} />
+                }} />
         </div>
     );
 };

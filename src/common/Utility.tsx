@@ -1,5 +1,8 @@
 // ==========================
 // Validation Utility Functions
+
+import { StylesConfig } from "react-select";
+
 // ==========================
 export const ValidationUtils = {
   // Check if a string is empty
@@ -143,17 +146,20 @@ export const customStyles = {
       fontSize: "14px",
       justifyContent: "center",
       borderRight: "1px solid #ccc",
+     
     },
   },
   cells: {
     style: {
       justifyContent: "center",
       borderRight: "1px solid #eee",
+     
     },
   },
   table: {
     style: {
       border: "1px solid #ccc",
+      
     },
   },
 };
@@ -197,4 +203,39 @@ export const requiredColorStyles: any = {
     padding: "0 6px",
   }),
 };
+
+
+export const selectCompactStyles: StylesConfig<any> = {
+    control: (provided, state) => ({
+      ...provided,
+      minHeight: "33px",
+      height: "33px",
+      fontSize: "14px",
+      padding: "0 2px",
+      borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
+      boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+      "&:hover": { borderColor: "#6ea8ff" },
+    }),
+
+    valueContainer: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+
+    indicatorsContainer: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+
+    clearIndicator: (provided) => ({
+      ...provided,
+      padding: "0 6px",
+    }),
+  }
+
 

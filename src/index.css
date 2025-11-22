@@ -47,6 +47,10 @@
   }
 }
 
+body {
+  background-color: #f1f5f9 !important;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -55,6 +59,7 @@
   body {
     @apply bg-background text-foreground overflow-x-hidden;
     /* font-family: "Poppins", sans-serif; */
+
 
   }
 }
