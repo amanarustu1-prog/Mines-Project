@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import '../ledger/Ledger.css';
-import { FiPlusCircle } from "react-icons/fi";
 import DataTable from 'react-data-table-component';
 import { customStyles, requiredColorStyles } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
@@ -12,6 +11,7 @@ import ConfirmModal from '@/common/ConfirmModal';
 import { StylesConfig } from "react-select";
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
+import { Space_Not_Allow } from '@/common/validation';
 
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
@@ -47,7 +47,6 @@ interface Groups {
 }
 
 const GroupCreation = () => {
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState<AccountGroups[]>([]);
   const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -55,6 +54,10 @@ const GroupCreation = () => {
   const [accountGroup, setAccountGroup] = useState<Groups[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [errors, setErrors] = useState({
+    DescriptionError: '',
+    ParentGroupError: '',
+  });
 
   const [form, setForm] = useState({
     GroupID: 0,
@@ -101,7 +104,6 @@ const GroupCreation = () => {
       padding: "0 6px",
     }),
   };
-
 
   // ===================TODO-Func====================
   const fetchGetData = async () => {
@@ -205,19 +207,19 @@ const GroupCreation = () => {
       const response = await fetchPostData('AccountingGroups/GetSingleData_AccountingGroups', {
         "GroupID": Id
       })
-      console.log(response);
+      // console.log(response);
 
       if (response) {
         const record = response[0];
         setForm({
           GroupID: record.GroupID,
           Description: record.Description,
-          parent: record.parent,
-          primary_group: record.primary_group,
-          IsBank: record.IsBank,
-          Iscash: record.Iscash,
-          IsSale: record.IsSale,
-          IsPurchase: record.IsPurchase,
+          parent: record.parent || '',  
+          primary_group: accountGroup.find((a) => a.GroupID === Number(record.parent))?.Description || '',
+                  IsBank: record.IsBank === "1" ? true : false,
+        Iscash: record.Iscash === "1" ? true : false,
+        IsSale: record.IsSale === "1" ? true : false,
+        IsPurchase: record.IsPurchase === "1" ? true : false,
           CreatedDate: record.CreatedDate,
           UpdatedDate: record.UpdatedDate
         })
@@ -229,6 +231,7 @@ const GroupCreation = () => {
   }
 
   const handleInsertAndUpdate = async () => {
+    if (!checkValidationError()) return;
     if (editItemId) {
       const success = await fetchUpdateData(form, editItemId);
 
@@ -247,7 +250,7 @@ const GroupCreation = () => {
     }
   }
 
-  // =================== DropDown ====================
+  // =================== DropDown ===================
   const fetchAccountGroup = async () => {
     try {
       const response = await fetchPostData('AccountingGroups/GetDataDropDown_AccountingGroups', {
@@ -264,6 +267,25 @@ const GroupCreation = () => {
       toastifyError("Error in getting a Account Group");
     }
   }
+
+  // =================== Valiadation ===================
+  const checkValidationError = () => {
+  let valid = true;
+
+  const descriptionValidation = Space_Not_Allow(form.Description);
+  const parentValidation = Space_Not_Allow(form.primary_group);
+
+  setErrors({
+    DescriptionError: descriptionValidation !== 'true' ? descriptionValidation : '',
+    ParentGroupError: parentValidation !== 'true' ? parentValidation : '',
+  });
+
+  if (descriptionValidation !== 'true' || parentValidation !== 'true') {
+    valid = false;
+  }
+
+  return valid;
+  };
 
   useEffect(() => {
     if (editItemId) {
@@ -286,45 +308,45 @@ const GroupCreation = () => {
       )
     },
     {
-      name: 'Under',
-      selector: (row: AccountGroups) => row.parent,
+      name: 'Parent Group',
+      selector: (row: AccountGroups) => row.primary_group,
       sortable: true,
       cell: (row: AccountGroups) => (
-        <span></span>
+        <span>{row.primary_group}</span>
       )
     },
-    {
-      name: 'Is-Bank',
-      selector: (row: AccountGroups) => row.IsBank,
-      sortable: true,
-      cell: (row: AccountGroups) => (
-        <span>{row.IsBank ? 'Yes' : 'No'}</span>
-      )
-    },
-    {
-      name: 'Is-Cash',
-      selector: (row: AccountGroups) => row.Iscash,
-      sortable: true,
-      cell: (row: AccountGroups) => (
-        <span>{row.Iscash ? 'Yes' : 'No'}</span>
-      )
-    },
-    {
-      name: 'Is-Sale',
-      selector: (row: AccountGroups) => row.IsSale,
-      sortable: true,
-      cell: (row: AccountGroups) => (
-        <span>{row.IsSale ? 'Yes' : 'No'}</span>
-      )
-    },
-    {
-      name: 'Is-Purchase',
-      selector: (row: AccountGroups) => row.IsPurchase,
-      sortable: true,
-      cell: (row: AccountGroups) => (
-        <span>{row.IsPurchase ? 'Yes' : 'No'}</span>
-      )
-    },
+    // {
+    //   name: 'Is-Bank',
+    //   selector: (row: AccountGroups) => row.IsBank,
+    //   sortable: true,
+    //   cell: (row: AccountGroups) => (
+    //     <span>{row.IsBank ? 'Yes' : 'No'}</span>
+    //   )
+    // },
+    // {
+    //   name: 'Is-Cash',
+    //   selector: (row: AccountGroups) => row.Iscash,
+    //   sortable: true,
+    //   cell: (row: AccountGroups) => (
+    //     <span>{row.Iscash ? 'Yes' : 'No'}</span>
+    //   )
+    // },
+    // {
+    //   name: 'Is-Sale',
+    //   selector: (row: AccountGroups) => row.IsSale,
+    //   sortable: true,
+    //   cell: (row: AccountGroups) => (
+    //     <span>{row.IsSale ? 'Yes' : 'No'}</span>
+    //   )
+    // },
+    // {
+    //   name: 'Is-Purchase',
+    //   selector: (row: AccountGroups) => row.IsPurchase,
+    //   sortable: true,
+    //   cell: (row: AccountGroups) => (
+    //     <span>{row.IsPurchase ? 'Yes' : 'No'}</span>
+    //   )
+    // },
 
     // Dates
     {
@@ -355,20 +377,16 @@ const GroupCreation = () => {
     }
   ];
 
-  
-
   const handleChange = (field: string, value: boolean) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value ? "1" : "0"
-    }))
-  }
+  setForm(prev => ({
+    ...prev,
+    [field]: value
+  }));
+  };
 
   const resizeableColumns = useResizableColumns(Columns).map(col => ({
     ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
   }));
-
-  // const handleReset = async () => {
 
   const filteredData = groups.filter((item: AccountGroups) => {
     const term = searchTerm.toLowerCase();
@@ -397,6 +415,7 @@ const GroupCreation = () => {
       CreatedDate: '',
       UpdatedDate: ''
     });
+    setErrors({ DescriptionError: '', ParentGroupError: '' });
     setEditItemId(null);
   };
 
@@ -433,54 +452,61 @@ const GroupCreation = () => {
       <div className="card GroupCreation_header">
         <div className="card-body py-2">
           {/* Basic Details */}
-
           <div className="row align-items-center">
-            {/* <div className="col-lg-4">
-              <div className="ledger-management-title-section">
-                <FiPlusCircle size={30} />
-                <div>
-                  <h1 className="ledger-management-title">
-                    Group Creation
-                  </h1>
-                  <p className="ledger-management-subtitle">Create and manage account groups</p>
-                </div>
-              </div>
-            </div> */}
+            {/* Group */}
             <div className="col-md-1 text-end px-0">
               <label className="ledger-management-label mb-0">Group Name <span className="text-danger">*</span></label>
             </div>
             <div className="col-md-3">
               <input type="text" className="form-control form-control-sm challan w-100 requiredColor"
-                value={form.Description}
+                value={form.Description} placeholder='Group Name'
                 onChange={(e) => setForm({ ...form, Description: e.target.value })}
               />
+              {errors.DescriptionError && (
+                <div className="invalid-feedback d-block">{errors.DescriptionError}</div>
+              )}
             </div>
 
-
+            {/* Parent Group */}
             <div className="col-md-1 text-end px-0">
-              <label className="ledger-management-label mb-0">Under {!form.primary_group && (<span className="text-danger"> *</span>)}</label>
+              <label className="ledger-management-label mb-0">Parent Group {!form.primary_group && (<span className="text-danger"> *</span>)}</label>
             </div>
             <div className="col-md-3">
               <Select
                 classNamePrefix="select"
                 placeholder="Select parent group"
+                value={form.parent ? 
+                  {
+                    value: form.parent,
+                    label: accountGroup.find(a => a.GroupID === Number(form.parent))?.Description || ''
+                  } : null
+                }
+                options={accountGroup.map((a) => ({
+                  value: a.GroupID,
+                  label: a.Description
+                }))}
+                onChange={(option) => (
+                  setForm((prev) => ({
+                    ...prev,
+                    parent: Number(option?.value),
+                    primary_group: option?.label
+                  }))
+                )}
                 isClearable
-                isDisabled={!!form.primary_group}
+                isDisabled={false}
                 styles={requiredColorStyles}
               />
-              {(!form.primary_group && errors.parent) ? (
-                <div className="invalid-feedback d-block">{errors.parent}</div>
-              ) : null}
+              {errors.ParentGroupError && (
+                <div className="invalid-feedback d-block">{errors.ParentGroupError}</div>
+              )}
             </div>
-
-
           </div>
 
-          {/* Settings */}
+          {/* Options */}
           <div className='row mt-2'>
             <div className='col-lg-12'>
               <div className="row align-items-center">
-
+                {/* Bank */}
                 <div className="col-md-1 text-end px-0">
                   <label className="ledger-management-label mb-0">Bank</label>
                 </div>
@@ -498,7 +524,7 @@ const GroupCreation = () => {
                     isClearable={false}
                   />
                 </div>
-
+                {/* Cash */}
                 <div className="col-md-1 text-end px-0">
                   <label className="ledger-management-label mb-0">Cash</label>
                 </div>
@@ -513,8 +539,7 @@ const GroupCreation = () => {
                     isClearable={false}
                   />
                 </div>
-
-
+                {/* Sale */}
                 <div className="col-md-1 text-end px-0">
                   <label className="ledger-management-label mb-0">Sale</label>
                 </div>
@@ -529,7 +554,7 @@ const GroupCreation = () => {
                     isClearable={false}
                   />
                 </div>
-
+                {/* Purchase */}
                 <div className="col-md-1 text-end px-0">
                   <label className="ledger-management-label mb-0">Purchase</label>
                 </div>
@@ -544,24 +569,17 @@ const GroupCreation = () => {
                     isClearable={false}
                   />
                 </div>
+                {/* Buttons */}
                 <div className="col-md-4 d-flex gap-2 justify-content-end mt-2">
                   <button className="btn btn-primary d-flex align-items-center gap-1 " style={{ height: "40px" }} onClick={handleInsertAndUpdate}>
                     {editItemId ? "Update" : "Save"}
                   </button>
 
-                  <button
-                    className="btn btn-outline-secondary text-white"
-                    style={{ backgroundColor: "#6c757d", borderColor: "#6c757d", height: "40px" }}
-                    onClick={handleReset}
-                  >
+                  <button className="btn btn-outline-secondary text-white" style={{ backgroundColor: "#6c757d", borderColor: "#6c757d", height: "40px" }} onClick={handleReset}>
                     Reset
                   </button>
                 </div>
-
               </div>
-
-             
-
             </div>
           </div>
 
@@ -570,20 +588,10 @@ const GroupCreation = () => {
 
               {/* Search + Export Row */}
               <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="form-control form-control-sm challan"
-                  style={{ width: "200px", borderRadius: "5px" }}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <input type="text" placeholder="Search..." className="form-control form-control-sm challan"
+                  style={{ width: "200px", borderRadius: "5px" }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
 
-                <button
-                  type="button"
-                  onClick={exportToExcel}
-                  className="btn btn-sm btn-primary py-1 d-flex px-2 align-items-center gap-2"
-                >
+                <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary py-1 d-flex px-2 align-items-center gap-2">
                   <FaFileExcel size={14} /> Export
                 </button>
               </div>
@@ -601,8 +609,7 @@ const GroupCreation = () => {
             </div>
           </div>
 
-          <ConfirmModal
-            show={showModal}
+          <ConfirmModal show={showModal}
             handleClose={() => setShowModal(false)}
             handleConfirm={() => {
               if (selectedId !== null) {
@@ -614,9 +621,7 @@ const GroupCreation = () => {
         </div>
       </div>
     </div>
-
   );
 };
 
 export default GroupCreation;
-
