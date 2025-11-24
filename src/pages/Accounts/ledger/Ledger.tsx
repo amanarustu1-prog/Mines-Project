@@ -452,7 +452,7 @@ const Ledger: React.FC = () => {
             selector: (row: LedgerData) => row.AccountGroupId,
             sortable: true,
             cell: (row: LedgerData) => (
-                <span>{row.LedgerData}</span>
+                <span>{row.AccountGroup}</span>
             )
         },
 
@@ -770,18 +770,23 @@ const Ledger: React.FC = () => {
                                 <Select
                                     className="w-100 requiredColor"
                                     placeholder="Select Ledger Group"
-                                    value={
-                                        formData.ledgerGroup
-                                            ? { label: formData.ledgerGroup, value: formData.ledgerGroup }
-                                            : null
+                                    value={formData.AccountGroupId ?
+                                        {
+                                            value: formData.AccountGroupId,
+                                            label: accountGroup.find((a) => a.GroupID === Number(formData.AccountGroupId))?.Description
+                                        } : null
                                     }
-                                    onChange={(selected) =>
-                                        handleInputChange("ledgerGroup", selected ? selected.value : "")
-                                    }
-                                    options={ledgerGroups.map((grp) => ({
-                                        label: grp,
-                                        value: grp,
+                                    options={accountGroup.map((a) => ({
+                                        value: a.GroupID,
+                                        label: a.Description
                                     }))}
+                                    onChange={(opt) => (
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            AccountGroupId: Number(opt?.value),
+                                            AccountGroup: opt?.label
+                                        }))
+                                    )}
                                     isClearable
                                     styles={requiredColorStyles}
                                 />
