@@ -25,7 +25,6 @@ const PaymentVoucher = () => {
         { value: 21, label: "AXIS Bank" }
     ];
 
-    // ➤ Add Particular Row
     const addParticular = () => {
         if (!singleRow.name || !singleRow.amount) {
             toastifyError("Enter Particular Name & Amount");
@@ -40,12 +39,10 @@ const PaymentVoucher = () => {
         setSingleRow({ name: "", amount: "" });
     };
 
-    // ➤ Remove row
     const removeParticular = (id) => {
         setParticulars(particulars.filter((p) => p.id !== id));
     };
 
-    // ➤ Build Payload exactly as backend wants
     const buildPayload = () => {
         return {
             VchDate: date ? date.toLocaleDateString("en-GB") : "",
@@ -55,7 +52,7 @@ const PaymentVoucher = () => {
             VoucherType: "Payment",
             VoucherNo: voucherNo || "Auto Generated",
             CompanyId: Number(localStorage.getItem("companyID")),
-            ID: 0, // insert = 0
+            ID: 0, 
 
             TotalAmt: particulars.reduce(
                 (sum, item) => sum + Number(item.amount || 0),
@@ -70,7 +67,6 @@ const PaymentVoucher = () => {
         };
     };
 
-    // ➤ Save / Insert Voucher
     const handleSave = async () => {
         if (!selectedAccount) {
             toastifyError("Select Account");
@@ -108,7 +104,6 @@ const PaymentVoucher = () => {
         setIsSubmitting(false);
     };
 
-    // ➤ DataTable Columns
     const columns = [
         {
             name: "No.",
@@ -142,19 +137,15 @@ const PaymentVoucher = () => {
     return (
         <div className="voucher-container">
             <div className="voucher-card">
-
-                {/* Top Section */}
                 <div className="row align-items-center">
                     <div className="col-lg-1 text-end voucher-col">
                         <label className="text-nowrap text-end">Voucher No.</label>
                     </div>
                     <div className="col-lg-3">
-                        <input
-                            type="text"
+                        <input type="text" className="voucher-col-input challan"
                             value={voucherNo}
                             onChange={(e) => setVoucherNo(e.target.value)}
                             placeholder="Enter No."
-                            className="voucher-col-input challan"
                         />
                     </div>
 
@@ -254,24 +245,17 @@ const PaymentVoucher = () => {
                     <label>Narration</label>
 
                     <div className="narration-flex align-items-center">
-                        <textarea
-                            rows="1"
+                        <textarea rows="1" className="narration-text"
                             value={narration}
                             onChange={(e) => setNarration(e.target.value)}
                             placeholder="Narration..."
-                            className="narration-text"
                         />
 
-                        <button
-                            className="save-btn"
-                            onClick={handleSave}
-                            disabled={isSubmitting}
-                        >
+                        <button className="save-btn" onClick={handleSave} disabled={isSubmitting}>
                             <FiSave size={16} /> {isSubmitting ? "Saving..." : "Save Voucher"}
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     );

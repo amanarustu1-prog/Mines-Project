@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import '../ledger/Ledger.css';
-import { FiPlusCircle } from "react-icons/fi";
 import DataTable from 'react-data-table-component';
 import { customStyles, requiredColorStyles } from '@/common/Utility';
 import { fetchPostData } from '@/components/hooks/Api';
