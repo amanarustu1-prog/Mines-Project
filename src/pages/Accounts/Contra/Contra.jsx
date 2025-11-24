@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import "./PaymentVoucher.css";
+import "../Voucher/PaymentVoucher.css";
 import Select from "react-select";
 import { FiPlus, FiTrash2, FiSave } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
-import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common/Utility";
+import { customStyles, selectCompactStyles } from "@/common/Utility";
 import { fetchPostData } from "@/components/hooks/Api";
 
-const PaymentVoucher = () => {
+const Contra = () => {
     const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
@@ -45,17 +45,17 @@ const PaymentVoucher = () => {
         setParticulars(particulars.filter((p) => p.id !== id));
     };
 
-    // ➤ Build Payload exactly as backend wants
+    // ➤ Build Payload exactly as backend wants (adapted for Receipt)
     const buildPayload = () => {
         return {
             VchDate: date ? date.toLocaleDateString("en-GB") : "",
             PartyName: selectedAccount?.label || "",
             LedgerID: selectedAccount?.value || 0,
             Narration: narration,
-            VoucherType: "Payment",
+            VoucherType: "Contra",
             VoucherNo: voucherNo || "Auto Generated",
             CompanyId: Number(localStorage.getItem("companyID")),
-            ID: 0, // insert = 0
+            ID: 0,
 
             TotalAmt: particulars.reduce(
                 (sum, item) => sum + Number(item.amount || 0),
@@ -70,7 +70,7 @@ const PaymentVoucher = () => {
         };
     };
 
-    // ➤ Save / Insert Voucher
+    // ➤ Save / Insert Receipt Voucher
     const handleSave = async () => {
         if (!selectedAccount) {
             toastifyError("Select Account");
@@ -84,7 +84,7 @@ const PaymentVoucher = () => {
         setIsSubmitting(true);
 
         const payload = buildPayload();
-        console.log("Final Payload:", payload);
+        console.log("Contra Payload:", payload);
 
         try {
             const response = await fetchPostData(
@@ -93,13 +93,13 @@ const PaymentVoucher = () => {
             );
 
             if (response) {
-                toastifySuccess("Voucher Saved Successfully");
+                toastifySuccess("Contra Saved Successfully");
                 setVoucherNo("");
                 setNarration("");
                 setSelectedAccount(null);
                 setParticulars([]);
             } else {
-                toastifyError("Voucher Not Saved!");
+                toastifyError("Receipt Not Saved!");
             }
         } catch {
             toastifyError("Server Error!");
@@ -145,8 +145,8 @@ const PaymentVoucher = () => {
 
                 {/* Top Section */}
                 <div className="row align-items-center">
-                    <div className="col-lg-1 text-end voucher-col px-0">
-                        <label className="text-nowrap text-end">Voucher No.</label>
+                    <div className="col-lg-1 text-end voucher-col">
+                        <label className="text-nowrap text-end">Contra No.</label>
                     </div>
                     <div className="col-lg-3">
                         <input
@@ -188,76 +188,66 @@ const PaymentVoucher = () => {
                     </div>
                 </div>
 
-
-
-
                 {/* Particulars Section */}
-                <div className="card mt-3">
-                    <div className="card-body">
-                        <div className="section">
-                            <div className="row align-items-center mb-2">
+                <div className="section">
+                    <div className="row align-items-center mb-2">
+                        <div className="col-lg-1 text-end px-0">
+                            <h3 className="particular-label">Particulars</h3>
+                        </div>
 
-                                <div className="narration-flex align-items-center" >
-                                    <div className="text-end px-0">
-                                        <h3 className="particular-label">Particulars</h3>
-                                    </div>
+                        <div className="col-lg-7">
+                            <div className="table-rows">
+                                <input
+                                    type="text"
+                                    value={singleRow.name}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (/^[A-Za-z\s]*$/.test(val)) {
+                                            setSingleRow({ ...singleRow, name: val });
+                                        }
+                                    }}
+                                    placeholder="Particulars name"
+                                    className="desc-input challan w-100"
+                                />
 
-                                    <div className="table-rows">
-                                        <input
-                                            type="text"
-                                            value={singleRow.name}
-                                            onChange={(e) => {
-                                                const val = e.target.value;
-                                                if (/^[A-Za-z\s]*$/.test(val)) {
-                                                    setSingleRow({ ...singleRow, name: val });
-                                                }
-                                            }}
-                                            placeholder="Particulars name"
-                                            className="desc-input challan w-100"
-                                        />
-
-                                        <input
-                                            type="text"
-                                            value={singleRow.amount}
-                                            onChange={(e) => {
-                                                const val = e.target.value;
-                                                if (/^\d*$/.test(val)) {
-                                                    setSingleRow({ ...singleRow, amount: val });
-                                                }
-                                            }}
-                                            placeholder="Amount"
-                                            className="amount-input challan w-100"
-                                        />
-                                    </div>
-                                    <div className=" d-flex justify-content-end" >
-                                        <button className="add-btn px-2 text-nowrap" onClick={addParticular}>
-                                            <FiPlus size={14} /> Add Particular
-                                        </button>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div className="particular-table">
-                                <DataTable
-                                    columns={columns}
-                                    data={particulars}
-                                    pagination
-                                    highlightOnHover
-                                    paginationRowsPerPageOptions={[5, 10, 15]}
-                                    customStyles={compactHeaderStyles}
-                                    striped
-                                    persistTableHead
-                                    noDataComponent="No particulars added yet"
-                                    fixedHeader
-                                    fixedHeaderScrollHeight="200px"
+                                <input
+                                    type="text"
+                                    value={singleRow.amount}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (/^\d*$/.test(val)) {
+                                            setSingleRow({ ...singleRow, amount: val });
+                                        }
+                                    }}
+                                    placeholder="Amount"
+                                    className="amount-input challan w-100"
                                 />
                             </div>
                         </div>
+
+                        <div className="col-lg-4 d-flex justify-content-end">
+                            <button className="add-btn px-2" onClick={addParticular}>
+                                <FiPlus size={14} /> Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="particular-table">
+                        <DataTable
+                            columns={columns}
+                            data={particulars}
+                            pagination
+                            highlightOnHover
+                            paginationRowsPerPageOptions={[5, 10, 15]}
+                            customStyles={customStyles}
+                            striped
+                            persistTableHead
+                            noDataComponent="No particulars added yet"
+                            fixedHeader
+                            fixedHeaderScrollHeight="200px"
+                        />
                     </div>
                 </div>
-
 
                 {/* Narration */}
                 <div className="section narration-row">
@@ -277,7 +267,7 @@ const PaymentVoucher = () => {
                             onClick={handleSave}
                             disabled={isSubmitting}
                         >
-                            <FiSave size={16} /> {isSubmitting ? "Saving..." : "Save Voucher"}
+                            <FiSave size={16} /> {isSubmitting ? "Saving..." : "Save Contra"}
                         </button>
                     </div>
                 </div>
@@ -287,4 +277,5 @@ const PaymentVoucher = () => {
     );
 };
 
-export default PaymentVoucher;
+export default Contra;
+
