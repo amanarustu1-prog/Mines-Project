@@ -90,6 +90,9 @@ import Purchase from './pages/sale/Puchase/Puchase'
 import PartyRate from './pages/sale/Party-Rate/PartyRate'
 import MaterialRequestEntry from './pages/Inventory/material-request-entry/MaterialRequestEntry'
 import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher'
+import Receipt from './pages/Accounts/Receipt/Receipt'
+import Contra from './pages/Accounts/Contra/Contra'
+import Journal from './pages/Accounts/Journal/Journal'
 import RequestApproval from './pages/Inventory/request-approval/RequestApproval'
 import RejectApprovedRequests from './pages/Inventory/reject-approved-requests/RejectApprovedRequests'
 import RequestQuotation from './pages/Inventory/request-quotation/RequestQuotation'
@@ -350,6 +353,9 @@ function App() {
         {/* Accounts */}
         <Route path="/ledger-group" element={<Ledger />} />
         <Route path="/payment-voucher" element={<PaymentVoucher/>} />
+         <Route path="/receipt-voucher" element={<Receipt/>} />
+         <Route path="/contra-voucher" element={<Contra/>} />
+         <Route path="/journal-voucher" element={<Journal/>} />
         <Route path="/group-creation" element={<GroupCreation/>} />
 
         {/* List-Management */}
