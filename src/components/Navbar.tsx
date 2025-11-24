@@ -479,19 +479,19 @@ const navigationItems: NavItem[] = [
           },
           {
             title: 'Receipt',
-            href: '/accounts/challan-history',
+            href: '/receipt-voucher',
             icon: Receipt,
             description: 'Track all delivery challans and receipts'
           },
           {
             title: 'Contra',
-            href: '/accounts/invoices',
+            href: '/contra-voucher',
             icon: FileText,
             description: 'Create and manage customer invoices'
           },
           {
             title: 'Journal',
-            href: '/accounts/payments',
+            href: '/journal-voucher',
             icon: CreditCard,
             description: 'Track customer payments and receipts'
           },

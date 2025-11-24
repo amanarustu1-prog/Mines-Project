@@ -164,6 +164,37 @@ export const customStyles = {
   },
 };
 
+
+
+export const compactHeaderStyles = {
+  headCells: {
+    style: {
+      backgroundColor: "#3b82f6",
+      color: "#ffffff",
+      fontWeight: "bold",
+      fontSize: "14px",
+      justifyContent: "center",
+      borderRight: "1px solid #ccc",
+      minHeight: "32px",   
+      height: "32px",
+      paddingTop: "2px",
+      paddingBottom: "2px",
+    },
+  },
+  cells: {
+    style: {
+      justifyContent: "center",
+      borderRight: "1px solid #eee",
+    },
+  },
+  table: {
+    style: {
+      border: "1px solid #ccc",
+    },
+  },
+};
+
+
 export const multiValue = {
   valueContainer: (provided: any, state: any) => ({
     ...provided,
