@@ -50,12 +50,12 @@ const Save = ({ className }: { className?: string }) => (
 interface LedgerAccount {
     //Top-Fields
     LedgerID: number
-    LedgerName: string;
+    Name: string;
     AccountGroup: string;
     AccountGroupId: number;
 
     // Mailing-Details
-    Name: string;
+    MailingName: string;
     Address: string;
     StateID: number;
     State: string;
@@ -82,12 +82,12 @@ interface LedgerAccount {
 interface LedgerData {
     //Top-Fields
     LedgerID: number;
-    LedgerName: string;
+    Name: string;
     AccountGroup: string;
     AccountGroupId: number;
 
     // Mailing-Details
-    Name: string;
+    MailingName: string;
     Address: string;
     StateID: number;
     State: string;
@@ -108,6 +108,36 @@ interface LedgerData {
     bankbranch: string;
 }
 
+interface Groups {
+    GroupID: number;
+    Description: string;
+}
+
+interface State {
+    ID: number;
+    Description: string;
+}
+
+interface District {
+    DistrictID: number;
+    DistrictName: string;
+}
+
+interface ZIPCode {
+    ZipCodeID: number,
+    ZipCodeName: string
+}
+
+interface Bank {
+    ID: number;
+    BankName: string;
+}
+
+interface RegisType {
+    ID: number;
+    Description: string;
+}
+
 const Ledger: React.FC = () => {
     const [ledgerAccounts, setLedgerAccounts] = useState<LedgerAccount[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -121,15 +151,22 @@ const Ledger: React.FC = () => {
     const [editItemId, setEditItemId] = useState<number | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [accountGroup, setAccountGroup] = useState<Groups[]>([]);
+    const [bank, setBank] = useState<Bank[]>([]);
+    const [state, setState] = useState<State[]>([]);
+    const [district, setDistrict] = useState<District[]>([]);
+    const [zipCode, setZipCode] = useState<ZIPCode[]>([]);
+    const[regisType, setRegisType] = useState<RegisType[]>([]);
+
     const [formData, setFormData] = useState<LedgerAccount>({
         //Top-Fields
         LedgerID: 0,
-        LedgerName: '',
+        Name: '',
         AccountGroup: '',
         AccountGroupId: 0,
 
         // Mailing-Details
-        Name: '',
+        MailingName: '',
         Address: '',
         StateID: 0,
         State: '',
@@ -248,12 +285,12 @@ const Ledger: React.FC = () => {
                 setFormData({
                     //Top-Fields
                     LedgerID: record.LedgerID,
-                    LedgerName: record.LedgerName,
+                    Name: record.Name,
                     AccountGroup: record.AccountGroup,
                     AccountGroupId: record.AccountGroupId,
 
                     // Mailing-Details
-                    Name: record.Name,
+                    MailingName: record.MailingName,
                     Address: record.Address,
                     StateID: record.StateID,
                     State: record.State,
@@ -282,6 +319,109 @@ const Ledger: React.FC = () => {
         }
     }
 
+    // =================== DropDown ====================
+    const fetchAccountGroup = async () => {
+        try {
+            const response = await fetchPostData('AccountingGroups/GetDataDropDown_AccountingGroups', {
+                CompanyId: 1
+            })
+            // console.log(response);
+            if (response && Array.isArray(response)) {
+                setAccountGroup(response);
+            } else {
+                setAccountGroup([]);
+            }
+        }
+        catch {
+            toastifyError("Error in getting a Account Group");
+        }
+    }
+
+    const fetchState = async () => {
+        try {
+            const response = await fetchPostData('State/GetDataDropDown_State', {
+                CompanyId: Number(localStorage.getItem('companyID')),
+            });
+            // console.log(response);
+
+            if (response && Array.isArray(response)) {
+                setState(response);
+            }
+        } catch {
+            toastifyError('Error fetching States');
+        }
+    }
+
+    const fetchDistrict = async (stateID: number | string) => {
+        try {
+            const response = await fetchPostData('District/GetDataDropDown_District', {
+                StateId: stateID,
+                CompanyId: Number(localStorage.getItem('companyID')),
+            })
+            // console.log(response);
+            if (response && Array.isArray(response)) {
+                setDistrict(response);
+            } else {
+                setDistrict([]);
+            }
+        } catch {
+            toastifyError('Error fetching District');
+        }
+    }
+
+    const fetchZipCode = async (districtId: number | string) => {
+        try {
+            const response = await fetchPostData('ZipCode/GetDataDropDown_ZipCode', {
+                CompanyId: Number(localStorage.getItem('companyID')),
+                DistrictId: districtId
+            })
+            // console.log(response);
+            if (response && Array.isArray(response)) {
+                setZipCode(response);
+            }
+            else {
+                setZipCode([]);
+            }
+        } catch {
+            toastifyError("Error fetching Zip Code");
+        }
+    }
+
+    const fetchBankName = async () => {
+        try {
+            const response = await fetchPostData('Bank/GetDataDropDown_Bank', {
+                CompanyId: 1
+            });
+            console.log(response);
+
+            if (response && Array.isArray(response)) {
+                setBank(response);
+            } else {
+                setBank([]);
+            }
+        }
+        catch {
+            toastifyError("Error fetching Bank name")
+        }
+    }
+
+    const fetchRegisType = async () => {
+        try{
+            const response = await fetchPostData('GSTRegType/GetDataDropDown_GSTRegType', {
+                CompanyId: 1
+            });
+            // console.log(response);
+
+            if(response && Array.isArray(response)){
+                setRegisType(response);
+            }else{
+                setRegisType([]);
+            }
+        }catch {
+            toastifyError('Error fetching Registration Type');
+        }
+    }
+
     useEffect(() => {
         if (editItemId) {
             fetchSingleData(editItemId);
@@ -290,16 +430,20 @@ const Ledger: React.FC = () => {
 
     useEffect(() => {
         fetchGetData();
+        fetchAccountGroup();
+        fetchState();
+        fetchBankName();
+        fetchRegisType();
     }, []);
 
     const Columns = [
         {
             name: "Ledger Name",
-            selector: (row: LedgerData) => row.LedgerName,
+            selector: (row: LedgerData) => row.Name,
             sortable: true,
             cell: (row: LedgerData) => (
                 <div>
-                    <div className="ledger-management-font-medium">{row.LedgerName}</div>
+                    <div className="ledger-management-font-medium">{row.Name}</div>
                 </div>
             )
         },
@@ -315,10 +459,10 @@ const Ledger: React.FC = () => {
         // Mailing-Details
         {
             name: "Name",
-            selector: (row: LedgerData) => row.Name,
+            selector: (row: LedgerData) => row.MailingName,
             sortable: true,
             cell: (row: LedgerData) => (
-                <span>{row.Name}</span>
+                <span>{row.MailingName}</span>
             )
         },
         {
@@ -514,11 +658,11 @@ const Ledger: React.FC = () => {
         const term = searchTerm.toLowerCase();
 
         return (
-            item.LedgerName?.toLowerCase().includes(term) ||
             item.Name?.toLowerCase().includes(term) ||
+            item.MailingName?.toLowerCase().includes(term) ||
             item.Address?.toLowerCase().includes(term) ||
             item.State?.toLowerCase().includes(term) ||
-            item.MobileNo?.toLowerCase().includes(term) ||
+            item.MobileNo ||
             item.email?.toLowerCase().includes(term) ||
             item.gstno?.toLowerCase().includes(term) ||
             item.bankname?.toLowerCase().includes(term) ||
@@ -526,14 +670,13 @@ const Ledger: React.FC = () => {
         );
     });
 
-
     const handleReset = () => {
         setFormData({
             LedgerID: 0,
-            LedgerName: '',
+            Name: '',
             AccountGroup: '',
             AccountGroupId: 0,
-            Name: '',
+            MailingName: '',
             Address: '',
             State: '',
             pincode: 0,
@@ -553,9 +696,6 @@ const Ledger: React.FC = () => {
         setEditItemId(null);
     };
 
-
-
-
     const ledgerGroups = [
         "Assets",
         "Liabilities",
@@ -563,14 +703,13 @@ const Ledger: React.FC = () => {
         "Income"
     ];
 
-
     const exportToExcel = () => {
         const rows = (filteredData.length ? filteredData : ledgerData).map((item: LedgerData) => ({
             "Ledger ID": item.LedgerID,
-            "Ledger Name": item.LedgerName,
+            "Ledger Name": item.Name,
             "Account Group": item.AccountGroup,
             "Account Group ID": item.AccountGroupId,
-            "Name": item.Name,
+            "Mailing Name": item.MailingName,
             "Address": item.Address,
             "State": item.State,
             "Pincode": item.pincode,
@@ -613,15 +752,15 @@ const Ledger: React.FC = () => {
                             type="text"
                             placeholder="Enter Ledger Name"
                             className="ledger-management-input w-100 challan requiredColor"
-                            value={formData.LedgerName || ""}
-                            onChange={(e) => setFormData({ ...formData, LedgerName: e.target.value })}
+                            value={formData.Name || ""}
+                            onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
                         />
                     </div>
 
                     <div className='col-md-6 mb-2'></div>
                 </div>
 
-                <div className="row">
+                <div className="row"> 
                     {/* -- BANK ACCOUNT DETAILS -- */}
                     <div className="col-md-6" style={{ borderRight: "1px solid #ccc", borderTop: "1px solid #ccc", paddingRight: "2rem" }}>
                         {/* Accounting Group */}
@@ -687,12 +826,10 @@ const Ledger: React.FC = () => {
                             {/* Bank-Name */}
                             <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Bank Name :</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Bank Name"
-                                    className="ledger-management-input w-100 challan"
-                                    value={formData.bankname || ""}
-                                    onChange={(e) => setFormData({ ...formData, bankname: e.target.value })}
+                                <Select
+                                    classNamePrefix="select"
+                                    placeholder="Enter District Type"
+                                    styles={selectCompactStyles}
                                 />
                             </div>
 
@@ -715,13 +852,13 @@ const Ledger: React.FC = () => {
                         <h4 className="section-heading mb-1 pt-2">Mailing Details</h4>
 
                         <div className="row">
-                            {/* Name */}
+                            {/* Mailing-Name */}
                             <div className="col-md-12 mb-1">
                                 <label className="ledger-management-label">Name :</label>
                                 <input type="text" className="ledger-management-input w-100 challan"
                                     placeholder="Enter Name"
-                                    value={formData.Name || ""}
-                                    onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
+                                    value={formData.MailingName || ""}
+                                    onChange={(e) => setFormData({ ...formData, MailingName: e.target.value })}
                                 />
                             </div>
 
@@ -738,24 +875,31 @@ const Ledger: React.FC = () => {
                             {/* State */}
                             <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">State :</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter State"
-                                    className="ledger-management-input w-100 challan"
-                                    value={formData.State || ""}
-                                    onChange={(e) => setFormData({ ...formData, State: e.target.value })}
+                                <Select
+                                    classNamePrefix="select"
+                                    placeholder="Enter District Type"
+                                    styles={selectCompactStyles}
+                                />
+                            </div>
+
+                            {/* District */}
+                            <div className="col-md-6 mb-1">
+                                <label className="ledger-management-label">District :</label>
+                                <Select
+                                    classNamePrefix="select"
+                                    placeholder="Enter District Type"
+                                    styles={selectCompactStyles}
                                 />
                             </div>
 
                             {/* Pincode */}
                             <div className="col-md-6 mb-1">
                                 <label className="ledger-management-label">Pincode :</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Pincode"
-                                    className="ledger-management-input w-100 challan"
-                                    value={formData.pincode || ""}
-                                    onChange={(e) => setFormData({ ...formData, pincode: Number(e.target.value) })}
+                                <Select
+                                    classNamePrefix="select"
+                                    placeholder="Enter District Type"
+                                    styles={selectCompactStyles}
+
                                 />
                             </div>
 
