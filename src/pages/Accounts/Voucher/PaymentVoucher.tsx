@@ -10,22 +10,6 @@ import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common
 import { fetchPostData } from "@/components/hooks/Api";
 import { getValue, getOptions, getChange } from "@/common/commonFunc";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
-import ConfirmModal from "@/common/ConfirmModal";
-
-//==================== Icon Components ====================
-const Edit = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-    </svg>
-);
-
-const Trash2 = ({ className }: { className?: string }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-    </svg>
-);
 
 interface Voucher {
     ID: Number;
@@ -56,9 +40,6 @@ const PaymentVoucher = () => {
     const [singleRow, setSingleRow] = useState({ name: "", amount: "" });
     const [particulars, setParticulars] = useState([]);
     const [ledgerAccounts, setLedgerAccounts] = useState<ledAccount[]>([]);
-    const [editItemId, setEditItemId] = useState<number | null>(null);
-    const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [showModal, setShowModal] = useState(false);
     const [particular, setParticular] = useState<ledAccount[]>([]);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [form, setForm] = useState({
@@ -68,11 +49,12 @@ const PaymentVoucher = () => {
         LedgerID: 0,
         VoucherType: "Payment",
         Narration: '',
-        VoucherNo: "Auto Generated",
+        VoucherNo: 0,
         PartyLadgerName: '',
         TotalAmt: 0,
         AccountObj: []
     });
+
 
     const removeParticular = (id) => {
         setParticulars(particulars.filter((p) => p.id !== id));
@@ -99,32 +81,32 @@ const PaymentVoucher = () => {
     }
 
     // ===================TODO-Func====================
-    // const fetchGetData = async () => {
-    //     try {
-    //         const payload = {
-    //             VoucherNo: "",
-    //             Narration: "",
-    //             VoucherType: "Payment",
-    //             FromDate: "",
-    //             ToDate: "",
-    //             CompanyId: localStorage.getItem('companyID')
-    //         };
+    const fetchGetData = async () => {
+        try {
+            const payload = {
+                VoucherNo: "",
+                Narration: "",
+                VoucherType: "Payment",
+                FromDate: "",
+                ToDate: "",
+                CompanyId: localStorage.getItem('companyID')
+            };
 
-    //         const response = await fetchPostData('Accountingvoucher/GetData_Accountingvoucher', payload);
+            const response = await fetchPostData('Accountingvoucher/GetData_Accountingvoucher', payload);
 
-    //         if (response && Array.isArray(response)) {
-    //             const modifiedData = response.map((item) => ({
-    //                 ...item,
-    //                 AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
-    //             }));
-    //             setVoucher(modifiedData);
-    //         } else {
-    //             setVoucher([]);
-    //         }
-    //     } catch {
-    //         toastifyError("Error fetching the Data");
-    //     }
-    // };
+            if (response && Array.isArray(response)) {
+                const modifiedData = response.map((item) => ({
+                    ...item,
+                    AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
+                }));
+                setVoucher(modifiedData);
+            } else {
+                setVoucher([]);
+            }
+        } catch {
+            toastifyError("Error fetching the Data");
+        }
+    };
 
     const fetchInsertData = async () => {
         if (!form.LedgerID) {
@@ -155,8 +137,7 @@ const PaymentVoucher = () => {
 
             if (response) {
                 toastifySuccess("Voucher saved successfully");
-                // await fetchGetData();
-                handleReset();
+                await fetchGetData();
 
                 setForm(prev => ({ ...prev, AccountObj: [] }));
                 setParticulars([]);
@@ -171,37 +152,10 @@ const PaymentVoucher = () => {
         }
     };
 
-    const fetchUpdateData = async (form: AccountGroups, Id: number) => {
-    }
-
-    const fetchDeleteData = async (Id: number) => {
-
-    }
-
     useEffect(() => {
-        // fetchGetData();
+        fetchGetData();
         ledgerAccount();
     }, []);
-
-    const handleInsertAndUpdate = async () => {
-        // if (!checkValidationError()) return;
-        // if (editItemId) {
-        //     const success = await fetchUpdateData(form, editItemId);
-
-        //     if (success) {
-
-        //         // resetData();
-        //         handleReset();
-        //     }
-        // }
-        // if (!editItemId) {
-        //     const success = await fetchInsertData(form);
-        //     if (success) {
-        //         // resetData();
-        //         handleReset();
-        //     }
-        // }
-    }
 
     const addParticular = () => {
         if (!singleRow.name || !singleRow.amount) {
@@ -209,19 +163,22 @@ const PaymentVoucher = () => {
             return;
         }
 
-        const data = {
-            ledgerName: singleRow.name,
-            AccountingLedgerID: Number(singleRow.AccountingLedgerID),
-            amount: Number(singleRow.amount),
-            // id: Date.now()
-        };
-
-        setParticulars(prev => [...prev, data]);
-
         setForm(prev => ({
             ...prev,
-            AccountObj: [...prev.AccountObj, data]
+            AccountObj: [
+                ...prev.AccountObj,
+                {
+                    ledgerName: singleRow.name,
+                    AccountingLedgerID: Number(singleRow.AccountingLedgerID),
+                    amount: Number(singleRow.amount)
+                }
+            ]
         }));
+
+        setParticulars(prev => [
+            ...prev,
+            { id: Date.now(), name: singleRow.name, amount: singleRow.amount }
+        ]);
 
         setSingleRow({ name: "", amount: "" });
     };
@@ -229,55 +186,36 @@ const PaymentVoucher = () => {
     const Columns = [
         {
             name: "Sr No.",
-            selector: (row, index) => index + 1,
+            selector: (row) => row.SrNo,
             center: true,
             width: "100px"
         },
         {
             name: "Name",
-            selector: (row: Voucher) => row.ledgerName,
+            selector: (row) => row.ledgerName,
             sortable: true,
             center: true
         },
         {
             name: "Amount",
-            selector: (row: Voucher) => row.amount,
+            selector: (row) => row.amount,
             sortable: true,
             center: true
         },
         {
-            name: 'Actions',
-            cell: (row: Voucher) => (
-                <div className="d-flex gap-2">
-                    <button onClick={() => { setEditItemId(row.ID); }} className="material-name-btn-icon" title="Edit">
-                        <Edit className="material-name-icon-sm" />
-                    </button>
-                    <button onClick={() => { setSelectedId(row.ID); setShowModal(true); }} className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
-                        <Trash2 className="material-name-icon-sm" />
-                    </button>
-                </div>
-            )
-        }
+            name: "Action",
+            cell: (row) => (
+                <button onClick={() => removeParticular(row.id)}>
+                    <FiTrash2 size={16} />
+                </button>
+            ),
+            center: true,
+        },
     ];
 
     const resizeableColumns = useResizableColumns(Columns).map(col => ({
         ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
-
-    const handleReset = () => {
-        setForm({
-            ID: 0,
-            VchDate: 0,
-            PartyName: '',
-            LedgerID: 0,
-            VoucherType: "Payment",
-            Narration: '',
-            VoucherNo: 0,
-            PartyLadgerName: '',
-            TotalAmt: 0,
-            AccountObj: []
-        });
-    }
 
     return (
         <div className="voucher-container">
@@ -288,12 +226,12 @@ const PaymentVoucher = () => {
                     </div>
                     <div className="col-lg-3">
                         <input type="text" className="voucher-col-input challan"
-                            value="Auto Generated"
+                            value={voucherNo}
                             onChange={(e) => setVoucherNo(e.target.value)}
                             placeholder="Enter No."
-                            readOnly={true}
                         />
                     </div>
+
                     <div className="col-lg-1 text-end px-0 voucher-col">
                         <label className="text-nowrap">Date</label>
                     </div>
@@ -371,6 +309,8 @@ const PaymentVoucher = () => {
                                             styles={selectCompactStyles}
                                         />
 
+
+
                                         <input type="text" value={singleRow.amount}
                                             onChange={(e) => {
                                                 const val = e.target.value;
@@ -393,7 +333,7 @@ const PaymentVoucher = () => {
                             <div className="particular-table">
                                 <DataTable
                                     columns={resizeableColumns}
-                                    data={particulars}
+                                    data={voucher.flatMap(v => v.AccountingObj)}
                                     pagination
                                     highlightOnHover
                                     paginationRowsPerPageOptions={[5, 10, 15]}
@@ -426,15 +366,6 @@ const PaymentVoucher = () => {
                     </div>
                 </div>
             </div>
-
-            <ConfirmModal show={showModal}
-                handleClose={() => setShowModal(false)}
-                handleConfirm={() => {
-                    if (selectedId !== null) {
-                        fetchDeleteData(selectedId);
-                    }
-                    setShowModal(false);
-            }} />
         </div>
     );
 };
