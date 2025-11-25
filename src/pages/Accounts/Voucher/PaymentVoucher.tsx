@@ -217,6 +217,10 @@ const PaymentVoucher = () => {
         ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
 
+    const handleReset = () => {
+        
+    }
+
     return (
         <div className="voucher-container">
             <div className="voucher-card">
@@ -309,8 +313,6 @@ const PaymentVoucher = () => {
                                             styles={selectCompactStyles}
                                         />
 
-
-
                                         <input type="text" value={singleRow.amount}
                                             onChange={(e) => {
                                                 const val = e.target.value;
@@ -319,7 +321,7 @@ const PaymentVoucher = () => {
                                                 }
                                             }}
                                             placeholder="Amount"
-                                            className="amount-input challan w-100"
+                                            className="amount-input challan "
                                         />
                                     </div>
                                     <div className=" d-flex justify-content-end" >
