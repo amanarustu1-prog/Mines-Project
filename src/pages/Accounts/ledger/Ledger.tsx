@@ -59,6 +59,8 @@ interface LedgerAccount {
     Address: string;
     StateID: number;
     State: string;
+    DistrictID: number;
+    District: string;
     pincode: number;
     MobileNo: number;
     email: string;
@@ -72,7 +74,7 @@ interface LedgerAccount {
     bankaccountholder: string;
     bankAcNo: number;
     bankifsc: string;
-    bankname: string;
+    bankname: number;
     bankbranch: string;
     isActive: boolean;
     CreatedDate: string;
@@ -91,6 +93,8 @@ interface LedgerData {
     Address: string;
     StateID: number;
     State: string;
+    DistrictID:number;
+    District: string;
     pincode: number;
     MobileNo: number;
     email: string;
@@ -104,7 +108,7 @@ interface LedgerData {
     bankaccountholder: string;
     bankAcNo: number;
     bankifsc: string;
-    bankname: string;
+    bankname: number;
     bankbranch: string;
 }
 
@@ -170,6 +174,8 @@ const Ledger: React.FC = () => {
         Address: '',
         StateID: 0,
         State: '',
+        DistrictID: 0,
+        District: '',
         pincode: 0,
         MobileNo: 0,
         email: '',
@@ -452,7 +458,7 @@ const Ledger: React.FC = () => {
             selector: (row: LedgerData) => row.AccountGroupId,
             sortable: true,
             cell: (row: LedgerData) => (
-                <span>{row.LedgerData}</span>
+                <span>{row.AccountGroup}</span>
             )
         },
 
@@ -696,13 +702,6 @@ const Ledger: React.FC = () => {
         setEditItemId(null);
     };
 
-    const ledgerGroups = [
-        "Assets",
-        "Liabilities",
-        "Expenses",
-        "Income"
-    ];
-
     const exportToExcel = () => {
         const rows = (filteredData.length ? filteredData : ledgerData).map((item: LedgerData) => ({
             "Ledger ID": item.LedgerID,
@@ -767,25 +766,28 @@ const Ledger: React.FC = () => {
                         <div className='row'>
                             <div className="col-md-12  mb-1 mt-1">
                                 <label className="ledger-management-label">Accounting Group  <span className="text-danger">*</span></label>
-                                <Select
-                                    className="w-100 requiredColor"
+                                <Select className="w-100 requiredColor"
                                     placeholder="Select Ledger Group"
-                                    value={
-                                        formData.ledgerGroup
-                                            ? { label: formData.ledgerGroup, value: formData.ledgerGroup }
-                                            : null
+                                    value={formData.AccountGroupId ?
+                                        {
+                                            value: formData.AccountGroupId,
+                                            label: accountGroup.find((a) => a.GroupID === Number(formData.AccountGroupId))?.Description
+                                        } : null
                                     }
-                                    onChange={(selected) =>
-                                        handleInputChange("ledgerGroup", selected ? selected.value : "")
-                                    }
-                                    options={ledgerGroups.map((grp) => ({
-                                        label: grp,
-                                        value: grp,
+                                    options={accountGroup.map((a) => ({
+                                        value: a.GroupID,
+                                        label: a.Description
                                     }))}
+                                    onChange={(opt) => (
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            AccountGroupId: Number(opt?.value),
+                                            AccountGroup: opt?.label
+                                        }))
+                                    )}
                                     isClearable
                                     styles={requiredColorStyles}
                                 />
-
                             </div>
                         </div>
                         <h4 className="mb-1 section-heading  pt-2 ">Bank Account Details</h4>
@@ -829,6 +831,24 @@ const Ledger: React.FC = () => {
                                 <Select
                                     classNamePrefix="select"
                                     placeholder="Enter District Type"
+                                    value = {formData.bankname ? 
+                                        {
+                                            value: formData.bankname,
+                                            label: bank.find((b) => b.ID === Number(formData.bankname))
+                                        } : null
+                                    }
+                                    options={
+                                        bank.map((b) => ({
+                                            value: b.ID,
+                                            label: b.BankName
+                                        }))
+                                    }
+                                    onChange={(selectedOption)=> {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            bankname: Number(selectedOption?.value ?? 0),
+                                        }))
+                                    }}
                                     styles={selectCompactStyles}
                                 />
                             </div>
@@ -877,6 +897,25 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">State :</label>
                                 <Select
                                     classNamePrefix="select"
+                                    value={formData.StateID
+                                    ? {
+                                      value: formData.StateID,
+                                      label: state.find((d) => d.ID === Number(formData.StateID))?.Description || '',
+                                    } : null
+                                  }
+                                  options={state.map((d) => ({
+                                    value: d.ID,
+                                    label: d.Description,
+                                  }))}
+                                  onChange={(selectedOption) => {
+                                    const stateID = selectedOption?.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      StateID: Number(selectedOption?.value ?? 0),
+                                      State: selectedOption?.label
+                                    }))
+                                    if (stateID) fetchDistrict(stateID);
+                                  }}
                                     placeholder="Enter District Type"
                                     styles={selectCompactStyles}
                                 />
@@ -887,6 +926,25 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">District :</label>
                                 <Select
                                     classNamePrefix="select"
+                                    value={formData.DistrictID
+                                    ? {
+                                      value: formData.DistrictID,
+                                      label: district.find((d) => d.DistrictID === Number(formData.DistrictID))?.DistrictName || '',
+                                    } : null
+                                  }
+                                  options={district.map((d) => ({
+                                    value: d.DistrictID,
+                                    label: d.DistrictName,
+                                  }))}
+                                  onChange={(selectedOption) => {
+                                    const districtID = selectedOption?.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      DistrictID: Number(selectedOption?.value ?? 0),
+                                      District: selectedOption?.label
+                                    }))
+                                    if (districtID ) fetchZipCode(districtID);
+                                  }}
                                     placeholder="Enter District Type"
                                     styles={selectCompactStyles}
                                 />
@@ -897,9 +955,26 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">Pincode :</label>
                                 <Select
                                     classNamePrefix="select"
+                                    value={formData.pincode
+                                    ? {
+                                      value: formData.pincode,
+                                      label: zipCode.find((d) => d.ZipCodeID === Number(formData.pincode))?.ZipCodeName || '',
+                                    } : null
+                                  }
+                                  options={zipCode.map((d) => ({
+                                    value: d.ZipCodeID,
+                                    label: d.ZipCodeName,
+                                  }))}
+                                  onChange={(selectedOption) => {
+                                    const zipCodeID = selectedOption?.value;
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      pincode: Number(selectedOption?.value ?? 0),
+                                    }))
+                                    if (zipCodeID) fetchDistrict(zipCodeID);
+                                  }}
                                     placeholder="Enter District Type"
                                     styles={selectCompactStyles}
-
                                 />
                             </div>
 
@@ -1015,11 +1090,7 @@ const Ledger: React.FC = () => {
                     </div>
 
                     <div className="ledger-management-header-actions">
-                        <button
-                            type="button"
-                            onClick={exportToExcel}
-                            className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2"
-                        >
+                        <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary py-1 d-flex align-items-center gap-2 ms-2">
                             <FaFileExcel size={14} /> Export
                         </button>
                         <button onClick={() => setShowDetailForm(true)} className="ledger-management-btn ledger-management-btn-primary">
