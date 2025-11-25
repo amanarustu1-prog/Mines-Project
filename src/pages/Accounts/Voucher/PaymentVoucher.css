@@ -226,3 +226,52 @@ textarea {
 .save-btn:active {
   background: #1d4ed8;
 }
+
+
+.voucher-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.voucher-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.voucher-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.voucher-search-input {
+  min-width: 260px;
+  max-width: 340px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+}
+
+.voucher-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.btn-add-voucher {
+  background: #0b3b70;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-add-voucher:hover {
+  opacity: 0.9;
+}
