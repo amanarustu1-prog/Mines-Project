@@ -12,6 +12,7 @@ import { StylesConfig } from "react-select";
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
 import { Space_Not_Allow } from '@/common/validation';
+import { getValue, getOptions, getChange } from "@/common/commonFunc";
 
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
@@ -214,12 +215,12 @@ const GroupCreation = () => {
         setForm({
           GroupID: record.GroupID,
           Description: record.Description,
-          parent: record.parent || '',  
+          parent: record.parent || '',
           primary_group: accountGroup.find((a) => a.GroupID === Number(record.parent))?.Description || '',
-                  IsBank: record.IsBank === "1" ? true : false,
-        Iscash: record.Iscash === "1" ? true : false,
-        IsSale: record.IsSale === "1" ? true : false,
-        IsPurchase: record.IsPurchase === "1" ? true : false,
+          IsBank: record.IsBank === "1" ? true : false,
+          Iscash: record.Iscash === "1" ? true : false,
+          IsSale: record.IsSale === "1" ? true : false,
+          IsPurchase: record.IsPurchase === "1" ? true : false,
           CreatedDate: record.CreatedDate,
           UpdatedDate: record.UpdatedDate
         })
@@ -270,21 +271,21 @@ const GroupCreation = () => {
 
   // =================== Valiadation ===================
   const checkValidationError = () => {
-  let valid = true;
+    let valid = true;
 
-  const descriptionValidation = Space_Not_Allow(form.Description);
-  const parentValidation = Space_Not_Allow(form.primary_group);
+    const descriptionValidation = Space_Not_Allow(form.Description);
+    const parentValidation = Space_Not_Allow(form.primary_group);
 
-  setErrors({
-    DescriptionError: descriptionValidation !== 'true' ? descriptionValidation : '',
-    ParentGroupError: parentValidation !== 'true' ? parentValidation : '',
-  });
+    setErrors({
+      DescriptionError: descriptionValidation !== 'true' ? descriptionValidation : '',
+      ParentGroupError: parentValidation !== 'true' ? parentValidation : '',
+    });
 
-  if (descriptionValidation !== 'true' || parentValidation !== 'true') {
-    valid = false;
-  }
+    if (descriptionValidation !== 'true' || parentValidation !== 'true') {
+      valid = false;
+    }
 
-  return valid;
+    return valid;
   };
 
   useEffect(() => {
@@ -378,10 +379,10 @@ const GroupCreation = () => {
   ];
 
   const handleChange = (field: string, value: boolean) => {
-  setForm(prev => ({
-    ...prev,
-    [field]: value
-  }));
+    setForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   const resizeableColumns = useResizableColumns(Columns).map(col => ({
@@ -472,10 +473,10 @@ const GroupCreation = () => {
               <label className="ledger-management-label mb-0">Parent Group {!form.primary_group && (<span className="text-danger"> *</span>)}</label>
             </div>
             <div className="col-md-3">
-              <Select
+              {/* <Select
                 classNamePrefix="select"
                 placeholder="Select parent group"
-                value={form.parent ? 
+                value={form.parent ?
                   {
                     value: form.parent,
                     label: accountGroup.find(a => a.GroupID === Number(form.parent))?.Description || ''
@@ -495,7 +496,17 @@ const GroupCreation = () => {
                 isClearable
                 isDisabled={false}
                 styles={requiredColorStyles}
+              /> */}
+              <Select
+                className="w-100 requiredColor"
+                placeholder="Select Ledger Group"
+                value={getValue(form.parent, accountGroup)}
+                options={getOptions(accountGroup)}
+                onChange={getChange(setForm)}
+                isClearable
+                styles={requiredColorStyles}
               />
+
               {errors.ParentGroupError && (
                 <div className="invalid-feedback d-block">{errors.ParentGroupError}</div>
               )}
@@ -589,7 +600,7 @@ const GroupCreation = () => {
               {/* Search + Export Row */}
               <div className="d-flex justify-content-end align-items-center gap-3 mb-2">
                 <input type="text" placeholder="Search..." className="form-control form-control-sm challan"
-                  style={{ width: "200px", borderRadius: "5px" }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+                  style={{ width: "200px", borderRadius: "5px" }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
 
                 <button type="button" onClick={exportToExcel} className="btn btn-sm btn-primary py-1 d-flex px-2 align-items-center gap-2">
                   <FaFileExcel size={14} /> Export
