@@ -89,7 +89,7 @@ import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
 import Purchase from './pages/sale/Puchase/Puchase'
 import PartyRate from './pages/sale/Party-Rate/PartyRate'
 import MaterialRequestEntry from './pages/Inventory/material-request-entry/MaterialRequestEntry'
-import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher'
+// import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher'
 import Receipt from './pages/Accounts/Receipt/Receipt'
 import Contra from './pages/Accounts/Contra/Contra'
 import Journal from './pages/Accounts/Journal/Journal'
@@ -117,6 +117,7 @@ import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
 import MaterialName from './pages/Inventory/Material-Name/Material-Name';
+import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher';
 
 // Layout component for protected routes
 // const ProtectedLayout = () => {
