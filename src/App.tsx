@@ -118,6 +118,7 @@ import axios from 'axios';
 import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
 import MaterialName from './pages/Inventory/Material-Name/Material-Name';
 import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher';
+import DataList from './pages/Accounts/Voucher/DataList';
 
 // Layout component for protected routes
 // const ProtectedLayout = () => {
@@ -207,164 +208,165 @@ const ProtectedLayout = () => {
 function App() {
   return (
     <>
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path='/forgot-password' element={<ForgotPassword />}/>
-      <Route element={<ProtectedLayout />}>
-        {/* Main Dashboard */}
-        <Route path="/dashboard-page" element={<Dashboard />} />
-        {/* HR Forms */}
-        <Route path="/form" element={<Form />} />
-        <Route path="/formthree" element={<FormThree />} />
-        <Route path="/formfour" element={<FormFour />} />
-        <Route path="/form2" element={<Form2 />} />
-        {/* <Route path="/form3" element={<Form3 />} />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route element={<ProtectedLayout />}>
+          {/* Main Dashboard */}
+          <Route path="/dashboard-page" element={<Dashboard />} />
+          {/* HR Forms */}
+          <Route path="/form" element={<Form />} />
+          <Route path="/formthree" element={<FormThree />} />
+          <Route path="/formfour" element={<FormFour />} />
+          <Route path="/form2" element={<Form2 />} />
+          {/* <Route path="/form3" element={<Form3 />} />
           <Route path="/form4" element={<Form4 />} /> */}
 
-        {/* Accounts */}
-        {/* <Route path="/accounts/dashboard" element={<AccountsDashboard />} /> */}
-        {/* <Route path="/accounts/challan-history" element={<ChallanHistory />} /> */}
-        {/* <Route path="/accounts/create-challan" element={<CreateChallan />} /> */}
+          {/* Accounts */}
+          {/* <Route path="/accounts/dashboard" element={<AccountsDashboard />} /> */}
+          {/* <Route path="/accounts/challan-history" element={<ChallanHistory />} /> */}
+          {/* <Route path="/accounts/create-challan" element={<CreateChallan />} /> */}
 
-        {/* Dashboard */}
-        <Route path="/dashboard/active-assets" element={<ActiveAssets />} />
-        <Route path="/dashboard/machine-usage" element={<MachineUsage />} />
-        <Route path="/dashboard/maintenance-alerts" element={<MaintenanceAlerts />} />
-        <Route path="/dashboard/material-stock" element={<MaterialStock />} />
-        <Route path="/dashboard/production-summary" element={<ProductionSummary />} />
+          {/* Dashboard */}
+          <Route path="/dashboard/active-assets" element={<ActiveAssets />} />
+          <Route path="/dashboard/machine-usage" element={<MachineUsage />} />
+          <Route path="/dashboard/maintenance-alerts" element={<MaintenanceAlerts />} />
+          <Route path="/dashboard/material-stock" element={<MaterialStock />} />
+          <Route path="/dashboard/production-summary" element={<ProductionSummary />} />
 
-        {/* Equipment */}
-        <Route path="/equipment/fleet" element={<FleetManagement />} />
-        <Route path="/equipment/maintenance" element={<MaintenanceManagement />} />
-        <Route path="/equipment/performance" element={<PerformanceManagement />} />
+          {/* Equipment */}
+          <Route path="/equipment/fleet" element={<FleetManagement />} />
+          <Route path="/equipment/maintenance" element={<MaintenanceManagement />} />
+          <Route path="/equipment/performance" element={<PerformanceManagement />} />
 
-        {/* Mining */}
-        <Route path="/mining/drilling" element={<DrillingOperations />} />
-        <Route path="/mining/extraction" element={<ExtractionOperations />} />
-        <Route path="/mining/processing" element={<ProcessingOperations />} />
-        <Route path="/mining/transport" element={<TransportOperations />} />
+          {/* Mining */}
+          <Route path="/mining/drilling" element={<DrillingOperations />} />
+          <Route path="/mining/extraction" element={<ExtractionOperations />} />
+          <Route path="/mining/processing" element={<ProcessingOperations />} />
+          <Route path="/mining/transport" element={<TransportOperations />} />
 
-        {/* Crusher */}
-        <Route path="/crusher/entries/daily-logs" element={<CrusherDailyLogs />} />
-        <Route path="/crusher/masters/units" element={<CrusherUnits />} />
-        <Route path="/crusher/reports/daily-log" element={<CrusherReports />} />
+          {/* Crusher */}
+          <Route path="/crusher/entries/daily-logs" element={<CrusherDailyLogs />} />
+          <Route path="/crusher/masters/units" element={<CrusherUnits />} />
+          <Route path="/crusher/reports/daily-log" element={<CrusherReports />} />
 
-        {/* Hr */}
-        <Route path="/employee-master" element={<EmployeeMaster />} />
-        <Route path="/attendance-management" element={<AttendanceManagement />} />
-        <Route path="/leave-management" element={<LeaveManagement />} />
-        <Route path="/employee-belonging-management" element={<EmployeeBelongingsManagement />} />
-        <Route path="/salary-calculation" element={<SalaryCalculation />} />
-        {/* <Route path="/list-management" element={<ListManagement />} /> */}
-        <Route path="/shift-management" element={<ShiftManagement />} />
-        <Route path="/Department-Master" element={<DepartmentMaster />} />
-        <Route path="/ID-Proof" element={<IDProof />} />
-        <Route path="/maritial-status" element={<MaritialStatus />} />
-        <Route path="/leave-type-master" element={<LeaveTypeMaster />} />
-
-
-
-        {/* Fuel */}
-        <Route path="/fuel-management" element={<FuelManagement />} />
-        <Route path="/fuel-stock-vendor" element={<FuelVendor />} />
-        {/* <Route path="/fuel/fuel-type-master" element={<FuelType />} /> */}
-
-
-        {/* Mining */}
-        <Route path="/pit-block" element={<PitBlock />} />
-        <Route path="/explosive-entry" element={<ExplosiveEntry />} />
-        <Route path="/entry-explosive" element={<EntryExplosive />} />
-        <Route path="/blast-entry" element={<BlastEntry />} />
-        <Route path="/drilling-entry" element={<DrillingEntry />} />
-        <Route path="/masterTable/material-name" element={<MaterialName />} />
-
-        {/* vehicle */}
-        <Route path="/daily-check-list" element={<DailyCheckList />} />
-        <Route path="/daily-check-list-master" element={<DailyCheckListMaster />} />
-        {/* <Route path="/daily-check-list-master-1" element={<DailyCheckListMaster1 />} /> */}
-        {/* <Route path="/daily-check-list-master-2" element={<DailyCheckListMaster2 />} /> */}
-        <Route path="/vehicle-master-entry" element={<VehicleMasterEntry />} />
-        <Route path="/vehicle-job-completion" element={<VehicleJobCompletion />} />
-        <Route path="/vehicle-job-details" element={<VehicleJobDetails />} />
-        <Route path="/vehicle-master-details" element={<VehicleMasterDetails />} />
-        <Route path="/vehicle-renewal-details" element={<VehicleRenewalDetails />} />
-        <Route path="/masterTable/vehicle-service-type" element={<VehicleServiceType />} />
-        <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
-        <Route path="/daily-running" element={<DailyRunning />} />
-
-        {/* Sale */}
-        <Route path="/vehicle-type" element={<VehicleType />} />
-        <Route path="/material-name" element={<MaterialName />} />  
-        <Route path="/loading-charge" element={<LoadingCharge />} />
-        <Route path="/sundry-debtors" element={<SundryDebtors />} />
-        <Route path="/product-masonry" element={<ProductMasonry />} />
-       
-        <Route path="/inventory/maintenance-type" element={<MaintenanceType />} />
-        <Route path="/tp-charges" element={<TPCharges />} />
-        <Route path="/create-challan" element={<CreateChallan />} />
-        <Route path="/pending-challan" element={<PendingChallan />} />
-        <Route path="/approved-challan" element={<ApprovedChallan />} />
-        <Route path="/extra-tp" element={<ExtraTP />} />
-        <Route path="/purchase" element={<Purchase />} />
-        <Route path="/party-rate" element={<PartyRate />} />
-        {/* <Route path="/challan-screen" element={<ChallanScreen />} /> */}
+          {/* Hr */}
+          <Route path="/employee-master" element={<EmployeeMaster />} />
+          <Route path="/attendance-management" element={<AttendanceManagement />} />
+          <Route path="/leave-management" element={<LeaveManagement />} />
+          <Route path="/employee-belonging-management" element={<EmployeeBelongingsManagement />} />
+          <Route path="/salary-calculation" element={<SalaryCalculation />} />
+          {/* <Route path="/list-management" element={<ListManagement />} /> */}
+          <Route path="/shift-management" element={<ShiftManagement />} />
+          <Route path="/Department-Master" element={<DepartmentMaster />} />
+          <Route path="/ID-Proof" element={<IDProof />} />
+          <Route path="/maritial-status" element={<MaritialStatus />} />
+          <Route path="/leave-type-master" element={<LeaveTypeMaster />} />
 
 
 
-        {/* <Route path="/create-purchase-order" element={<CreatePurchaseOrder />} />
+          {/* Fuel */}
+          <Route path="/fuel-management" element={<FuelManagement />} />
+          <Route path="/fuel-stock-vendor" element={<FuelVendor />} />
+          {/* <Route path="/fuel/fuel-type-master" element={<FuelType />} /> */}
+
+
+          {/* Mining */}
+          <Route path="/pit-block" element={<PitBlock />} />
+          <Route path="/explosive-entry" element={<ExplosiveEntry />} />
+          <Route path="/entry-explosive" element={<EntryExplosive />} />
+          <Route path="/blast-entry" element={<BlastEntry />} />
+          <Route path="/drilling-entry" element={<DrillingEntry />} />
+          <Route path="/masterTable/material-name" element={<MaterialName />} />
+
+          {/* vehicle */}
+          <Route path="/daily-check-list" element={<DailyCheckList />} />
+          <Route path="/daily-check-list-master" element={<DailyCheckListMaster />} />
+          {/* <Route path="/daily-check-list-master-1" element={<DailyCheckListMaster1 />} /> */}
+          {/* <Route path="/daily-check-list-master-2" element={<DailyCheckListMaster2 />} /> */}
+          <Route path="/vehicle-master-entry" element={<VehicleMasterEntry />} />
+          <Route path="/vehicle-job-completion" element={<VehicleJobCompletion />} />
+          <Route path="/vehicle-job-details" element={<VehicleJobDetails />} />
+          <Route path="/vehicle-master-details" element={<VehicleMasterDetails />} />
+          <Route path="/vehicle-renewal-details" element={<VehicleRenewalDetails />} />
+          <Route path="/masterTable/vehicle-service-type" element={<VehicleServiceType />} />
+          <Route path="/vehicle-service-entry" element={<VehicleServiceEntry />} />
+          <Route path="/daily-running" element={<DailyRunning />} />
+
+          {/* Sale */}
+          <Route path="/vehicle-type" element={<VehicleType />} />
+          <Route path="/material-name" element={<MaterialName />} />
+          <Route path="/loading-charge" element={<LoadingCharge />} />
+          <Route path="/sundry-debtors" element={<SundryDebtors />} />
+          <Route path="/product-masonry" element={<ProductMasonry />} />
+
+          <Route path="/inventory/maintenance-type" element={<MaintenanceType />} />
+          <Route path="/tp-charges" element={<TPCharges />} />
+          <Route path="/create-challan" element={<CreateChallan />} />
+          <Route path="/pending-challan" element={<PendingChallan />} />
+          <Route path="/approved-challan" element={<ApprovedChallan />} />
+          <Route path="/extra-tp" element={<ExtraTP />} />
+          <Route path="/purchase" element={<Purchase />} />
+          <Route path="/party-rate" element={<PartyRate />} />
+          {/* <Route path="/challan-screen" element={<ChallanScreen />} /> */}
+
+
+
+          {/* <Route path="/create-purchase-order" element={<CreatePurchaseOrder />} />
           <Route path="/po-approval" element={<POApproval />} />
           <Route path="/modify-po" element={<ModifyPO />} />
           <Route path="/po-print" element={<POPrint />} /> */}
 
 
-        {/* Inventory */}
-        <Route path="/inventory/material-group" element={<MaterialGroup />} />
-        <Route path="/masterTable/material-sub-type" element={<MaterialSubType />} />
-        <Route path="/masterTable/material-type" element={<MaterialType />} />
-        <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
+          {/* Inventory */}
+          <Route path="/inventory/material-group" element={<MaterialGroup />} />
+          <Route path="/masterTable/material-sub-type" element={<MaterialSubType />} />
+          <Route path="/masterTable/material-type" element={<MaterialType />} />
+          <Route path="/inventory/unit-of-measurement" element={<UnitofMeasurement />} />
 
-        <Route path="/material-request-entry" element={<MaterialRequestEntry />} />
-        <Route path="/request-approval" element={<RequestApproval />} />
-        <Route path="/Reject-Approved-Requests" element={<RejectApprovedRequests />} />
-        <Route path="/Request-Quotation" element={<RequestQuotation />} />
-        <Route path="/Quotation-Entry" element={<QuotationEntry />} />
-        <Route path="/Quotation-Comparison" element={<QuotationComparison />} />
-        <Route path="/Quotation-Approve" element={<QuotationApprove />} />
+          <Route path="/material-request-entry" element={<MaterialRequestEntry />} />
+          <Route path="/request-approval" element={<RequestApproval />} />
+          <Route path="/Reject-Approved-Requests" element={<RejectApprovedRequests />} />
+          <Route path="/Request-Quotation" element={<RequestQuotation />} />
+          <Route path="/Quotation-Entry" element={<QuotationEntry />} />
+          <Route path="/Quotation-Comparison" element={<QuotationComparison />} />
+          <Route path="/Quotation-Approve" element={<QuotationApprove />} />
 
-        {/* GRN Management */}
-        <Route path="/grn-against-po" element={<GRNAgainstPO />} />
-        <Route path="/a-direct-grn" element={<DirectGRN />} />
-        <Route path="/material-inspection-entry" element={<MaterialInspectionEntry />} />
-        <Route path="/serial-number-unique-part-code-entry" element={<SerialNumberUniquePartCodeEntry />} />
-        <Route path="/stock-update-post-grn" element={<StockUpdatePostGRN />} />
+          {/* GRN Management */}
+          <Route path="/grn-against-po" element={<GRNAgainstPO />} />
+          <Route path="/a-direct-grn" element={<DirectGRN />} />
+          <Route path="/material-inspection-entry" element={<MaterialInspectionEntry />} />
+          <Route path="/serial-number-unique-part-code-entry" element={<SerialNumberUniquePartCodeEntry />} />
+          <Route path="/stock-update-post-grn" element={<StockUpdatePostGRN />} />
 
-        {/* Material Issue & Transfer */}
-        <Route path="/material-issue" element={<MaterialIssue />} />
-        <Route path="/store-to-store" element={<StoreToStore />} />
-        <Route path="/inter-department-transfer" element={<InterDepartmentTransfer />} />
-        <Route path="/purchase-bill-entry" element={<PurchaseBillEntry />} />
+          {/* Material Issue & Transfer */}
+          <Route path="/material-issue" element={<MaterialIssue />} />
+          <Route path="/store-to-store" element={<StoreToStore />} />
+          <Route path="/inter-department-transfer" element={<InterDepartmentTransfer />} />
+          <Route path="/purchase-bill-entry" element={<PurchaseBillEntry />} />
 
-        {/* Gate Pass Management */}
-        <Route path="/RGP-Entry" element={<RGPEntry />} />
-        <Route path="/RGP-Return" element={<RGPReturn />} />
-        <Route path="/NRGP-Entry" element={<NRGPEntry />} />
-        <Route path="/In-EntryAgainst-NRGP" element={<InEntryAgainstNRGP />} />
+          {/* Gate Pass Management */}
+          <Route path="/RGP-Entry" element={<RGPEntry />} />
+          <Route path="/RGP-Return" element={<RGPReturn />} />
+          <Route path="/NRGP-Entry" element={<NRGPEntry />} />
+          <Route path="/In-EntryAgainst-NRGP" element={<InEntryAgainstNRGP />} />
 
 
-        {/* Accounts */}
-        <Route path="/ledger-group" element={<Ledger />} />
-        <Route path="/payment-voucher" element={<PaymentVoucher/>} />
-         <Route path="/receipt-voucher" element={<Receipt/>} />
-         <Route path="/contra-voucher" element={<Contra/>} />
-         <Route path="/journal-voucher" element={<Journal/>} />
-        <Route path="/group-creation" element={<GroupCreation/>} />
+          {/* Accounts */}
+          <Route path="/ledger-group" element={<Ledger />} />
+          <Route path="/data-list" element={<DataList />} />
+          <Route path="/payment-voucher" element={<PaymentVoucher />} />
+          <Route path="/receipt-voucher" element={<Receipt />} />
+          <Route path="/contra-voucher" element={<Contra />} />
+          <Route path="/journal-voucher" element={<Journal />} />
+          <Route path="/group-creation" element={<GroupCreation />} />
 
-        {/* List-Management */}
-        {/* <Route path=":section/:page" element={<ListManagementRoute/>} /> */}
-        <Route path="/:section/:page" element={<ListManagement1 />} />
-      </Route>
-    </Routes>
-    <ToastContainer />
+          {/* List-Management */}
+          {/* <Route path=":section/:page" element={<ListManagementRoute/>} /> */}
+          <Route path="/:section/:page" element={<ListManagement1 />} />
+        </Route>
+      </Routes>
+      <ToastContainer />
     </>
   );
 }
