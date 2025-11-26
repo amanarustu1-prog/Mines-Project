@@ -4,8 +4,9 @@ import DataTable from "react-data-table-component";
 import { customStyles } from "@/common/Utility";
 import PaymentVoucher from "./PaymentVoucher";
 import { fetchPostData } from "@/components/hooks/Api";
-import { toastifyError } from "@/common/AlertMsg";
+import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import { useNavigate } from "react-router-dom";
+import ConfirmModal from "@/common/ConfirmModal";
 
 function Edit({ className }) {
     return (
@@ -19,6 +20,13 @@ function Edit({ className }) {
         </svg>
     );
 }
+
+const Trash2 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+);
 
 interface Voucher {
     ID: Number;
@@ -65,6 +73,8 @@ function DataList() {
     const [showVoucher, setShowVoucher] = useState(false);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
 
     const filteredData = useMemo(() => {
         if (!searchText.trim()) return rows;
@@ -111,6 +121,27 @@ function DataList() {
         }
     };
 
+    const fetchDeleteData = async (Id: number) => {
+        try {
+            const response = await fetchPostData('Accountingvoucher/Delete_Accountingvoucher', {
+                "ID": Id,
+            });
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item is deleted successfully.");
+                await fetchGetData();
+                return true;
+            } else {
+                toastifyError("Item is not Deleted");
+                return false;
+            }
+        }
+        catch {
+            toastifySuccess("Error in Deleting a Item");
+        }
+    }
+
     useEffect(() => {
         fetchGetData();
     }, []);
@@ -135,11 +166,14 @@ function DataList() {
                         title="Edit"
                         onClick={() => {
                             // setEditItemId(row.ID);
-                            navigate('/payment-voucher', { state: { editId: row.ID } });
+                            navigate('/payment-voucher', { state: { editId: row.vchId } });
 
                         }}
                     >
                         <Edit className="ledger-management-icon-sm" />
+                    </button>
+                    <button onClick={() => { setSelectedId(row.vchId); setShowModal(true) }}>
+                        <Trash2 className="ledger-management-icon-sm" />
                     </button>
                 </div>
             ),
@@ -220,6 +254,14 @@ function DataList() {
                     fixedHeaderScrollHeight="300px"
                 />
             </div>
+            <ConfirmModal show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleConfirm={() => {
+                    if (selectedId !== null) {
+                        fetchDeleteData(selectedId);
+                    }
+                    setShowModal(false);
+                }} />
         </div>
     );
 }

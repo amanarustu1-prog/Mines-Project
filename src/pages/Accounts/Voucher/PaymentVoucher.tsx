@@ -6,15 +6,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
-import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common/Utility";
-import { fetchPostData } from "@/components/hooks/Api";
+import { compactHeaderStyles, selectCompactStyles } from "@/common/Utility";
+import { fetchPostData, fetch_Post_Data, AddDeleteUpadate } from "@/components/hooks/Api";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 interface Voucher {
     ID: number;
-    VchDate: string; // if API returns string like "21/11/2025"
+    VchDate: string;
     PartyName: string;
     LedgerID: number;
     VoucherType: string;
@@ -25,7 +25,7 @@ interface Voucher {
     AccountingLedgerID: number;
     ledgerName: string;
     amount: number;
-    id?: number; // <- Add this, used for DataTable action
+    id?: number;
 }
 
 interface ledAccount {
@@ -33,10 +33,24 @@ interface ledAccount {
     name: string;
 }
 
-
 interface PaymentVoucherProps {
     editId?: number | null;
 }
+
+//==================== Icon Components ====================
+const Edit = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+);
+
+const Trash2 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+);
 
 const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
     const [voucherNo, setVoucherNo] = useState("");
@@ -46,6 +60,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [singleRow, setSingleRow] = useState({ name: "", amount: "" });
     const [particulars, setParticulars] = useState([]);
+    const [editParticularId, setEditParticularId] = useState<number | null>(null);
     const [ledgerAccounts, setLedgerAccounts] = useState<ledAccount[]>([]);
     const [particular, setParticular] = useState<ledAccount[]>([]);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
@@ -65,9 +80,22 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
     const { state } = useLocation();
     const editId = state?.editId ?? null;
 
-
     const removeParticular = (id: any) => {
         setParticulars(particulars.filter((p) => p.id !== id));
+
+        setForm((prev) => ({
+            ...prev,
+            AccountObj: prev.AccountObj.filter((item: any) => item.SrNo !== id)
+        }));
+    };
+
+    const handleEditParticular = (row: any) => {
+        setSingleRow({
+            name: row.ledgerName,
+            amount: row.amount.toString(),
+            AccountingLedgerID: row.AccountingLedgerID
+        });
+        setEditParticularId(row.id);
     };
 
     // =================== DropDown ===================
@@ -119,7 +147,6 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
                 handleReset();
                 setForm(prev => ({ ...prev, AccountObj: [] }));
                 setParticulars([]);
-
                 navigate("/data-list");
             } else {
                 toastifyError("Failed to save voucher");
@@ -131,110 +158,103 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
         }
     };
 
-    // const fetchSingleData = async (Id: number) => {
-    //     try {
-    //         const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
-    //             "ID": Id
-    //         });
-    //         console.log(response);
-    //         if (response) {
-    //             // const record = response[0];
-    //             // console.log(record);
-    //             setForm({
-    //                 ID: 0,
-    //                 VchDate: 0,
-    //                 PartyName: '',
-    //                 LedgerID: 0,
-    //                 VoucherType: "Payment",
-    //                 Narration: '',
-    //                 VoucherNo: 0,
-    //                 PartyLadgerName: '',
-    //                 TotalAmt: 0,
-    //                 AccountObj: []
-    //             })
-    //         }
-    //     } catch {
-    //         toastifyError("Error in getting a Single Data");
-    //     }
-    // }
+    const fetchUpdateData = async (form: Voucher, id: number) => {
+        try {
+            const payload = {
+                ...form,
+                ID: id,
+                CompanyId: Number(localStorage.getItem("companyID")),
+            };
+            const response = await fetchPostData('Accountingvoucher/Insert_Accountingvoucher', payload);
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item Updated Successfully");
+                // await fetchGetData();
+                navigate("/data-list");
+                return true;
+            } else {
+                toastifyError("Item is not Updated");
+                return false;
+            }
+        } catch {
+            toastifyError("Error in Updating a Data.");
+            return false;
+        }
+    }
 
     const fetchSingleData = async (Id: number) => {
-    try {
-        const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
-            ID: Id
-        });
-
-        if (response?.success && response.data) {
-            const parsedData = JSON.parse(response.data); // The string has JSON inside
-
-            const header = parsedData.Table?.[0];    // Voucher header
-            const details = parsedData.Table1 || []; // Voucher particulars table
-
-            // 🧩 Set Form values
-            setForm(prev => ({
-                ...prev,
-                ID: header.ID,
-                VchDate: header.VchDate,   // You can convert to JS Date later
-                PartyName: header.PartyName,
-                LedgerID: header.LedgerID,
-                VoucherType: header.VoucherType ?? "Payment",
-                Narration: header.Narration,
-                VoucherNo: header.VoucherNo,
-                TotalAmt: header.TotalAmt ?? 0,
-                AccountObj: details.map(d => ({
-                    AccountingLedgerID: d.AccountingLedgerID,
-                    ledgerName: d.ledgerName,
-                    amount: Math.abs(d.amount),  // Since API returns -1000
-                    SrNo: d.SrNo
-                }))
-            }));
-
-            // 📅 Convert date
-            if (header.VchDate) {
-                setDate(new Date(header.VchDate.split("/").reverse().join("-")));
-            }
-
-          setParticulars(
-  details.map(d => {
-    const ledgerObj = ledgerAccounts.find(
-      acc => Number(acc.LedgerID) === Number(d.AccountingLedgerID)
-    );
-
-    return {
-      id: d.SrNo,
-      ledgerName: ledgerObj?.name || d.ledgerName || "Unknown",
-      amount: Math.abs(d.amount),
-      AccountingLedgerID: d.AccountingLedgerID
-    };
-  })
-);
-
-
-
-            // ➕ Dropdown pre-load
-            setSelectedAccount({
-                value: header.LedgerID,
-                label: header.PartyName
+        try {
+            const response = await AddDeleteUpadate('Accountingvoucher/GetSingleData_Accountingvoucher', {
+                ID: Id
             });
+            // console.log(response);
+            if (response?.success && response.data) {
+                const parsedData = JSON.parse(response.data);
+                // console.log(parsedData);
+
+                const header = parsedData.Table?.[0];
+                const details = parsedData.Table1 || [];
+
+                setForm(prev => ({
+                    ...prev,
+                    ID: header.ID,
+                    VchDate: header.VchDate,
+                    PartyName: header.PartyName,
+                    LedgerID: header.LedgerID,
+                    VoucherType: header.VoucherType ?? "Payment",
+                    Narration: header.Narration,
+                    VoucherNo: header.VoucherNo,
+                    TotalAmt: header.TotalAmt ?? 0,
+                    AccountObj: details.map((d: any) => ({
+                        AccountingLedgerID: d.AccountingLedgerID,
+                        ledgerName: d.ledgerName,
+                        amount: Math.abs(d.amount),
+                        SrNo: d.SrNo
+                    }))
+                }));
+
+                if (header.VchDate) {
+                    setDate(new Date(header.VchDate.split("/").reverse().join("-")));
+                }
+
+                setParticulars(
+                    details.map((d: any) => {
+                        const ledgerObj = ledgerAccounts.find(
+                            acc => Number(acc.LedgerID) === Number(d.AccountingLedgerID)
+                        );
+
+                        return {
+                            id: d.SrNo,
+                            ledgerName: ledgerObj?.name || d.ledgerName || "Unknown",
+                            amount: Math.abs(d.amount),
+                            AccountingLedgerID: d.AccountingLedgerID
+                        };
+                    })
+                );
+
+                setSelectedAccount({
+                    value: header.LedgerID,
+                    label: header.PartyName
+                });
+            }
+        } catch (error) {
+            toastifyError("Error while fetching voucher details");
         }
-    } catch (error) {
-        toastifyError("Error while fetching voucher details");
-    }
     };
 
-useEffect(() => {
-    if (editId && ledgerAccounts.length > 0) {
-        fetchSingleData(editId);
-    }
-}, [editId, ledgerAccounts]);
+    useEffect(() => {
+        if (editId && ledgerAccounts.length > 0) {
+            fetchSingleData(editId);
+        }
+    }, [editId, ledgerAccounts]);
 
-useEffect(() => {
-    ledgerAccount();
-}, []);
-
+    useEffect(() => {
+        ledgerAccount();
+    }, []);
 
     const handleAddVoucher = () => {
-       navigate('/payment-voucher', { state: { editId: null } });
+        navigate('/payment-voucher', { state: { editId: null } });
     };
 
     const addParticular = () => {
@@ -243,27 +263,63 @@ useEffect(() => {
             return;
         }
 
-        setForm(prev => ({
-            ...prev,
-            AccountObj: [
-                ...prev.AccountObj,
+        // 🔹 If updating
+        if (editParticularId !== null) {
+            // Update UI table
+            setParticulars(prev =>
+                prev.map(p =>
+                    p.id === editParticularId
+                        ? { ...p, ledgerName: singleRow.name, amount: Number(singleRow.amount) }
+                        : p
+                )
+            );
+
+            // Update form payload
+            setForm(prev => ({
+                ...prev,
+                AccountObj: prev.AccountObj.map((item: any) =>
+                    item.SrNo === editParticularId
+                        ? {
+                            ...item,
+                            ledgerName: singleRow.name,
+                            AccountingLedgerID: Number(singleRow.AccountingLedgerID),
+                            amount: Number(singleRow.amount)
+                        }
+                        : item
+                )
+            }));
+
+            toastifySuccess("Particular updated!");
+            setEditParticularId(null);
+        } else {
+            // 🔹 If adding new
+            const newId = Date.now();
+
+            setParticulars(prev => [
+                ...prev,
                 {
+                    id: newId,
                     ledgerName: singleRow.name,
-                    AccountingLedgerID: Number(singleRow.AccountingLedgerID),
+                    AccountingLedgerID: singleRow.AccountingLedgerID,
                     amount: Number(singleRow.amount)
                 }
-            ]
-        }));
+            ]);
 
-        setParticulars(prev => [
-            ...prev,
-            {
-                id: Date.now(),
-                ledgerName: singleRow.name,
-                amount: Number(singleRow.amount)
-            }
-        ]);
+            setForm(prev => ({
+                ...prev,
+                AccountObj: [
+                    ...prev.AccountObj,
+                    {
+                        SrNo: newId,
+                        ledgerName: singleRow.name,
+                        AccountingLedgerID: Number(singleRow.AccountingLedgerID),
+                        amount: Number(singleRow.amount)
+                    }
+                ]
+            }));
+        }
 
+        // Reset input
         setSingleRow({ name: "", amount: "" });
     };
 
@@ -286,13 +342,18 @@ useEffect(() => {
             sortable: true,
             center: true
         },
-
         {
             name: "Action",
             cell: (row: Voucher) => (
-                <button onClick={() => removeParticular(row.id)}>
-                    <FiTrash2 size={16} />
-                </button>
+                <div>
+                    <button onClick={() => removeParticular(row.id)}>
+                        <Trash2 className="ledger-management-icon-sm" />
+                    </button>
+                    <button className="ledger-management-btn-icon" title="Edit" onClick={() => handleEditParticular(row)}>
+                        <Edit className="ledger-management-icon-sm" />
+                    </button>
+
+                </div>
             ),
             center: true,
         },
@@ -317,21 +378,38 @@ useEffect(() => {
         })
     }
 
+    const handleInsertAndUpdate = async () => {
+        if (editId) {
+            const success = await fetchUpdateData(form, editId);
+
+            if (success) {
+                handleReset();
+            }
+        }
+        if (!editId) {
+            const success = await fetchInsertData(form);
+            if (success) setShowDetailForm(false);
+        }
+    }
+
     return (
         <div className="voucher-container">
             <div className="voucher-card">
                 <div className="row align-items-center">
+                    {/* Voucher-No */}
                     <div className="col-lg-1 text-end voucher-col px-0">
                         <label className="text-nowrap text-end">Voucher No.</label>
                     </div>
                     <div className="col-lg-3">
-                        <input type="text" className="voucher-col-input challan"
+                        <input type="text"
+                            className="voucher-col-input challan"
                             value="Auto Generated"
                             // onChange={(e) => setVoucherNo(e.target.value)}
                             readOnly={true}
                             placeholder="Enter No."
                         />
                     </div>
+                    {/* Date */}
                     <div className="col-lg-1 text-end px-0 voucher-col">
                         <label className="text-nowrap">Date</label>
                     </div>
@@ -422,7 +500,7 @@ useEffect(() => {
                                     </div>
                                     <div className=" d-flex justify-content-end" >
                                         <button className="add-btn px-2 text-nowrap" onClick={addParticular}>
-                                            <FiPlus size={14} /> Add Particular
+                                            <FiPlus size={14} /> {editParticularId ? "Update Particular" : "Add Particular"}
                                         </button>
                                     </div>
                                 </div>
@@ -456,8 +534,8 @@ useEffect(() => {
                             onChange={(e) => setForm({ ...form, Narration: e.target.value })}
                             placeholder="Narration..."
                         />
-                        <button className="save-btn" onClick={fetchInsertData} disabled={isSubmitting}>
-                            <FiSave size={16} /> {isSubmitting ? "Saving..." : "Save Voucher"}
+                        <button className="save-btn" onClick={handleInsertAndUpdate} disabled={isSubmitting}>
+                            <FiSave size={16} /> {isSubmitting ? (editId ? "Updating..." : "Saving...") : (editId ? "Update Voucher" : "Save Voucher")}
                         </button>
                     </div>
                 </div>
