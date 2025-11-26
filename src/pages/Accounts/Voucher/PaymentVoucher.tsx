@@ -8,30 +8,37 @@ import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
 import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common/Utility";
 import { fetchPostData } from "@/components/hooks/Api";
-import { getValue, getOptions, getChange } from "@/common/commonFunc";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface Voucher {
-    ID: Number;
-    VchDate: Number;
-    PartyName: String;
-    LedgerID: Number;
-    VoucherType: String;
-    Narration: String;
-    VoucherNo: Number;
-    PartyLadgerName: String;
-    TotalAmt: Number;
+    ID: number;
+    VchDate: string; // if API returns string like "21/11/2025"
+    PartyName: string;
+    LedgerID: number;
+    VoucherType: string;
+    Narration: string;
+    VoucherNo: number | string;
+    PartyLadgerName: string;
+    TotalAmt: number;
     AccountingLedgerID: number;
     ledgerName: string;
     amount: number;
+    id?: number; // <- Add this, used for DataTable action
 }
 
 interface ledAccount {
-    LedgerID: Number;
-    name: String;
+    LedgerID: number;
+    name: string;
 }
 
-const PaymentVoucher = () => {
+
+interface PaymentVoucherProps {
+    editId?: number | null;
+}
+
+const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
     const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
@@ -54,9 +61,12 @@ const PaymentVoucher = () => {
         TotalAmt: 0,
         AccountObj: []
     });
+    const navigate = useNavigate();
+    const { state } = useLocation();
+    const editId = state?.editId ?? null;
 
 
-    const removeParticular = (id) => {
+    const removeParticular = (id: any) => {
         setParticulars(particulars.filter((p) => p.id !== id));
     };
 
@@ -81,42 +91,9 @@ const PaymentVoucher = () => {
     }
 
     // ===================TODO-Func====================
-    const fetchGetData = async () => {
-        try {
-            const payload = {
-                VoucherNo: "",
-                Narration: "",
-                VoucherType: "Payment",
-                FromDate: "",
-                ToDate: "",
-                CompanyId: localStorage.getItem('companyID')
-            };
-
-            const response = await fetchPostData('Accountingvoucher/GetData_Accountingvoucher', payload);
-
-            if (response && Array.isArray(response)) {
-                const modifiedData = response.map((item) => ({
-                    ...item,
-                    AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
-                }));
-                setVoucher(modifiedData);
-            } else {
-                setVoucher([]);
-            }
-        } catch {
-            toastifyError("Error fetching the Data");
-        }
-    };
-
     const fetchInsertData = async () => {
-        if (!form.LedgerID) {
-            toastifyError("Please select Account");
-            return;
-        }
-        if (!form.AccountObj.length) {
-            toastifyError("Please add at least one Particular");
-            return;
-        }
+        if (!form.LedgerID) return toastifyError("Please select Account");
+        if (!form.AccountObj.length) return toastifyError("Please add at least one Particular");
 
         try {
             setIsSubmitting(true);
@@ -129,7 +106,9 @@ const PaymentVoucher = () => {
                 VchDate: formattedDate,
                 VoucherNo: "Auto Generated",
                 VoucherType: "Payment",
-                TotalAmt: totalAmount,
+                Narration: "",
+                FromDate: "",
+                ToDate: "",
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
 
@@ -137,11 +116,11 @@ const PaymentVoucher = () => {
 
             if (response) {
                 toastifySuccess("Voucher saved successfully");
-                await fetchGetData();
-
+                handleReset();
                 setForm(prev => ({ ...prev, AccountObj: [] }));
                 setParticulars([]);
-                setSingleRow({ name: "", amount: "" });
+
+                navigate("/data-list");
             } else {
                 toastifyError("Failed to save voucher");
             }
@@ -152,10 +131,111 @@ const PaymentVoucher = () => {
         }
     };
 
-    useEffect(() => {
-        fetchGetData();
-        ledgerAccount();
-    }, []);
+    // const fetchSingleData = async (Id: number) => {
+    //     try {
+    //         const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
+    //             "ID": Id
+    //         });
+    //         console.log(response);
+    //         if (response) {
+    //             // const record = response[0];
+    //             // console.log(record);
+    //             setForm({
+    //                 ID: 0,
+    //                 VchDate: 0,
+    //                 PartyName: '',
+    //                 LedgerID: 0,
+    //                 VoucherType: "Payment",
+    //                 Narration: '',
+    //                 VoucherNo: 0,
+    //                 PartyLadgerName: '',
+    //                 TotalAmt: 0,
+    //                 AccountObj: []
+    //             })
+    //         }
+    //     } catch {
+    //         toastifyError("Error in getting a Single Data");
+    //     }
+    // }
+
+    const fetchSingleData = async (Id: number) => {
+    try {
+        const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
+            ID: Id
+        });
+
+        if (response?.success && response.data) {
+            const parsedData = JSON.parse(response.data); // The string has JSON inside
+
+            const header = parsedData.Table?.[0];    // Voucher header
+            const details = parsedData.Table1 || []; // Voucher particulars table
+
+            // 🧩 Set Form values
+            setForm(prev => ({
+                ...prev,
+                ID: header.ID,
+                VchDate: header.VchDate,   // You can convert to JS Date later
+                PartyName: header.PartyName,
+                LedgerID: header.LedgerID,
+                VoucherType: header.VoucherType ?? "Payment",
+                Narration: header.Narration,
+                VoucherNo: header.VoucherNo,
+                TotalAmt: header.TotalAmt ?? 0,
+                AccountObj: details.map(d => ({
+                    AccountingLedgerID: d.AccountingLedgerID,
+                    ledgerName: d.ledgerName,
+                    amount: Math.abs(d.amount),  // Since API returns -1000
+                    SrNo: d.SrNo
+                }))
+            }));
+
+            // 📅 Convert date
+            if (header.VchDate) {
+                setDate(new Date(header.VchDate.split("/").reverse().join("-")));
+            }
+
+          setParticulars(
+  details.map(d => {
+    const ledgerObj = ledgerAccounts.find(
+      acc => Number(acc.LedgerID) === Number(d.AccountingLedgerID)
+    );
+
+    return {
+      id: d.SrNo,
+      ledgerName: ledgerObj?.name || d.ledgerName || "Unknown",
+      amount: Math.abs(d.amount),
+      AccountingLedgerID: d.AccountingLedgerID
+    };
+  })
+);
+
+
+
+            // ➕ Dropdown pre-load
+            setSelectedAccount({
+                value: header.LedgerID,
+                label: header.PartyName
+            });
+        }
+    } catch (error) {
+        toastifyError("Error while fetching voucher details");
+    }
+    };
+
+useEffect(() => {
+    if (editId && ledgerAccounts.length > 0) {
+        fetchSingleData(editId);
+    }
+}, [editId, ledgerAccounts]);
+
+useEffect(() => {
+    ledgerAccount();
+}, []);
+
+
+    const handleAddVoucher = () => {
+       navigate('/payment-voucher', { state: { editId: null } });
+    };
 
     const addParticular = () => {
         if (!singleRow.name || !singleRow.amount) {
@@ -177,7 +257,11 @@ const PaymentVoucher = () => {
 
         setParticulars(prev => [
             ...prev,
-            { id: Date.now(), name: singleRow.name, amount: singleRow.amount }
+            {
+                id: Date.now(),
+                ledgerName: singleRow.name,
+                amount: Number(singleRow.amount)
+            }
         ]);
 
         setSingleRow({ name: "", amount: "" });
@@ -186,25 +270,26 @@ const PaymentVoucher = () => {
     const Columns = [
         {
             name: "Sr No.",
-            selector: (row) => row.SrNo,
+            selector: (row, index) => index + 1,
             center: true,
             width: "100px"
         },
         {
             name: "Name",
-            selector: (row) => row.ledgerName,
+            selector: (row: Voucher) => row.ledgerName,
             sortable: true,
             center: true
         },
         {
             name: "Amount",
-            selector: (row) => row.amount,
+            selector: (row: Voucher) => row.amount,
             sortable: true,
             center: true
         },
+
         {
             name: "Action",
-            cell: (row) => (
+            cell: (row: Voucher) => (
                 <button onClick={() => removeParticular(row.id)}>
                     <FiTrash2 size={16} />
                 </button>
@@ -217,6 +302,21 @@ const PaymentVoucher = () => {
         ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
     }));
 
+    const handleReset = () => {
+        setForm({
+            ID: 0,
+            VchDate: 0,
+            PartyName: '',
+            LedgerID: 0,
+            VoucherType: "Payment",
+            Narration: '',
+            VoucherNo: 0,
+            PartyLadgerName: '',
+            TotalAmt: 0,
+            AccountObj: []
+        })
+    }
+
     return (
         <div className="voucher-container">
             <div className="voucher-card">
@@ -226,12 +326,12 @@ const PaymentVoucher = () => {
                     </div>
                     <div className="col-lg-3">
                         <input type="text" className="voucher-col-input challan"
-                            value={voucherNo}
-                            onChange={(e) => setVoucherNo(e.target.value)}
+                            value="Auto Generated"
+                            // onChange={(e) => setVoucherNo(e.target.value)}
+                            readOnly={true}
                             placeholder="Enter No."
                         />
                     </div>
-
                     <div className="col-lg-1 text-end px-0 voucher-col">
                         <label className="text-nowrap">Date</label>
                     </div>
@@ -309,8 +409,6 @@ const PaymentVoucher = () => {
                                             styles={selectCompactStyles}
                                         />
 
-
-
                                         <input type="text" value={singleRow.amount}
                                             onChange={(e) => {
                                                 const val = e.target.value;
@@ -333,7 +431,7 @@ const PaymentVoucher = () => {
                             <div className="particular-table">
                                 <DataTable
                                     columns={resizeableColumns}
-                                    data={voucher.flatMap(v => v.AccountingObj)}
+                                    data={particulars}
                                     pagination
                                     highlightOnHover
                                     paginationRowsPerPageOptions={[5, 10, 15]}
@@ -352,14 +450,12 @@ const PaymentVoucher = () => {
                 {/* Narration */}
                 <div className="section narration-row">
                     <label>Narration</label>
-
                     <div className="narration-flex align-items-center">
                         <textarea rows="1" className="narration-text"
                             value={form.Narration}
                             onChange={(e) => setForm({ ...form, Narration: e.target.value })}
                             placeholder="Narration..."
                         />
-
                         <button className="save-btn" onClick={fetchInsertData} disabled={isSubmitting}>
                             <FiSave size={16} /> {isSubmitting ? "Saving..." : "Save Voucher"}
                         </button>

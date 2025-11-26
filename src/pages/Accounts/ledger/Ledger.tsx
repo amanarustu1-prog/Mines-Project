@@ -93,7 +93,7 @@ interface LedgerData {
     Address: string;
     StateID: number;
     State: string;
-    DistrictID:number;
+    DistrictID: number;
     District: string;
     pincode: number;
     MobileNo: number;
@@ -160,7 +160,7 @@ const Ledger: React.FC = () => {
     const [state, setState] = useState<State[]>([]);
     const [district, setDistrict] = useState<District[]>([]);
     const [zipCode, setZipCode] = useState<ZIPCode[]>([]);
-    const[regisType, setRegisType] = useState<RegisType[]>([]);
+    const [regisType, setRegisType] = useState<RegisType[]>([]);
 
     const [formData, setFormData] = useState<LedgerAccount>({
         //Top-Fields
@@ -189,7 +189,7 @@ const Ledger: React.FC = () => {
         bankaccountholder: '',
         bankAcNo: 0,
         bankifsc: '',
-        bankname: '',
+        bankname: 0,
         bankbranch: '',
         isActive: true,
         CreatedDate: '',
@@ -300,6 +300,8 @@ const Ledger: React.FC = () => {
                     Address: record.Address,
                     StateID: record.StateID,
                     State: record.State,
+                    DistrictID: record.DistrictID,
+                    District: record.District,
                     pincode: record.pincode,
                     MobileNo: record.MobileNo,
                     email: record.email,
@@ -326,6 +328,14 @@ const Ledger: React.FC = () => {
     }
 
     // =================== DropDown ====================
+    useEffect(() => {
+        fetchGetData();
+        fetchAccountGroup();
+        fetchState();
+        fetchBankName();
+        fetchRegisType();
+    }, []);
+
     const fetchAccountGroup = async () => {
         try {
             const response = await fetchPostData('AccountingGroups/GetDataDropDown_AccountingGroups', {
@@ -412,18 +422,18 @@ const Ledger: React.FC = () => {
     }
 
     const fetchRegisType = async () => {
-        try{
+        try {
             const response = await fetchPostData('GSTRegType/GetDataDropDown_GSTRegType', {
                 CompanyId: 1
             });
             // console.log(response);
 
-            if(response && Array.isArray(response)){
+            if (response && Array.isArray(response)) {
                 setRegisType(response);
-            }else{
+            } else {
                 setRegisType([]);
             }
-        }catch {
+        } catch {
             toastifyError('Error fetching Registration Type');
         }
     }
@@ -433,14 +443,6 @@ const Ledger: React.FC = () => {
             fetchSingleData(editItemId);
         }
     }, [editItemId]);
-
-    useEffect(() => {
-        fetchGetData();
-        fetchAccountGroup();
-        fetchState();
-        fetchBankName();
-        fetchRegisType();
-    }, []);
 
     const Columns = [
         {
@@ -485,6 +487,14 @@ const Ledger: React.FC = () => {
             sortable: true,
             cell: (row: LedgerData) => (
                 <span>{row.State}</span>
+            )
+        },
+        {
+            name: "District",
+            selector: (row: LedgerData) => row.District,
+            sortable: true,
+            cell: (row: LedgerData) => (
+                <span>{row.District}</span>
             )
         },
         {
@@ -759,7 +769,7 @@ const Ledger: React.FC = () => {
                     <div className='col-md-6 mb-2'></div>
                 </div>
 
-                <div className="row"> 
+                <div className="row">
                     {/* -- BANK ACCOUNT DETAILS -- */}
                     <div className="col-md-6" style={{ borderRight: "1px solid #ccc", borderTop: "1px solid #ccc", paddingRight: "2rem" }}>
                         {/* Accounting Group */}
@@ -831,10 +841,10 @@ const Ledger: React.FC = () => {
                                 <Select
                                     classNamePrefix="select"
                                     placeholder="Enter District Type"
-                                    value = {formData.bankname ? 
+                                    value={formData.bankname ?
                                         {
                                             value: formData.bankname,
-                                            label: bank.find((b) => b.ID === Number(formData.bankname))
+                                            label: bank.find((b) => b.ID === Number(formData.bankname))?.BankName
                                         } : null
                                     }
                                     options={
@@ -843,7 +853,7 @@ const Ledger: React.FC = () => {
                                             label: b.BankName
                                         }))
                                     }
-                                    onChange={(selectedOption)=> {
+                                    onChange={(selectedOption) => {
                                         setFormData((prev) => ({
                                             ...prev,
                                             bankname: Number(selectedOption?.value ?? 0),
@@ -898,24 +908,24 @@ const Ledger: React.FC = () => {
                                 <Select
                                     classNamePrefix="select"
                                     value={formData.StateID
-                                    ? {
-                                      value: formData.StateID,
-                                      label: state.find((d) => d.ID === Number(formData.StateID))?.Description || '',
-                                    } : null
-                                  }
-                                  options={state.map((d) => ({
-                                    value: d.ID,
-                                    label: d.Description,
-                                  }))}
-                                  onChange={(selectedOption) => {
-                                    const stateID = selectedOption?.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      StateID: Number(selectedOption?.value ?? 0),
-                                      State: selectedOption?.label
-                                    }))
-                                    if (stateID) fetchDistrict(stateID);
-                                  }}
+                                        ? {
+                                            value: formData.StateID,
+                                            label: state.find((d) => d.ID === Number(formData.StateID))?.Description || '',
+                                        } : null
+                                    }
+                                    options={state.map((d) => ({
+                                        value: d.ID,
+                                        label: d.Description,
+                                    }))}
+                                    onChange={(selectedOption) => {
+                                        const stateID = selectedOption?.value;
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            StateID: Number(selectedOption?.value ?? 0),
+                                            State: selectedOption?.label
+                                        }))
+                                        if (stateID) fetchDistrict(stateID);
+                                    }}
                                     placeholder="Enter District Type"
                                     styles={selectCompactStyles}
                                 />
@@ -927,24 +937,24 @@ const Ledger: React.FC = () => {
                                 <Select
                                     classNamePrefix="select"
                                     value={formData.DistrictID
-                                    ? {
-                                      value: formData.DistrictID,
-                                      label: district.find((d) => d.DistrictID === Number(formData.DistrictID))?.DistrictName || '',
-                                    } : null
-                                  }
-                                  options={district.map((d) => ({
-                                    value: d.DistrictID,
-                                    label: d.DistrictName,
-                                  }))}
-                                  onChange={(selectedOption) => {
-                                    const districtID = selectedOption?.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      DistrictID: Number(selectedOption?.value ?? 0),
-                                      District: selectedOption?.label
-                                    }))
-                                    if (districtID ) fetchZipCode(districtID);
-                                  }}
+                                        ? {
+                                            value: formData.DistrictID,
+                                            label: district.find((d) => d.DistrictID === Number(formData.DistrictID))?.DistrictName || '',
+                                        } : null
+                                    }
+                                    options={district.map((d) => ({
+                                        value: d.DistrictID,
+                                        label: d.DistrictName,
+                                    }))}
+                                    onChange={(selectedOption) => {
+                                        const districtID = selectedOption?.value;
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            DistrictID: Number(selectedOption?.value ?? 0),
+                                            District: selectedOption?.label
+                                        }))
+                                        if (districtID) fetchZipCode(districtID);
+                                    }}
                                     placeholder="Enter District Type"
                                     styles={selectCompactStyles}
                                 />
@@ -956,23 +966,21 @@ const Ledger: React.FC = () => {
                                 <Select
                                     classNamePrefix="select"
                                     value={formData.pincode
-                                    ? {
-                                      value: formData.pincode,
-                                      label: zipCode.find((d) => d.ZipCodeID === Number(formData.pincode))?.ZipCodeName || '',
-                                    } : null
-                                  }
-                                  options={zipCode.map((d) => ({
-                                    value: d.ZipCodeID,
-                                    label: d.ZipCodeName,
-                                  }))}
-                                  onChange={(selectedOption) => {
-                                    const zipCodeID = selectedOption?.value;
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      pincode: Number(selectedOption?.value ?? 0),
-                                    }))
-                                    if (zipCodeID) fetchDistrict(zipCodeID);
-                                  }}
+                                        ? {
+                                            value: formData.pincode,
+                                            label: zipCode.find((d) => d.ZipCodeID === Number(formData.pincode))?.ZipCodeName || '',
+                                        } : null
+                                    }
+                                    options={zipCode.map((d) => ({
+                                        value: d.ZipCodeID,
+                                        label: d.ZipCodeName,
+                                    }))}
+                                    onChange={(selectedOption) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            pincode: Number(selectedOption?.value ?? 0),
+                                        }))
+                                    }}
                                     placeholder="Enter District Type"
                                     styles={selectCompactStyles}
                                 />
@@ -1010,32 +1018,25 @@ const Ledger: React.FC = () => {
                                 <label className="ledger-management-label">Registration Type :</label>
                                 <Select
                                     classNamePrefix="select"
-                                    placeholder="Enter Registration Type"
-                                    value={
-                                        formData.gstregistrationtype
-                                            ? { label: formData.gstregistrationtype, value: formData.gstregistrationtype }
-                                            : null
+                                    value={formData.gstregistrationtype
+                                        ? {
+                                            value: formData.gstregistrationtype,
+                                            label: regisType.find((d) => d.ID === Number(formData.gstregistrationtype))?.Description || '',
+                                        } : null
                                     }
-                                    onChange={(opt) =>
-                                        setFormData({
-                                            ...formData,
-                                            gstregistrationtype: opt ? opt.value : ""
-                                        })
-                                    }
-                                    options={[
-                                        { label: "Registered", value: "Registered" },
-                                        { label: "Unregistered", value: "Unregistered" },
-                                        { label: "Composition", value: "Composition" },
-                                        { label: "Consumer", value: "Consumer" },
-                                        { label: "Input Service Distributor", value: "ISD" },
-                                        { label: "E-commerce Operator", value: "ECO" },
-                                    ]}
-                                    isClearable={true}
-                                    menuPlacement="top"
+                                    options={regisType.map((d) => ({
+                                        value: d.ID,
+                                        label: d.Description,
+                                    }))}
+                                    onChange={(selectedOption) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            gstregistrationtype: Number(selectedOption?.value ?? 0)
+                                        }))
+                                    }}
+                                    placeholder="Enter District Type"
                                     styles={selectCompactStyles}
                                 />
-
-
                             </div>
 
                             {/* GST-No */}

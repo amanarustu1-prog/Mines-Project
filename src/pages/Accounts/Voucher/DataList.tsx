@@ -1,8 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "./PaymentVoucher.css";
 import DataTable from "react-data-table-component";
 import { customStyles } from "@/common/Utility";
 import PaymentVoucher from "./PaymentVoucher";
+import { fetchPostData } from "@/components/hooks/Api";
+import { toastifyError } from "@/common/AlertMsg";
+import { useNavigate } from "react-router-dom";
 
 function Edit({ className }) {
     return (
@@ -15,6 +18,17 @@ function Edit({ className }) {
             />
         </svg>
     );
+}
+
+interface Voucher {
+    ID: Number;
+    VchrNo: number;
+    VchrType: string;
+    Name: number;
+    DebitAmt: number;
+    CreditAmt: number;
+    vchId: number;
+    Date: string;
 }
 
 const initialData = [
@@ -44,12 +58,13 @@ const initialData = [
     },
 ];
 
-
-
 function DataList() {
+    const navigate = useNavigate()
     const [searchText, setSearchText] = useState("");
     const [rows, setRows] = useState(initialData);
     const [showVoucher, setShowVoucher] = useState(false);
+    const [voucher, setVoucher] = useState<Voucher[]>([]);
+    const [editItemId, setEditItemId] = useState<number | null>(null);
 
     const filteredData = useMemo(() => {
         if (!searchText.trim()) return rows;
@@ -67,25 +82,61 @@ function DataList() {
         });
     }, [searchText, rows]);
 
+    //Get-data
+    const fetchGetData = async () => {
+        try {
+            const payload = {
+                VoucherNo: "",
+                Narration: "",
+                VoucherType: "Payment",
+                FromDate: "",
+                ToDate: "",
+                CompanyId: localStorage.getItem('companyID')
+            };
+
+            const response = await fetchPostData('Accountingvoucher/GetData_Accountingvoucher', payload);
+            // console.log(response);
+
+            if (response && Array.isArray(response)) {
+                const modifiedData = response.map((item) => ({
+                    ...item,
+                    AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
+                }));
+                setVoucher(modifiedData);
+            } else {
+                setVoucher([]);
+            }
+        } catch {
+            toastifyError("Error fetching the Data");
+        }
+    };
+
+    useEffect(() => {
+        fetchGetData();
+    }, []);
+
     const handleVoucherSaved = (rowFromChild) => {
         setRows((prev) => [...prev, rowFromChild]);
         setShowVoucher(false);
     };
 
     const handleAddVoucher = () => {
-        setShowVoucher(true);
+        // setShowVoucher(true);
+        navigate('/payment-voucher')
     };
+
     const columns = [
         {
             name: "Actions",
-            cell: (row) => (
+            cell: (row: Voucher) => (
                 <div className="ledger-management-flex ledger-management-gap-2">
                     <button
                         className="ledger-management-btn-icon"
                         title="Edit"
                         onClick={() => {
-                            console.log("Edit row:", row);
-                            setShowVoucher(true);    // 👈 yahi se PaymentVoucher open hoga
+                            // setEditItemId(row.ID);
+                            navigate('/payment-voucher', { state: { editId: row.ID } });
+
                         }}
                     >
                         <Edit className="ledger-management-icon-sm" />
@@ -97,45 +148,51 @@ function DataList() {
             button: true,
         },
         {
+            name: "Date",
+            selector: (row: Voucher) => row.Date,
+            sortable: true,
+        },
+        {
             name: "Particular",
-            selector: (row) => row.particular,
+            selector: (row: Voucher) => row.Name,
             sortable: true,
         },
         {
             name: "Vch Type",
-            selector: (row) => row.vchType,
+            selector: (row: Voucher) => row.VchrType,
             sortable: true,
         },
         {
             name: "Vch No",
-            selector: (row) => row.vchNo,
+            selector: (row: Voucher) => row.VchrNo,
             sortable: true,
         },
         {
             name: "DebitAmt",
-            selector: (row) => row.debitAmt,
+            selector: (row: Voucher) => row.DebitAmt,
             sortable: true,
         },
         {
             name: "CreditAmt",
-            selector: (row) => row.creditAmt,
+            selector: (row: Voucher) => row.CreditAmt,
             sortable: true,
         },
     ];
 
     if (showVoucher) {
+        alert(editItemId);
         return (
-            <PaymentVoucher onSaved={handleVoucherSaved} />
+            <PaymentVoucher editId={editItemId} />
         );
     }
+
     return (
         <div className="voucher-container">
             <div className="voucher-card">
+                {/* Search + Button */}
                 <div className="voucher-header">
                     <div className="voucher-header-left">
-                        <input
-                            type="text"
-                            className="voucher-search-input challan"
+                        <input type="text" className="voucher-search-input challan"
                             placeholder="Search..."
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
@@ -143,11 +200,7 @@ function DataList() {
                     </div>
 
                     <div className="voucher-header-right">
-                        <button
-                            type="button"
-                            className="save-btn"
-                            onClick={handleAddVoucher}
-                        >
+                        <button type="button" className="save-btn" onClick={handleAddVoucher}>
                             + Add Voucher
                         </button>
                     </div>
@@ -155,7 +208,7 @@ function DataList() {
 
                 <DataTable
                     columns={columns}
-                    data={filteredData}
+                    data={voucher}
                     pagination
                     highlightOnHover
                     paginationRowsPerPageOptions={[5, 10, 15]}
@@ -164,7 +217,7 @@ function DataList() {
                     persistTableHead
                     noDataComponent="No particulars available"
                     fixedHeader
-                    fixedHeaderScrollHeight="200px"
+                    fixedHeaderScrollHeight="300px"
                 />
             </div>
         </div>
