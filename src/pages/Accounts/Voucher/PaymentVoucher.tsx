@@ -10,32 +10,35 @@ import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common
 import { fetchPostData } from "@/components/hooks/Api";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface Voucher {
-    ID: Number;
-    VchDate: Number;
-    PartyName: String;
-    LedgerID: Number;
-    VoucherType: String;
-    Narration: String;
-    VoucherNo: Number;
-    PartyLadgerName: String;
-    TotalAmt: Number;
+    ID: number;
+    VchDate: string; // if API returns string like "21/11/2025"
+    PartyName: string;
+    LedgerID: number;
+    VoucherType: string;
+    Narration: string;
+    VoucherNo: number | string;
+    PartyLadgerName: string;
+    TotalAmt: number;
     AccountingLedgerID: number;
     ledgerName: string;
     amount: number;
+    id?: number; // <- Add this, used for DataTable action
 }
 
 interface ledAccount {
-    LedgerID: Number;
-    name: String;
+    LedgerID: number;
+    name: string;
 }
+
 
 interface PaymentVoucherProps {
     editId?: number | null;
 }
 
-const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId }) => {
+const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
     const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
@@ -59,6 +62,9 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId }) => {
         AccountObj: []
     });
     const navigate = useNavigate();
+    const { state } = useLocation();
+    const editId = state?.editId ?? null;
+
 
     const removeParticular = (id: any) => {
         setParticulars(particulars.filter((p) => p.id !== id));
@@ -125,42 +131,111 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId }) => {
         }
     };
 
+    // const fetchSingleData = async (Id: number) => {
+    //     try {
+    //         const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
+    //             "ID": Id
+    //         });
+    //         console.log(response);
+    //         if (response) {
+    //             // const record = response[0];
+    //             // console.log(record);
+    //             setForm({
+    //                 ID: 0,
+    //                 VchDate: 0,
+    //                 PartyName: '',
+    //                 LedgerID: 0,
+    //                 VoucherType: "Payment",
+    //                 Narration: '',
+    //                 VoucherNo: 0,
+    //                 PartyLadgerName: '',
+    //                 TotalAmt: 0,
+    //                 AccountObj: []
+    //             })
+    //         }
+    //     } catch {
+    //         toastifyError("Error in getting a Single Data");
+    //     }
+    // }
+
     const fetchSingleData = async (Id: number) => {
-        try {
-            const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
-                "ID": Id
-            });
-            console.log(response);
-            if (response) {
-                // const record = response[0];
-                // console.log(record);
-                setForm({
-                    ID: 0,
-                    VchDate: 0,
-                    PartyName: '',
-                    LedgerID: 0,
-                    VoucherType: "Payment",
-                    Narration: '',
-                    VoucherNo: 0,
-                    PartyLadgerName: '',
-                    TotalAmt: 0,
-                    AccountObj: []
-                })
+    try {
+        const response = await fetchPostData('Accountingvoucher/GetSingleData_Accountingvoucher', {
+            ID: Id
+        });
+
+        if (response?.success && response.data) {
+            const parsedData = JSON.parse(response.data); // The string has JSON inside
+
+            const header = parsedData.Table?.[0];    // Voucher header
+            const details = parsedData.Table1 || []; // Voucher particulars table
+
+            // 🧩 Set Form values
+            setForm(prev => ({
+                ...prev,
+                ID: header.ID,
+                VchDate: header.VchDate,   // You can convert to JS Date later
+                PartyName: header.PartyName,
+                LedgerID: header.LedgerID,
+                VoucherType: header.VoucherType ?? "Payment",
+                Narration: header.Narration,
+                VoucherNo: header.VoucherNo,
+                TotalAmt: header.TotalAmt ?? 0,
+                AccountObj: details.map(d => ({
+                    AccountingLedgerID: d.AccountingLedgerID,
+                    ledgerName: d.ledgerName,
+                    amount: Math.abs(d.amount),  // Since API returns -1000
+                    SrNo: d.SrNo
+                }))
+            }));
+
+            // 📅 Convert date
+            if (header.VchDate) {
+                setDate(new Date(header.VchDate.split("/").reverse().join("-")));
             }
-        } catch {
-            toastifyError("Error in getting a Single Data");
+
+          setParticulars(
+  details.map(d => {
+    const ledgerObj = ledgerAccounts.find(
+      acc => Number(acc.LedgerID) === Number(d.AccountingLedgerID)
+    );
+
+    return {
+      id: d.SrNo,
+      ledgerName: ledgerObj?.name || d.ledgerName || "Unknown",
+      amount: Math.abs(d.amount),
+      AccountingLedgerID: d.AccountingLedgerID
+    };
+  })
+);
+
+
+
+            // ➕ Dropdown pre-load
+            setSelectedAccount({
+                value: header.LedgerID,
+                label: header.PartyName
+            });
         }
+    } catch (error) {
+        toastifyError("Error while fetching voucher details");
     }
+    };
 
-    useEffect(() => {
-        if (editId) {
-            fetchSingleData(editId);
-        }
-    }, [editId]);
+useEffect(() => {
+    if (editId && ledgerAccounts.length > 0) {
+        fetchSingleData(editId);
+    }
+}, [editId, ledgerAccounts]);
 
-    useEffect(() => {
-        ledgerAccount();
-    }, []);
+useEffect(() => {
+    ledgerAccount();
+}, []);
+
+
+    const handleAddVoucher = () => {
+       navigate('/payment-voucher', { state: { editId: null } });
+    };
 
     const addParticular = () => {
         if (!singleRow.name || !singleRow.amount) {
@@ -211,6 +286,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId }) => {
             sortable: true,
             center: true
         },
+
         {
             name: "Action",
             cell: (row: Voucher) => (
@@ -374,7 +450,6 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId }) => {
                 {/* Narration */}
                 <div className="section narration-row">
                     <label>Narration</label>
-
                     <div className="narration-flex align-items-center">
                         <textarea rows="1" className="narration-text"
                             value={form.Narration}

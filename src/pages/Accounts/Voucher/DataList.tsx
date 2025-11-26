@@ -59,13 +59,10 @@ const initialData = [
 ];
 
 function DataList() {
-
     const navigate = useNavigate()
-
-
     const [searchText, setSearchText] = useState("");
     const [rows, setRows] = useState(initialData);
-    // const [showVoucher, setShowVoucher] = useState(false);
+    const [showVoucher, setShowVoucher] = useState(false);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
 
@@ -98,7 +95,7 @@ function DataList() {
             };
 
             const response = await fetchPostData('Accountingvoucher/GetData_Accountingvoucher', payload);
-            console.log(response);
+            // console.log(response);
 
             if (response && Array.isArray(response)) {
                 const modifiedData = response.map((item) => ({
@@ -137,8 +134,9 @@ function DataList() {
                         className="ledger-management-btn-icon"
                         title="Edit"
                         onClick={() => {
-                            setEditItemId(row.ID);
-                            navigate('/payment-voucher');
+                            // setEditItemId(row.ID);
+                            navigate('/payment-voucher', { state: { editId: row.ID } });
+
                         }}
                     >
                         <Edit className="ledger-management-icon-sm" />
@@ -181,11 +179,12 @@ function DataList() {
         },
     ];
 
-    // if (showVoucher) {
-    //     return (
-    //         <PaymentVoucher editId={editItemId} />
-    //     );
-    // }
+    if (showVoucher) {
+        alert(editItemId);
+        return (
+            <PaymentVoucher editId={editItemId} />
+        );
+    }
 
     return (
         <div className="voucher-container">
