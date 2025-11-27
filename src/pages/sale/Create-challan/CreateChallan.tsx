@@ -1190,7 +1190,7 @@ const CreateChallan: React.FC = () => {
         IsReject: ''
       }
       const response = await fetchPostData('Challan/GetData_Challan', payload);
-      // console.log(response);
+      console.log(response);
 
       if (response) {
         setChallanItems(response);
@@ -1209,12 +1209,12 @@ const CreateChallan: React.FC = () => {
         const i = index + 1;
         acc[`ProductName${i}`] = product.name || '';
         acc[`Rate${i}`] = product.rate || '';
-        acc[`Grossweight${i}`] = product.grossWeight ||'';
-        acc[`Netweight${i}`] = product.netWeight ||'';
-        acc[`Lessweight${i}`] = product.lessWeight ||'';
-        acc[`GTWeight${i}`] = product.gtWeight ||'';
-        acc[`Amount${i}`] = product.amount ||'';
-        acc[`Grossweightdate${i}`] =  null;
+        acc[`Grossweight${i}`] = product.grossWeight || '';
+        acc[`Netweight${i}`] = product.netWeight || '';
+        acc[`Lessweight${i}`] = product.lessWeight || '';
+        acc[`GTWeight${i}`] = product.gtWeight || '';
+        acc[`Amount${i}`] = product.amount || '';
+        acc[`Grossweightdate${i}`] = null;
         return acc;
       }, {});
       const payload = {
@@ -1265,7 +1265,7 @@ const CreateChallan: React.FC = () => {
         acc[`Lessweight${i}`] = product.lessWeight || 0;
         acc[`GTWeight${i}`] = product.gtWeight || 0;
         acc[`Amount${i}`] = product.amount || 0;
-        acc[`Grossweightdate${i}`] =  null;
+        acc[`Grossweightdate${i}`] = null;
         return acc;
       }, {});
       const payload = {
@@ -1367,62 +1367,62 @@ const CreateChallan: React.FC = () => {
   }
 
   const handleProductChange = (index: number, field: string, value: any) => {
-  setChallanData((prev) => {
-    const updatedProducts = [...prev.productDetails];
+    setChallanData((prev) => {
+      const updatedProducts = [...prev.productDetails];
 
-    const treatedValue =
-      value === '' ? null :
-      isNaN(Number(value)) ? value : Number(value); // preserve null
+      const treatedValue =
+        value === '' ? null :
+          isNaN(Number(value)) ? value : Number(value); // preserve null
 
-    updatedProducts[index][field] = treatedValue;
+      updatedProducts[index][field] = treatedValue;
 
-    // Only calculate if both valid numbers
-    if (['netWeight', 'lessWeight', 'rate'].includes(field)) {
-      const rate = updatedProducts[index].rate ?? null;
-      const netWeight = updatedProducts[index].netWeight ?? null;
-      const lessWeight = updatedProducts[index].lessWeight ?? null;
+      // Only calculate if both valid numbers
+      if (['netWeight', 'lessWeight', 'rate'].includes(field)) {
+        const rate = updatedProducts[index].rate ?? null;
+        const netWeight = updatedProducts[index].netWeight ?? null;
+        const lessWeight = updatedProducts[index].lessWeight ?? null;
 
-      // if (rate !== null && netWeight !== null && lessWeight !== null) {
-      //   updatedProducts[index].gtWeight = netWeight - lessWeight;
-      //   updatedProducts[index].amount = (netWeight - lessWeight) * rate;
-      // } else {
-      //   updatedProducts[index].gtWeight = null;
-      //   updatedProducts[index].amount = null;
-      // }
-    }
+        // if (rate !== null && netWeight !== null && lessWeight !== null) {
+        //   updatedProducts[index].gtWeight = netWeight - lessWeight;
+        //   updatedProducts[index].amount = (netWeight - lessWeight) * rate;
+        // } else {
+        //   updatedProducts[index].gtWeight = null;
+        //   updatedProducts[index].amount = null;
+        // }
+      }
 
-    return { ...prev, productDetails: updatedProducts };
-  });
+      return { ...prev, productDetails: updatedProducts };
+    });
   };
 
   const handleSaveChallan = async () => {
-  const cleanedData = {
-    ...challanData,
-    productDetails: challanData.productDetails
-      .filter(p => p.ProductId !== null) // Ignore if no product selected
-      .map(p => ({
-        ...p,
-        rate: p.rate ?? null,
-        netWeight: p.netWeight ?? null,
-        lessWeight: p.lessWeight ?? null,
-        gtWeight: p.gtWeight ?? null,
-        amount: p.amount ?? null,
-      }))
-  };
+    const cleanedData = {
+      ...challanData,
+      productDetails: challanData.productDetails
+        .filter(p => p.ProductId !== null) // Ignore if no product selected
+        .map(p => ({
+          ...p,
+          rate: p.rate ?? null,
+          netWeight: p.netWeight ?? null,
+          lessWeight: p.lessWeight ?? null,
+          gtWeight: p.gtWeight ?? null,
+          amount: p.amount ?? null,
+        }))
+    };
 
-  if (editItemId) {
-    const success = await updateChallan(cleanedData, editItemId);
-    if (success) {
-      resetForm();
-      handleCloseModal();
+    if (editItemId) {
+      const success = await updateChallan(cleanedData, editItemId);
+      if (success) {
+        resetForm();
+        handleCloseModal();
+      }
+    } else {
+      const success = await insertChallan(cleanedData);
+      if (success) {
+        resetForm();
+        handleCloseModal();
+      }
     }
-  } else {
-    const success = await insertChallan(cleanedData);
-    if (success) {
-      resetForm();
-      handleCloseModal();
-    }
-  }
   };
 
   useEffect(() => {
@@ -1880,7 +1880,7 @@ const CreateChallan: React.FC = () => {
       borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", // ✅ Default light blue border
       boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
       "&:hover": {
-        borderColor: "#6ea8ff", 
+        borderColor: "#6ea8ff",
       },
     }),
     valueContainer: (provided: any) => ({
@@ -2303,21 +2303,23 @@ const CreateChallan: React.FC = () => {
                     <div className="col-xl-3 mt-3 mt-xl-0">
                       <div className="d-flex align-items-center gap-2">
                         <label htmlFor="generic-desc" className="mb-0 name-label" style={{ minWidth: 70 }}> Date/Time </label>
-                        <div className="product-des-input flex-grow-1">
-                          <DatePicker selected={moment(challanData.ChallanDate, "YYYY-MM-DD HH:mm:ss").toDate()}
-                            onChange={(date: Date | null) => {
-                              if (date) {
-                                const formatted = moment(date).format("YYYY-MM-DD HH:mm:ss");
-                                setChallanData({ ...challanData, ChallanDate: formatted });
-                              }
-                            }}
-                            showTimeSelect
-                            timeIntervals={15}
-                            timeCaption="Time"
-                            dateFormat="dd/MM/yyyy HH:mm"
-                            className="border rounded px-2 py-1 w-full challan"
-                          />
-                        </div>
+                        <DatePicker
+                          selected={
+                            challanData.ChallanDate
+                              ? moment(challanData.ChallanDate, "YYYY-MM-DD HH:mm:ss").toDate()
+                              : null
+                          }
+                          onChange={(date: Date | null) => {
+                            setChallanData({
+                              ...challanData,
+                              ChallanDate: date ? moment(date).format("YYYY-MM-DD HH:mm:ss") : ""
+                            });
+                          }}
+                          showTimeSelect
+                          timeIntervals={15}
+                          timeCaption="Time"
+                          dateFormat="dd/MM/yyyy HH:mm"
+                        />
                       </div>
                     </div>
                     <div className="col-xl-2 mt-3 mt-xl-0">
@@ -2928,7 +2930,7 @@ const CreateChallan: React.FC = () => {
                                   {/* Date/Time */}
                                   <div className="col-md-2 mt-0">
                                     <label className="MAINTABLE_LABEL name-label">Date/Time</label>
-                                    <DatePicker 
+                                    <DatePicker
                                       readOnly
                                       showTimeSelect
                                       timeIntervals={15}
@@ -2940,7 +2942,7 @@ const CreateChallan: React.FC = () => {
                                   {/* Net Weight */}
                                   <div className="col mt-0" style={{ minWidth: 130 }}>
                                     <label className="MAINTABLE_LABEL name-label">Net Weight</label>
-                                    <input className="challan challan-prod-readOnly" type="text" readOnly  />
+                                    <input className="challan challan-prod-readOnly" type="text" readOnly />
                                   </div>
                                   {/* Less Weight */}
                                   <div className="col mt-0" style={{ minWidth: 150 }}>
@@ -2981,7 +2983,7 @@ const CreateChallan: React.FC = () => {
                                 {/* Tare-Weight */}
                                 <div className="col-2 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Tare Weight</label>
-                                  <input className="challan"  type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
+                                  <input className="challan" type="number" id="SchemDes" value={challanData.TareWeight} onChange={(e) => setChallanData({ ...challanData, TareWeight: Number(e.target.value) })} />
                                 </div>
 
                                 {/* Date/Time */}
@@ -3022,7 +3024,7 @@ const CreateChallan: React.FC = () => {
                                 {/* GT-Weight */}
                                 <div className="col-1 mt-0" style={{ minWidth: 130 }}>
                                   <label className="MAINTABLE_LABEL name-label">Total GT Weight</label>
-                                  <input className="challan" type="number" id="SchemDes"/>
+                                  <input className="challan" type="number" id="SchemDes" />
                                 </div>
                                 {/* Vehicle-Commision */}
                                 <div className="col-1 mt-0" style={{ minWidth: 150 }}>
@@ -3156,7 +3158,7 @@ const CreateChallan: React.FC = () => {
             deleteMaterialName(selectedId);
           }
           setShowModal(false);
-        }} />
+      }} />
     </>
   );
 }

@@ -10,6 +10,7 @@ import ConfirmModal from '@/common/ConfirmModal';
 import { getShowingDateText } from '@/common/DateFormat';
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
+import { Space_Not_Allow } from '@/common/validation';
 
 //==================== Icon Components ====================
 const BookOpen = ({ className }: { className?: string }) => (
@@ -62,6 +63,7 @@ interface LedgerAccount {
     DistrictID: number;
     District: string;
     pincode: number;
+    pincodeName: string;
     MobileNo: number;
     email: string;
 
@@ -96,6 +98,7 @@ interface LedgerData {
     DistrictID: number;
     District: string;
     pincode: number;
+    pincodeName: string
     MobileNo: number;
     email: string;
 
@@ -146,7 +149,6 @@ const Ledger: React.FC = () => {
     const [ledgerAccounts, setLedgerAccounts] = useState<LedgerAccount[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterGroup, setFilterGroup] = useState('all');
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [editingAccount, setEditingAccount] = useState<LedgerAccount | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
     const [showDetailForm, setShowDetailForm] = useState(false);
@@ -161,6 +163,10 @@ const Ledger: React.FC = () => {
     const [district, setDistrict] = useState<District[]>([]);
     const [zipCode, setZipCode] = useState<ZIPCode[]>([]);
     const [regisType, setRegisType] = useState<RegisType[]>([]);
+    const [errors, setErrors] = useState({
+        ledgerError: '',
+        accountingError: '',
+    });
 
     const [formData, setFormData] = useState<LedgerAccount>({
         //Top-Fields
@@ -177,6 +183,7 @@ const Ledger: React.FC = () => {
         DistrictID: 0,
         District: '',
         pincode: 0,
+        pincodeName: '',
         MobileNo: 0,
         email: '',
 
@@ -408,7 +415,7 @@ const Ledger: React.FC = () => {
             const response = await fetchPostData('Bank/GetDataDropDown_Bank', {
                 CompanyId: 1
             });
-            console.log(response);
+            // console.log(response);
 
             if (response && Array.isArray(response)) {
                 setBank(response);
@@ -438,11 +445,42 @@ const Ledger: React.FC = () => {
         }
     }
 
+    // =================== Valiadation ===================
+    const checkValidationError = () => {
+        let valid = true;
+
+        const ledgerValidation = Space_Not_Allow(formData.Name);
+        const accountValidation = Space_Not_Allow(formData.AccountGroupId);
+
+        setErrors({
+            ledgerError: ledgerValidation !== 'true' ? ledgerValidation : '',
+            accountingError: accountValidation !== 'true' ? accountValidation : '',
+        });
+
+        if (ledgerValidation !== 'true' || accountValidation !== 'true') {
+            valid = false;
+        }
+
+        return valid;
+    };
+
     useEffect(() => {
         if (editItemId) {
             fetchSingleData(editItemId);
         }
     }, [editItemId]);
+
+    useEffect(() => {
+        if (formData.StateID) {
+            fetchDistrict(formData.StateID);
+        }
+    }, [formData.StateID]);
+
+    useEffect(() => {
+        if (formData.DistrictID) {
+            fetchZipCode(formData.DistrictID);
+        }
+    }, [formData.DistrictID]);
 
     const Columns = [
         {
@@ -493,17 +531,17 @@ const Ledger: React.FC = () => {
             name: "District",
             selector: (row: LedgerData) => row.District,
             sortable: true,
-            cell: (row: LedgerData) => (
-                <span>{row.District}</span>
-            )
+            cell: (row: LedgerData) => {
+                return <span>{row.District}</span>;
+            }
         },
         {
             name: "PinCode",
-            selector: (row: LedgerData) => row.pincode,
+            selector: (row: LedgerData) => row.pincodeName,
             sortable: true,
             cell: (row: LedgerData) => (
-                <span>{row.pincode}</span>
-            )
+                <span>{row.pincodeName}</span>
+            ),
         },
         {
             name: "Mobile-No",
@@ -525,11 +563,15 @@ const Ledger: React.FC = () => {
         // Tax-Registration-Details
         {
             name: "Registration-Type",
-            selector: (row: LedgerData) => row.gstregistrationtype,
+            selector: (row: LedgerData) => {
+                const registrationType = regisType.find((b) => Number(b.ID) === Number(row.gstregistrationtype));
+                return registrationType ? registrationType.Description : "";
+            },
             sortable: true,
-            cell: (row: LedgerData) => (
-                <span>{row.gstregistrationtype}</span>
-            )
+            cell: (row: LedgerData) => {
+                const registrationType = regisType.find((b) => Number(b.ID) === Number(row.gstregistrationtype));
+                return registrationType ? registrationType.Description : "";
+            },
         },
         {
             name: "GST No",
@@ -575,11 +617,15 @@ const Ledger: React.FC = () => {
         },
         {
             name: "Bank Name",
-            selector: (row: LedgerData) => row.bankname,
+            selector: (row: LedgerData) => {
+                const banks = bank.find((b) => Number(b.ID) === Number(row.bankname));
+                return banks ? banks.BankName : "";
+            },
             sortable: true,
-            cell: (row: LedgerData) => (
-                <span>{row.bankname}</span>
-            )
+            cell: (row: LedgerData) => {
+                const banks = bank.find((b) => Number(b.ID) === Number(row.bankname));
+                return <span>{banks?.BankName}</span>;
+            },
         },
         {
             name: "Branch",
@@ -624,18 +670,22 @@ const Ledger: React.FC = () => {
     }));
 
     const handleInsertAndUpdate = async () => {
+        if (!checkValidationError()) return;
         if (editItemId) {
             const success = await fetchUpdateData(formData, editItemId);
 
             if (success) {
-                // resetdata();
+                handleReset();
                 setShowDetailForm(false);
                 // return;
             }
         }
         if (!editItemId) {
             const success = await fetchInsertData(formData);
-            if (success) setShowDetailForm(false);
+            if (success) {
+                handleReset();
+                setShowDetailForm(false);
+            }
         }
     }
 
@@ -678,7 +728,7 @@ const Ledger: React.FC = () => {
             item.MailingName?.toLowerCase().includes(term) ||
             item.Address?.toLowerCase().includes(term) ||
             item.State?.toLowerCase().includes(term) ||
-            item.MobileNo ||
+            // item.MobileNo ||
             item.email?.toLowerCase().includes(term) ||
             item.gstno?.toLowerCase().includes(term) ||
             item.bankname?.toLowerCase().includes(term) ||
@@ -709,6 +759,7 @@ const Ledger: React.FC = () => {
             CreatedDate: '',
             UpdatedDate: ''
         });
+        setErrors({ ledgerError: '', accountingError: '' });
         setEditItemId(null);
     };
 
@@ -757,13 +808,14 @@ const Ledger: React.FC = () => {
                     {/* Ledger Name */}
                     <div className="col-md-6 mb-2 mt-1" style={{ paddingRight: "2rem" }}>
                         <label className="ledger-management-label">Ledger Name <span className="text-danger">*</span></label>
-                        <input
-                            type="text"
-                            placeholder="Enter Ledger Name"
+                        <input type="text" placeholder="Enter Ledger Name"
                             className="ledger-management-input w-100 challan requiredColor"
                             value={formData.Name || ""}
                             onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
                         />
+                        {errors.ledgerError && (
+                            <div className="invalid-feedback d-block">{errors.ledgerError}</div>
+                        )}
                     </div>
 
                     <div className='col-md-6 mb-2'></div>
@@ -798,10 +850,12 @@ const Ledger: React.FC = () => {
                                     isClearable
                                     styles={requiredColorStyles}
                                 />
+                                {errors.accountingError && (
+                                    <div className="invalid-feedback d-block">{errors.accountingError}</div>
+                                )}
                             </div>
                         </div>
                         <h4 className="mb-1 section-heading  pt-2 ">Bank Account Details</h4>
-
                         <div className="row">
                             {/* Account Holder-Name */}
                             <div className="col-md-6 mb-1">
@@ -979,6 +1033,7 @@ const Ledger: React.FC = () => {
                                         setFormData((prev) => ({
                                             ...prev,
                                             pincode: Number(selectedOption?.value ?? 0),
+                                            pincodeName: selectedOption?.label
                                         }))
                                     }}
                                     placeholder="Enter District Type"

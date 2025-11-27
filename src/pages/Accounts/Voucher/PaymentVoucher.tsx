@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./PaymentVoucher.css";
 import Select from "react-select";
-import { FiPlus, FiTrash2, FiSave } from "react-icons/fi";
+import { FiPlus, FiSave } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
 import { compactHeaderStyles, selectCompactStyles } from "@/common/Utility";
-import { fetchPostData, fetch_Post_Data, AddDeleteUpadate } from "@/components/hooks/Api";
+import { fetchPostData, AddDeleteUpadate } from "@/components/hooks/Api";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface Voucher {
     ID: number;
@@ -53,17 +52,14 @@ const Trash2 = ({ className }: { className?: string }) => (
 );
 
 const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
-    const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
-    const [narration, setNarration] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [singleRow, setSingleRow] = useState({ name: "", amount: "" });
     const [particulars, setParticulars] = useState([]);
     const [editParticularId, setEditParticularId] = useState<number | null>(null);
     const [ledgerAccounts, setLedgerAccounts] = useState<ledAccount[]>([]);
     const [particular, setParticular] = useState<ledAccount[]>([]);
-    const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [form, setForm] = useState({
         ID: 0,
         VchDate: 0,
@@ -71,7 +67,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
         LedgerID: 0,
         VoucherType: "Payment",
         Narration: '',
-        VoucherNo: 0,
+        VoucherNo: "Auto Generated",
         PartyLadgerName: '',
         TotalAmt: 0,
         AccountObj: []
@@ -132,11 +128,9 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
             const payload = {
                 ...form,
                 VchDate: formattedDate,
-                VoucherNo: "Auto Generated",
-                VoucherType: "Payment",
-                Narration: "",
-                FromDate: "",
-                ToDate: "",
+                // VoucherNo: "Auto Generated",
+                // VoucherType: "Payment",
+                TotalAmt: totalAmount,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
 
@@ -188,7 +182,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
             const response = await AddDeleteUpadate('Accountingvoucher/GetSingleData_Accountingvoucher', {
                 ID: Id
             });
-            // console.log(response);
+            console.log(response);
             if (response?.success && response.data) {
                 const parsedData = JSON.parse(response.data);
                 // console.log(parsedData);
@@ -253,19 +247,13 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
         ledgerAccount();
     }, []);
 
-    const handleAddVoucher = () => {
-        navigate('/payment-voucher', { state: { editId: null } });
-    };
-
     const addParticular = () => {
         if (!singleRow.name || !singleRow.amount) {
             toastifyError("Enter Particular Name & Amount");
             return;
         }
 
-        // 🔹 If updating
         if (editParticularId !== null) {
-            // Update UI table
             setParticulars(prev =>
                 prev.map(p =>
                     p.id === editParticularId
@@ -274,7 +262,6 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
                 )
             );
 
-            // Update form payload
             setForm(prev => ({
                 ...prev,
                 AccountObj: prev.AccountObj.map((item: any) =>
@@ -292,7 +279,6 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
             toastifySuccess("Particular updated!");
             setEditParticularId(null);
         } else {
-            // 🔹 If adding new
             const newId = Date.now();
 
             setParticulars(prev => [
@@ -346,13 +332,12 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
             name: "Action",
             cell: (row: Voucher) => (
                 <div>
-                    <button onClick={() => removeParticular(row.id)}>
-                        <Trash2 className="ledger-management-icon-sm" />
-                    </button>
-                    <button className="ledger-management-btn-icon" title="Edit" onClick={() => handleEditParticular(row)}>
+                    <button className="ledger-management-btn-icon mr-1" title="Edit" onClick={() => handleEditParticular(row)}>
                         <Edit className="ledger-management-icon-sm" />
                     </button>
-
+                    <button className="ledger-management-btn-icon" title="Delete" onClick={() => removeParticular(row.id)}>
+                        <Trash2 className="ledger-management-icon-sm" />
+                    </button>
                 </div>
             ),
             center: true,

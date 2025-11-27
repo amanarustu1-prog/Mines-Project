@@ -8,15 +8,12 @@ export const ORIValidator = (ORI: string): string =>
   /^[A-Z]{2}\d{5}00$/.test(ORI.toUpperCase()) ? 'true' : 
   'Please enter a valid format (eg: WV0034500)';
 
-export const ORIValidatorVictim = (ORI?: string | null): string => 
-  !ORI?.trim() ? 'true' : ORIValidator(ORI);
+export const ORIValidatorVictim = (ORI?: string | null): string => !ORI?.trim() ? 'true' : ORIValidator(ORI);
 
-export const ORIWarant = (field: string | null): string => 
-  !field ? 'true' : ORIValidator(field);
+export const ORIWarant = (field: string | null): string => !field ? 'true' : ORIValidator(field);
 
 // Required Field Validation
-export const RequiredField = (field: any): string => 
-  (field === '' || field === null || field === undefined) ? 'Required *' : 'true';
+export const RequiredField = (field: any): string => (field === '' || field === null || field === undefined) ? 'Required *' : 'true';
 
 // Name Validation
 type NameType = 'FirstName' | 'MiddleName' | 'LastName';
@@ -80,12 +77,14 @@ export const MunicipalityCodeValidator = (code: string | null): string =>
   /^\d{4}$/.test(code) ? 'true' :
   'Please enter a valid Municipality code';
 
-
-
-export const Space_Not_Allow = (field) => {
-    if (!field || field === null || field.trim() === '') {
+export const Space_Not_Allow = (field : any) => {
+    if (!field || field === null ) {
         return 'Required *';
     }
+    // Convert to string safely
+    const value = String(field).trim();
+
+    if (!value) return 'Required *';
     else if (/^\s|\s$/.test(field)) {
         return 'Space Not Allow';
     }
@@ -119,7 +118,7 @@ export const MaxPasswordAge = (value: number | null, config: PasswordConfig[]): 
   return value > 0 && value <= maxAge ? 'true' : `Max Valid for ${maxAge} days`;
 };
 
-export const RequiredFieldIncident = (field) => {
+export const RequiredFieldIncident = (field:any) => {
     if (!field || field?.length === 0 || (typeof field === 'string' && field.trim() === "") || field === '' || field === null || field === undefined || field === 0 || field === "Invalid date") {
         return 'Required *';
     } else {
