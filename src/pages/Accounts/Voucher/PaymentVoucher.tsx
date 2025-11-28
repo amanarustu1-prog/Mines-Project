@@ -403,6 +403,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
                             // onChange={(e) => setVoucherNo(e.target.value)}
                             readOnly={true}
                             placeholder="Enter No."
+                       
                         />
                     </div>
                     {/* Date */}
@@ -415,6 +416,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
                             onChange={(d) => setDate(d)}
                             dateFormat="dd/MM/yyyy"
                             className="date-input challan"
+                            isClearable
                         />
                     </div>
                 </div>
