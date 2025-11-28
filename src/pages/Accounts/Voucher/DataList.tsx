@@ -4,8 +4,9 @@ import DataTable from "react-data-table-component";
 import { customStyles } from "@/common/Utility";
 import PaymentVoucher from "./PaymentVoucher";
 import { fetchPostData } from "@/components/hooks/Api";
-import { toastifyError } from "@/common/AlertMsg";
+import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import { useNavigate } from "react-router-dom";
+import ConfirmModal from "@/common/ConfirmModal";
 
 function Edit({ className }) {
     return (
@@ -20,64 +21,44 @@ function Edit({ className }) {
     );
 }
 
+const Trash2 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+);
+
 interface Voucher {
     ID: Number;
     VchrNo: number;
     VchrType: string;
-    Name: number;
+    Name: string;
     DebitAmt: number;
     CreditAmt: number;
     vchId: number;
     Date: string;
+    PartyName: string;
+    TotalAmt: number;
 }
-
-const initialData = [
-    {
-        id: 1,
-        particular: "Cash",
-        vchType: "Payment",
-        vchNo: "PV-001",
-        debitAmt: 1000,
-        creditAmt: 0,
-    },
-    {
-        id: 2,
-        particular: "Bank",
-        vchType: "Receipt",
-        vchNo: "RV-002",
-        debitAmt: 0,
-        creditAmt: 2500,
-    },
-    {
-        id: 3,
-        particular: "Sales A/C",
-        vchType: "Journal",
-        vchNo: "JV-003",
-        debitAmt: 5000,
-        creditAmt: 0,
-    },
-];
 
 function DataList() {
     const navigate = useNavigate()
     const [searchText, setSearchText] = useState("");
-    const [rows, setRows] = useState(initialData);
     const [showVoucher, setShowVoucher] = useState(false);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [editItemId, setEditItemId] = useState<number | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [rows, setRows] = useState<Voucher[]>([]);
 
     const filteredData = useMemo(() => {
         if (!searchText.trim()) return rows;
-
         const term = searchText.toLowerCase();
 
         return rows.filter((row) => {
             return (
-                row.particular.toLowerCase().includes(term) ||
-                row.vchType.toLowerCase().includes(term) ||
-                row.vchNo.toLowerCase().includes(term) ||
-                String(row.debitAmt).includes(term) ||
-                String(row.creditAmt).includes(term)
+                row.PartyName?.toLowerCase().includes(term) ||
+                row.TotalAmt.toString().includes(term)
             );
         });
     }, [searchText, rows]);
@@ -103,22 +84,40 @@ function DataList() {
                     AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
                 }));
                 setVoucher(modifiedData);
+                setRows(modifiedData);
             } else {
                 setVoucher([]);
+                setRows([]);
             }
         } catch {
             toastifyError("Error fetching the Data");
         }
     };
 
+    const fetchDeleteData = async (Id: number) => {
+        try {
+            const response = await fetchPostData('Accountingvoucher/Delete_Accountingvoucher', {
+                "ID": Id,
+            });
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item is deleted successfully.");
+                await fetchGetData();
+                return true;
+            } else {
+                toastifyError("Item is not Deleted");
+                return false;
+            }
+        }
+        catch {
+            toastifySuccess("Error in Deleting a Item");
+        }
+    }
+
     useEffect(() => {
         fetchGetData();
     }, []);
-
-    const handleVoucherSaved = (rowFromChild) => {
-        setRows((prev) => [...prev, rowFromChild]);
-        setShowVoucher(false);
-    };
 
     const handleAddVoucher = () => {
         // setShowVoucher(true);
@@ -130,16 +129,13 @@ function DataList() {
             name: "Actions",
             cell: (row: Voucher) => (
                 <div className="ledger-management-flex ledger-management-gap-2">
-                    <button
-                        className="ledger-management-btn-icon"
-                        title="Edit"
-                        onClick={() => {
-                            // setEditItemId(row.ID);
-                            navigate('/payment-voucher', { state: { editId: row.ID } });
-
-                        }}
-                    >
+                    <button className="ledger-management-btn-icon mr-0" title="Edit"
+                        onClick={() => { navigate('/payment-voucher', { state: { editId: row.vchId } }); }}>
                         <Edit className="ledger-management-icon-sm" />
+                    </button>
+                    <button className="ledger-management-btn-icon" title="Delete"
+                        onClick={() => { setSelectedId(row.vchId); setShowModal(true) }}>
+                        <Trash2 className="ledger-management-icon-sm" />
                     </button>
                 </div>
             ),
@@ -154,7 +150,7 @@ function DataList() {
         },
         {
             name: "Particular",
-            selector: (row: Voucher) => row.Name,
+            selector: (row: Voucher) => row.PartyName,
             sortable: true,
         },
         {
@@ -169,7 +165,7 @@ function DataList() {
         },
         {
             name: "DebitAmt",
-            selector: (row: Voucher) => row.DebitAmt,
+            selector: (row: Voucher) => row.TotalAmt,
             sortable: true,
         },
         {
@@ -179,12 +175,12 @@ function DataList() {
         },
     ];
 
-    if (showVoucher) {
-        alert(editItemId);
-        return (
-            <PaymentVoucher editId={editItemId} />
-        );
-    }
+    // if (showVoucher) {
+    //     alert(editItemId);
+    //     return (
+    //         <PaymentVoucher editId={editItemId} />
+    //     );
+    // }
 
     return (
         <div className="voucher-container">
@@ -208,7 +204,7 @@ function DataList() {
 
                 <DataTable
                     columns={columns}
-                    data={voucher}
+                    data={filteredData}
                     pagination
                     highlightOnHover
                     paginationRowsPerPageOptions={[5, 10, 15]}
@@ -220,6 +216,14 @@ function DataList() {
                     fixedHeaderScrollHeight="300px"
                 />
             </div>
+            <ConfirmModal show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleConfirm={() => {
+                    if (selectedId !== null) {
+                        fetchDeleteData(selectedId);
+                    }
+                    setShowModal(false);
+                }} />
         </div>
     );
 }
