@@ -12,7 +12,6 @@ import { StylesConfig } from "react-select";
 import * as XLSX from 'xlsx';
 import { FaFileExcel } from 'react-icons/fa';
 import { Space_Not_Allow } from '@/common/validation';
-import { getValue, getOptions, getChange } from "@/common/commonFunc";
 
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
@@ -470,10 +469,10 @@ const GroupCreation = () => {
 
             {/* Parent Group */}
             <div className="col-md-1 text-end px-0">
-              <label className="ledger-management-label mb-0">Parent Group {!form.primary_group && (<span className="text-danger"> *</span>)}</label>
+              <label className="ledger-management-label mb-0">Parent Group <span className="text-danger"> *</span></label>
             </div>
             <div className="col-md-3">
-              {/* <Select
+              <Select
                 classNamePrefix="select"
                 placeholder="Select parent group"
                 value={form.parent ?
@@ -496,17 +495,14 @@ const GroupCreation = () => {
                 isClearable
                 isDisabled={false}
                 styles={requiredColorStyles}
-              /> */}
-              <Select
-                className="w-100 requiredColor"
-                placeholder="Select Ledger Group"
+              />
+              {/* <Select className="w-100 requiredColor" placeholder="Select Ledger Group"
                 value={getValue(form.parent, accountGroup)}
                 options={getOptions(accountGroup)}
                 onChange={getChange(setForm)}
                 isClearable
                 styles={requiredColorStyles}
-              />
-
+              /> */}
               {errors.ParentGroupError && (
                 <div className="invalid-feedback d-block">{errors.ParentGroupError}</div>
               )}
