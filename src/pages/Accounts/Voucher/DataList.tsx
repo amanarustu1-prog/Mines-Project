@@ -10,13 +10,11 @@ import ConfirmModal from "@/common/ConfirmModal";
 import DatePicker from "react-datepicker";
 
 
-function Edit({ className }: { className?: string }) {
-    return (
-        <svg className={className} fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg>
-    );
-}
+const Edit3 = ({ className }: { className?: string }) => (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+);
 
 
 const Trash2 = ({ className }: { className?: string }) => (
@@ -63,15 +61,15 @@ function DataList() {
         const term = searchText.toLowerCase();
 
         return rows.filter((row) => {
-            return (
-                row.PartyName?.toLowerCase().includes(term) ||
-                row.TotalAmt.toString().includes(term)
-            );
+            const partyName = row.PartyName ? row.PartyName.toLowerCase() : "";
+            const totalAmtStr = (row.TotalAmt ?? 0).toString();
+
+            return partyName.includes(term) || totalAmtStr.includes(term);
         });
     }, [searchText, rows]);
 
     //Get-data
-    const fetchGetData = async (from: Date | null = null, to: Date | null = null) => {
+    const fetchGetData = async (from: Date | null = null, to: Date | null = null): Promise<Voucher[]> => {
         try {
             const payload = {
                 VoucherNo: "",
@@ -86,24 +84,47 @@ function DataList() {
             // console.log(response);
 
             if (response && Array.isArray(response)) {
+                console.log(response, "response")
                 const modifiedData = response.map((item) => ({
                     ...item,
                     AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
                 }));
+                console.log(modifiedData, "modifiedData")
                 setVoucher(modifiedData);
                 setRows(modifiedData);
+                return modifiedData;
             } else {
                 setVoucher([]);
                 setRows([]);
+                return [];
             }
         } catch {
             toastifyError("Error fetching the Data");
+            return [];
         }
     };
 
-    const handleSearch = () => {
-        fetchGetData(fromDate, toDate);
+    // const handleSearch = () => {
+    //     fetchGetData(fromDate, toDate);
+    // };
+
+    const handleSearch = async () => {
+        const data = await fetchGetData(fromDate, toDate);
+
+        if (!data || data.length === 0) {
+            toastifyError("No data found for selected dates");
+        }
     };
+
+    const handleFromDateChange = (date: Date | null) => {
+        setFromDate(date);
+        if (date) {
+            setToDate(date); // auto-fill To Date
+        }
+    };
+
+
+
 
     const fetchDeleteData = async (Id: number) => {
         try {
@@ -140,11 +161,11 @@ function DataList() {
             name: "Actions",
             cell: (row: Voucher) => (
                 <div className="ledger-management-flex ledger-management-gap-2">
-                    <button className="ledger-management-btn-icon mr-0" title="Edit"
+                    <button className="ledger-management-btn-icon mr-0  " title="Edit"
                         onClick={() => { setCurrentEditId(row.vchId); setShowVoucherModal(true); }}>
-                        <Edit className="ledger-management-icon-sm" />
+                        <Edit3 className="ledger-management-icon-sm" />
                     </button>
-                    <button className="ledger-management-btn-icon" title="Delete"
+                    <button className="ledger-management-btn-icon text-red-600 hover:text-red-800" title="Delete"
                         onClick={() => { setSelectedId(row.vchId); setShowModal(true) }}>
                         <Trash2 className="ledger-management-icon-sm" />
                     </button>
@@ -197,7 +218,14 @@ function DataList() {
         <div className="voucher-container list-container">
 
             <div className="voucher-card mb-2">
+
+                {/* ===================== DATE FILTER ROW ===================== */}
                 <div className="row align-items-center ">
+                    {/* ===================== PAGE HEADER ===================== */}
+                    <div className="page-header col-md-3">
+                        <h5 className="voucher-page-title mb-0">Payment Voucher List</h5>
+                        <div className="header-line"></div>
+                    </div>
                     {/* From Date */}
                     <div className="col-md-1 text-right px-0">
                         <label className="voucher-date-label mb-0 text-nowrap">From Date</label>
@@ -205,10 +233,11 @@ function DataList() {
                     <div className="col-md-3">
                         <DatePicker
                             selected={fromDate}
-                            onChange={(date) => setFromDate(date)}
+                            onChange={handleFromDateChange}
                             dateFormat="yyyy-MM-dd"
                             className="voucher-search-input challan"
                             placeholderText="From Date"
+                            isClearable
                         />
                     </div>
 
@@ -224,10 +253,12 @@ function DataList() {
                             dateFormat="yyyy-MM-dd"
                             className="voucher-search-input challan"
                             placeholderText="To Date"
+                            isClearable
+
                         />
                     </div>
 
-                    <div className="col-md-2">
+                    <div className="col-md-1 d-flex justify-content-end ">
                         <button className="save-btn" onClick={handleSearch}>Search</button>
                     </div>
 
@@ -293,14 +324,7 @@ function DataList() {
                 </>
             )}
 
-            <ConfirmModal show={showModal}
-                handleClose={() => setShowModal(false)}
-                handleConfirm={() => {
-                    if (selectedId !== null) {
-                        fetchDeleteData(selectedId);
-                    }
-                    setShowModal(false);
-                }} />
+            <ConfirmModal show={showModal} handleClose={() => setShowModal(false)} handleConfirm={() => { if (selectedId !== null) { fetchDeleteData(selectedId); } setShowModal(false); }} />
 
 
         </div>
