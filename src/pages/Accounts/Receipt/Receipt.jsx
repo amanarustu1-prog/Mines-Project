@@ -47,7 +47,19 @@ const Receipt = () => {
     const [toDate, setToDate] = useState(null);
     const [showVoucherModal, setShowVoucherModal] = useState(false);
     const [currentEditId, setCurrentEditId] = useState(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();  
+    const [form, setForm] = useState({
+        ID: 0,
+        VchDate: 0,
+        PartyName: '',
+        LedgerID: 0,
+        VoucherType: "Receipt",
+        Narration: '',
+        VoucherNo: "Auto Generated",
+        PartyLadgerName: '',
+        TotalAmt: 0,
+        AccountObj: []
+    });
 
     const formatDate = (date) => {
         if (!date) return "";
@@ -72,7 +84,7 @@ const Receipt = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Payment",
+                VoucherType: "Receipt",
                 FromDate: formatDate(from),
                 ToDate: formatDate(to),
                 CompanyId: localStorage.getItem('companyID')
@@ -203,19 +215,6 @@ const Receipt = () => {
         },
     ];
 
-    const [form, setForm] = useState({
-        ID: 0,
-        VchDate: 0,
-        PartyName: '',
-        LedgerID: 0,
-        VoucherType: "Payment",
-        Narration: '',
-        VoucherNo: 0,
-        PartyLadgerName: '',
-        TotalAmt: 0,
-        AccountObj: []
-    });
-
 
     const removeParticular = (id) => {
         setParticulars(particulars.filter((p) => p.id !== id));
@@ -251,7 +250,7 @@ const Receipt = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Payment",
+                VoucherType: "Receipt",
                 FromDate: "",
                 ToDate: "",
                 CompanyId: localStorage.getItem('companyID')
@@ -293,7 +292,7 @@ const Receipt = () => {
                 ...form,
                 VchDate: formattedDate,
                 VoucherNo: "Auto Generated",
-                VoucherType: "Payment",
+                VoucherType: "Receipt",
                 TotalAmt: totalAmount,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -411,7 +410,6 @@ const Receipt = () => {
                             />
                         </div>
 
-
                         {/* To Date */}
                         <div className="col-md-1 text-right px-0 ">
                             <label className="receipt_lable mb-0 text-nowrap ">To Date</label>
@@ -431,7 +429,6 @@ const Receipt = () => {
                         <div className="col-md-1 d-flex justify-content-end ">
                             <button className="save-btn" onClick={handleSearch}>Search</button>
                         </div>
-
                     </div>
                 </div>
 
@@ -669,18 +666,17 @@ const Receipt = () => {
                 </>
             )}
 
-            <ConfirmModal
-                show={showModal}
+            <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
                     if (selectedId !== null) {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-                }}
+            }}
             />
         </>
     );
 };
-
+  
 export default Receipt;

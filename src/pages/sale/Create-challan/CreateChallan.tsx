@@ -439,9 +439,6 @@ const CreateChallan: React.FC = () => {
   const [filter, setFilter] = useState<"pending" | "approved" | "rejected" | "all">("approved");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [pendingChallan, setpendingChallan] = useState(0);
-  const [approvedChallan, setapprovedChallan] = useState(0);
-  const [rejectedChallan, setrejectedChallan] = useState(0);
   const [State, setState] = useState<State[]>([]);
   const [vehicleType, setVehicleType] = useState<Vehicle[]>([]);
   const [partyType, setPartyType] = useState<Party[]>([]);
@@ -607,7 +604,7 @@ const CreateChallan: React.FC = () => {
   };
 
   const Columns = [
-    // DONE
+    //First-Row
     {
       name: 'Actions',
       cell: (row: ChallanTableItem) => (
@@ -620,11 +617,8 @@ const CreateChallan: React.FC = () => {
             <Edit3 className="material-name-icon-sm" />
           </button>
           {/*Challan Print */}
-          <button
-            onClick={() => { handleChallanPrint(row.ChallanID!); setEditItemId(row.ChallanID!); }}
-            className="material-name-btn-icon text-green-600 hover:text-green-800"
-            title="Print"
-          >
+          <button onClick={() => { handleChallanPrint(row.ChallanID!); setEditItemId(row.ChallanID!); }}
+            className="material-name-btn-icon text-green-600 hover:text-green-800" title="Print" >
             <FiPrinter className="material-name-icon-sm" />
           </button>
         </div>
@@ -665,14 +659,15 @@ const CreateChallan: React.FC = () => {
         <span className="text-right">{row.paytype}</span>
       ),
     },
-
+    //Second-Row 
+    //First-Column
     {
       name: 'Party',
       selector: (row: ChallanTableItem) => row.PartyID,
       sortable: true,
       cell: (row: ChallanTableItem) => {
         const p = partyType.find((x) => x.PartyID === row.PartyID);
-        return <span className="font-mono text-sm">{p?.Name}</span>;
+        return <span className=" text-sm">{p?.Name}</span>;
       },
     },
     {
@@ -735,12 +730,13 @@ const CreateChallan: React.FC = () => {
       ),
     },
 
+    //Second-Column
     {
       name: 'Advance Amt',
       selector: (row: ChallanTableItem) => row.AdvAmt,
       sortable: true,
       cell: (row: ChallanTableItem) => (
-        <span className="font-medium">{row.AdvAmt}</span>
+        <span>{row.AdvAmt}</span>
       ),
     },
     {
@@ -748,7 +744,7 @@ const CreateChallan: React.FC = () => {
       selector: (row: ChallanTableItem) => row.VehicleTypeid,
       cell: (row: ChallanTableItem) => {
         const v = vehicleType.find((x) => x.VehicleTypeID === row.VehicleTypeid);
-        return <span className="font-mono text-sm">{v?.Description}</span>;
+        return <span className="text-sm">{v?.Description}</span>;
       },
     },
     {
@@ -756,9 +752,8 @@ const CreateChallan: React.FC = () => {
       selector: (row: ChallanTableItem) => row.VehicleNoID,
       sortable: true,
       cell: (row: ChallanTableItem) => {
-        // <span className="text-sm text-gray-600">{row.VehicleNoID}</span>
         const vNo = vehicleNo.find((v) => Number(v.VehicleNumberID) === Number(row.VehicleNoID));
-        return <span className="font-mono text-sm">{vNo?.Description ?? row.VehicleNoID}</span>;
+        return <span className="text-sm">{vNo?.Description}</span>;
       },
     },
     {
@@ -766,7 +761,7 @@ const CreateChallan: React.FC = () => {
       selector: (row: ChallanTableItem) => row.DriverName,
       sortable: true,
       cell: (row: ChallanTableItem) => (
-        <span className="font-medium">{row.DriverName}</span>
+        <span className="text-sm">{row.DriverName}</span>
       ),
     },
     {
@@ -774,7 +769,7 @@ const CreateChallan: React.FC = () => {
       selector: (row: ChallanTableItem) => row.DriverMobileNo,
       sortable: true,
       cell: (row: ChallanTableItem) => (
-        <span className="text-sm text-gray-600">{row.DriverMobileNo}</span>
+        <span className="text-sm">{row.DriverMobileNo}</span>
       ),
     },
     {
@@ -782,10 +777,11 @@ const CreateChallan: React.FC = () => {
       selector: (row: ChallanTableItem) => row.VehicleRemarks,
       sortable: true,
       cell: (row: ChallanTableItem) => (
-        <span className="font-medium">{row.VehicleRemarks}</span>
+        <span className="text-sm">{row.VehicleRemarks}</span>
       ),
     },
 
+    //Third-Column
     {
       name: 'GstNo',
       selector: (row: ChallanTableItem) => row.GstNo,
@@ -799,7 +795,7 @@ const CreateChallan: React.FC = () => {
       selector: (row: ChallanTableItem) => row.Name,
       sortable: true,
       cell: (row: ChallanTableItem) => {
-        return <span className="font-mono text-sm">{row.Name}</span>;
+        return <span className=" text-sm">{row.Name}</span>;
       },
     },
     {
@@ -850,6 +846,7 @@ const CreateChallan: React.FC = () => {
       sortable: true,
       cell: (row: ChallanFormData) => (
         <span className="text-right">{row.Rate1}</span>
+        
       ),
     },
     {
@@ -2293,7 +2290,8 @@ const CreateChallan: React.FC = () => {
                           Challan#
                         </label>
                         <div className="product-des-input d-flex gap-2 flex-grow-1">
-                          <input className='challan' type="text" id="product-desc-1" style={{ flex: 1 }} value={editItemId ? challanData.ChallanNo : "Auto Generated"} onChange={(e) => setChallanData({ ...challanData, ChallanNo: e.target.value })} readOnly={true} />
+                          <input className='challan' type="text" id="product-desc-1" style={{ flex: 1 }}
+                            defaultValue={"Auto Generated"} value={editItemId ? challanData.ChallanNo : "Auto Generated"} onChange={(e) => setChallanData({ ...challanData, ChallanNo: 'Auto Generated' })} readOnly={true} />
                           {/* <input className='challan' type="text" id="date-pick-bano" placeholder='Challan-Module' style={{ flex: 1 }} value={challanData.ChallanModule} onChange={(e) => setChallanData({ ...challanData, ChallanModule: e.target.value })} /> */}
                           <input className='challan' type="text" id="date-pick-bano" style={{ flex: 1 }} readOnly={true} value={challanData.financialYear} onChange={(e) => setChallanData({ ...challanData, financialYear: e.target.value })} />
                           <input className='challan' type="text" id="product-desc-bano-auto" defaultValue="Auto Generated" style={{ flex: 1 }} disabled />
@@ -2355,10 +2353,9 @@ const CreateChallan: React.FC = () => {
                                     challanData.PartyID
                                       ? {
                                         value: `${challanData.PartyID}:${challanData.PartyName}`,
-                                        label:
-                                          partyType.find((d) => d.PartyID === challanData.PartyID)?.Address
-                                            ? `${challanData.PartyName} (${partyType.find((d) => d.PartyID === challanData.PartyID)?.Address})`
-                                            : challanData.PartyName
+                                        label: partyType.find((d) => d.PartyID === challanData.PartyID)?.Address
+                                          ? `${challanData.PartyName} (${partyType.find((d) => d.PartyID === challanData.PartyID)?.Address})`
+                                          : challanData.PartyName
                                       }
                                       : challanData.PartyName
                                         ? {
@@ -2369,7 +2366,7 @@ const CreateChallan: React.FC = () => {
                                   }
 
                                   options={partyType.map((d) => ({
-                                    value: `${d.PartyID}:${d.Name}:${d.Address || ""}`,  // ⭐ UNIQUE VALUE
+                                    value: `${d.PartyID}:${d.Name}:${d.Address || ""}`,
                                     label: d.Address ? `${d.Name} - ${d.Address}` : d.Name,
                                   }))}
 
@@ -2385,7 +2382,7 @@ const CreateChallan: React.FC = () => {
                                       const selectedParty = partyType.find(p => p.PartyID === Number(id));
                                       setChallanData(prev => ({
                                         ...prev,
-                                        PartyID: selectedParty.PartyID,
+                                        PartyID: selectedParty?.PartyID,
                                         PartyName: selectedParty.Name,
                                         address: selectedParty.Address || "",
                                       }));
@@ -2412,7 +2409,6 @@ const CreateChallan: React.FC = () => {
                                   isSearchable
                                   styles={selectCompactStyles}
                                 />
-
                               </div>
                               {/* Address */}
                               <div className="single-info-block col-xl-2">
@@ -3158,7 +3154,7 @@ const CreateChallan: React.FC = () => {
             deleteMaterialName(selectedId);
           }
           setShowModal(false);
-      }} />
+        }} />
     </>
   );
 }
