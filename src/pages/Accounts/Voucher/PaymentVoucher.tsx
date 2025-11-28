@@ -193,7 +193,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
             const response = await AddDeleteUpadate('Accountingvoucher/GetSingleData_Accountingvoucher', {
                 ID: Id
             });
-            console.log(response);
+            // console.log(response);
             if (response?.success && response.data) {
                 const parsedData = JSON.parse(response.data);
                 // console.log(parsedData);
@@ -413,7 +413,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
                     <div className="col-lg-3">
                         <DatePicker
                             selected={date}
-                            onChange={(d) => setDate(d)}
+                            onChange={(d : any) => setDate(d)}
                             dateFormat="dd/MM/yyyy"
                             className="date-input challan"
                             isClearable
