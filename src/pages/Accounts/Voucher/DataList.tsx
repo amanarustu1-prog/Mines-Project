@@ -7,19 +7,17 @@ import { fetchPostData } from "@/components/hooks/Api";
 import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
+import DatePicker from "react-datepicker";
 
-function Edit({ className }) {
+
+function Edit({ className }: { className?: string }) {
     return (
-        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-            />
+        <svg className={className} fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
         </svg>
     );
 }
+
 
 const Trash2 = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,6 +48,15 @@ function DataList() {
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [rows, setRows] = useState<Voucher[]>([]);
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
+    const [showVoucherModal, setShowVoucherModal] = useState(false);
+    const [currentEditId, setCurrentEditId] = useState<number | null>(null);
+
+    const formatDate = (date: Date | null) => {
+        if (!date) return "";
+        return date.toISOString().split("T")[0];
+    };
 
     const filteredData = useMemo(() => {
         if (!searchText.trim()) return rows;
@@ -64,14 +71,14 @@ function DataList() {
     }, [searchText, rows]);
 
     //Get-data
-    const fetchGetData = async () => {
+    const fetchGetData = async (from: Date | null = null, to: Date | null = null) => {
         try {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
                 VoucherType: "Payment",
-                FromDate: "",
-                ToDate: "",
+                FromDate: formatDate(from),
+                ToDate: formatDate(to),
                 CompanyId: localStorage.getItem('companyID')
             };
 
@@ -92,6 +99,10 @@ function DataList() {
         } catch {
             toastifyError("Error fetching the Data");
         }
+    };
+
+    const handleSearch = () => {
+        fetchGetData(fromDate, toDate);
     };
 
     const fetchDeleteData = async (Id: number) => {
@@ -120,8 +131,8 @@ function DataList() {
     }, []);
 
     const handleAddVoucher = () => {
-        // setShowVoucher(true);
-        navigate('/payment-voucher')
+        setCurrentEditId(null);
+        setShowVoucherModal(true);
     };
 
     const columns = [
@@ -130,7 +141,7 @@ function DataList() {
             cell: (row: Voucher) => (
                 <div className="ledger-management-flex ledger-management-gap-2">
                     <button className="ledger-management-btn-icon mr-0" title="Edit"
-                        onClick={() => { navigate('/payment-voucher', { state: { editId: row.vchId } }); }}>
+                        onClick={() => { setCurrentEditId(row.vchId); setShowVoucherModal(true); }}>
                         <Edit className="ledger-management-icon-sm" />
                     </button>
                     <button className="ledger-management-btn-icon" title="Delete"
@@ -183,7 +194,46 @@ function DataList() {
     // }
 
     return (
-        <div className="voucher-container">
+        <div className="voucher-container list-container">
+
+            <div className="voucher-card mb-2">
+                <div className="row align-items-center ">
+                    {/* From Date */}
+                    <div className="col-md-1 text-right px-0">
+                        <label className="voucher-date-label mb-0 text-nowrap">From Date</label>
+                    </div>
+                    <div className="col-md-3">
+                        <DatePicker
+                            selected={fromDate}
+                            onChange={(date) => setFromDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="voucher-search-input challan"
+                            placeholderText="From Date"
+                        />
+                    </div>
+
+
+                    {/* To Date */}
+                    <div className="col-md-1 text-right px-0 ">
+                        <label className="voucher-date-label mb-0 text-nowrap">To Date</label>
+                    </div>
+                    <div className="col-md-3">
+                        <DatePicker
+                            selected={toDate}
+                            onChange={(date) => setToDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                            className="voucher-search-input challan"
+                            placeholderText="To Date"
+                        />
+                    </div>
+
+                    <div className="col-md-2">
+                        <button className="save-btn" onClick={handleSearch}>Search</button>
+                    </div>
+
+                </div>
+            </div>
+
             <div className="voucher-card">
                 {/* Search + Button */}
                 <div className="voucher-header">
@@ -216,6 +266,33 @@ function DataList() {
                     fixedHeaderScrollHeight="300px"
                 />
             </div>
+
+
+            {showVoucherModal && (
+                <>
+                    <div className="modal fade show d-block" tabIndex={-1}>
+                        <div className="modal-dialog modal-xl">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">{currentEditId ? "Edit Payment Voucher" : "Add Payment Voucher"}</h5>
+                                    <button type="button" className="btn-close" onClick={() => setShowVoucherModal(false)}></button>
+                                </div>
+                                <div className="modal-body p-1">
+                                    <PaymentVoucher
+                                        editId={currentEditId}
+                                        onClose={() => {
+                                            setShowVoucherModal(false);
+                                            fetchGetData(fromDate, toDate);
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-backdrop fade show"></div>
+                </>
+            )}
+
             <ConfirmModal show={showModal}
                 handleClose={() => setShowModal(false)}
                 handleConfirm={() => {
@@ -224,6 +301,8 @@ function DataList() {
                     }
                     setShowModal(false);
                 }} />
+
+
         </div>
     );
 }
