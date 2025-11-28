@@ -120,6 +120,8 @@ import MaterialName from './pages/Inventory/Material-Name/Material-Name';
 import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher';
 import DataList from './pages/Accounts/Voucher/DataList';
 
+// import DataList from './pages/Accounts/Voucher/DataList';
+
 // Layout component for protected routes
 // const ProtectedLayout = () => {
 //   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

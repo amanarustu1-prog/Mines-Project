@@ -34,6 +34,7 @@ interface ledAccount {
 
 interface PaymentVoucherProps {
     editId?: number | null;
+    onClose?: () => void;
 }
 
 //==================== Icon Components ====================
@@ -51,7 +52,8 @@ const Trash2 = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
+const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onClose }) => {
+
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,7 +76,8 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
     });
     const navigate = useNavigate();
     const { state } = useLocation();
-    const editId = state?.editId ?? null;
+    const routeEditId = state?.editId ?? null;
+    const editId = propEditId ?? routeEditId;
 
     const removeParticular = (id: any) => {
         setParticulars(particulars.filter((p) => p.id !== id));
@@ -141,7 +144,11 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
                 handleReset();
                 setForm(prev => ({ ...prev, AccountObj: [] }));
                 setParticulars([]);
-                navigate("/data-list");
+                if (onClose) {
+                    onClose();
+                } else {
+                    navigate("/data-list");
+                }
             } else {
                 toastifyError("Failed to save voucher");
             }
@@ -165,7 +172,11 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = () => {
             if (response) {
                 toastifySuccess("Item Updated Successfully");
                 // await fetchGetData();
-                navigate("/data-list");
+                if (onClose) {
+                    onClose();
+                } else {
+                    navigate("/data-list");
+                }
                 return true;
             } else {
                 toastifyError("Item is not Updated");
