@@ -42,8 +42,7 @@ interface PaymentVoucherProps {
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
 );
 
@@ -82,7 +81,7 @@ const Contra = () => {
         VchDate: 0,
         PartyName: '',
         LedgerID: 0,
-        VoucherType: "Receipt",
+        VoucherType: "Contra",
         Narration: '',
         VoucherNo: "Auto Generated",
         PartyLadgerName: '',
@@ -108,7 +107,7 @@ const Contra = () => {
         if (!searchText.trim()) return rows;
         const term = searchText.toLowerCase();
 
-        return rows.filter((row) => {
+        return voucher.filter((row) => {
             const partyName = row.PartyName ? row.PartyName.toLowerCase() : "";
             const totalAmtStr = (row.TotalAmt ?? 0).toString();
 
@@ -122,7 +121,7 @@ const Contra = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Receipt",
+                VoucherType: "Contra",
                 FromDate: formatDate(from),
                 ToDate: formatDate(to),
                 CompanyId: localStorage.getItem('companyID')
@@ -172,6 +171,8 @@ const Contra = () => {
             // console.log(response);
 
             if (response) {
+
+                
                 toastifySuccess("Item is deleted successfully.");
                 await fetchGetData();
                 return true;
@@ -201,7 +202,7 @@ const Contra = () => {
                 <div className="ledger-management-flex ledger-management-gap-2">
                     <button
                         className="ledger-management-btn-icon mr-0"
-                        title="Edit Receipt"
+                        title="Edit Contra"
                         onClick={() => {
                             setCurrentEditId(row.vchId);
                             setShowVoucherModal(true);
@@ -341,11 +342,11 @@ const Contra = () => {
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
                 await fetchReceiptData();
-                return true;
 
                 setForm(prev => ({ ...prev, AccountObj: [] }));
                 setParticulars([]);
                 setSingleRow({ name: "", amount: "" });
+                return true;
             } else {
                 toastifyError("Failed to save voucher");
             }
@@ -595,7 +596,6 @@ const Contra = () => {
             {/* Recpit List */}
             <div className="voucher-container list-container">
                 <div className="voucher-card mb-2">
-
                     {/* ===================== DATE FILTER ROW ===================== */}
                     <div className="row align-items-center ">
                         {/* ===================== PAGE HEADER ===================== */}
@@ -630,7 +630,6 @@ const Contra = () => {
                                 className="voucher-search-input challan"
                                 placeholderText="To Date"
                                 isClearable
-
                             />
                         </div>
 
@@ -653,7 +652,7 @@ const Contra = () => {
 
                         <div className="voucher-header-right">
                             <button type="button" className="save-btn" onClick={handleAddVoucher}>
-                                + Add Receipt
+                                + Add Contra
                             </button>
                         </div>
                     </div>
@@ -674,14 +673,14 @@ const Contra = () => {
                 </div>
             </div>
 
-            {/* Receipt Data Modal */}
+            {/* Contra Data Modal */}
             {showVoucherModal && (
                 <>
                     <div className="modal fade show d-block" tabIndex={-1}>
                         <div className="modal-dialog modal-xl">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Receipt" : "Add Receipt"}</h5>
+                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Contra" : "Add Contra"}</h5>
                                     <button
                                         type="button"
                                         className="btn-close"
@@ -696,7 +695,7 @@ const Contra = () => {
                                         <div className="voucher-card">
                                             <div className="row align-items-center">
                                                 <div className="col-lg-1 text-end voucher-col px-0">
-                                                    <label className="text-nowrap text-end">Receipt No.</label>
+                                                    <label className="text-nowrap text-end">Contra No.</label>
                                                 </div>
                                                 <div className="col-lg-3">
                                                     <input
@@ -850,7 +849,7 @@ const Contra = () => {
                                                         <FiSave size={16} />{" "}
                                                         {isSubmitting
                                                             ? currentEditId !== null ? "Updating..." : "Saving..."
-                                                            : currentEditId !== null ? "Update Receipt" : "Save Receipt"}
+                                                            : currentEditId !== null ? "Update Contra" : "Save Contra"}
                                                     </button>
                                                 </div>
                                             </div>

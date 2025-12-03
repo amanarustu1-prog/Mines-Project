@@ -190,6 +190,7 @@ const Receipt = () => {
     }, []);
 
     const handleAddVoucher = () => {
+        handleReset();
         setCurrentEditId(null);
         setShowVoucherModal(true);
     };
@@ -340,12 +341,9 @@ const Receipt = () => {
                 toastifySuccess("Voucher saved successfully");
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
-                await fetchReceiptData();
+                await fetchGetData();
+                handleReset();
                 return true;
-
-                setForm(prev => ({ ...prev, AccountObj: [] }));
-                setParticulars([]);
-                setSingleRow({ name: "", amount: "" });
             } else {
                 toastifyError("Failed to save voucher");
             }
@@ -356,10 +354,19 @@ const Receipt = () => {
         }
     };
 
-    const fetchUpdateData = async (form: Voucher, id: number) => {
+    const fetchUpdateData = async (form: any, id: number) => {
         try {
+
+            setIsSubmitting(true);
+            handleReset();
+            const formattedDate = date.toLocaleDateString("en-GB");
+            const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
             const payload = {
                 ...form,
+                VchDate: formattedDate,
+                VoucherNo: form.VoucherNo,
+                VoucherType: "Receipt",
+                TotalAmt: totalAmount,
                 ID: id,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -368,11 +375,11 @@ const Receipt = () => {
 
             if (response) {
                 toastifySuccess("Item Updated Successfully");
-
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
+                await fetchGetData();
 
-                await fetchReceiptData();
+                handleReset();
                 return true;
             }
 
@@ -566,6 +573,8 @@ const Receipt = () => {
             TotalAmt: 0,
             AccountObj: []
         })
+        setParticulars([]);
+        setSingleRow({ name: "", amount: "" });
     }
 
     const handleInsertAndUpdate = async () => {
@@ -573,7 +582,8 @@ const Receipt = () => {
             const success = await fetchUpdateData(form, currentEditId);
             if (success) {
                 handleReset();
-                setShowVoucherModal(false);
+                setCurrentEditId(null);
+                return;
             }
         }
 
@@ -703,9 +713,9 @@ const Receipt = () => {
                                                     <input
                                                         type="text"
                                                         className="voucher-col-input challan"
-                                                        defaultValue="Auto Generated"
-                                                        // value={voucherNo}
-                                                        onChange={(e) => setVoucherNo(e.target.value)}
+                                                        // defaultValue="Auto Generated"
+                                                        value={currentEditId === null ? "Auto Generated" : form.VoucherNo}
+                                                        // onChange={(e) => setForm((prev) => ({ ...prev, VoucherNo: e.target.value }))}
                                                         placeholder="Enter No."
                                                     />
                                                 </div>
