@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
 import DatePicker from "react-datepicker";
 
-
 const Edit3 = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -123,9 +122,6 @@ function DataList() {
         }
     };
 
-
-
-
     const fetchDeleteData = async (Id: number) => {
         try {
             const response = await fetchPostData('Accountingvoucher/Delete_Accountingvoucher', {
@@ -145,7 +141,7 @@ function DataList() {
         catch {
             toastifySuccess("Error in Deleting a Item");
         }
-    }
+    }    
 
     useEffect(() => {
         fetchGetData();
@@ -216,9 +212,7 @@ function DataList() {
 
     return (
         <div className="voucher-container list-container">
-
             <div className="voucher-card mb-2">
-
                 {/* ===================== DATE FILTER ROW ===================== */}
                 <div className="row align-items-center ">
                     {/* ===================== PAGE HEADER ===================== */}
@@ -241,7 +235,6 @@ function DataList() {
                         />
                     </div>
 
-
                     {/* To Date */}
                     <div className="col-md-1 text-right px-0 ">
                         <label className="voucher-date-label mb-0 text-nowrap">To Date</label>
@@ -254,7 +247,6 @@ function DataList() {
                             className="voucher-search-input challan"
                             placeholderText="To Date"
                             isClearable
-
                         />
                     </div>
 
@@ -298,7 +290,6 @@ function DataList() {
                 />
             </div>
 
-
             {showVoucherModal && (
                 <>
                     <div className="modal fade show d-block" tabIndex={-1}>
@@ -323,10 +314,7 @@ function DataList() {
                     <div className="modal-backdrop fade show"></div>
                 </>
             )}
-
             <ConfirmModal show={showModal} handleClose={() => setShowModal(false)} handleConfirm={() => { if (selectedId !== null) { fetchDeleteData(selectedId); } setShowModal(false); }} />
-
-
         </div>
     );
 }

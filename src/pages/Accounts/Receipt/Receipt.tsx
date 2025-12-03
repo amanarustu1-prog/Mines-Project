@@ -7,19 +7,47 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
 import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common/Utility";
-import { fetchPostData } from "@/components/hooks/Api";
+import { AddDeleteUpadate, fetchPostData } from "@/components/hooks/Api";
 import { getValue, getOptions, getChange } from "@/common/commonFunc";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
 
-const Edit3 = ({ className }) => (
+interface Voucher {
+    ID: number;
+    VchDate: string;
+    PartyName: string;
+    LedgerID: number;
+    VoucherType: string;
+    Narration: string;
+    VoucherNo: number | string;
+    PartyLadgerName: string;
+    TotalAmt: number;
+    AccountingLedgerID: number;
+    ledgerName: string;
+    amount: number;
+    id?: number;
+}
+
+interface ledAccount {
+    LedgerID: number;
+    name: string;
+}
+
+interface PaymentVoucherProps {
+    editId?: number | null;
+    onClose?: () => void;
+}
+
+//==================== Icon Components ====================
+const Edit = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
 );
 
-const Trash2 = ({ className }) => (
+const Trash2 = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -34,11 +62,11 @@ const Receipt = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [singleRow, setSingleRow] = useState({ name: "", amount: "" });
     const [particulars, setParticulars] = useState([]);
-    const [ledgerAccounts, setLedgerAccounts] = useState([]);
+    const [ledgerAccounts, setLedgerAccounts] = useState<ledAccount[]>([]);
     const [particular, setParticular] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [showVoucher, setShowVoucher] = useState(false);
-    const [voucher, setVoucher] = useState([]);
+    const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [editItemId, setEditItemId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
@@ -47,7 +75,8 @@ const Receipt = () => {
     const [toDate, setToDate] = useState(null);
     const [showVoucherModal, setShowVoucherModal] = useState(false);
     const [currentEditId, setCurrentEditId] = useState(null);
-    const navigate = useNavigate();  
+    const navigate = useNavigate();
+    const [editParticularId, setEditParticularId] = useState<number | null>(null);
     const [form, setForm] = useState({
         ID: 0,
         VchDate: 0,
@@ -64,6 +93,15 @@ const Receipt = () => {
     const formatDate = (date) => {
         if (!date) return "";
         return date.toISOString().split("T")[0];
+    };
+
+    const handleEditParticular = (row: any) => {
+        setSingleRow({
+            name: row.ledgerName,
+            amount: row.amount.toString(),
+            AccountingLedgerID: row.AccountingLedgerID
+        });
+        setEditParticularId(row.id);
     };
 
     const filteredData = useMemo(() => {
@@ -122,7 +160,7 @@ const Receipt = () => {
     const handleFromDateChange = (date) => {
         setFromDate(date);
         if (date) {
-            setToDate(date); // auto-fill To Date
+            setToDate(date);
         }
     };
 
@@ -165,12 +203,11 @@ const Receipt = () => {
                         className="ledger-management-btn-icon mr-0"
                         title="Edit Receipt"
                         onClick={() => {
-                            // Edit mode: just ensure currentEditId is non-null so modal shows Edit/Update labels
                             setCurrentEditId(row.vchId);
                             setShowVoucherModal(true);
                         }}
                     >
-                        <Edit3 className="ledger-management-icon-sm" />
+                        <Edit className="ledger-management-icon-sm" />
                     </button>
 
                     <button className="ledger-management-btn-icon text-red-600 hover:text-red-800" title="Delete"
@@ -215,12 +252,12 @@ const Receipt = () => {
         },
     ];
 
-
-    const removeParticular = (id) => {
+    const removeParticular = (id: any) => {
         setParticulars(particulars.filter((p) => p.id !== id));
-        setForm(prev => ({
+
+        setForm((prev) => ({
             ...prev,
-            AccountObj: prev.AccountObj.filter((p) => p.id !== id)
+            AccountObj: prev.AccountObj.filter((item: any) => item.SrNo !== id)
         }));
     };
 
@@ -284,7 +321,7 @@ const Receipt = () => {
 
         try {
             setIsSubmitting(true);
-
+            handleReset();
             const formattedDate = date.toLocaleDateString("en-GB");
             const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
 
@@ -301,7 +338,10 @@ const Receipt = () => {
 
             if (response) {
                 toastifySuccess("Voucher saved successfully");
+                setShowVoucherModal(false);
+                setCurrentEditId(null);
                 await fetchReceiptData();
+                return true;
 
                 setForm(prev => ({ ...prev, AccountObj: [] }));
                 setParticulars([]);
@@ -316,6 +356,101 @@ const Receipt = () => {
         }
     };
 
+    const fetchUpdateData = async (form: Voucher, id: number) => {
+        try {
+            const payload = {
+                ...form,
+                ID: id,
+                CompanyId: Number(localStorage.getItem("companyID")),
+            };
+
+            const response = await fetchPostData('Accountingvoucher/Insert_Accountingvoucher', payload);
+
+            if (response) {
+                toastifySuccess("Item Updated Successfully");
+
+                setShowVoucherModal(false);
+                setCurrentEditId(null);
+
+                await fetchReceiptData();
+                return true;
+            }
+
+            toastifyError("Item is not Updated");
+            return false;
+
+        } catch {
+            toastifyError("Error in Updating a Data.");
+            return false;
+        }
+    };
+
+    const fetchSingleData = async (Id: number) => {
+        try {
+            const response = await AddDeleteUpadate('Accountingvoucher/GetSingleData_Accountingvoucher', {
+                ID: Id
+            });
+            // console.log(response);
+            if (response?.success && response.data) {
+                const parsedData = JSON.parse(response.data);
+                // console.log(parsedData);
+
+                const header = parsedData.Table?.[0];
+                const details = parsedData.Table1 || [];
+
+                setForm(prev => ({
+                    ...prev,
+                    ID: header.ID,
+                    VchDate: header.VchDate,
+                    PartyName: header.PartyName,
+                    LedgerID: header.LedgerID,
+                    VoucherType: header.VoucherType ?? "Payment",
+                    Narration: header.Narration,
+                    VoucherNo: header.VoucherNo,
+                    TotalAmt: header.TotalAmt ?? 0,
+                    AccountObj: details.map((d: any) => ({
+                        AccountingLedgerID: d.AccountingLedgerID,
+                        ledgerName: d.ledgerName,
+                        amount: Math.abs(d.amount),
+                        SrNo: d.SrNo
+                    }))
+                }));
+
+                if (header.VchDate) {
+                    setDate(new Date(header.VchDate.split("/").reverse().join("-")));
+                }
+
+                setParticulars(
+                    details.map((d: any) => {
+                        const ledgerObj = ledgerAccounts.find(
+                            acc => Number(acc.LedgerID) === Number(d.AccountingLedgerID)
+                        );
+
+                        return {
+                            id: d.SrNo,
+                            ledgerName: ledgerObj?.name || d.ledgerName || "Unknown",
+                            amount: Math.abs(d.amount),
+                            AccountingLedgerID: d.AccountingLedgerID
+                        };
+                    })
+                );
+
+                setSelectedAccount({
+                    value: header.LedgerID,
+                    label: header.PartyName
+                });
+            }
+        } catch (error) {
+            toastifyError("Error while fetching voucher details");
+        }
+    };
+
+    useEffect(() => {
+        if (currentEditId && ledgerAccounts.length > 0) {
+            fetchSingleData(currentEditId);
+        }
+    }, [currentEditId, ledgerAccounts]);
+
     useEffect(() => {
         fetchReceiptData();
         ledgerAccount();
@@ -327,56 +462,129 @@ const Receipt = () => {
             return;
         }
 
-        setForm(prev => ({
-            ...prev,
-            AccountObj: [
-                ...prev.AccountObj,
+        if (editParticularId !== null) {
+            setParticulars(prev =>
+                prev.map(p =>
+                    p.id === editParticularId
+                        ? { ...p, ledgerName: singleRow.name, amount: Number(singleRow.amount) }
+                        : p
+                )
+            );
+
+            setForm(prev => ({
+                ...prev,
+                AccountObj: prev.AccountObj.map((item: any) =>
+                    item.SrNo === editParticularId
+                        ? {
+                            ...item,
+                            ledgerName: singleRow.name,
+                            AccountingLedgerID: Number(singleRow.AccountingLedgerID),
+                            amount: Number(singleRow.amount)
+                        }
+                        : item
+                )
+            }));
+
+            toastifySuccess("Particular updated!");
+            setEditParticularId(null);
+        } else {
+            const newId = Date.now();
+
+            setParticulars(prev => [
+                ...prev,
                 {
+                    id: newId,
                     ledgerName: singleRow.name,
-                    AccountingLedgerID: Number(singleRow.AccountingLedgerID),
-                    amount: Number(singleRow.amount),
-                    id: Date.now()
+                    AccountingLedgerID: singleRow.AccountingLedgerID,
+                    amount: Number(singleRow.amount)
                 }
-            ]
-        }));
+            ]);
 
-        setParticulars(prev => [
-            ...prev,
-            { id: Date.now(), name: singleRow.name, amount: singleRow.amount }
-        ]);
+            setForm(prev => ({
+                ...prev,
+                AccountObj: [
+                    ...prev.AccountObj,
+                    {
+                        SrNo: newId,
+                        ledgerName: singleRow.name,
+                        AccountingLedgerID: Number(singleRow.AccountingLedgerID),
+                        amount: Number(singleRow.amount)
+                    }
+                ]
+            }));
+        }
 
+        // Reset input
         setSingleRow({ name: "", amount: "" });
     };
 
     const Columns = [
         {
             name: "Sr No.",
-            cell: (row, index) => index + 1,
+            selector: (row, index) => index + 1,
             center: true,
             width: "100px"
         },
         {
             name: "Name",
-            selector: (row) => row.name,
+            selector: (row: Voucher) => row.ledgerName,
             sortable: true,
             center: true
         },
         {
             name: "Amount",
-            selector: (row) => row.amount,
+            selector: (row: Voucher) => row.amount,
             sortable: true,
             center: true
         },
         {
             name: "Action",
-            cell: (row) => (
-                <button onClick={() => removeParticular(row.id)}>
-                    <FiTrash2 size={16} />
-                </button>
+            cell: (row: Voucher) => (
+                <div>
+                    <button className="ledger-management-btn-icon mr-1" title="Edit" onClick={() => handleEditParticular(row)}>
+                        <Edit className="ledger-management-icon-sm" />
+                    </button>
+                    <button className="ledger-management-btn-icon" title="Delete" onClick={() => removeParticular(row.id)}>
+                        <Trash2 className="ledger-management-icon-sm" />
+                    </button>
+                </div>
             ),
             center: true,
         },
     ];
+
+    const handleReset = () => {
+        setForm({
+            ID: 0,
+            VchDate: 0,
+            PartyName: '',
+            LedgerID: 0,
+            VoucherType: "Payment",
+            Narration: '',
+            VoucherNo: "",
+            PartyLadgerName: '',
+            TotalAmt: 0,
+            AccountObj: []
+        })
+    }
+
+    const handleInsertAndUpdate = async () => {
+        if (currentEditId) {
+            const success = await fetchUpdateData(form, currentEditId);
+            if (success) {
+                handleReset();
+                setShowVoucherModal(false);
+            }
+        }
+
+        if (!currentEditId) {
+            const success = await fetchInsertData(form);
+            if (success) {
+                handleReset();
+                setShowVoucherModal(false);
+            }
+        }
+    };
 
     const resizeableColumns = useResizableColumns(Columns).map(col => ({
         ...col, minWidth: typeof col.minWidth === "number" ? `${col.minWidth}px` : col.minWidth
@@ -495,7 +703,8 @@ const Receipt = () => {
                                                     <input
                                                         type="text"
                                                         className="voucher-col-input challan"
-                                                        value={voucherNo}
+                                                        defaultValue="Auto Generated"
+                                                        // value={voucherNo}
                                                         onChange={(e) => setVoucherNo(e.target.value)}
                                                         placeholder="Enter No."
                                                     />
@@ -507,9 +716,10 @@ const Receipt = () => {
                                                 <div className="col-lg-3">
                                                     <DatePicker
                                                         selected={date}
-                                                        onChange={(d) => setDate(d)}
+                                                        onChange={(d: any) => setDate(d)}
                                                         dateFormat="dd/MM/yyyy"
                                                         className="date-input challan"
+                                                        isClearable
                                                     />
                                                 </div>
                                             </div>
@@ -595,12 +805,9 @@ const Receipt = () => {
                                                                         className="amount-input challan "
                                                                     />
                                                                 </div>
-                                                                <div className=" d-flex justify-content-end">
-                                                                    <button
-                                                                        className="add-btn px-2 text-nowrap"
-                                                                        onClick={addParticular}
-                                                                    >
-                                                                        <FiPlus size={14} /> Add Particular
+                                                                <div className=" d-flex justify-content-end" >
+                                                                    <button className="add-btn px-2 text-nowrap" onClick={addParticular}>
+                                                                        <FiPlus size={14} /> {editParticularId ? "Update Particular" : "Add Particular"}
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -640,19 +847,11 @@ const Receipt = () => {
                                                         placeholder="Narration..."
                                                     />
 
-                                                    <button
-                                                        className="save-btn"
-                                                        onClick={fetchInsertData}
-                                                        disabled={isSubmitting}
-                                                    >
+                                                    <button className="save-btn" onClick={handleInsertAndUpdate} disabled={isSubmitting}>
                                                         <FiSave size={16} />{" "}
                                                         {isSubmitting
-                                                            ? currentEditId !== null
-                                                                ? "Updating..."
-                                                                : "Saving..."
-                                                            : currentEditId !== null
-                                                                ? "Update Receipt"
-                                                                : "Save Receipt"}
+                                                            ? currentEditId !== null ? "Updating..." : "Saving..."
+                                                            : currentEditId !== null ? "Update Receipt" : "Save Receipt"}
                                                     </button>
                                                 </div>
                                             </div>
@@ -673,10 +872,10 @@ const Receipt = () => {
                         fetchDeleteData(selectedId);
                     }
                     setShowModal(false);
-            }}
+                }}
             />
         </>
     );
 };
-  
+
 export default Receipt;
