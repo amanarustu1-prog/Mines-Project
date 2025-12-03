@@ -53,7 +53,6 @@ const Trash2 = ({ className }: { className?: string }) => (
 );
 
 const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onClose }) => {
-
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
