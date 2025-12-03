@@ -92,7 +92,7 @@ import MaterialRequestEntry from './pages/Inventory/material-request-entry/Mater
 // import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher'
 import Receipt from './pages/Accounts/Receipt/Receipt'
 import Contra from './pages/Accounts/Contra/Contra'
-import Journal from './pages/Accounts/Journal/Journal'
+import Journal from './pages/Accounts/Journal/Journal';
 import RequestApproval from './pages/Inventory/request-approval/RequestApproval'
 import RejectApprovedRequests from './pages/Inventory/reject-approved-requests/RejectApprovedRequests'
 import RequestQuotation from './pages/Inventory/request-quotation/RequestQuotation'

@@ -83,12 +83,12 @@ function DataList() {
             // console.log(response);
 
             if (response && Array.isArray(response)) {
-                console.log(response, "response")
+                // console.log(response, "response")
                 const modifiedData = response.map((item) => ({
                     ...item,
                     AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
                 }));
-                console.log(modifiedData, "modifiedData")
+                // console.log(modifiedData, "modifiedData")
                 setVoucher(modifiedData);
                 setRows(modifiedData);
                 return modifiedData;

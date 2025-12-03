@@ -42,8 +42,7 @@ interface PaymentVoucherProps {
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
 );
 
@@ -54,7 +53,7 @@ const Trash2 = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const Receipt = () => {
+const Contra = () => {
     const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
@@ -82,7 +81,7 @@ const Receipt = () => {
         VchDate: 0,
         PartyName: '',
         LedgerID: 0,
-        VoucherType: "Receipt",
+        VoucherType: "Contra",
         Narration: '',
         VoucherNo: "Auto Generated",
         PartyLadgerName: '',
@@ -108,7 +107,7 @@ const Receipt = () => {
         if (!searchText.trim()) return rows;
         const term = searchText.toLowerCase();
 
-        return rows.filter((row) => {
+        return voucher.filter((row) => {
             const partyName = row.PartyName ? row.PartyName.toLowerCase() : "";
             const totalAmtStr = (row.TotalAmt ?? 0).toString();
 
@@ -122,7 +121,7 @@ const Receipt = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Receipt",
+                VoucherType: "Contra",
                 FromDate: formatDate(from),
                 ToDate: formatDate(to),
                 CompanyId: localStorage.getItem('companyID')
@@ -172,6 +171,8 @@ const Receipt = () => {
             // console.log(response);
 
             if (response) {
+
+                
                 toastifySuccess("Item is deleted successfully.");
                 await fetchGetData();
                 return true;
@@ -190,7 +191,6 @@ const Receipt = () => {
     }, []);
 
     const handleAddVoucher = () => {
-        handleReset();
         setCurrentEditId(null);
         setShowVoucherModal(true);
     };
@@ -202,7 +202,7 @@ const Receipt = () => {
                 <div className="ledger-management-flex ledger-management-gap-2">
                     <button
                         className="ledger-management-btn-icon mr-0"
-                        title="Edit Receipt"
+                        title="Edit Contra"
                         onClick={() => {
                             setCurrentEditId(row.vchId);
                             setShowVoucherModal(true);
@@ -288,7 +288,7 @@ const Receipt = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Receipt",
+                VoucherType: "Contra",
                 FromDate: "",
                 ToDate: "",
                 CompanyId: localStorage.getItem('companyID')
@@ -330,7 +330,7 @@ const Receipt = () => {
                 ...form,
                 VchDate: formattedDate,
                 VoucherNo: "Auto Generated",
-                VoucherType: "Receipt",
+                VoucherType: "Contra",
                 TotalAmt: totalAmount,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -341,8 +341,11 @@ const Receipt = () => {
                 toastifySuccess("Voucher saved successfully");
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
-                await fetchGetData();
-                handleReset();
+                await fetchReceiptData();
+
+                setForm(prev => ({ ...prev, AccountObj: [] }));
+                setParticulars([]);
+                setSingleRow({ name: "", amount: "" });
                 return true;
             } else {
                 toastifyError("Failed to save voucher");
@@ -354,19 +357,10 @@ const Receipt = () => {
         }
     };
 
-    const fetchUpdateData = async (form: any, id: number) => {
+    const fetchUpdateData = async (form: Voucher, id: number) => {
         try {
-
-            setIsSubmitting(true);
-            handleReset();
-            const formattedDate = date.toLocaleDateString("en-GB");
-            const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
             const payload = {
                 ...form,
-                VchDate: formattedDate,
-                VoucherNo: form.VoucherNo,
-                VoucherType: "Receipt",
-                TotalAmt: totalAmount,
                 ID: id,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -375,11 +369,11 @@ const Receipt = () => {
 
             if (response) {
                 toastifySuccess("Item Updated Successfully");
+
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
-                await fetchGetData();
 
-                handleReset();
+                await fetchReceiptData();
                 return true;
             }
 
@@ -573,8 +567,6 @@ const Receipt = () => {
             TotalAmt: 0,
             AccountObj: []
         })
-        setParticulars([]);
-        setSingleRow({ name: "", amount: "" });
     }
 
     const handleInsertAndUpdate = async () => {
@@ -582,8 +574,7 @@ const Receipt = () => {
             const success = await fetchUpdateData(form, currentEditId);
             if (success) {
                 handleReset();
-                setCurrentEditId(null);
-                return;
+                setShowVoucherModal(false);
             }
         }
 
@@ -605,12 +596,11 @@ const Receipt = () => {
             {/* Recpit List */}
             <div className="voucher-container list-container">
                 <div className="voucher-card mb-2">
-
                     {/* ===================== DATE FILTER ROW ===================== */}
                     <div className="row align-items-center ">
                         {/* ===================== PAGE HEADER ===================== */}
                         <div className="page-header col-md-3">
-                            <h5 className="voucher-page-title mb-0">Receipt Voucher List</h5>
+                            <h5 className="voucher-page-title mb-0">Contra Voucher List</h5>
                             <div className="header-line"></div>
                         </div>
                         {/* From Date */}
@@ -640,7 +630,6 @@ const Receipt = () => {
                                 className="voucher-search-input challan"
                                 placeholderText="To Date"
                                 isClearable
-
                             />
                         </div>
 
@@ -663,7 +652,7 @@ const Receipt = () => {
 
                         <div className="voucher-header-right">
                             <button type="button" className="save-btn" onClick={handleAddVoucher}>
-                                + Add Receipt
+                                + Add Contra
                             </button>
                         </div>
                     </div>
@@ -682,17 +671,16 @@ const Receipt = () => {
                         fixedHeaderScrollHeight="300px"
                     />
                 </div>
-
             </div>
 
-            {/* Receipt Data Modal */}
+            {/* Contra Data Modal */}
             {showVoucherModal && (
                 <>
                     <div className="modal fade show d-block" tabIndex={-1}>
                         <div className="modal-dialog modal-xl">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Receipt" : "Add Receipt"}</h5>
+                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Contra" : "Add Contra"}</h5>
                                     <button
                                         type="button"
                                         className="btn-close"
@@ -707,15 +695,15 @@ const Receipt = () => {
                                         <div className="voucher-card">
                                             <div className="row align-items-center">
                                                 <div className="col-lg-1 text-end voucher-col px-0">
-                                                    <label className="text-nowrap text-end">Receipt No.</label>
+                                                    <label className="text-nowrap text-end">Contra No.</label>
                                                 </div>
                                                 <div className="col-lg-3">
                                                     <input
                                                         type="text"
                                                         className="voucher-col-input challan"
-                                                        // defaultValue="Auto Generated"
-                                                        value={currentEditId === null ? "Auto Generated" : form.VoucherNo}
-                                                        // onChange={(e) => setForm((prev) => ({ ...prev, VoucherNo: e.target.value }))}
+                                                        defaultValue="Auto Generated"
+                                                        // value={voucherNo}
+                                                        onChange={(e) => setVoucherNo(e.target.value)}
                                                         placeholder="Enter No."
                                                     />
                                                 </div>
@@ -861,7 +849,7 @@ const Receipt = () => {
                                                         <FiSave size={16} />{" "}
                                                         {isSubmitting
                                                             ? currentEditId !== null ? "Updating..." : "Saving..."
-                                                            : currentEditId !== null ? "Update Receipt" : "Save Receipt"}
+                                                            : currentEditId !== null ? "Update Contra" : "Save Contra"}
                                                     </button>
                                                 </div>
                                             </div>
@@ -888,4 +876,4 @@ const Receipt = () => {
     );
 };
 
-export default Receipt;
+export default Contra;
