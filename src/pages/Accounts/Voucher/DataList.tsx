@@ -8,6 +8,7 @@ import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
 import DatePicker from "react-datepicker";
+import { getShowingDateMonthYear } from "@/common/DateFormat";
 
 const Edit3 = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,11 +16,9 @@ const Edit3 = ({ className }: { className?: string }) => (
     </svg>
 );
 
-
 const Trash2 = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
     </svg>
 );
 
@@ -50,11 +49,6 @@ function DataList() {
     const [showVoucherModal, setShowVoucherModal] = useState(false);
     const [currentEditId, setCurrentEditId] = useState<number | null>(null);
 
-    const formatDate = (date: Date | null) => {
-        if (!date) return "";
-        return date.toISOString().split("T")[0];
-    };
-
     const filteredData = useMemo(() => {
         if (!searchText.trim()) return rows;
         const term = searchText.toLowerCase();
@@ -74,8 +68,8 @@ function DataList() {
                 VoucherNo: "",
                 Narration: "",
                 VoucherType: "Payment",
-                FromDate: formatDate(from),
-                ToDate: formatDate(to),
+                FromDate: from === null ? " " : getShowingDateMonthYear(from),
+                ToDate: to === null ? " " : getShowingDateMonthYear(to),
                 CompanyId: localStorage.getItem('companyID')
             };
 
@@ -88,7 +82,6 @@ function DataList() {
                     ...item,
                     AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
                 }));
-                // console.log(modifiedData, "modifiedData")
                 setVoucher(modifiedData);
                 setRows(modifiedData);
                 return modifiedData;
@@ -103,22 +96,11 @@ function DataList() {
         }
     };
 
-    // const handleSearch = () => {
-    //     fetchGetData(fromDate, toDate);
-    // };
-
     const handleSearch = async () => {
         const data = await fetchGetData(fromDate, toDate);
 
         if (!data || data.length === 0) {
             toastifyError("No data found for selected dates");
-        }
-    };
-
-    const handleFromDateChange = (date: Date | null) => {
-        setFromDate(date);
-        if (date) {
-            setToDate(date); // auto-fill To Date
         }
     };
 
@@ -203,13 +185,6 @@ function DataList() {
         },
     ];
 
-    // if (showVoucher) {
-    //     alert(editItemId);
-    //     return (
-    //         <PaymentVoucher editId={editItemId} />
-    //     );
-    // }
-
     return (
         <div className="voucher-container list-container">
             <div className="voucher-card mb-2">
@@ -227,8 +202,8 @@ function DataList() {
                     <div className="col-md-3">
                         <DatePicker
                             selected={fromDate}
-                            onChange={handleFromDateChange}
-                            dateFormat="yyyy-MM-dd"
+                            onChange={(date) => setFromDate(date)}
+                            dateFormat="dd/MM/yyyy"
                             className="voucher-search-input challan"
                             placeholderText="From Date"
                             isClearable
@@ -243,7 +218,7 @@ function DataList() {
                         <DatePicker
                             selected={toDate}
                             onChange={(date) => setToDate(date)}
-                            dateFormat="yyyy-MM-dd"
+                            dateFormat="dd/MM/yyyy"
                             className="voucher-search-input challan"
                             placeholderText="To Date"
                             isClearable

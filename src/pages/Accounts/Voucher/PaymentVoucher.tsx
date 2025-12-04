@@ -160,8 +160,10 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
 
     const fetchUpdateData = async (form: Voucher, id: number) => {
         try {
+            const formattedDate = date ? date.toLocaleDateString("en-GB") : form.VchDate;
             const payload = {
                 ...form,
+                VchDate: formattedDate,
                 ID: id,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -402,7 +404,6 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
                             // onChange={(e) => setVoucherNo(e.target.value)}
                             readOnly={true}
                             placeholder="Enter No."
-                       
                         />
                     </div>
                     {/* Date */}
