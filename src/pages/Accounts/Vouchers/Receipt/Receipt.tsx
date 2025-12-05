@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import "../Voucher/PaymentVoucher.css";
+import "../Payment/PaymentVoucher.css";
 import Select from "react-select";
 import { FiPlus, FiTrash2, FiSave } from "react-icons/fi";
 import DatePicker from "react-datepicker";
@@ -8,10 +8,10 @@ import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
 import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common/Utility";
 import { AddDeleteUpadate, fetchPostData } from "@/components/hooks/Api";
-import { getValue, getOptions, getChange } from "@/common/commonFunc";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
+import { getShowingDateMonthYear } from "@/common/DateFormat";
 
 interface Voucher {
     ID: number;
@@ -34,11 +34,6 @@ interface ledAccount {
     name: string;
 }
 
-interface PaymentVoucherProps {
-    editId?: number | null;
-    onClose?: () => void;
-}
-
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,19 +50,15 @@ const Trash2 = ({ className }: { className?: string }) => (
 );
 
 const Receipt = () => {
-    const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
-    const [narration, setNarration] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [singleRow, setSingleRow] = useState({ name: "", amount: "" });
     const [particulars, setParticulars] = useState([]);
     const [ledgerAccounts, setLedgerAccounts] = useState<ledAccount[]>([]);
     const [particular, setParticular] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const [showVoucher, setShowVoucher] = useState(false);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
-    const [editItemId, setEditItemId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [rows, setRows] = useState([]);
@@ -123,8 +114,8 @@ const Receipt = () => {
                 VoucherNo: "",
                 Narration: "",
                 VoucherType: "Receipt",
-                FromDate: formatDate(from),
-                ToDate: formatDate(to),
+                FromDate: from === null ? " " : getShowingDateMonthYear(from),
+                ToDate: to === null ? " " : getShowingDateMonthYear(to),
                 CompanyId: localStorage.getItem('companyID')
             };
 
@@ -154,13 +145,6 @@ const Receipt = () => {
 
         if (!data || data.length === 0) {
             toastifyError("No data found for selected dates");
-        }
-    };
-
-    const handleFromDateChange = (date) => {
-        setFromDate(date);
-        if (date) {
-            setToDate(date);
         }
     };
 
@@ -322,7 +306,7 @@ const Receipt = () => {
 
         try {
             setIsSubmitting(true);
-            handleReset();
+            // handleReset();
             const formattedDate = date.toLocaleDateString("en-GB");
             const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
 
@@ -356,9 +340,8 @@ const Receipt = () => {
 
     const fetchUpdateData = async (form: any, id: number) => {
         try {
-
             setIsSubmitting(true);
-            handleReset();
+            // handleReset();
             const formattedDate = date.toLocaleDateString("en-GB");
             const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
             const payload = {
@@ -372,14 +355,12 @@ const Receipt = () => {
             };
 
             const response = await fetchPostData('Accountingvoucher/Insert_Accountingvoucher', payload);
-
-            if (response) {
+            // console.log(response[0].message);
+            if (response[0].message === "Update successfully") {
                 toastifySuccess("Item Updated Successfully");
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
                 await fetchGetData();
-
-                handleReset();
                 return true;
             }
 
@@ -389,6 +370,9 @@ const Receipt = () => {
         } catch {
             toastifyError("Error in Updating a Data.");
             return false;
+        }
+        finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -411,7 +395,7 @@ const Receipt = () => {
                     VchDate: header.VchDate,
                     PartyName: header.PartyName,
                     LedgerID: header.LedgerID,
-                    VoucherType: header.VoucherType ?? "Payment",
+                    VoucherType: header.VoucherType ?? "Receipt",
                     Narration: header.Narration,
                     VoucherNo: header.VoucherNo,
                     TotalAmt: header.TotalAmt ?? 0,
@@ -620,8 +604,8 @@ const Receipt = () => {
                         <div className="col-md-3">
                             <DatePicker
                                 selected={fromDate}
-                                onChange={handleFromDateChange}
-                                dateFormat="yyyy-MM-dd"
+                                onChange={(date) => setFromDate(date)}
+                                dateFormat="dd-MM-yyyy"
                                 className="voucher-search-input challan"
                                 placeholderText="From Date"
                                 isClearable
@@ -636,11 +620,10 @@ const Receipt = () => {
                             <DatePicker
                                 selected={toDate}
                                 onChange={(date) => setToDate(date)}
-                                dateFormat="yyyy-MM-dd"
+                                dateFormat="dd-MM-yyyy"
                                 className="voucher-search-input challan"
                                 placeholderText="To Date"
                                 isClearable
-
                             />
                         </div>
 
@@ -682,7 +665,6 @@ const Receipt = () => {
                         fixedHeaderScrollHeight="300px"
                     />
                 </div>
-
             </div>
 
             {/* Receipt Data Modal */}
@@ -856,7 +838,6 @@ const Receipt = () => {
                                                         }
                                                         placeholder="Narration..."
                                                     />
-
                                                     <button className="save-btn" onClick={handleInsertAndUpdate} disabled={isSubmitting}>
                                                         <FiSave size={16} />{" "}
                                                         {isSubmitting

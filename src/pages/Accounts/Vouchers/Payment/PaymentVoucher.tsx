@@ -171,6 +171,7 @@ const PaymentVoucher: React.FC<PaymentVoucherProps> = ({ editId: propEditId, onC
             // console.log(response);
 
             if (response) {
+                setIsSubmitting(true);
                 toastifySuccess("Item Updated Successfully");
                 // await fetchGetData();
                 if (onClose) {

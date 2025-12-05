@@ -81,8 +81,8 @@ import IDProof from './pages/Hr/ID-Proof/IDProof'
 import MaritialStatus from './pages/Hr/maritial-status/MaritialStatus'
 import LeaveTypeMaster from './pages/Hr/leave-type-master/LeaveTypeMaster'
 // import FuelType from './pages/Fuel/Fuel-Type-Master/FuelType'
-import Ledger from './pages/Accounts/ledger/Ledger'
-import GroupCreation from './pages/Accounts/group-creation/GroupCreation';
+import Ledger from './pages/Accounts/Master-Tables/ledger/Ledger'
+import GroupCreation from './pages/Accounts/Master-Tables/group-creation/GroupCreation';
 import PendingChallan from './pages/sale/Pending-Challan/PendingChallan'
 import ApprovedChallan from './pages/sale/Approved-Challan/ApprovedChallan';
 import ExtraTP from './pages/sale/Extra-TP/ExtraTP'
@@ -90,9 +90,9 @@ import Purchase from './pages/sale/Puchase/Puchase'
 import PartyRate from './pages/sale/Party-Rate/PartyRate'
 import MaterialRequestEntry from './pages/Inventory/material-request-entry/MaterialRequestEntry'
 // import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher'
-import Receipt from './pages/Accounts/Receipt/Receipt'
-import Contra from './pages/Accounts/Contra/Contra'
-import Journal from './pages/Accounts/Journal/Journal';
+import Receipt from './pages/Accounts/Vouchers/Receipt/Receipt'
+import Contra from './pages/Accounts/Vouchers/Contra/Contra'
+import Journal from './pages/Accounts/Vouchers/Journal/Journal';
 import RequestApproval from './pages/Inventory/request-approval/RequestApproval'
 import RejectApprovedRequests from './pages/Inventory/reject-approved-requests/RejectApprovedRequests'
 import RequestQuotation from './pages/Inventory/request-quotation/RequestQuotation'
@@ -117,8 +117,8 @@ import ListManagement1 from './pages/ListManagement/ListManagement';
 import axios from 'axios';
 import MaintenanceType from './pages/sale/Pending-Challan/Maintenance-Type/MaintenanceType';
 import MaterialName from './pages/Inventory/Material-Name/Material-Name';
-import PaymentVoucher from './pages/Accounts/Voucher/PaymentVoucher';
-import DataList from './pages/Accounts/Voucher/DataList';
+import PaymentVoucher from './pages/Accounts/Vouchers/Payment/PaymentVoucher';
+import DataList from './pages/Accounts/Vouchers/Payment/DataList';
 
 // import DataList from './pages/Accounts/Voucher/DataList';
 

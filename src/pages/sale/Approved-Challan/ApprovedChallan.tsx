@@ -2514,6 +2514,9 @@ export default function ApprovedChallan() {
 }
 
 
+
+
+
 // import React, { useEffect, useState } from 'react';
 // import "./ApprovedChallan.css";
 // import DatePicker from 'react-datepicker';
@@ -2524,8 +2527,24 @@ export default function ApprovedChallan() {
 // import { fetchPostData } from '@/components/hooks/Api';
 // import { toastifyError } from '@/common/AlertMsg';
 // import { customStyles } from '@/common/Utility';
+// import { getShowingDateText } from '@/common/DateFormat';
+// import { FiPrinter } from 'react-icons/fi';
 
+// // Icon components
+// const Edit3 = ({ className }: { className?: string }) => (
+//     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+//     </svg>
+// );
+
+// const Trash2 = ({ className }: { className?: string }) => (
+//     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 7-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+//     </svg>
+// );
 // interface challanDatas {
+//     ChallanID: number;
+
 //     // First-section
 //     ChallanNo: number;
 //     financialYear: number;
@@ -2567,8 +2586,57 @@ export default function ApprovedChallan() {
 //     GstPinID: number;
 //     GstPinName: string;
 
-//     //Fifth-Section
+//     //Fifth-Section-[ First_Column ]
+//     ProductName1: string;
+//     Rate1: number;
+//     Grossweight1: number;
+//     Grossweightdate1: number;
+//     Netweight1: number;
+//     Lessweight1: number;
+//     GTWeight1: number;
+//     Amount1: number;
 
+//     //Fifth-Section-[ Second_Column ]
+//     ProductName2: string;
+//     Rate2: number;
+//     Grossweight2: number;
+//     Grossweightdate2: number;
+//     Netweight2: number;
+//     Lessweight2: number;
+//     GTWeight2: number;
+//     Amount2: number;
+
+//     //Fifth-Section-[ Third_Column ]
+//     ProductName3: string;
+//     Rate3: number;
+//     Grossweight3: number;
+//     Grossweightdate3: number;
+//     Netweight3: number;
+//     Lessweight3: number;
+//     GTWeight3: number;
+//     Amount3: number;
+
+//     //Sixth-Section
+//     TareWeight: number;
+//     Taredate: number;
+//     Netweight: number;
+//     Lessweight: number;
+//     GTWeight: number;
+//     VehicleCommision: number;
+
+//     //Seventh-Section
+//     Amount: number;
+//     LoadingAmt: number;
+//     CommisionAmt: number;
+//     GSTAmt: number;
+//     RoyaltyAmt: number;
+//     TPAmount: number;
+//     FreightAmt: number;
+//     GTotal: number;
+
+//     //Date
+//     CreatedDate: string;
+//     UpdatedDate: string;
 // }
 
 // // Dropdowns-Interface
@@ -2623,6 +2691,8 @@ export default function ApprovedChallan() {
 //     const [gstZipCode, setGSTZipCode] = useState<ZipCode[]>([]);
 //     const [vehicleType, setVehicleType] = useState<VehicleType[]>([]);
 //     const [vehicleNo, setvehicleNo] = useState<VehicleNo[]>();
+//     const [selectedId, setSelectedId] = useState<number | null>(null);
+//     const [showModal, setShowModal] = useState(false);
 
 //     //----Not-Known-----
 //     const [editItemId, setEditItemId] = useState<number | null>(null);
@@ -2769,7 +2839,32 @@ export default function ApprovedChallan() {
 //         fetchVehicleNo(1);
 //     }, []);
 
+//     const handleChallanPrint = (challanId: number) => {
+//     }
+
 //     const Columns = [
+//         {
+//             name: 'Actions',
+//             cell: (row: challanDatas) => (
+//                 <div className="material-name-flex material-name-gap-1">
+//                     <button onClick={() => { setSelectedId(row.ChallanID!); setShowModal(true); }} className="text-red-600 hover:text-red-800 material-name-btn-icon" title="Delete">
+//                         <Trash2 className="material-name-icon-sm" />
+//                     </button>
+
+//                     <button onClick={() => { setEditItemId(row.ChallanID!); handleOpenModal(); }} className="material-name-btn-icon" title="Edit">
+//                         <Edit3 className="material-name-icon-sm" />
+//                     </button>
+//                     {/*Challan Print */}
+//                     <button onClick={() => { handleChallanPrint(row.ChallanID!); setEditItemId(row.ChallanID!); }}
+//                         className="material-name-btn-icon text-green-600 hover:text-green-800" title="Print" >
+//                         <FiPrinter className="material-name-icon-sm" />
+//                     </button>
+//                 </div>
+//             ),
+//             ignoreRowClick: true,
+//             allowOverflow: true,
+//             button: true,
+//         },
 //         // First-Section
 //         {
 //             name: 'Challan No',
@@ -2792,7 +2887,7 @@ export default function ApprovedChallan() {
 //             selector: (row: challanDatas) => row.ChallanDate,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{row.ChallanDate}</span>
+//                 <span className="font-medium">{getShowingDateText(row.ChallanDate)}</span>
 //             )
 //         },
 //         {
@@ -2916,116 +3011,390 @@ export default function ApprovedChallan() {
 //         //Fourth-Section
 //         {
 //             name: 'Is-GST',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.IsGST,
 //             sortable: true,
-//             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
-//             )
+//             cell: (row: challanDatas) => {
+//                 const data = row.IsGST === 1 ? "Yes" : "No";
+//                 return <span className="font-medium">{data}</span>
+//             }
 //         },
 //         {
 //             name: 'GstNo',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.GstNo,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.GstNo}</span>
 //             )
 //         },
 //         {
 //             name: 'GST Party',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.Name,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.Name}</span>
 //             )
 //         },
 //         {
 //             name: 'GST Address',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.GstAddress,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.GstAddress}</span>
 //             )
 //         },
 //         {
 //             name: 'GST State',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.GstStateName,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.GstStateName}</span>
 //             )
 //         },
 //         {
 //             name: 'GST District',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.GstDistrictName,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.GstDistrictName}</span>
 //             )
 //         },
 //         {
 //             name: 'GST Pin-Id',
-//             selector: (row: challanDatas) => row,
+//             selector: (row: challanDatas) => row.GstPinName,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.GstPinName}</span>
+//             )
+//         },
+
+//         //Fifth-Section-[ First_Column ]
+//         {
+//             name: 'Product-Name1',
+//             selector: (row: challanDatas) => row.ProductName1,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.ProductName1}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'Rate1',
+//             selector: (row: challanDatas) => row.Rate1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.Rate1}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'Gross-Weight1',
+//             selector: (row: challanDatas) => row.Grossweight1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.Grossweight1}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'Gross-Weight-Date1',
+//             selector: (row: challanDatas) => row.Grossweightdate1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{getShowingDateText(row.Grossweightdate1)}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'Net-Weight1',
+//             selector: (row: challanDatas) => row.Netweight1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.Netweight1}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'Less-Weight1',
+//             selector: (row: challanDatas) => row.Lessweight1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.Lessweight1}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'GT-Weight1',
+//             selector: (row: challanDatas) => row.GTWeight1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.GTWeight1}</span>
 //             )
 //         },
 //         {
-//             name: '',
-//             selector: (row: challanDatas) => row,
+//             name: 'Amount1',
+//             selector: (row: challanDatas) => row.Amount1,
 //             sortable: true,
 //             cell: (row: challanDatas) => (
-//                 <span className="font-medium">{ }</span>
+//                 <span className="font-medium">{row.Amount1}</span>
 //             )
-//         }
+//         },
+//         //Fifth-Section-[ Second_Column ]
+//         {
+//             name: 'Product-Name2',
+//             selector: (row: challanDatas) => row.ProductName2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.ProductName2}</span>
+//             )
+//         },
+//         {
+//             name: 'Rate2',
+//             selector: (row: challanDatas) => row.Rate2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Rate2}</span>
+//             )
+//         },
+//         {
+//             name: 'Gross-Weight2',
+//             selector: (row: challanDatas) => row.Grossweight2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Grossweight2}</span>
+//             )
+//         },
+//         {
+//             name: 'Gross-Weight-Date2',
+//             selector: (row: challanDatas) => row.Grossweightdate2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{getShowingDateText(row.Grossweightdate2)}</span>
+//             )
+//         },
+//         {
+//             name: 'Net-Weight2',
+//             selector: (row: challanDatas) => row.Netweight2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Netweight2}</span>
+//             )
+//         },
+//         {
+//             name: 'Less-Weight2',
+//             selector: (row: challanDatas) => row.Lessweight2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Lessweight2}</span>
+//             )
+//         },
+//         {
+//             name: 'GT-Weight2',
+//             selector: (row: challanDatas) => row.GTWeight2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.GTWeight2}</span>
+//             )
+//         },
+//         {
+//             name: 'Amount2',
+//             selector: (row: challanDatas) => row.Amount2,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Amount2}</span>
+//             )
+//         },
+//         //Fifth-Section-[ Third_Column ]
+//         {
+//             name: 'Product-Name3',
+//             selector: (row: challanDatas) => row.ProductName3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.ProductName3}</span>
+//             )
+//         },
+//         {
+//             name: 'Rate3',
+//             selector: (row: challanDatas) => row.Rate3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Rate3}</span>
+//             )
+//         },
+//         {
+//             name: 'Gross-Weight3',
+//             selector: (row: challanDatas) => row.Grossweight3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Grossweight3}</span>
+//             )
+//         },
+//         {
+//             name: 'Gross-Weight-Date3',
+//             selector: (row: challanDatas) => row.Grossweightdate3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{getShowingDateText(row.Grossweightdate3)}</span>
+//             )
+//         },
+//         {
+//             name: 'Net-Weight3',
+//             selector: (row: challanDatas) => row.Netweight3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Netweight3}</span>
+//             )
+//         },
+//         {
+//             name: 'Less-Weight3',
+//             selector: (row: challanDatas) => row.Lessweight3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Lessweight3}</span>
+//             )
+//         },
+//         {
+//             name: 'GT-Weight3',
+//             selector: (row: challanDatas) => row.GTWeight3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.GTWeight3}</span>
+//             )
+//         },
+//         {
+//             name: 'Amount3',
+//             selector: (row: challanDatas) => row.Amount3,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Amount3}</span>
+//             )
+//         },
+
+//         //Sixth-Section
+//         {
+//             name: 'Tare-Weight',
+//             selector: (row: challanDatas) => row.TareWeight,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.TareWeight}</span>
+//             )
+//         },
+//         {
+//             name: 'Tare-Date',
+//             selector: (row: challanDatas) => row.Taredate,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{getShowingDateText(row.Taredate)}</span>
+//             )
+//         },
+//         {
+//             name: 'Net-Weight',
+//             selector: (row: challanDatas) => row.Netweight,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Netweight}</span>
+//             )
+//         },
+//         {
+//             name: 'Less-Weight',
+//             selector: (row: challanDatas) => row.Lessweight,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Lessweight}</span>
+//             )
+//         },
+//         {
+//             name: 'Total-GTWeight',
+//             selector: (row: challanDatas) => row.GTWeight,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.GTWeight}</span>
+//             )
+//         },
+//         {
+//             name: 'Vehicle-Commision',
+//             selector: (row: challanDatas) => row.VehicleCommision,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.VehicleCommision}</span>
+//             )
+//         },
+
+//         //Seventh-Section
+//         {
+//             name: 'Amount',
+//             selector: (row: challanDatas) => row.Amount,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.Amount}</span>
+//             )
+//         },
+//         {
+//             name: 'Loading-Amount',
+//             selector: (row: challanDatas) => row.LoadingAmt,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.LoadingAmt}</span>
+//             )
+//         },
+//         {
+//             name: 'Commision-Amount',
+//             selector: (row: challanDatas) => row.CommisionAmt,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.CommisionAmt}</span>
+//             )
+//         },
+//         {
+//             name: 'GST-Amount',
+//             selector: (row: challanDatas) => row.GSTAmt,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.GSTAmt}</span>
+//             )
+//         },
+//         {
+//             name: 'Royalty-Amount',
+//             selector: (row: challanDatas) => row.RoyaltyAmt,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.RoyaltyAmt}</span>
+//             )
+//         },
+//         {
+//             name: 'TP-Amount',
+//             selector: (row: challanDatas) => row.TPAmount,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.TPAmount}</span>
+//             )
+//         },
+//         {
+//             name: 'Freight-Amount',
+//             selector: (row: challanDatas) => row.FreightAmt,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.FreightAmt}</span>
+//             )
+//         },
+//         {
+//             name: 'Grand-Total',
+//             selector: (row: challanDatas) => row.GTotal,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{row.GTotal}</span>
+//             )
+//         },
+//         //Date
+//         {
+//             name: 'Created-Date',
+//             selector: (row: challanDatas) => row.CreatedDate,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{getShowingDateText(row.CreatedDate)}</span>
+//             )
+//         },
+//         {
+//             name: 'Last-Modified',
+//             selector: (row: challanDatas) => row.CreatedDate,
+//             sortable: true,
+//             cell: (row: challanDatas) => (
+//                 <span className="font-medium">{getShowingDateText(row.UpdatedDate)}</span>
+//             )
+//         },
 //     ];
 
 //     const handleSearch = () => {

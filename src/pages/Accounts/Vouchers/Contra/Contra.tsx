@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import "../Voucher/PaymentVoucher.css";
+import "../Payment/PaymentVoucher.css";
 import Select from "react-select";
 import { FiPlus, FiTrash2, FiSave } from "react-icons/fi";
 import DatePicker from "react-datepicker";
@@ -11,28 +11,27 @@ import { AddDeleteUpadate, fetchPostData } from "@/components/hooks/Api";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
+import { getShowingDateMonthYear } from "@/common/DateFormat";
 
 interface Voucher {
-    ID: Number;
-    VchrNo: number;
-    VchrType: string;
-    Name: string;
-    DebitAmt: number;
-    CreditAmt: number;
-    vchId: number;
-    Date: string;
+    ID: number;
+    VchDate: string;
     PartyName: string;
+    LedgerID: number;
+    VoucherType: string;
+    Narration: string;
+    VoucherNo: number | string;
+    PartyLadgerName: string;
     TotalAmt: number;
+    AccountingLedgerID: number;
+    ledgerName: string;
+    amount: number;
+    id?: number;
 }
 
 interface ledAccount {
     LedgerID: number;
     name: string;
-}
-
-interface PaymentVoucherProps {
-    editId?: number | null;
-    onClose?: () => void;
 }
 
 //==================== Icon Components ====================
@@ -50,7 +49,7 @@ const Trash2 = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const Journal = () => {
+const Contra = () => {
     const [voucherNo, setVoucherNo] = useState("");
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
@@ -65,12 +64,12 @@ const Journal = () => {
     const [voucher, setVoucher] = useState<Voucher[]>([]);
     const [editItemId, setEditItemId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [selectedId, setSelectedId] = useState(null);
     const [rows, setRows] = useState([]);
     const [fromDate, setFromDate] = useState(null);
     const [toDate, setToDate] = useState(null);
     const [showVoucherModal, setShowVoucherModal] = useState(false);
-    const [currentEditId, setCurrentEditId] = useState<number | null>(null);
+    const [currentEditId, setCurrentEditId] = useState(null);
     const navigate = useNavigate();
     const [editParticularId, setEditParticularId] = useState<number | null>(null);
     const [form, setForm] = useState({
@@ -78,7 +77,7 @@ const Journal = () => {
         VchDate: 0,
         PartyName: '',
         LedgerID: 0,
-        VoucherType: "Journal",
+        VoucherType: "Contra",
         Narration: '',
         VoucherNo: "Auto Generated",
         PartyLadgerName: '',
@@ -96,28 +95,144 @@ const Journal = () => {
     };
 
     const filteredData = useMemo(() => {
-        if (!searchText.trim()) return voucher;
+        if (!searchText.trim()) return rows;
         const term = searchText.toLowerCase();
 
-        return voucher.filter((row) => {
-            return (
-                (row.PartyName || "").toLowerCase().includes(term) ||
-                String(row.TotalAmt).includes(term)
-            );
-        });
-    }, [searchText, voucher]);
+        return rows.filter((row) => {
+            const partyName = row.PartyName ? row.PartyName.toLowerCase() : "";
+            const totalAmtStr = (row.TotalAmt ?? 0).toString();
 
-    const handleFromDateChange = (date: number | string) => {
-        setFromDate(date);
-        if (date) {
-            setToDate(date);
+            return partyName.includes(term) || totalAmtStr.includes(term);
+        });
+    }, [searchText, rows]);
+
+    //Get-data
+    const fetchGetData = async (from = null, to = null) => {
+        try {
+            const payload = {
+                VoucherNo: "",
+                Narration: "",
+                VoucherType: "Contra",
+                FromDate: from === null ? " " : getShowingDateMonthYear(from),
+                ToDate: to === null ? " " : getShowingDateMonthYear(to),
+                CompanyId: localStorage.getItem('companyID')
+            };
+
+            const response = await fetchPostData('Accountingvoucher/GetData_Accountingvoucher', payload);
+
+            if (response && Array.isArray(response)) {
+                const modifiedData = response.map((item) => ({
+                    ...item,
+                    AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
+                }));
+                setVoucher(modifiedData);
+                setRows(modifiedData);
+                return modifiedData;
+            } else {
+                setVoucher([]);
+                setRows([]);
+                return [];
+            }
+        } catch {
+            toastifyError("Error fetching the Data");
+            return [];
         }
     };
 
+    const handleSearch = async () => {
+        const data = await fetchGetData(fromDate, toDate);
+
+        if (!data || data.length === 0) {
+            toastifyError("No data found for selected dates");
+        }
+    };
+
+    const fetchDeleteData = async (Id) => {
+        try {
+            const response = await fetchPostData('Accountingvoucher/Delete_Accountingvoucher', {
+                "ID": Id,
+            });
+            // console.log(response);
+
+            if (response) {
+                toastifySuccess("Item is deleted successfully.");
+                await fetchGetData();
+                return true;
+            } else {
+                toastifyError("Item is not Deleted");
+                return false;
+            }
+        }
+        catch {
+            toastifySuccess("Error in Deleting a Item");
+        }
+    }
+
+    useEffect(() => {
+        fetchGetData();
+    }, []);
+
     const handleAddVoucher = () => {
+        handleReset();
         setCurrentEditId(null);
         setShowVoucherModal(true);
     };
+
+    const columns = [
+        {
+            name: "Actions",
+            cell: (row) => (
+                <div className="ledger-management-flex ledger-management-gap-2">
+                    <button className="ledger-management-btn-icon mr-0" title="Edit Contra"
+                        onClick={() => {
+                            setCurrentEditId(row.vchId);
+                            setShowVoucherModal(true);
+                        }}
+                    >
+                        <Edit className="ledger-management-icon-sm" />
+                    </button>
+
+                    <button className="ledger-management-btn-icon text-red-600 hover:text-red-800" title="Delete"
+                        onClick={() => { setSelectedId(row.vchId); setShowModal(true) }}>
+                        <Trash2 className="ledger-management-icon-sm" />
+                    </button>
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+        {
+            name: "Date",
+            selector: (row) => row.Date,
+            sortable: true,
+        },
+        {
+            name: "Particular",
+            selector: (row) => row.PartyName,
+            sortable: true,
+        },
+        {
+            name: "Vch Type",
+            selector: (row) => row.VchrType,
+            sortable: true,
+        },
+        {
+            name: "Vch No",
+            selector: (row) => row.VchrNo,
+            sortable: true,
+        },
+        {
+            name: "DebitAmt",
+            selector: (row) => row.TotalAmt,
+            sortable: true,
+        },
+        {
+            name: "CreditAmt",
+            selector: (row) => row.CreditAmt,
+            sortable: true,
+        },
+    ];
 
     const removeParticular = (id: any) => {
         setParticulars(particulars.filter((p) => p.id !== id));
@@ -149,12 +264,12 @@ const Journal = () => {
     }
 
     // ===================TODO-Func====================
-    const fetchGetData = async () => {
+    const fetchReceiptData = async () => {
         try {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Journal",
+                VoucherType: "Contra",
                 FromDate: "",
                 ToDate: "",
                 CompanyId: localStorage.getItem('companyID')
@@ -167,7 +282,6 @@ const Journal = () => {
                     ...item,
                     AccountingObj: item.AccountingObj ? JSON.parse(item.AccountingObj) : []
                 }));
-                // console.log(modifiedData);
                 setVoucher(modifiedData);
             } else {
                 setVoucher([]);
@@ -177,7 +291,7 @@ const Journal = () => {
         }
     };
 
-    const fetchInsertData = async (form: Voucher) => {
+    const fetchInsertData = async () => {
         if (!form.LedgerID) {
             toastifyError("Please select Account");
             return;
@@ -189,6 +303,7 @@ const Journal = () => {
 
         try {
             setIsSubmitting(true);
+            // handleReset();
             const formattedDate = date.toLocaleDateString("en-GB");
             const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
 
@@ -196,7 +311,7 @@ const Journal = () => {
                 ...form,
                 VchDate: formattedDate,
                 VoucherNo: "Auto Generated",
-                VoucherType: "Journal",
+                VoucherType: "Contra",
                 TotalAmt: totalAmount,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -205,14 +320,10 @@ const Journal = () => {
 
             if (response) {
                 toastifySuccess("Voucher saved successfully");
-                handleReset();
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
                 await fetchGetData();
-
-                setForm(prev => ({ ...prev, AccountObj: [] }));
-                setParticulars([]);
-                setSingleRow({ name: "", amount: "" });
+                handleReset();
                 return true;
             } else {
                 toastifyError("Failed to save voucher");
@@ -224,22 +335,28 @@ const Journal = () => {
         }
     };
 
-    const fetchUpdateData = async (form: Voucher, id: number) => {
+    const fetchUpdateData = async (form: any, id: number) => {
         try {
+            setIsSubmitting(true);
+            // handleReset();
+            const formattedDate = date.toLocaleDateString("en-GB");
+            const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
             const payload = {
                 ...form,
+                VchDate: formattedDate,
+                VoucherNo: form.VoucherNo,
+                VoucherType: "Contra",
+                TotalAmt: totalAmount,
                 ID: id,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
 
             const response = await fetchPostData('Accountingvoucher/Insert_Accountingvoucher', payload);
-
-            if (response) {
+            // console.log(response[0].message);
+            if (response[0].message === "Update successfully") {
                 toastifySuccess("Item Updated Successfully");
-
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
-
                 await fetchGetData();
                 return true;
             }
@@ -250,6 +367,9 @@ const Journal = () => {
         } catch {
             toastifyError("Error in Updating a Data.");
             return false;
+        }
+        finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -272,7 +392,7 @@ const Journal = () => {
                     VchDate: header.VchDate,
                     PartyName: header.PartyName,
                     LedgerID: header.LedgerID,
-                    VoucherType: header.VoucherType ?? "Journal",
+                    VoucherType: header.VoucherType ?? "Contra",
                     Narration: header.Narration,
                     VoucherNo: header.VoucherNo,
                     TotalAmt: header.TotalAmt ?? 0,
@@ -313,83 +433,6 @@ const Journal = () => {
         }
     };
 
-    const fetchDeleteData = async (Id: any) => {
-        try {
-            const response = await fetchPostData('Accountingvoucher/Delete_Accountingvoucher', {
-                "ID": Id,
-            });
-            // console.log(response);
-
-            if (response) {
-                toastifySuccess("Item is deleted successfully.");
-                await fetchGetData();
-                return true;
-            } else {
-                toastifyError("Item is not Deleted");
-                return false;
-            }
-        }
-        catch {
-            toastifySuccess("Error in Deleting a Item");
-        }
-    }
-
-    const columns = [
-        {
-            name: "Actions",
-            cell: (row: Voucher) => (
-                <div className="ledger-management-flex ledger-management-gap-2">
-                    <button className="ledger-management-btn-icon mr-0" title="Edit Journal"
-                        onClick={() => {
-                            setCurrentEditId(row.vchId);
-                            setShowVoucherModal(true);
-                        }}
-                    >
-                        <Edit className="ledger-management-icon-sm" />
-                    </button>
-
-                    <button className="ledger-management-btn-icon text-red-600 hover:text-red-800" title="Delete"
-                        onClick={() => { setSelectedId(row.vchId); setShowModal(true) }}>
-                        <Trash2 className="ledger-management-icon-sm" />
-                    </button>
-                </div>
-            ),
-            ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
-        },
-        {
-            name: "Date",
-            selector: (row: Voucher) => row.Date,
-            sortable: true,
-        },
-        {
-            name: "Particular",
-            selector: (row: Voucher) => row.PartyName,
-            sortable: true,
-        },
-        {
-            name: "Vch Type",
-            selector: (row: Voucher) => row.VchrType,
-            sortable: true,
-        },
-        {
-            name: "Vch No",
-            selector: (row: Voucher) => row.VchrNo,
-            sortable: true,
-        },
-        {
-            name: "DebitAmt",
-            selector: (row: Voucher) => row.TotalAmt,
-            sortable: true,
-        },
-        {
-            name: "CreditAmt",
-            selector: (row: Voucher) => row.CreditAmt,
-            sortable: true,
-        },
-    ];
-
     useEffect(() => {
         if (currentEditId && ledgerAccounts.length > 0) {
             fetchSingleData(currentEditId);
@@ -397,7 +440,7 @@ const Journal = () => {
     }, [currentEditId, ledgerAccounts]);
 
     useEffect(() => {
-        fetchGetData();
+        fetchReceiptData();
         ledgerAccount();
     }, []);
 
@@ -504,22 +547,24 @@ const Journal = () => {
             VchDate: 0,
             PartyName: '',
             LedgerID: 0,
-            VoucherType: "Journal",
+            VoucherType: "Payment",
             Narration: '',
             VoucherNo: "",
             PartyLadgerName: '',
             TotalAmt: 0,
             AccountObj: []
         })
+        setParticulars([]);
+        setSingleRow({ name: "", amount: "" });
     }
 
     const handleInsertAndUpdate = async () => {
         if (currentEditId) {
             const success = await fetchUpdateData(form, currentEditId);
-            // console.log(success);
             if (success) {
                 handleReset();
-                setShowVoucherModal(false);
+                setCurrentEditId(null);
+                return;
             }
         }
 
@@ -546,18 +591,18 @@ const Journal = () => {
                     <div className="row align-items-center ">
                         {/* ===================== PAGE HEADER ===================== */}
                         <div className="page-header col-md-3">
-                            <h5 className="voucher-page-title mb-0">Journal Voucher List</h5>
+                            <h5 className="voucher-page-title mb-0">Contra Voucher List</h5>
                             <div className="header-line"></div>
                         </div>
                         {/* From Date */}
                         <div className="col-md-1 text-right px-0">
-                            <label className="Journal_lable mb-0 text-nowrap ">From Date</label>
+                            <label className="receipt_lable mb-0 text-nowrap ">From Date</label>
                         </div>
                         <div className="col-md-3">
                             <DatePicker
                                 selected={fromDate}
-                                onChange={handleFromDateChange}
-                                dateFormat="yyyy-MM-dd"
+                                onChange={(date) => setFromDate(date)}
+                                dateFormat="dd-MM-yyyy"
                                 className="voucher-search-input challan"
                                 placeholderText="From Date"
                                 isClearable
@@ -566,22 +611,21 @@ const Journal = () => {
 
                         {/* To Date */}
                         <div className="col-md-1 text-right px-0 ">
-                            <label className="Journal_lable mb-0 text-nowrap ">To Date</label>
+                            <label className="receipt_lable mb-0 text-nowrap ">To Date</label>
                         </div>
                         <div className="col-md-3">
                             <DatePicker
                                 selected={toDate}
                                 onChange={(date) => setToDate(date)}
-                                dateFormat="yyyy-MM-dd"
+                                dateFormat="dd-MM-yyyy"
                                 className="voucher-search-input challan"
                                 placeholderText="To Date"
                                 isClearable
-
                             />
                         </div>
 
                         <div className="col-md-1 d-flex justify-content-end ">
-                            <button className="save-btn">Search</button>
+                            <button className="save-btn" onClick={handleSearch}>Search</button>
                         </div>
                     </div>
                 </div>
@@ -599,7 +643,7 @@ const Journal = () => {
 
                         <div className="voucher-header-right">
                             <button type="button" className="save-btn" onClick={handleAddVoucher}>
-                                + Add Journal
+                                + Add Contra
                             </button>
                         </div>
                     </div>
@@ -620,15 +664,17 @@ const Journal = () => {
                 </div>
             </div>
 
-            {/* Journal Data Modal */}
+            {/* Contra Data Modal */}
             {showVoucherModal && (
                 <>
                     <div className="modal fade show d-block" tabIndex={-1}>
                         <div className="modal-dialog modal-xl">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Journal" : "Add Journal"}</h5>
-                                    <button type="button" className="btn-close"
+                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Contra" : "Add Contra"}</h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
                                         onClick={() => {
                                             setShowVoucherModal(false);
                                             setCurrentEditId(null);
@@ -639,19 +685,20 @@ const Journal = () => {
                                     <div className="voucher-container">
                                         <div className="voucher-card">
                                             <div className="row align-items-center">
-                                                {/* Voucher No */}
                                                 <div className="col-lg-1 text-end voucher-col px-0">
-                                                    <label className="text-nowrap text-end">Journal No.</label>
+                                                    <label className="text-nowrap text-end">Contra No.</label>
                                                 </div>
                                                 <div className="col-lg-3">
-                                                    <input type="text" className="voucher-col-input challan"
-                                                        defaultValue="Auto Generated"
-                                                        value={form.VoucherNo}
-                                                        onChange={(e) => setForm({...form, VoucherNo: e.target.value})}
+                                                    <input
+                                                        type="text"
+                                                        className="voucher-col-input challan"
+                                                        // defaultValue="Auto Generated"
+                                                        value={currentEditId === null ? "Auto Generated" : form.VoucherNo}
+                                                        // onChange={(e) => setForm((prev) => ({ ...prev, VoucherNo: e.target.value }))}
                                                         placeholder="Enter No."
                                                     />
                                                 </div>
-                                                {/* Date */}
+
                                                 <div className="col-lg-1 text-end px-0 voucher-col">
                                                     <label className="text-nowrap">Date</label>
                                                 </div>
@@ -734,14 +781,17 @@ const Journal = () => {
                                                                         styles={selectCompactStyles}
                                                                     />
 
-                                                                    <input type="text" value={singleRow.amount}
+                                                                    <input
+                                                                        type="text"
+                                                                        value={singleRow.amount}
                                                                         onChange={(e) => {
                                                                             const val = e.target.value;
                                                                             if (/^\d*$/.test(val)) {
                                                                                 setSingleRow({ ...singleRow, amount: val });
                                                                             }
                                                                         }}
-                                                                        placeholder="Amount" className="amount-input challan "
+                                                                        placeholder="Amount"
+                                                                        className="amount-input challan "
                                                                     />
                                                                 </div>
                                                                 <div className=" d-flex justify-content-end" >
@@ -785,12 +835,11 @@ const Journal = () => {
                                                         }
                                                         placeholder="Narration..."
                                                     />
-
                                                     <button className="save-btn" onClick={handleInsertAndUpdate} disabled={isSubmitting}>
                                                         <FiSave size={16} />{" "}
                                                         {isSubmitting
                                                             ? currentEditId !== null ? "Updating..." : "Saving..."
-                                                            : currentEditId !== null ? "Update Journal" : "Save Journal"}
+                                                            : currentEditId !== null ? "Update Contra" : "Save Contra"}
                                                     </button>
                                                 </div>
                                             </div>
@@ -817,4 +866,4 @@ const Journal = () => {
     );
 };
 
-export default Journal;
+export default Contra;

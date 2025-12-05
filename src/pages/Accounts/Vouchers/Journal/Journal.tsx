@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import "../Voucher/PaymentVoucher.css";
+import "../Payment/PaymentVoucher.css";
 import Select from "react-select";
 import { FiPlus, FiTrash2, FiSave } from "react-icons/fi";
 import DatePicker from "react-datepicker";
@@ -8,10 +8,10 @@ import { toastifyError, toastifySuccess } from "@/common/AlertMsg";
 import DataTable from "react-data-table-component";
 import { compactHeaderStyles, customStyles, selectCompactStyles } from "@/common/Utility";
 import { AddDeleteUpadate, fetchPostData } from "@/components/hooks/Api";
-import { getValue, getOptions, getChange } from "@/common/commonFunc";
 import useResizableColumns from "@/components/customHooks/UseResizableColumns";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "@/common/ConfirmModal";
+import { getShowingDateMonthYear } from "@/common/DateFormat";
 
 interface Voucher {
     ID: number;
@@ -34,15 +34,11 @@ interface ledAccount {
     name: string;
 }
 
-interface PaymentVoucherProps {
-    editId?: number | null;
-    onClose?: () => void;
-}
-
 //==================== Icon Components ====================
 const Edit = ({ className }: { className?: string }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>
 );
 
@@ -53,20 +49,16 @@ const Trash2 = ({ className }: { className?: string }) => (
     </svg>
 );
 
-const Contra = () => {
-    const [voucherNo, setVoucherNo] = useState("");
+const Journal = () => {
     const [date, setDate] = useState(new Date());
     const [selectedAccount, setSelectedAccount] = useState(null);
-    const [narration, setNarration] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [singleRow, setSingleRow] = useState({ name: "", amount: "" });
     const [particulars, setParticulars] = useState([]);
     const [ledgerAccounts, setLedgerAccounts] = useState<ledAccount[]>([]);
     const [particular, setParticular] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const [showVoucher, setShowVoucher] = useState(false);
     const [voucher, setVoucher] = useState<Voucher[]>([]);
-    const [editItemId, setEditItemId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [rows, setRows] = useState([]);
@@ -81,18 +73,13 @@ const Contra = () => {
         VchDate: 0,
         PartyName: '',
         LedgerID: 0,
-        VoucherType: "Contra",
+        VoucherType: "Journal",
         Narration: '',
         VoucherNo: "Auto Generated",
         PartyLadgerName: '',
         TotalAmt: 0,
         AccountObj: []
     });
-
-    const formatDate = (date) => {
-        if (!date) return "";
-        return date.toISOString().split("T")[0];
-    };
 
     const handleEditParticular = (row: any) => {
         setSingleRow({
@@ -107,7 +94,7 @@ const Contra = () => {
         if (!searchText.trim()) return rows;
         const term = searchText.toLowerCase();
 
-        return voucher.filter((row) => {
+        return rows.filter((row) => {
             const partyName = row.PartyName ? row.PartyName.toLowerCase() : "";
             const totalAmtStr = (row.TotalAmt ?? 0).toString();
 
@@ -121,9 +108,9 @@ const Contra = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Contra",
-                FromDate: formatDate(from),
-                ToDate: formatDate(to),
+                VoucherType: "Journal",
+                FromDate: from === null ? " " : getShowingDateMonthYear(from),
+                ToDate: to === null ? " " : getShowingDateMonthYear(to),
                 CompanyId: localStorage.getItem('companyID')
             };
 
@@ -156,13 +143,6 @@ const Contra = () => {
         }
     };
 
-    const handleFromDateChange = (date) => {
-        setFromDate(date);
-        if (date) {
-            setToDate(date);
-        }
-    };
-
     const fetchDeleteData = async (Id) => {
         try {
             const response = await fetchPostData('Accountingvoucher/Delete_Accountingvoucher', {
@@ -171,8 +151,6 @@ const Contra = () => {
             // console.log(response);
 
             if (response) {
-
-                
                 toastifySuccess("Item is deleted successfully.");
                 await fetchGetData();
                 return true;
@@ -191,6 +169,7 @@ const Contra = () => {
     }, []);
 
     const handleAddVoucher = () => {
+        handleReset();
         setCurrentEditId(null);
         setShowVoucherModal(true);
     };
@@ -200,9 +179,7 @@ const Contra = () => {
             name: "Actions",
             cell: (row) => (
                 <div className="ledger-management-flex ledger-management-gap-2">
-                    <button
-                        className="ledger-management-btn-icon mr-0"
-                        title="Edit Contra"
+                    <button className="ledger-management-btn-icon mr-0" title="Edit Journal"
                         onClick={() => {
                             setCurrentEditId(row.vchId);
                             setShowVoucherModal(true);
@@ -288,7 +265,7 @@ const Contra = () => {
             const payload = {
                 VoucherNo: "",
                 Narration: "",
-                VoucherType: "Contra",
+                VoucherType: "Journal",
                 FromDate: "",
                 ToDate: "",
                 CompanyId: localStorage.getItem('companyID')
@@ -322,7 +299,7 @@ const Contra = () => {
 
         try {
             setIsSubmitting(true);
-            handleReset();
+            // handleReset();
             const formattedDate = date.toLocaleDateString("en-GB");
             const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
 
@@ -330,7 +307,7 @@ const Contra = () => {
                 ...form,
                 VchDate: formattedDate,
                 VoucherNo: "Auto Generated",
-                VoucherType: "Contra",
+                VoucherType: "Journal",
                 TotalAmt: totalAmount,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
@@ -341,11 +318,8 @@ const Contra = () => {
                 toastifySuccess("Voucher saved successfully");
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
-                await fetchReceiptData();
-
-                setForm(prev => ({ ...prev, AccountObj: [] }));
-                setParticulars([]);
-                setSingleRow({ name: "", amount: "" });
+                await fetchGetData();
+                handleReset();
                 return true;
             } else {
                 toastifyError("Failed to save voucher");
@@ -357,23 +331,29 @@ const Contra = () => {
         }
     };
 
-    const fetchUpdateData = async (form: Voucher, id: number) => {
+    const fetchUpdateData = async (form: any, id: number) => {
         try {
+            setIsSubmitting(true);
+            // handleReset();
+            const formattedDate = date.toLocaleDateString("en-GB");
+            const totalAmount = form.AccountObj.reduce((sum, obj) => sum + obj.amount, 0);
             const payload = {
                 ...form,
+                VchDate: formattedDate,
+                VoucherNo: form.VoucherNo,
+                VoucherType: "Journal",
+                TotalAmt: totalAmount,
                 ID: id,
                 CompanyId: Number(localStorage.getItem("companyID")),
             };
 
             const response = await fetchPostData('Accountingvoucher/Insert_Accountingvoucher', payload);
-
-            if (response) {
+            // console.log(response[0].message);
+            if (response[0].message === "Update successfully") {
                 toastifySuccess("Item Updated Successfully");
-
                 setShowVoucherModal(false);
                 setCurrentEditId(null);
-
-                await fetchReceiptData();
+                await fetchGetData();
                 return true;
             }
 
@@ -383,6 +363,9 @@ const Contra = () => {
         } catch {
             toastifyError("Error in Updating a Data.");
             return false;
+        }
+        finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -405,7 +388,7 @@ const Contra = () => {
                     VchDate: header.VchDate,
                     PartyName: header.PartyName,
                     LedgerID: header.LedgerID,
-                    VoucherType: header.VoucherType ?? "Payment",
+                    VoucherType: header.VoucherType ?? "Journal",
                     Narration: header.Narration,
                     VoucherNo: header.VoucherNo,
                     TotalAmt: header.TotalAmt ?? 0,
@@ -567,6 +550,8 @@ const Contra = () => {
             TotalAmt: 0,
             AccountObj: []
         })
+        setParticulars([]);
+        setSingleRow({ name: "", amount: "" });
     }
 
     const handleInsertAndUpdate = async () => {
@@ -574,7 +559,8 @@ const Contra = () => {
             const success = await fetchUpdateData(form, currentEditId);
             if (success) {
                 handleReset();
-                setShowVoucherModal(false);
+                setCurrentEditId(null);
+                return;
             }
         }
 
@@ -596,11 +582,12 @@ const Contra = () => {
             {/* Recpit List */}
             <div className="voucher-container list-container">
                 <div className="voucher-card mb-2">
+
                     {/* ===================== DATE FILTER ROW ===================== */}
                     <div className="row align-items-center ">
                         {/* ===================== PAGE HEADER ===================== */}
                         <div className="page-header col-md-3">
-                            <h5 className="voucher-page-title mb-0">Contra Voucher List</h5>
+                            <h5 className="voucher-page-title mb-0">Journal Voucher List</h5>
                             <div className="header-line"></div>
                         </div>
                         {/* From Date */}
@@ -610,8 +597,8 @@ const Contra = () => {
                         <div className="col-md-3">
                             <DatePicker
                                 selected={fromDate}
-                                onChange={handleFromDateChange}
-                                dateFormat="yyyy-MM-dd"
+                                onChange={(date) => setFromDate(date)}
+                                dateFormat="dd-MM-yyyy"
                                 className="voucher-search-input challan"
                                 placeholderText="From Date"
                                 isClearable
@@ -626,7 +613,7 @@ const Contra = () => {
                             <DatePicker
                                 selected={toDate}
                                 onChange={(date) => setToDate(date)}
-                                dateFormat="yyyy-MM-dd"
+                                dateFormat="dd-MM-yyyy"
                                 className="voucher-search-input challan"
                                 placeholderText="To Date"
                                 isClearable
@@ -652,7 +639,7 @@ const Contra = () => {
 
                         <div className="voucher-header-right">
                             <button type="button" className="save-btn" onClick={handleAddVoucher}>
-                                + Add Contra
+                                + Add Journal
                             </button>
                         </div>
                     </div>
@@ -673,14 +660,14 @@ const Contra = () => {
                 </div>
             </div>
 
-            {/* Contra Data Modal */}
+            {/* Journal Data Modal */}
             {showVoucherModal && (
                 <>
                     <div className="modal fade show d-block" tabIndex={-1}>
                         <div className="modal-dialog modal-xl">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Contra" : "Add Contra"}</h5>
+                                    <h5 className="modal-title">{currentEditId !== null ? "Edit Journal" : "Add Journal"}</h5>
                                     <button
                                         type="button"
                                         className="btn-close"
@@ -695,15 +682,15 @@ const Contra = () => {
                                         <div className="voucher-card">
                                             <div className="row align-items-center">
                                                 <div className="col-lg-1 text-end voucher-col px-0">
-                                                    <label className="text-nowrap text-end">Contra No.</label>
+                                                    <label className="text-nowrap text-end">Journal No.</label>
                                                 </div>
                                                 <div className="col-lg-3">
                                                     <input
                                                         type="text"
                                                         className="voucher-col-input challan"
-                                                        defaultValue="Auto Generated"
-                                                        // value={voucherNo}
-                                                        onChange={(e) => setVoucherNo(e.target.value)}
+                                                        // defaultValue="Auto Generated"
+                                                        value={currentEditId === null ? "Auto Generated" : form.VoucherNo}
+                                                        // onChange={(e) => setForm((prev) => ({ ...prev, VoucherNo: e.target.value }))}
                                                         placeholder="Enter No."
                                                     />
                                                 </div>
@@ -844,12 +831,11 @@ const Contra = () => {
                                                         }
                                                         placeholder="Narration..."
                                                     />
-
                                                     <button className="save-btn" onClick={handleInsertAndUpdate} disabled={isSubmitting}>
                                                         <FiSave size={16} />{" "}
                                                         {isSubmitting
                                                             ? currentEditId !== null ? "Updating..." : "Saving..."
-                                                            : currentEditId !== null ? "Update Contra" : "Save Contra"}
+                                                            : currentEditId !== null ? "Update Journal" : "Save Journal"}
                                                     </button>
                                                 </div>
                                             </div>
@@ -876,4 +862,4 @@ const Contra = () => {
     );
 };
 
-export default Contra;
+export default Journal;
