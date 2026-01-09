@@ -436,3 +436,7 @@ div[data-testid="table-header"],
   overflow-y: auto;
   /* scroll enable */
 }
+
+.kMgreK{
+  min-height: 40px !important;
+}

@@ -144,25 +144,31 @@ export const customStyles = {
       color: "#ffffff",
       fontWeight: "bold",
       fontSize: "14px",
+      minHeight: 40,
+      height: 40,
+      position: "sticky",
+      top: 0,
+      zIndex: 2,
       justifyContent: "center",
       borderRight: "1px solid #ccc",
-     
+
     },
   },
   cells: {
     style: {
       justifyContent: "center",
       borderRight: "1px solid #eee",
-     
+
     },
   },
   table: {
     style: {
       border: "1px solid #ccc",
-      
+
     },
   },
 };
+
 
 
 
@@ -175,8 +181,8 @@ export const compactHeaderStyles = {
       fontSize: "14px",
       justifyContent: "center",
       borderRight: "1px solid #ccc",
-      minHeight: "32px",   
-      height: "32px",
+      minHeight: 40,
+      height: 40,
       paddingTop: "2px",
       paddingBottom: "2px",
     },
@@ -210,7 +216,7 @@ export const requiredColorStyles: any = {
     height: "33px",
     fontSize: "14px",
     padding: "0 2px",
-    borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8", 
+    borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
     boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
     backgroundColor: "#ffe2a8",
     "&:hover": {
@@ -237,36 +243,36 @@ export const requiredColorStyles: any = {
 
 
 export const selectCompactStyles: StylesConfig<any> = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "33px",
-      height: "33px",
-      fontSize: "14px",
-      padding: "0 2px",
-      borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
-      boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
-      "&:hover": { borderColor: "#6ea8ff" },
-    }),
+  control: (provided, state) => ({
+    ...provided,
+    minHeight: "33px",
+    height: "33px",
+    fontSize: "14px",
+    padding: "0 2px",
+    borderColor: state.isFocused ? "#6ea8ff" : "#84b3f8",
+    boxShadow: state.isFocused ? "0 0 0 1px #84b3f8" : "none",
+    "&:hover": { borderColor: "#6ea8ff" },
+  }),
 
-    valueContainer: (provided) => ({
-      ...provided,
-      padding: "0 6px",
-    }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
 
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      padding: "0 6px",
-    }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
 
-    dropdownIndicator: (provided) => ({
-      ...provided,
-      padding: "0 6px",
-    }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
 
-    clearIndicator: (provided) => ({
-      ...provided,
-      padding: "0 6px",
-    }),
-  }
+  clearIndicator: (provided) => ({
+    ...provided,
+    padding: "0 6px",
+  }),
+}
 
 

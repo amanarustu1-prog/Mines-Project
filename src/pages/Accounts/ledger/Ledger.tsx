@@ -487,6 +487,7 @@ const Ledger: React.FC = () => {
             name: "Ledger Name",
             selector: (row: LedgerData) => row.Name,
             sortable: true,
+
             cell: (row: LedgerData) => (
                 <div>
                     <div className="ledger-management-font-medium">{row.Name}</div>
@@ -497,9 +498,12 @@ const Ledger: React.FC = () => {
             name: "Accounting Group",
             selector: (row: LedgerData) => row.AccountGroupId,
             sortable: true,
+            wrap: false,
+            width: "200px",
             cell: (row: LedgerData) => (
                 <span>{row.AccountGroup}</span>
-            )
+            ),
+
         },
 
         // Mailing-Details
@@ -568,6 +572,8 @@ const Ledger: React.FC = () => {
                 return registrationType ? registrationType.Description : "";
             },
             sortable: true,
+            wrap: false,
+            width: "200px",
             cell: (row: LedgerData) => {
                 const registrationType = regisType.find((b) => Number(b.ID) === Number(row.gstregistrationtype));
                 return registrationType ? registrationType.Description : "";
@@ -595,6 +601,8 @@ const Ledger: React.FC = () => {
             name: "A/c Holder Name",
             selector: (row: LedgerData) => row.bankaccountholder,
             sortable: true,
+            wrap: false,
+            width: "200px",
             cell: (row: LedgerData) => (
                 <span>{row.bankaccountholder}</span>
             )
